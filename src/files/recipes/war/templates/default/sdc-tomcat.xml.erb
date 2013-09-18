@@ -1,0 +1,10 @@
+<Context path="/<%= @application_context %>" docBase="<%= @sdc_install_home %>/<%= @sdc_war_name %>" reloadable="true" debug="5">
+
+         <Resource name="jdbc/sdc" auth="Container" type="javax.sql.DataSource"
+         driverClassName="<%= @driver_class_name %>"
+         url="<%= @postgresql_url %>"
+         username="<%= @postgresql_db_user %>" password="<%= @postgresql_db_password %>"
+         maxActive="20" maxIdle="10" maxWait="-1"/>
+
+</Context>
+
