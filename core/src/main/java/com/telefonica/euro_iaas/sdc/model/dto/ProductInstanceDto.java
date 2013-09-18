@@ -1,8 +1,12 @@
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 
 /**
  * DTO to receive the complete information when a product release is going to be
@@ -17,6 +21,7 @@ public class ProductInstanceDto {
 
     private ReleaseDto product;
     private VM vm;
+    private List<Attribute> attributes;
 
     /**
      */
@@ -56,6 +61,18 @@ public class ProductInstanceDto {
         this.vm = vm;
     }
 
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
 }

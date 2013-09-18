@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
@@ -41,8 +42,9 @@ public interface ProductInstanceResource {
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance install(ProductInstanceDto product);
-    
+    ProductInstance install(ProductInstanceDto product)
+    throws ChefExecutionException;
+
     /**
      * Upgrade the selected product version.
      *
@@ -53,20 +55,14 @@ public interface ProductInstanceResource {
      *
      * @return the configured product Instance.
      */
-    /*@PUT
-    @Path("/{pId}")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance upgrade(@PathParam("pId") Long id,
-    		ReleaseDto releaseDto);
-	*/
     @PUT
     @Path("/{pId}/{newVersion}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductInstance upgrade(@PathParam("pId") Long id,
-      @PathParam("newVersion") String version);
-    
+      @PathParam("newVersion") String version)
+    throws ChefExecutionException;
+
     /**
      * Configure the selected product.
      *
@@ -82,7 +78,8 @@ public interface ProductInstanceResource {
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductInstance configure(@PathParam("pId") Long id,
-            Attributes arguments);
+            Attributes arguments)
+    throws ChefExecutionException;
     /**
      * Uninstall a previously installed product.
      *
@@ -92,7 +89,8 @@ public interface ProductInstanceResource {
     @DELETE
     @Path("/{pId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void uninstall(@PathParam("pId") Long productId);
+    void uninstall(@PathParam("pId") Long productId)
+    throws ChefExecutionException;
 
     /**
      * Retrieve all OSInstance created in the system.

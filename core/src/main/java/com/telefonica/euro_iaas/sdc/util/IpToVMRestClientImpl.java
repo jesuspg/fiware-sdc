@@ -10,14 +10,22 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
  */
 public class IpToVMRestClientImpl implements IpToVM {
 
+
+    private SDCClientUtils sdcClientUtils;
     /**
      * {@inheritDoc}
      */
     @Override
     public VM getVm(String ip) {
-        // TODO Sergio Arroyo implements this when the agent deployed in client
-        //is implemented.
-        return new VM(ip, "debian", ".flexiscale.com");
+
+        return sdcClientUtils.getVM(ip);
     }
+    /**
+     * @param sdcClientUtils the sdcClientUtils to set
+     */
+    public void setSdcClientUtils(SDCClientUtils sdcClientUtils) {
+        this.sdcClientUtils = sdcClientUtils;
+    }
+
 
 }

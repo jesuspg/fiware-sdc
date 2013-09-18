@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+
 /**
  * DTO for application Instance to receive rest request
  * @author Sergio Arroyo
@@ -19,7 +21,7 @@ public class ApplicationInstanceDto {
     private String version;
     private VM vm;
     private List<ReleaseDto> products;
-
+    private List<Attribute> attributes;
 
     /**
      */
@@ -84,6 +86,18 @@ public class ApplicationInstanceDto {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
     }
 
 }

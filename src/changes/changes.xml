@@ -45,5 +45,15 @@
             (see https://jira.tid.es/browse/CLAUDIA-488 for more information)
             </action>
         </release>
+        <release version="1.0.0" date="2011-07-28"
+            description="Refactor to call Chef using its rest api instead of knife.
+            Added upgrade features for applications">
+            <action dev="sarroyo" type="add">
+            Added upgrade application feature
+            </action>
+            <action dev="sarroyo" type="update">
+              Use Chef's Rest API instead of scripts to call knife.'
+            </action>
+        </release>
     </body>
 </document>

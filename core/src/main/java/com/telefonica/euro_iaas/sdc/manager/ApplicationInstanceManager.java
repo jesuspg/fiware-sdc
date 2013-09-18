@@ -3,6 +3,8 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -27,11 +29,13 @@ public interface ApplicationInstanceManager {
      *            the list of products where the application will be installed.
      * @param application
      *            the application to install.
+     * @param configuration the configuration parameters
      *
      * @return the installed application.
      */
     ApplicationInstance install(VM vm, List<ProductInstance> products,
-            ApplicationRelease application);
+            ApplicationRelease application, List<Attribute> configuration)
+    throws ChefExecutionException;
 
     /**
      * Uninstall a previously installed application.
@@ -39,7 +43,8 @@ public interface ApplicationInstanceManager {
      * @param applicationInstance
      *            the candidate to uninstall
      */
-    void uninstall(ApplicationInstance applicationInstance);
+    void uninstall(ApplicationInstance applicationInstance)
+        throws ChefExecutionException;
 
     /**
      * Configure an installed product
@@ -48,7 +53,22 @@ public interface ApplicationInstanceManager {
      * @return the configured application.
      */
     ApplicationInstance configure(ApplicationInstance applicationInstance,
-            List<Attribute> configuration);
+            List<Attribute> configuration) throws ChefExecutionException ;
+
+
+    /**
+     * Upgrade an application instance form the actual version
+     * to newRelease.version.
+     * @param applicationInstance the installed application
+     * @param newRelease the new version of the application
+     * @return the updated application.
+     * @throws ChefExecutionException if can not upgrade the system in node.
+     * @throws NotTransitableException if the transitation can not be done
+     */
+    ApplicationInstance upgrade(ApplicationInstance applicationInstance,
+            ApplicationRelease newRelease)
+        throws ChefExecutionException, NotTransitableException ;
+
 
     /**
      * Find the ApplicationInstance using the given id.

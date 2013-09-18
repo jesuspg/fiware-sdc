@@ -6,25 +6,6 @@ package com.telefonica.euro_iaas.sdc.util;
  * @author Sergio Arroyo
  */
 public interface SystemPropertiesProvider {
-    // CHEF PROPERTIES //
-    public final static String ASSING_RECIPES_SCRIPT = "assignRecipesScript";
-    public final static String UNASSING_RECIPES_SCRIPT = "unassignRecipesScript";
-    public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";
-
-    public final static String COPY_APP_FILES_FROM_SERVER_TO_NODE = "copyAppFilesFromServerToNode";
-    public final static String DEFAULT_APP_FILES_SOURCE_FOLDER = "defaultAppFilesSourceFolder";
-    public final static String DEFAULT_APP_FILES_DESTINATION_FOLDER = "defaultAppFilesDestinationFolder";
-
-    public final static String DEFAULT_HOST_DOMAIN = "defaultHostDomain";
-
-    public final static String CHEF_ROLE_TEMPLATE = "chefRoleTemplate";
-    public final static String CHEF_ATTRIBUTES_TEMPLATE = "chefAttributesTemplate";
-    public final static String CHEF_ATTRIBUTES_LEFT_LIMITER = "chefAttributesLeftLimiter";
-    public final static String CHEF_ATTRIBUTES_RIGHT_LIMITER = "chefAttributesRightLimiter";
-    public final static String CHEF_ATTRIBUTES_SEPARATOR = "chefAttributesSeparator";
-
-    public final static String UPDATE_ATTRIBUTES_SCRIPT = "updateAttributesScript";
-
     ////////// RECIPE TEMPLATES ///////////
     public final static String INSTALL_PRODUCT_RECIPE_TEMPLATE = "installProductRecipeTemplate";
     public final static String UNINSTALL_PRODUCT_RECIPE_TEMPLATE = "uninstallProductRecipeTemplate";
@@ -39,6 +20,15 @@ public interface SystemPropertiesProvider {
     public final static String PRODUCT_LIST_TEMPLATE = "productListTemplate";
     public final static String PRODUCT_LIST_SEPARATOR = "productListSeparator";
 
+    public final static String CHEF_SERVER_URL = "chefServerUrl";
+    public final static String CHEF_SERVER_NODES_PATH = "chefServerNodesPath";
+    public final static String CHEF_CLIENT_ID = "chefClientId";
+    public final static String CHEF_CLIENT_PASS = "chefClientPass";
+
+    public final static String CHEF_DATE_FORMAT = "chefDateFormat";
+    public final static String CHEF_TIME_ZONE = "chefTimeZone";
+
+    public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
 
     /**
      * Get the property for a given key.

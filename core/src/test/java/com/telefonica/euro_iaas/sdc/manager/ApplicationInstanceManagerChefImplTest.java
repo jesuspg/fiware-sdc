@@ -1,40 +1,46 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.ASSING_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.EXECUTE_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNASSING_RECIPES_SCRIPT;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
+import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
+import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
-public class ApplicationInstanceManagerChefImplTest extends TestCase {
+public class ApplicationInstanceManagerChefImplTest{
 
     private SystemPropertiesProvider propertiesProvider;
     private ApplicationInstanceDao applicationInstanceDao;
-    private CommandExecutor commandExecutor;
     private RecipeNamingGenerator recipeNamingGenerator;
+    private ChefNodeDao chefNodeDao;
+    private SDCClientUtils sdcClientUtils;
+
 
     VM vm;
     List<ProductInstance> products;
@@ -42,7 +48,7 @@ public class ApplicationInstanceManagerChefImplTest extends TestCase {
     ApplicationRelease appRelease;
     ApplicationInstance applicationInstance;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
 
         recipeNamingGenerator = mock(RecipeNamingGenerator.class);
@@ -51,25 +57,12 @@ public class ApplicationInstanceManagerChefImplTest extends TestCase {
 
         propertiesProvider = mock(SystemPropertiesProvider.class);
 
-        when(propertiesProvider.getProperty(ASSING_RECIPES_SCRIPT)).thenReturn(
-                "/opt/sdc/scripts/assignRecipes.sh {0} {1}");
-        when(propertiesProvider.getProperty(UNASSING_RECIPES_SCRIPT))
-                .thenReturn("/opt/sdc/scripts/unassignRecipes.sh {0} {1}");
-        when(propertiesProvider.getProperty(EXECUTE_RECIPES_SCRIPT))
-                .thenReturn("/opt/sdc/scripts/executeRecipes.sh root@{0}");
-
-        commandExecutor = mock(CommandExecutor.class);
-        when(commandExecutor.executeCommand(
-                "/opt/sdc/scripts/assignRecipes.sh hostnamedomain war::app-p1-p2"))
-                .thenReturn(new String[2]);
-        when(commandExecutor.executeCommand(
-                "/opt/sdc/scripts/executeRecipes.sh root@ip"))
-                .thenReturn(new String[2]);
-        when(commandExecutor.executeCommand(
-                "/opt/sdc/scripts/unassignRecipes.sh hostnamedomain war::app-p1-p2"))
-                .thenReturn(new String[2]);
 
         vm = new VM("ip", "hostname", "domain");
+
+        sdcClientUtils = mock(SDCClientUtils.class);
+        sdcClientUtils.execute(vm);
+
 
         Product p1 = new Product("p1","description");
         Product p2 = new Product("p2","description");
@@ -93,45 +86,45 @@ public class ApplicationInstanceManagerChefImplTest extends TestCase {
         when(applicationInstanceDao.create(Mockito
            .any(ApplicationInstance.class))).thenReturn(applicationInstance);
 
+        chefNodeDao = mock(ChefNodeDao.class);
+        when(chefNodeDao.loadNode(vm))
+                .thenReturn(new ChefNode());
+        when(chefNodeDao.updateNode((ChefNode)anyObject()))
+        .thenReturn(new ChefNode());
+
     }
 
     /**
      *
      * @throws Exception
      */
+    @Test
     public void testInstallWhenEverythingIsOk() throws Exception {
         // preparation
         ApplicationInstanceManagerChefImpl manager = new ApplicationInstanceManagerChefImpl();
         manager.setPropertiesProvider(propertiesProvider);
         manager.setApplicationInstanceDao(applicationInstanceDao);
-        manager.setCommandExecutor(commandExecutor);
         manager.setRecipeNamingGenerator(recipeNamingGenerator);
+        manager.setChefNodeDao(chefNodeDao);
+        manager.setSdcClientUtils(sdcClientUtils);
         // execution
         ApplicationInstance installedApp = manager.install(vm, products,
-                appRelease);
+                appRelease, new ArrayList<Attribute>());
         // make assertions
-        assertEquals(installedApp.getApplication(), appRelease);
-        assertEquals(installedApp.getProducts(), products);
-        assertEquals(installedApp.getStatus(), Status.INSTALLED);
+        Assert.assertEquals(installedApp.getApplication(), appRelease);
+        Assert.assertEquals(installedApp.getProducts(), products);
+        Assert.assertEquals(installedApp.getStatus(), Status.INSTALLED);
 
         verify(recipeNamingGenerator, times(1)).getInstallRecipe(
                 any(ApplicationInstance.class));
-        verify(propertiesProvider, times(1)).getProperty(ASSING_RECIPES_SCRIPT);
-        verify(propertiesProvider, times(1)).getProperty(
-                UNASSING_RECIPES_SCRIPT);
-        verify(propertiesProvider, times(1))
-                .getProperty(EXECUTE_RECIPES_SCRIPT);
 
         verify(applicationInstanceDao, times(1)).create(
                 (Mockito.any(ApplicationInstance.class)));
 
 
-        verify(commandExecutor, times(1)).executeCommand(
-            "/opt/sdc/scripts/assignRecipes.sh hostnamedomain war::app-p1-p2");
-        verify(commandExecutor, times(1)).executeCommand(
-            "/opt/sdc/scripts/executeRecipes.sh root@ip");
-        verify(commandExecutor, times(1)).executeCommand(
-            "/opt/sdc/scripts/unassignRecipes.sh hostnamedomain war::app-p1-p2");
+        verify(chefNodeDao, times(2)).loadNode(vm);
+        verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());
+        verify(sdcClientUtils, times(2)).execute(vm);
 
     }
 }

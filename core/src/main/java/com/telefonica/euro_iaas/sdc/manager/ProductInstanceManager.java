@@ -3,6 +3,7 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -23,10 +24,13 @@ public interface ProductInstanceManager {
      * Install a list of products in a given vm.
      * @param vm the vm where  instance will be running in
      * @param product the product to install
+     * @param attributes the configuration
      *
      * @return the of installed product.
      */
-    ProductInstance install(VM vm, ProductRelease product);
+    ProductInstance install(VM vm, ProductRelease product,
+            List<Attribute> attributes)
+        throws ChefExecutionException ;
 
     /**
      * Configure an installed product
@@ -35,7 +39,8 @@ public interface ProductInstanceManager {
      * @return the configured product.
      */
     ProductInstance configure(ProductInstance productInstance,
-            List<Attribute> configuration);
+            List<Attribute> configuration)
+        throws ChefExecutionException ;
 
     /**
      * Upgrade a ProductInstance
@@ -43,14 +48,16 @@ public interface ProductInstanceManager {
      * @param configuration the configuration parameters.
      * @return the configured product.
      */
-    ProductInstance upgrade(ProductInstance productInstance, 
-    		ProductRelease productRelease) throws NotTransitableException;
+    ProductInstance upgrade(ProductInstance productInstance,
+            ProductRelease productRelease) throws NotTransitableException,
+            ChefExecutionException ;
 
     /**
      * Uninstall a previously installed product.
      * @param productInstance the candidate to uninstall
      */
-    void uninstall(ProductInstance productInstance);
+    void uninstall(ProductInstance productInstance)
+        throws ChefExecutionException ;
 
     /**
      * Find the ProductInstance using the given id.

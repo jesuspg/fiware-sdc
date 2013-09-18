@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -43,13 +46,18 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      * {@inheritDoc}
      */
     @Override
-    public ProductInstance install(ProductInstanceDto product) {
+    public ProductInstance install(ProductInstanceDto product)
+    throws ChefExecutionException {
         try {
             Product p = productManager.load(product.getProduct().getProduct());
             ProductRelease loadedProduct = productManager.load(
                     p, product.getProduct().getVersion());
+            List<Attribute> attributes = product.getAttributes();
+            if (attributes == null) {
+                attributes = new ArrayList<Attribute>();
+            }
             return productInstanceManager.install(
-                    product.getVm(), loadedProduct);
+                    product.getVm(), loadedProduct, attributes);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -59,7 +67,8 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(Long productId) {
+    public void uninstall(Long productId)
+    throws ChefExecutionException {
         try {
             ProductInstance productInstance = productInstanceManager.load(productId);
             productInstanceManager.uninstall(productInstance);
@@ -68,79 +77,47 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
-    
-    /*@Override
-    public ProductInstance upgrade(Long id, ReleaseDto releaseDto) {
-        ProductInstance productInstance;
-        try {
-        	productInstance = productInstanceManager.load(id);
-        } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(
-                    "There is no productInstance with id " + id, e);
-        }
-        
-        Product product;
-        ProductRelease productRelease;
-        ProductInstance newProductInstance;
-        try {
-        	product = productManager.load(releaseDto.getProduct());
-        	productRelease = 
-        		productManager.load(product, releaseDto.getVersion());
-        	newProductInstance = 
-        		productInstanceManager.upgrade(productInstance, productRelease);
-        } catch (EntityNotFoundException e) {
-        	throw new SdcRuntimeException(
-                    "There is no productInstance with id " + id, e);
-        } catch (NotTransitableException nte)
-        {
-        	throw new SdcRuntimeException(
-                    "This upgrade requested is NOT allowed for " +
-                    "productInstance with id " + id, nte);
-        }
-        return newProductInstance;
-    }*/
-    
-    /**
-     * {@inheritDoc}
-     */
-    
+
     @Override
-    public ProductInstance upgrade(Long id, String newVersion) {
+    public ProductInstance upgrade(Long id, String newVersion)
+    throws ChefExecutionException{
         ProductInstance productInstance;
         try {
-        	productInstance = productInstanceManager.load(id);
+            productInstance = productInstanceManager.load(id);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(
                     "There is no productInstance with id " + id, e);
         }
-        
+
         ProductRelease productRelease;
         try {
-        	productRelease = 
-        		productManager.load(productInstance.getProduct().getProduct(), 
-        				newVersion);
-        	productInstance = 
-        		productInstanceManager.upgrade(productInstance, productRelease);
+            productRelease =
+                productManager.load(productInstance.getProduct().getProduct(),
+                        newVersion);
+            productInstance =
+                productInstanceManager.upgrade(productInstance, productRelease);
         } catch (EntityNotFoundException e) {
-        	throw new SdcRuntimeException(
+            throw new SdcRuntimeException(
                     "There is no productInstance with id " + id, e);
         } catch (NotTransitableException nte)
         {
-        	throw new SdcRuntimeException(
+            throw new SdcRuntimeException(
                     "This upgrade requested is NOT allowed for " +
                     "productInstance with id " + id, nte);
         }
         return productInstance;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public ProductInstance configure(Long id, Attributes arguments) {
+    public ProductInstance configure(Long id, Attributes arguments)
+    throws ChefExecutionException {
         ProductInstance product;
         try {
             product = productInstanceManager.load(id);

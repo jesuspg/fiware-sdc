@@ -11,16 +11,18 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
-import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManagerFactory;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -45,8 +47,8 @@ import com.telefonica.euro_iaas.sdc.util.IpToVM;
 public class ApplicationInstanceResourceImpl implements
         ApplicationInstanceResource {
 
-    @InjectParam("applicationInstanceManagerFactory")
-    private ApplicationInstanceManagerFactory applicationInstanceManagerFactory;
+    @InjectParam("applicationInstanceManager")
+    private ApplicationInstanceManager applicationInstanceManager;
     @InjectParam("productInstanceManager")
     private ProductInstanceManager productInstanceManager;
     @InjectParam("productManager")
@@ -61,7 +63,8 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public ApplicationInstance install(ApplicationInstanceDto application) {
+    public ApplicationInstance install(ApplicationInstanceDto application)
+    throws ChefExecutionException {
         try {
             VM vm = application.getVm();
             if (!vm.canWorkWithChef()) {
@@ -92,10 +95,12 @@ public class ApplicationInstanceResourceImpl implements
             ApplicationRelease release = applicationManager.load(
                     app, application.getVersion());
 
-            ApplicationInstanceManager manager =
-                applicationInstanceManagerFactory.getInstance(
-                        release.getApplication().getType());
-            return manager.install(vm, productList, release);
+            List<Attribute> attributes = application.getAttributes();
+            if (attributes == null) {
+                attributes = new ArrayList<Attribute>();
+            }
+            return applicationInstanceManager.install(
+                    vm, productList, release, attributes);
 
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -108,15 +113,12 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(Long applicationId) {
+    public void uninstall(Long applicationId) throws ChefExecutionException {
         try {
 
-            ApplicationInstance app = applicationInstanceManagerFactory
-                .getInstance().load(applicationId);
-            ApplicationInstanceManager manager =
-                applicationInstanceManagerFactory.getInstance(
-                        app.getApplication().getApplication().getType());
-            manager.uninstall(app);
+            ApplicationInstance app =
+                applicationInstanceManager.load(applicationId);
+            applicationInstanceManager.uninstall(app);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -126,13 +128,31 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public ApplicationInstance configure(Long id, Attributes arguments) {
+    public ApplicationInstance configure(Long id, Attributes arguments)
+    throws ChefExecutionException{
         try {
-            ApplicationInstanceManager manager =
-                applicationInstanceManagerFactory.getInstance();
-            ApplicationInstance application = manager.load(id);
-            return manager.configure(application, arguments);
+            ApplicationInstance application = applicationInstanceManager.load(id);
+            return applicationInstanceManager.configure(application, arguments);
         } catch (EntityNotFoundException e) {
+            throw new SdcRuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance upgrade(Long id, String version)
+            throws ChefExecutionException {
+        try {
+            ApplicationInstance instance =
+                applicationInstanceManager.load(id);
+            ApplicationRelease release = applicationManager.load(
+                    instance.getApplication().getApplication(), version);
+            return applicationInstanceManager.upgrade(instance, release);
+        } catch (EntityNotFoundException e) {
+            throw new SdcRuntimeException(e);
+        } catch (NotTransitableException e) {
             throw new SdcRuntimeException(e);
         }
     }
@@ -143,8 +163,7 @@ public class ApplicationInstanceResourceImpl implements
      */
     @Override
     public ApplicationInstance load(Long id) throws EntityNotFoundException {
-
-        return applicationInstanceManagerFactory.getInstance().load(id);
+        return applicationInstanceManager.load(id);
     }
 
     /**
@@ -169,8 +188,7 @@ public class ApplicationInstanceResourceImpl implements
             criteria.setOrderBy(orderType);
         }
 
-        return applicationInstanceManagerFactory.getInstance()
-                .findByCriteria(criteria);
+        return applicationInstanceManager.findByCriteria(criteria);
     }
 
 }

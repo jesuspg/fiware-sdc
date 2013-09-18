@@ -1,7 +1,5 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
-import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +8,11 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -42,7 +41,8 @@ public class ProductInstanceManagerChefImpl extends
      */
     @Override
     public ProductInstance upgrade(ProductInstance productInstance,
-            ProductRelease productRelease) throws NotTransitableException {
+            ProductRelease productRelease) throws NotTransitableException,
+            ChefExecutionException {
 
         List<ProductRelease> productReleases = productInstance.getProduct()
                 .getTransitableReleases();
@@ -52,11 +52,6 @@ public class ProductInstanceManagerChefImpl extends
         }
         try {
             VM vm = productInstance.getVM();
-            // we need the hostname + domain so if we haven't that information,
-            // shall to get it.
-            if (!vm.canWorkWithChef()) {
-                vm = ip2vm.getVm(vm.getIp());
-            }
 
             String backupRecipe = recipeNamingGenerator
                     .getBackupRecipe(productInstance);
@@ -78,7 +73,7 @@ public class ProductInstanceManagerChefImpl extends
 
             return productInstanceDao.update(productInstance);
 
-        } catch (ShellCommandException sce) {
+        } catch (CanNotCallChefException sce) {
             LOGGER.log(Level.SEVERE, sce.getMessage());
             throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
@@ -92,32 +87,25 @@ public class ProductInstanceManagerChefImpl extends
      */
     @Override
     public ProductInstance configure(ProductInstance productInstance,
-            List<Attribute> configuration) {
+            List<Attribute> configuration) throws ChefExecutionException {
 
-        String filename = "role-"
-                + productInstance.getProduct().getProduct().getName()
-                + new Date().getTime();
-
-        String populatedRole = populateRoleTemplate(productInstance.getVM(),
-                productInstance.getProduct().getProduct().getName(),
-                configuration, filename, productInstance.getProduct()
-                        .getProduct().getName());
-        File file = createRoleFile(populatedRole, filename);
+        String recipe = recipeNamingGenerator.getInstallRecipe(
+                productInstance);
         try {
-            updateAttributes(filename, file.getAbsolutePath(),
-                    productInstance.getVM());
-        } catch (ShellCommandException e) {
+            callChef(productInstance.getProduct().getProduct().getName(),
+                    recipe, productInstance.getVM(), configuration);
+        } catch (CanNotCallChefException e) {
             throw new SdcRuntimeException(e);
         }
         return productInstance;
-        // don't want use this method yet
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ProductInstance install(VM vm, ProductRelease product) {
+    public ProductInstance install(VM vm, ProductRelease product,
+            List<Attribute> attributes) throws ChefExecutionException {
         try {
             // we need the hostname + domain so if we haven't that information,
             // shall to get it.
@@ -129,10 +117,11 @@ public class ProductInstanceManagerChefImpl extends
 
             String installRecipe = recipeNamingGenerator
                     .getInstallRecipe(instance);
-            callChef(installRecipe, vm);
+            callChef(product.getProduct().getName(), installRecipe, vm,
+                    attributes);
             return productInstanceDao.create(instance);
 
-        } catch (ShellCommandException sce) {
+        } catch (CanNotCallChefException sce) {
             LOGGER.log(Level.SEVERE, sce.getMessage());
             throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
@@ -148,7 +137,8 @@ public class ProductInstanceManagerChefImpl extends
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(ProductInstance productInstance) {
+    public void uninstall(ProductInstance productInstance)
+        throws ChefExecutionException {
         // at least has one
         String uninstallRecipe = recipeNamingGenerator
                 .getUninstallRecipe(productInstance);
@@ -157,7 +147,7 @@ public class ProductInstanceManagerChefImpl extends
 
             productInstance.setStatus(Status.UNINSTALLED);
             productInstanceDao.update(productInstance);
-        } catch (ShellCommandException e) {
+        } catch (CanNotCallChefException e) {
             LOGGER.log(
                     Level.SEVERE,
                     "Can not uninstall prodcut due to a unexpected error: "

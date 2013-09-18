@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
@@ -41,7 +42,8 @@ public interface ApplicationInstanceResource {
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    ApplicationInstance install(ApplicationInstanceDto application);
+    ApplicationInstance install(ApplicationInstanceDto application)
+    throws ChefExecutionException;
 
     /**
      * Uninstall a previously installed application.
@@ -52,7 +54,8 @@ public interface ApplicationInstanceResource {
     @DELETE
     @Path("/{aId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void uninstall(@PathParam("aId") Long applicationId);
+    void uninstall(@PathParam("aId") Long applicationId)
+    throws ChefExecutionException;
 
     /**
      * Configure the selected application.
@@ -69,7 +72,27 @@ public interface ApplicationInstanceResource {
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes(MediaType.APPLICATION_XML)
     ApplicationInstance configure(@PathParam("aId") Long id,
-            Attributes arguments);
+            Attributes arguments)
+    throws ChefExecutionException;
+
+
+    /**
+     * Upgrade the selected product version.
+     *
+     * @param id
+     *            the application instance id
+     * @param new version
+     *            the new version to upgrade to
+     *
+     * @return the configured product Instance.
+     */
+    @PUT
+    @Path("/{aId}/{newVersion}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    ApplicationInstance upgrade(@PathParam("aId") Long id,
+      @PathParam("newVersion") String version)
+    throws ChefExecutionException;
 
     /**
      * Retrieve all ApplicationInstance that match with a given criteria.

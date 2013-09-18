@@ -5,10 +5,6 @@
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
     default-autowire="no">
 
-    <bean id="ip2vm" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
-    </bean>
-
     <bean id="commandExecutor" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
     </bean>
@@ -17,8 +13,9 @@
     <bean id="baseInstallableInstanceManager" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableInstanceManager">
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="commandExecutor" ref="commandExecutor"/>
+        <property name="sdcClientUtils" ref="sdcClientUtils"/>
         <property name="recipeNamingGenerator" ref="recipeNamingGenerator"/>
+        <property name="chefNodeDao" ref="chefNodeDao"/>
     </bean>
 
     <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
@@ -27,24 +24,9 @@
         <property name="ip2vm" ref="ip2vm"/>
     </bean>
 
-    <!-- APPLICATION MANAGER DECORATORS -->
-    <bean id="applicationInstanceManagerFactory" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerFactoryImpl">
-        <property name="defaultManager" ref="applicationInstanceManager"/>
-        <property name="warManager" ref="applicationInstanceManagerWar"/>
-    </bean>
-
-
     <bean id="applicationInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl">
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
-    </bean>
-
-    <bean id="applicationInstanceManagerWar" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerWarDecoratorImpl">
-        <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="commandExecutor" ref="commandExecutor"/>
     </bean>
 
     <!-- CATALOG MANAGER -->
@@ -65,6 +47,38 @@
     <bean id="recipeNamingGenerator" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.util.RecipeNamingGeneratorImpl">
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+    </bean>
+
+    <bean id="rsaSigner" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.RSASignerImpl">
+    </bean>
+
+    <bean id="mixlibAuthenticationDigester" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigesterImpl">
+        <property name="signer" ref="rsaSigner"></property>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+    </bean>
+
+
+    <bean id="restClient" class="com.sun.jersey.api.client.Client"
+     factory-method="create"/>
+
+    <bean id="chefNodeDao" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.dao.impl.ChefNodeDaoRestImpl">
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="digester" ref="mixlibAuthenticationDigester"></property>
+        <property name="client" ref="restClient"/>
+    </bean>
+
+    <bean id="sdcClientUtils" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
+                <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+                <property name="client" ref="restClient"/>
+    </bean>
+
+    <bean id="ip2vm" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
+                <property name="sdcClientUtils" ref="sdcClientUtils"/>
     </bean>
 
 </beans>

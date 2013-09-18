@@ -25,7 +25,7 @@ Naming conventions
   in this case is necessary to include in the name, the list of products where the
   application is going to be installed so the template will be:
 
-  <<\{application-type\}::\{application\}-\{version\}_\{action\}_\{productlist\}>>
+  <<\{application\}::\{version\}_\{action\}_\{productlist\}>>
 
   where <<<\{productlist\}>>> will be the product releases alphabeticly ordered
 
@@ -33,13 +33,9 @@ Naming conventions
   installed on postgresql 8.4 and tomcat 6 we need some recipes that are:
 
 +-----------------------
-  For installation: war::sdc-1.0.0_install_postgresql-8.4_tomcat-6
-  For uninstallation: war::sdc-1.0.0-uninstall-postgresql-8.4_tomcat-6
-  For configuration: war::sdc-1.0.0-install-postgresql-8.4_tomcat-6 (the attributes will be passed in the role template)
-  For backup: war::sdc-1.0.0-backup-postgresql-8.4_tomcat-6
-  For backup: war::sdc-1.0.0-restore-postgresql-8.4_tomcat-6
+  For installation: sdc::1.0.0_install_postgresql-8.4_tomcat-6
+  For uninstallation: sdc::1.0.0-uninstall-postgresql-8.4_tomcat-6
+  For configuration: sdc::1.0.0-install-postgresql-8.4_tomcat-6 (the attributes will be passed in the role template)
+  For backup: sdc::1.0.0-backup-postgresql-8.4_tomcat-6
+  For backup: sdc::1.0.0-restore-postgresql-8.4_tomcat-6
 +-----------------------
-
-  As you can see, for applications we use the application type due to every applications
-  could be installed in the same way so is possible to reuse the generated code
-  following DRY principle described in Ruby (Chef language).

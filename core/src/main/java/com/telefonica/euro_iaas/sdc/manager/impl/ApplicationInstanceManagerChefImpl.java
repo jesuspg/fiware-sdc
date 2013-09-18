@@ -1,15 +1,17 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
-import java.io.File;
-import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
@@ -25,24 +27,26 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSear
  * @author Sergio Arroyo
  *
  */
-public class ApplicationInstanceManagerChefImpl
-    extends BaseInstallableInstanceManager
-        implements ApplicationInstanceManager {
+public class ApplicationInstanceManagerChefImpl extends
+        BaseInstallableInstanceManager implements ApplicationInstanceManager {
 
     private ApplicationInstanceDao applicationInstanceDao;
+    private static Logger LOGGER = Logger.getLogger("ApplicationManagerChefImpl");
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ApplicationInstance install(VM vm, List<ProductInstance> products,
-            ApplicationRelease application) {
+            ApplicationRelease application, List<Attribute> configuration)
+    throws ChefExecutionException {
         try {
             ApplicationInstance applicationInstance = new ApplicationInstance(
                     application, products, Status.INSTALLED);
-            String recipe =
-                recipeNamingGenerator.getInstallRecipe(applicationInstance);
-            callChef(recipe, vm);
+            String recipe = recipeNamingGenerator
+                    .getInstallRecipe(applicationInstance);
+            callChef(application.getApplication().getName(), recipe, vm,
+                    configuration);
             return applicationInstanceDao.create(applicationInstance);
 
         } catch (InvalidEntityException e) {
@@ -51,7 +55,7 @@ public class ApplicationInstanceManagerChefImpl
         } catch (AlreadyExistsEntityException e) {
             throw new SdcRuntimeException(
                     "Can not create application instance", e);
-        } catch (ShellCommandException e) {
+        } catch (CanNotCallChefException e) {
             throw new SdcRuntimeException("Can not exectue the script", e);
         }
     }
@@ -60,10 +64,11 @@ public class ApplicationInstanceManagerChefImpl
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(ApplicationInstance applicationInstance) {
+    public void uninstall(ApplicationInstance applicationInstance)
+            throws ChefExecutionException {
         try {
-            String recipe =
-                recipeNamingGenerator.getUninstallRecipe(applicationInstance);
+            String recipe = recipeNamingGenerator
+                    .getUninstallRecipe(applicationInstance);
 
             VM vm = applicationInstance.getProducts().get(0).getVM();
 
@@ -74,7 +79,7 @@ public class ApplicationInstanceManagerChefImpl
         } catch (InvalidEntityException e) {
             throw new SdcRuntimeException(
                     "Can not create application instance", e);
-        } catch (ShellCommandException e) {
+        } catch (CanNotCallChefException e) {
             throw new SdcRuntimeException("Can not exectue the script", e);
         }
     }
@@ -85,27 +90,66 @@ public class ApplicationInstanceManagerChefImpl
     @Override
     public ApplicationInstance configure(
             ApplicationInstance applicationInstance,
-            List<Attribute> configuration) {
-        String filename = "role-"  + applicationInstance.getApplication()
-            .getApplication().getName() + new Date().getTime();
-        String recipe =
-            recipeNamingGenerator.getInstallRecipe(applicationInstance);
-
-        //the application shall be installed over, at least, one product
+            List<Attribute> configuration) throws ChefExecutionException {
+        String recipe = recipeNamingGenerator
+                .getInstallRecipe(applicationInstance);
+        // the application shall be installed over, at least, one product
         VM vm = applicationInstance.getProducts().get(0).getVM();
 
-        String populatedRole = populateRoleTemplate(vm, recipe, configuration,
-                filename, applicationInstance.getApplication()
-                .getApplication().getType());
-        File file = createRoleFile(populatedRole, filename);
         try {
-            updateAttributes(filename, file.getAbsolutePath(), vm);
-
-        } catch (ShellCommandException e) {
+            callChef(applicationInstance.getApplication().getApplication()
+                    .getType(), recipe, vm, configuration);
+        } catch (CanNotCallChefException e) {
             throw new SdcRuntimeException(e);
         }
 
         return applicationInstance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance upgrade(ApplicationInstance applicationInstance,
+            ApplicationRelease newRelease) throws ChefExecutionException,
+            NotTransitableException {
+
+        List<ApplicationRelease> releases = applicationInstance
+                .getApplication().getTransitableReleases();
+
+        if (!releases.contains(newRelease)) {
+            throw new NotTransitableException();
+        }
+
+        try {
+            VM vm = applicationInstance.getProducts().iterator().next().getVM();
+
+            String backupRecipe = recipeNamingGenerator
+                    .getBackupRecipe(applicationInstance);
+            callChef(backupRecipe, vm);
+
+            String uninstallRecipe = recipeNamingGenerator
+                    .getUninstallRecipe(applicationInstance);
+            callChef(uninstallRecipe, vm);
+
+            applicationInstance.setApplication(newRelease);
+
+            String installRecipe = recipeNamingGenerator
+                    .getInstallRecipe(applicationInstance);
+            callChef(installRecipe, vm);
+
+            String restoreRecipe = recipeNamingGenerator
+                    .getRestoreRecipe(applicationInstance);
+            callChef(restoreRecipe, vm);
+
+            return applicationInstanceDao.update(applicationInstance);
+        } catch (CanNotCallChefException sce) {
+            LOGGER.log(Level.SEVERE, sce.getMessage());
+            throw new SdcRuntimeException(sce);
+        } catch (InvalidEntityException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            throw new SdcRuntimeException(e);
+        }
     }
 
     /**
@@ -142,5 +186,4 @@ public class ApplicationInstanceManagerChefImpl
             ApplicationInstanceDao applicationInstanceDao) {
         this.applicationInstanceDao = applicationInstanceDao;
     }
-
 }

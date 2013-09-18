@@ -71,7 +71,7 @@ public class InitDbBootstrap implements ServletContextListener {
                         "6", "Tomcat server 6", null, tomcat,
                         supportedSSOO, null);
                 tomcat6 = productReleaseDao.create(tomcat6);
-                
+
                 ProductRelease tomcat5 = new ProductRelease(
                         "5.5", "Tomcat server 5.5", null, tomcat,
                         supportedSSOO, Arrays.asList(tomcat6));
@@ -150,17 +150,19 @@ public class InitDbBootstrap implements ServletContextListener {
                 sdc = applicationDao.create(sdc);
 
                 ApplicationRelease sdc030 = new ApplicationRelease(
-                        "0.3.0", "Add configuration functionallity", null, sdc,
+                        "1.0.0", "Add configuration functionallity", null, sdc,
                         Arrays.asList(postgres84, postgres83, tomcat5,
                                 tomcat6, mysql5), null);
                 sdc030 = applicationReleaseDao.create(sdc030);
 
                 ApplicationRelease sdc040 = new ApplicationRelease(
-                        "0.4.0", "Add update functionallity", null, sdc,
+                        "1.1.0", "Add update functionallity", null, sdc,
                         Arrays.asList(postgres84, postgres83, tomcat5,
                                 tomcat6, mysql5), Arrays.asList(sdc030));
                 sdc040 = applicationReleaseDao.create(sdc040);
 
+                sdc030.addTransitableRelease(sdc040);
+                sdc030 = applicationReleaseDao.update(sdc030);
             } catch (AlreadyExistsEntityException e1) {
                 throw new RuntimeException(e1);
             } catch (InvalidEntityException e1) {

@@ -111,3 +111,15 @@ User Stories
 *** Test Criteria
 
   *  See the project plan and roadmap and discuss it.
+
+
+* 1.0.0 Version
+
+** Use Chef's rest api instead of scripts
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-595}jira entry}}
+
+*** Test Criteria
+
+  *  Every previous functionallity shall be available after this refactor so we
+  shall pass the previous test criteria for every user stories.

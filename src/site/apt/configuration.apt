@@ -9,17 +9,6 @@ System Configuration
 
   The list bellow show the different properties the system is using and their meaning:
 
-  *  <<assignRecipesScript>> = The script called to assign a recipe to a chef node.
-  (the parameters are the hostname + domain and the recipe-template )
-  (<<</root/chef-repo/scripts/assignRecipes.sh {0} {1}>>>).
-
-  *  <<unassignRecipesScript>> = The script called to unassign a recipe to a chef node.
-  (the parameters are the hostname + domain and the recipe-template )
-  (<<</root/chef-repo/scripts/unassignRecipes.sh {0} {1}>>>).
-
-  *  <<executeRecipesScript>> = The script to perfomr the installation usign chef.
-  It will receive the conection params, (ip or hostname + domain) (<<</root/chef-repo/scripts/executeRecipes.sh root@{0}>>>).
-
   *  <<uninstallProductRecipeTemplate>> = The template name used in uninstall
   prouctsrecipes. It will receive the product name and version (<<<{0}::{1}_uninstall>>>).
 
@@ -35,51 +24,36 @@ System Configuration
 
   *  <<uninstallAppRecipeTemplate>> = The template name used in uninstall applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{0}::{1}-{2}_uninstall_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_uninstall_{3}>>>).
 
   *  <<installAppRecipeTemplate>> = The template name used in install applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{0}::{1}-{2}_install_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_install_{3}>>>).
 
   *  <<backupAppRecipeTemplate>> = The template name used in backup applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{0}::{1}-{2}_backup_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_backup_{3}>>>).
 
   *  <<restoreAppRecipeTemplate>> = The template name used in restore applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{0}::{1}-{2}_restore_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_restore_{3}>>>).
 
   *  <<productListTemplate>> = The product list item, parametrized by product name and version (<<<{0}-{1}>>>).
 
   *  <<productListSeparator>> = The product list separator (<<<->>>).
 
-  *  <<copyAppFilesFromServerToNode>> = The script used to copy the application files from server to node.
-  It will receive the node connection url, the destination folder and the source folder
-  (<<</opt/sdc/scripts/copyAppFilesFromServerToNode.sh {0} {1} {2}>>>).
+  *  <<chefClientId>> = The Chef's client username (<<<serch>>>).
 
-  *  <<defaultAppFilesSourceFolder>> = The folder where the files for an application are in the server.
-  It will receive the application type and the application name (<<</opt/sdc/app/{0}/{1}/>>>).
+  *  <<chefClientPass>> = The Chef's client private key file location (<<</opt/sdc/private.pem>>>).
 
-  *  <<defaultAppFilesDestinationFolder>> = The folder where the files for an application
-   will be in the node.
-  It will receive the application type and the application name (<<</opt/sdc/app/{0}/>>>).
+  *  <<chefServerUrl>> = The Chef server URL (<<<http://109.231.82.12:4000>>>).
 
-  defaultAppFilesDestinationFolder = /opt/sdc/app/{0}/
+  *  <<chefServerNodesPath>> = The path to access to chef's nodes (<<</nodes/{0}>>>).
 
-  *  <<defaultHostDomain>> = The default domain, used when no host is passed in OS installation
-   (<<<.hi.inet>>>).
+  *  <<chefDateFormat>> = The date format to send the Rest request to Chef (<<< yyyy-MM-dd'T'HH:mm:ss'Z'>>>).
 
-  * <<chefRoleTemplate>> = The default Role template (to configure an application or product)
-  Is parametrized by node name, install recipe, attribute list (see the properties bellow),
-  role name, and proccess name (the application or product name with no version)
-  (<<<name "{3}" \n description " This role aims to overwrite cookbook  attributes
-   of {1} cookbook associated to the node {0} by defining override attributes
-    " \n run_list "recipe[{1}]" \n override_attributes "{4}" =\> {2}>>>)
+  *  <<chefTimeZone>> = The time zone to send the Rest request to Chef (<<<GMT>>>).
 
-  * <<chefAttributesTemplate>> =  The attributes list item parametrized by attribute key and value (<<<"{0}" =\> {1}>>>)
+  *  <<chefClientUrlTemplate>> = The template url where the sdc-client is
+   (parametrized with client url) (<<< http://{0}:9990/sdc-client>>>).
 
-  * <<chefAttributesSeparator>> = The attribute list separator (<<<,>>>)
-
-  * <<chefAttributesLeftLimiter>> the attribute list left limiter (<<<{>>>)
-
-  * <<chefAttributesRightLimiter>> the attribute list right limiter (<<<}>>>)
