@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xuse:stakeholders xmlns:xuse="http://xuse.sourceforge.net"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/stakeholders.xsd"
+    model-version="1.0">
+
+
+    <xuse:stakeholder id="scrum-master">
+        <xuse:title>Scrum Master</xuse:title>
+        <xuse:description>...</xuse:description>
+        <xuse:role />
+    </xuse:stakeholder>
+
+    <xuse:stakeholder id="product-owner">
+        <xuse:title>Product Owner</xuse:title>
+        <xuse:description>In charge to provides the relevant information about
+        the system shall do.</xuse:description>
+        <xuse:role />
+    </xuse:stakeholder>
+
+    <xuse:stakeholder id="architect">
+        <xuse:title>Architect</xuse:title>
+        <xuse:description>In charge to design the better solution for a given
+        requirements.</xuse:description>
+        <xuse:role />
+    </xuse:stakeholder>
+
+    <xuse:stakeholder id="developer">
+        <xuse:title>Developer</xuse:title>
+        <xuse:description>...</xuse:description>
+        <xuse:role />
+    </xuse:stakeholder>
+
+
+</xuse:stakeholders>

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
@@ -26,30 +26,29 @@ public class BaseInstallableInstanceManager {
     private ChefNodeDao chefNodeDao;
     private SDCClientUtils sdcClientUtils;
 
-
     protected void callChef(String recipe, VM vm)
-        throws CanNotCallChefException, ChefExecutionException {
+        throws CanNotCallChefException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
             executeRecipes(vm);
             unassignRecipes(vm, recipe);
-        } catch (ChefExecutionException e) {
+        } catch (NodeExecutionException e) {
             unassignRecipes(vm, recipe);
             //even if execution fails  want to unassign the recipe
-            throw new ChefExecutionException(e.getMessage());
+            throw new NodeExecutionException(e.getMessage());
         }
     }
 
     protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
-        throws CanNotCallChefException, ChefExecutionException{
+        throws CanNotCallChefException, NodeExecutionException{
         configureNode(vm, attributes, process, recipe);
         try {
             executeRecipes(vm);
             unassignRecipes(vm, recipe);
-        } catch (ChefExecutionException e) {
+        } catch (NodeExecutionException e) {
             unassignRecipes(vm, recipe);
             //even if execution fails  want to unassign the recipe
-            throw new ChefExecutionException(e.getMessage());
+            throw new NodeExecutionException(e.getMessage());
         }
     }
 
@@ -60,7 +59,7 @@ public class BaseInstallableInstanceManager {
      * @throws ShellCommandException
      */
     public void executeRecipes(VM vm)
-            throws ChefExecutionException {
+            throws NodeExecutionException {
         // tell Chef the assigned recipes shall be installed:
         sdcClientUtils.execute(vm);
     }

@@ -2,17 +2,24 @@ package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 /**
  * Provides a rest api to works with Product.
@@ -22,6 +29,28 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
  */
 public interface ProductResource {
 
+	/**
+     * Insert the selected Product version (ProductRelease)
+     *
+     * @param name
+     *            the product name
+     * @param Multipart which includes
+     * @param productReleaseDto 
+     * @param The cookbook in a tar file
+     * @param The set of installables requires fot the recipe to install/
+     * /uninstall the product
+     * @return the product.
+     * @throws 
+     *             
+     */
+    
+    @POST
+    @Path("/")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes("multipart/mixed")
+    ProductRelease insert(MultiPart multiPart)
+    	throws AlreadyExistsEntityException, InvalidEntityException;
+    
     /**
      * Retrieve all Products available created in the system.
      *
@@ -117,7 +146,25 @@ public interface ProductResource {
     ProductRelease load(@PathParam("pName") String name,
             @PathParam("version") String version)
         throws EntityNotFoundException;
-
+    
+    /**
+     * Delete the ProductRelease in BBDD, the associated Recipe in chef server
+     * and the installlable files in webdav
+     * @param name
+     *            the product name
+     * @param version the concrete version
+     * @throws EntityNotFoundException
+     *             if the Product Release does not exists
+     */
+    
+    @DELETE
+    @Path("/{pName}/release/{version}")
+    @Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void delete(@PathParam("pName") String name,
+    		@PathParam("version") String version) 
+    throws EntityNotFoundException;;
+    
+    
     /**
      * Retrieve the attributes for the selected product release. The result is
      * a merge between common attributes (of the product) and the private
@@ -153,4 +200,5 @@ public interface ProductResource {
     List<ProductRelease> findTransitable(@PathParam("pName") String name,
              @PathParam("version") String version)
              throws EntityNotFoundException;
+      
 }

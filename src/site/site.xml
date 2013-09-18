@@ -17,6 +17,7 @@
     <body>
         <menu name="Documentation">
             <item name="Index" href="index.html" />
+            <item name="ERS" href="docs/xuse/index.html" />
             <item name="Scope" href="scope.html"/>
             <item name="Installation" href="installation.html"/>
             <item name="Create chef recipes" href="add-recipes.html"/>

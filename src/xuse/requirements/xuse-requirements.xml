@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xuse:requirements xmlns:xuse="http://xuse.sourceforge.net"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/requirements.xsd"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml" model-version="1.0">
+
+    <xuse:req strength="shall" id="RNF000" version="1.0.0"
+        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+        <xuse:title>The system shall provided a REST API</xuse:title>
+        <xuse:description>
+            System will provide a RESTFull API.
+        </xuse:description>
+        <xuse:classification>
+            <xuse:type is-feature="true">constraint</xuse:type>
+            <xuse:status>agreed</xuse:status>
+            <xuse:package>system</xuse:package>
+        </xuse:classification>
+        <xuse:stakeholder-ref refId="product-owner" />
+    </xuse:req>
+
+    <xuse:req strength="shall" id="RF000" version="1.0.0"
+        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+        <xuse:title>Only one instance of a product allowed</xuse:title>
+        <xuse:description>
+            A product can only be installed once at the same time. It means that
+            only one product and one version can be running in the VM.
+        </xuse:description>
+        <xuse:classification>
+            <xuse:type is-feature="true">constraint</xuse:type>
+            <xuse:status>implemented</xuse:status>
+            <xuse:package>system</xuse:package>
+        </xuse:classification>
+        <xuse:stakeholder-ref refId="scrum-master" />
+    </xuse:req>
+
+    <xuse:req strength="shall" id="RF001" version="1.0.0"
+        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+        <xuse:title>Only one instance of an application allowed</xuse:title>
+        <xuse:description>
+            An application can only be installed once at the same time. It means that
+            only one application and one version can be running in the VM.
+        </xuse:description>
+        <xuse:classification>
+            <xuse:type is-feature="true">constraint</xuse:type>
+            <xuse:status>implemented</xuse:status>
+            <xuse:package>system</xuse:package>
+        </xuse:classification>
+        <xuse:stakeholder-ref refId="scrum-master" />
+    </xuse:req>
+</xuse:requirements>
+

@@ -1,7 +1,11 @@
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
+import java.util.List;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
  * Provides some criteria to search ProductInstance entities.
@@ -15,7 +19,10 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
      * The status of the application (<i>this criteria return a list
      * of entities<i>).
      */
-    private Status status;
+    private List<Status> status;
+    private ProductInstance product;
+    private VM vm;
+    private String applicationName;
 
     /**
      * Default constructor
@@ -31,9 +38,13 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param vm
      */
     public ApplicationInstanceSearchCriteria(Integer page, Integer pageSize,
-            String orderBy, String orderType, Status status) {
+            String orderBy, String orderType, List<Status> status,
+            ProductInstance product, VM vm, String applicationName) {
         super(page, pageSize, orderBy, orderType);
         this.status = status;
+        this.product = product;
+        this.vm = vm;
+        this.applicationName = applicationName;
     }
 
     /**
@@ -42,9 +53,13 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param vm
      */
     public ApplicationInstanceSearchCriteria(String orderBy, String orderType,
-           Status status) {
+           List<Status> status, ProductInstance product, VM vm,
+           String applicationName) {
         super(orderBy, orderType);
         this.status = status;
+        this.product = product;
+        this.vm = vm;
+        this.applicationName = applicationName;
     }
 
     /**
@@ -53,30 +68,79 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param vm
      */
     public ApplicationInstanceSearchCriteria(Integer page, Integer pageSize,
-            Status status) {
+            List<Status> status, ProductInstance product, VM vm,
+            String applicationName) {
         super(page, pageSize);
         this.status = status;
+        this.product = product;
+        this.vm = vm;
+        this.applicationName = applicationName;
     }
 
     /**
      * @param vm
      */
-    public ApplicationInstanceSearchCriteria(Status status) {
+    public ApplicationInstanceSearchCriteria(List<Status> status,
+            ProductInstance product, VM vm, String applicationName) {
         this.status = status;
+        this.product = product;
+        this.vm = vm;
+        this.applicationName = applicationName;
     }
 
     /**
      * @return the status
      */
-    public Status getStatus() {
+    public List<Status> getStatus() {
         return status;
     }
 
     /**
      * @param status the status to set
      */
-    public void setStatus(Status status) {
+    public void setStatus(List<Status> status) {
         this.status = status;
     }
 
+    /**
+     * @return the product
+     */
+    public ProductInstance getProduct() {
+        return product;
+    }
+
+    /**
+     * @param product the product to set
+     */
+    public void setProduct(ProductInstance product) {
+        this.product = product;
+    }
+
+    /**
+     * @return the vm
+     */
+    public VM getVm() {
+        return vm;
+    }
+
+    /**
+     * @param vm the vm to set
+     */
+    public void setVm(VM vm) {
+        this.vm = vm;
+    }
+
+    /**
+     * @return the applicationName
+     */
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    /**
+     * @param applicationName the applicationName to set
+     */
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
 }

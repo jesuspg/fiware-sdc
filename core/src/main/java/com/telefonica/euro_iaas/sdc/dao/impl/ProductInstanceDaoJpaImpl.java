@@ -2,6 +2,7 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -9,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 /**
@@ -42,6 +44,7 @@ public class ProductInstanceDaoJpaImpl
             ProductInstanceSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session.createCriteria(ProductInstance.class);
+
         if (criteria.getVM() != null) {
             baseCriteria.add(Restrictions.eq(ProductInstance.VM_FIELD,
                     criteria.getVM()));
@@ -54,7 +57,25 @@ public class ProductInstanceDaoJpaImpl
             baseCriteria.add(Restrictions.eq(ProductInstance.PRODUCT_FIELD,
                     criteria.getProduct()));
         }
+
+        if (!StringUtils.isEmpty(criteria.getProductName())) {
+            baseCriteria.createAlias("product", "rls")
+            .createAlias("rls.product", "prod");
+            baseCriteria.add(Restrictions.eq("prod.name",
+                    criteria.getProductName()));
+        }
         return setOptionalPagination(criteria, baseCriteria).list();
+    }
+
+    @Override
+    public ProductInstance findUniqueByCriteria(
+            ProductInstanceSearchCriteria criteria)
+                    throws NotUniqueResultException {
+        List<ProductInstance> instances = findByCriteria(criteria);
+        if (instances.size() != 1) {
+            throw new NotUniqueResultException();
+        }
+        return findByCriteria(criteria).iterator().next();
     }
 
 }

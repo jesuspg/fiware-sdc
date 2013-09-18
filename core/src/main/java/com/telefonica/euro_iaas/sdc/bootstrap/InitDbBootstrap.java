@@ -77,31 +77,12 @@ public class InitDbBootstrap implements ServletContextListener {
                         supportedSSOO, Arrays.asList(tomcat6));
                 tomcat5 = productReleaseDao.create(tomcat5);
 
-                tomcat6.setTransitableReleases(Arrays.asList(tomcat5));
+                tomcat5.setTransitableReleases(Arrays.asList(tomcat6));
+                tomcat6.setTransitableReleases(Arrays.asList(tomcat5, tomcat7));
                 tomcat6 = productReleaseDao.update(tomcat6);
 
                 tomcat7.setTransitableReleases(Arrays.asList(tomcat6));
                 tomcat7 = productReleaseDao.update(tomcat7);
-
-                Product apache = new Product("apache", "http container");
-                apache.addAttribute(new Attribute(
-                        "listen_ports", "[\"80\",\"443\"]",
-                        "Ports where the server is listening. Is formed by two"
-                        + " values [\"httpPort\",\"httpsPort\"]"));
-                apache = productDao.create(apache);
-
-                ProductRelease apache2 = new ProductRelease(
-                        "2", "Apache http server v.2", null, apache,
-                        supportedSSOO, null);
-                apache2 = productReleaseDao.create(apache2);
-
-                Product mysql = new Product("mysql", "db manager");
-                mysql = productDao.create(mysql);
-
-                ProductRelease mysql5 = new ProductRelease(
-                        "5.5", "v5.5 fix bugs...", null,
-                        mysql, supportedSSOO, null);
-                mysql5 = productReleaseDao.create(mysql5);
 
                 Product postgresql = new Product("postgresql",
                         "db manager");
@@ -152,17 +133,19 @@ public class InitDbBootstrap implements ServletContextListener {
                 ApplicationRelease sdc030 = new ApplicationRelease(
                         "1.0.0", "Add configuration functionallity", null, sdc,
                         Arrays.asList(postgres84, postgres83, tomcat5,
-                                tomcat6, mysql5), null);
+                                tomcat6, tomcat7), null);
                 sdc030 = applicationReleaseDao.create(sdc030);
 
                 ApplicationRelease sdc040 = new ApplicationRelease(
                         "1.1.0", "Add update functionallity", null, sdc,
-                        Arrays.asList(postgres84, postgres83, tomcat5,
-                                tomcat6, mysql5), Arrays.asList(sdc030));
+                        Arrays.asList(postgres84, postgres83,
+                                tomcat6, tomcat7), Arrays.asList(sdc030));
                 sdc040 = applicationReleaseDao.create(sdc040);
 
                 sdc030.addTransitableRelease(sdc040);
                 sdc030 = applicationReleaseDao.update(sdc030);
+
+
             } catch (AlreadyExistsEntityException e1) {
                 throw new RuntimeException(e1);
             } catch (InvalidEntityException e1) {

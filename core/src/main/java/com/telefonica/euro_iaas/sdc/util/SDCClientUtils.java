@@ -2,7 +2,7 @@ package com.telefonica.euro_iaas.sdc.util;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
@@ -24,7 +24,7 @@ public interface SDCClientUtils {
      * Make the target node call Chef to execute the enqueued tasks
      * @param vm the node
      */
-    void execute(VM vm) throws ChefExecutionException;
+    void execute(VM vm) throws NodeExecutionException;
 
     /**
      * Add or update some configuration parameters to node

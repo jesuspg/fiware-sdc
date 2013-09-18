@@ -5,20 +5,20 @@ package com.telefonica.euro_iaas.sdc.exception;
  * @author Sergio Arroyo
  */
 @SuppressWarnings("serial")
-public class ChefExecutionException extends Exception {
-    public ChefExecutionException() {
+public class NodeExecutionException extends Exception {
+    public NodeExecutionException() {
         super();
     }
 
-    public ChefExecutionException(String msg) {
+    public NodeExecutionException(String msg) {
         super(msg);
     }
 
-    public ChefExecutionException(Throwable e) {
+    public NodeExecutionException(Throwable e) {
         super(e);
     }
 
-    public ChefExecutionException(String msg, Throwable e) {
+    public NodeExecutionException(String msg, Throwable e) {
         super(msg, e);
     }
 

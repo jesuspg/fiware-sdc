@@ -8,18 +8,25 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
+import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
+import com.telefonica.euro_iaas.sdc.validation.ApplicationInstanceValidator;
+import com.xmlsolutions.annotation.UseCase;
 
 /**
  * Chef based ApplicationInstanceManager implementation.
@@ -27,27 +34,49 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSear
  * @author Sergio Arroyo
  *
  */
+@UseCase(traceTo="UC_002", status="implemented")
 public class ApplicationInstanceManagerChefImpl extends
         BaseInstallableInstanceManager implements ApplicationInstanceManager {
 
+    private ApplicationInstanceValidator validator;
     private ApplicationInstanceDao applicationInstanceDao;
     private static Logger LOGGER = Logger.getLogger("ApplicationManagerChefImpl");
 
     /**
      * {@inheritDoc}
      */
+    @UseCase(traceTo="UC_002.1", status="implemented")
     @Override
     public ApplicationInstance install(VM vm, List<ProductInstance> products,
             ApplicationRelease application, List<Attribute> configuration)
-    throws ChefExecutionException {
+    throws NodeExecutionException, IncompatibleProductsException,
+    AlreadyInstalledException, NotInstalledProductsException {
+        ApplicationInstance instance;
         try {
-            ApplicationInstance applicationInstance = new ApplicationInstance(
+            ApplicationInstanceSearchCriteria criteria =
+                    new ApplicationInstanceSearchCriteria();
+            criteria.setVm(products.iterator().next().getVM());
+            criteria.setApplicationName(application.getApplication().getName());
+            instance = applicationInstanceDao.findUniqueByCriteria(criteria);
+            instance.setProducts(products);
+            instance.setApplication(application);
+        } catch (NotUniqueResultException e) {
+            instance = new ApplicationInstance(
                     application, products, Status.INSTALLED);
+        }
+        try {
+            validator.validateInstall(instance);
+            instance.setStatus(Status.INSTALLED);
             String recipe = recipeNamingGenerator
-                    .getInstallRecipe(applicationInstance);
+                    .getInstallRecipe(instance);
             callChef(application.getApplication().getName(), recipe, vm,
                     configuration);
-            return applicationInstanceDao.create(applicationInstance);
+            if (instance.getId() != null) {
+                instance = applicationInstanceDao.update(instance);
+            } else {
+                instance = applicationInstanceDao.create(instance);
+            }
+            return instance;
 
         } catch (InvalidEntityException e) {
             throw new SdcRuntimeException(
@@ -65,8 +94,9 @@ public class ApplicationInstanceManagerChefImpl extends
      */
     @Override
     public void uninstall(ApplicationInstance applicationInstance)
-            throws ChefExecutionException {
+            throws NodeExecutionException, FSMViolationException {
         try {
+            validator.validateUninstall(applicationInstance);
             String recipe = recipeNamingGenerator
                     .getUninstallRecipe(applicationInstance);
 
@@ -90,7 +120,9 @@ public class ApplicationInstanceManagerChefImpl extends
     @Override
     public ApplicationInstance configure(
             ApplicationInstance applicationInstance,
-            List<Attribute> configuration) throws ChefExecutionException {
+            List<Attribute> configuration) throws NodeExecutionException,
+            FSMViolationException{
+        validator.validateConfigure(applicationInstance);
         String recipe = recipeNamingGenerator
                 .getInstallRecipe(applicationInstance);
         // the application shall be installed over, at least, one product
@@ -109,17 +141,13 @@ public class ApplicationInstanceManagerChefImpl extends
     /**
      * {@inheritDoc}
      */
+    @UseCase(traceTo="UC_002.4", status="implemented")
     @Override
     public ApplicationInstance upgrade(ApplicationInstance applicationInstance,
-            ApplicationRelease newRelease) throws ChefExecutionException,
-            NotTransitableException {
-
-        List<ApplicationRelease> releases = applicationInstance
-                .getApplication().getTransitableReleases();
-
-        if (!releases.contains(newRelease)) {
-            throw new NotTransitableException();
-        }
+            ApplicationRelease newRelease) throws NodeExecutionException,
+            NotTransitableException, IncompatibleProductsException,
+            FSMViolationException {
+        validator.validateUpdate(applicationInstance, newRelease);
 
         try {
             VM vm = applicationInstance.getProducts().iterator().next().getVM();
@@ -186,4 +214,13 @@ public class ApplicationInstanceManagerChefImpl extends
             ApplicationInstanceDao applicationInstanceDao) {
         this.applicationInstanceDao = applicationInstanceDao;
     }
+
+    /**
+     * @param validator the validator to set
+     */
+    public void setValidator(ApplicationInstanceValidator validator) {
+        this.validator = validator;
+    }
+
+
 }

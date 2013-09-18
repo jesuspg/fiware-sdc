@@ -30,11 +30,20 @@ public class ProductInstance extends InstallableInstance
 
     @Embedded
     private VM vm;
+
     /**
      * <p>Constructor for ProductInstance.</p>
      */
     public ProductInstance() {
         super();
+    }
+
+    /**
+     * <p>Constructor for ProductInstance.</p>
+     * @param id the id
+     */
+    public ProductInstance(Long id) {
+       super(id);
     }
 
     /**

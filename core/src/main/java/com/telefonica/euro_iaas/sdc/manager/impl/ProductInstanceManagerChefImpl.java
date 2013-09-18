@@ -8,8 +8,12 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -21,6 +25,8 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
+import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
+import com.xmlsolutions.annotation.UseCase;
 
 /**
  * Implements ProductManager using Chef to do that.
@@ -28,29 +34,27 @@ import com.telefonica.euro_iaas.sdc.util.IpToVM;
  * @author Sergio Arroyo
  *
  */
+@UseCase(traceTo="UC_001", status="implemented")
 public class ProductInstanceManagerChefImpl extends
         BaseInstallableInstanceManager implements ProductInstanceManager {
 
     private ProductInstanceDao productInstanceDao;
     private IpToVM ip2vm;
+    private ProductInstanceValidator validator;
 
     private static Logger LOGGER = Logger.getLogger("ProductManagerChefImpl");
 
     /**
      * {@inheritDoc}
      */
+    @UseCase(traceTo="UC_001.4", status="implemented")
     @Override
     public ProductInstance upgrade(ProductInstance productInstance,
             ProductRelease productRelease) throws NotTransitableException,
-            ChefExecutionException {
-
-        List<ProductRelease> productReleases = productInstance.getProduct()
-                .getTransitableReleases();
-
-        if (!productReleases.contains(productRelease)) {
-            throw new NotTransitableException();
-        }
+            NodeExecutionException, FSMViolationException,
+            ApplicationIncompatibleException {
         try {
+            validator.validateUpdate(productInstance, productRelease);
             VM vm = productInstance.getVM();
 
             String backupRecipe = recipeNamingGenerator
@@ -87,8 +91,10 @@ public class ProductInstanceManagerChefImpl extends
      */
     @Override
     public ProductInstance configure(ProductInstance productInstance,
-            List<Attribute> configuration) throws ChefExecutionException {
+            List<Attribute> configuration) throws NodeExecutionException,
+            FSMViolationException {
 
+        validator.validateConfigure(productInstance);
         String recipe = recipeNamingGenerator.getInstallRecipe(
                 productInstance);
         try {
@@ -103,23 +109,44 @@ public class ProductInstanceManagerChefImpl extends
     /**
      * {@inheritDoc}
      */
+    @UseCase(traceTo="UC_001.1", status="implemented")
     @Override
     public ProductInstance install(VM vm, ProductRelease product,
-            List<Attribute> attributes) throws ChefExecutionException {
+            List<Attribute> attributes) throws NodeExecutionException,
+            AlreadyInstalledException {
         try {
             // we need the hostname + domain so if we haven't that information,
             // shall to get it.
             if (!vm.canWorkWithChef()) {
                 vm = ip2vm.getVm(vm.getIp());
             }
-            ProductInstance instance = new ProductInstance(product,
-                    Status.INSTALLED, vm);
+            //makes the validations
+            ProductInstance instance;
+            try {
+                ProductInstanceSearchCriteria criteria =
+                        new ProductInstanceSearchCriteria();
+                criteria.setVm(vm);
+                criteria.setProductName(product.getProduct().getName());
+                instance = productInstanceDao.findUniqueByCriteria(criteria);
+                instance.setProduct(product);
+            } catch (NotUniqueResultException e) {
+                instance = new ProductInstance(product,
+                        Status.INSTALLED, vm);
+            }
 
+            //now we have the productInstance so can validate the operation
+            validator.validateInstall(instance);
+            instance.setStatus(Status.INSTALLED);
             String installRecipe = recipeNamingGenerator
                     .getInstallRecipe(instance);
             callChef(product.getProduct().getName(), installRecipe, vm,
                     attributes);
-            return productInstanceDao.create(instance);
+            if (instance.getId() != null) {
+                instance = productInstanceDao.update(instance);
+            } else {
+                instance = productInstanceDao.create(instance);
+            }
+            return instance;
 
         } catch (CanNotCallChefException sce) {
             LOGGER.log(Level.SEVERE, sce.getMessage());
@@ -135,10 +162,15 @@ public class ProductInstanceManagerChefImpl extends
 
     /**
      * {@inheritDoc}
+     * @throws FSMViolationException
+     * @throws ApplicationInstalledException
      */
+    @UseCase(traceTo="UC_001.2", status="implemented")
     @Override
     public void uninstall(ProductInstance productInstance)
-        throws ChefExecutionException {
+        throws NodeExecutionException,
+        ApplicationInstalledException, FSMViolationException {
+        validator.validateUninstall(productInstance);
         // at least has one
         String uninstallRecipe = recipeNamingGenerator
                 .getUninstallRecipe(productInstance);
@@ -220,4 +252,13 @@ public class ProductInstanceManagerChefImpl extends
     public void setIp2vm(IpToVM ip2vm) {
         this.ip2vm = ip2vm;
     }
+
+    /**
+     * @param validator the validator to set
+     */
+    public void setValidator(ProductInstanceValidator validator) {
+        this.validator = validator;
+    }
+
+
 }

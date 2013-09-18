@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
@@ -44,20 +48,22 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws AlreadyInstalledException
      */
     @Override
     public ProductInstance install(ProductInstanceDto product)
-    throws ChefExecutionException {
+            throws NodeExecutionException, AlreadyInstalledException {
         try {
             Product p = productManager.load(product.getProduct().getProduct());
-            ProductRelease loadedProduct = productManager.load(
-                    p, product.getProduct().getVersion());
+            ProductRelease loadedProduct = productManager.load(p, product
+                    .getProduct().getVersion());
             List<Attribute> attributes = product.getAttributes();
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
             }
-            return productInstanceManager.install(
-                    product.getVm(), loadedProduct, attributes);
+            return productInstanceManager.install(product.getVm(),
+                    loadedProduct, attributes);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -67,16 +73,16 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(Long productId)
-    throws ChefExecutionException {
+    public void uninstall(Long productId) throws NodeExecutionException,
+            ApplicationInstalledException, FSMViolationException {
         try {
-            ProductInstance productInstance = productInstanceManager.load(productId);
+            ProductInstance productInstance = productInstanceManager
+                    .load(productId);
             productInstanceManager.uninstall(productInstance);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -84,7 +90,8 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     @Override
     public ProductInstance upgrade(Long id, String newVersion)
-    throws ChefExecutionException{
+            throws NotTransitableException, NodeExecutionException,
+            ApplicationIncompatibleException, FSMViolationException {
         ProductInstance productInstance;
         try {
             productInstance = productInstanceManager.load(id);
@@ -95,19 +102,17 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
         ProductRelease productRelease;
         try {
-            productRelease =
-                productManager.load(productInstance.getProduct().getProduct(),
-                        newVersion);
-            productInstance =
-                productInstanceManager.upgrade(productInstance, productRelease);
+            productRelease = productManager.load(productInstance.getProduct()
+                    .getProduct(), newVersion);
+            productInstance = productInstanceManager.upgrade(productInstance,
+                    productRelease);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(
                     "There is no productInstance with id " + id, e);
-        } catch (NotTransitableException nte)
-        {
+        } catch (NotTransitableException nte) {
             throw new SdcRuntimeException(
-                    "This upgrade requested is NOT allowed for " +
-                    "productInstance with id " + id, nte);
+                    "This upgrade requested is NOT allowed for "
+                            + "productInstance with id " + id, nte);
         }
         return productInstance;
     }
@@ -117,7 +122,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      */
     @Override
     public ProductInstance configure(Long id, Attributes arguments)
-    throws ChefExecutionException {
+            throws NodeExecutionException, FSMViolationException {
         ProductInstance product;
         try {
             product = productInstanceManager.load(id);
@@ -136,17 +141,15 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public List<ProductInstance> findAll(String hostname, String domain,
             String ip, Integer page, Integer pageSize, String orderBy,
             String orderType, Status status) {
-        ProductInstanceSearchCriteria criteria =
-            new ProductInstanceSearchCriteria();
+        ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
 
-        //the parameters are nullable
-        Boolean validHost = !StringUtils.isEmpty(ip) ||
-            (!StringUtils.isEmpty(domain) && !StringUtils.isEmpty(hostname));
+        // the parameters are nullable
+        Boolean validHost = !StringUtils.isEmpty(ip)
+                || (!StringUtils.isEmpty(domain) && !StringUtils
+                        .isEmpty(hostname));
         if (validHost) {
-            VM host = new VM(
-                    ip != null ? ip : "",
-                    hostname != null ? hostname : "",
-                    domain != null ? domain : "");
+            VM host = new VM(ip != null ? ip : "", hostname != null ? hostname
+                    : "", domain != null ? domain : "");
             criteria.setVM(host);
         }
         criteria.setStatus(status);

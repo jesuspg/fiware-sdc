@@ -5,13 +5,19 @@
     <artifactId>sdc-server-core</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-core</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
     </properties>
 
     <dependencies>
+        <!-- Webedav java client Sardine -->
+        <dependency>
+            <groupId>com.googlecode.sardine</groupId>
+            <artifactId>sardine</artifactId>
+            <version>146</version>
+        </dependency>
         <!-- Persistence -->
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -155,6 +161,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- TAR/ZIP DEPENDENCIES -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
         <!--/JERSEY DEPENDENCIES -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -162,9 +175,9 @@
             <version>1.6</version>
         </dependency>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
+            <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
-            <version>1.46</version>
+            <version>140</version>
         </dependency>
 
         <dependency>
@@ -172,6 +185,12 @@
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
             <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.xuse</groupId>
+            <artifactId>xuse-annotation-tool</artifactId>
+            <version>01.00.00-RC2</version>
         </dependency>
     </dependencies>
 
@@ -194,15 +213,17 @@
                 <version>2.8</version>
             </plugin>
 
-            <!-- <plugin> <groupId>com.soebes.maven.plugins.dmg</groupId> <artifactId>doxygen-maven-plugin</artifactId>
-                <version>1.0.1</version> <executions> <execution> <phase>site</phase> <goals> <goal>report</goal>
-                </goals> </execution> </executions> <configuration> <quiet>false</quiet> <projectname>SDC
-                Server Core</projectname> <projectnumber>1.0</projectnumber> <outputlanguage>spanish</outputlanguage>
-                <optimizeoutputjava>true</optimizeoutputjava> <extractall>true</extractall> <extractprivate>true</extractprivate>
-                <referencesrelation>true</referencesrelation> <input>src/main</input> <recursive>true</recursive>
-                <configurationFile>doxyfile.conf</configurationFile> <haveDot>true</haveDot> <callGraph>true</callGraph>
-                <callerGraph>true</callerGraph> <sourceBrowser>true</sourceBrowser> <generateHtml>true</generateHtml>
-                </configuration> </plugin> -->
+            <!-- <plugin> <groupId>com.soebes.maven.plugins.dmg</groupId>
+                <artifactId>doxygen-maven-plugin</artifactId> <version>1.0.1</version> <executions>
+                <execution> <phase>site</phase> <goals> <goal>report</goal> </goals> </execution>
+                </executions> <configuration> <quiet>false</quiet> <projectname>SDC Server
+                Core</projectname> <projectnumber>1.0</projectnumber> <outputlanguage>spanish</outputlanguage>
+                <optimizeoutputjava>true</optimizeoutputjava> <extractall>true</extractall>
+                <extractprivate>true</extractprivate> <referencesrelation>true</referencesrelation>
+                <input>src/main</input> <recursive>true</recursive> <configurationFile>doxyfile.conf</configurationFile>
+                <haveDot>true</haveDot> <callGraph>true</callGraph> <callerGraph>true</callerGraph>
+                <sourceBrowser>true</sourceBrowser> <generateHtml>true</generateHtml> </configuration>
+                </plugin> -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -274,8 +295,8 @@
                     </additionalparam>
                 </configuration>
             </plugin>
-            <!-- <plugin> <groupId>com.soebes.maven.plugins.dmg</groupId> <artifactId>doxygen-maven-plugin</artifactId>
-                <version>1.0.1</version> </plugin> -->
+            <!-- <plugin> <groupId>com.soebes.maven.plugins.dmg</groupId>
+                <artifactId>doxygen-maven-plugin</artifactId> <version>1.0.1</version> </plugin> -->
         </plugins>
     </reporting>
 
@@ -296,7 +317,31 @@
             <name>Public online Restlet repository</name>
             <url>http://maven.restlet.org</url>
         </repository>
+        <!-- WEBDAV JAVA CLIENT SARDINE -->
+        <repository>
+            <id>sardine-google-svn-repo</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <name>Sardine maven repo at Google Code</name>
+            <url>http://sardine.googlecode.com/svn/maven/</url>
+        </repository>
+
+        <repository>
+            <id>thirdparty</id>
+            <name>3rd party</name>
+            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+        </repository>
+
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>thirdparty</id>
+            <name>3rd party</name>
+            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <!-- ===================================== Distribution Management ==== -->
     <distributionManagement>
@@ -309,7 +354,7 @@
         <!--Don't want deploy snapshots -->
         <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
             <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <!-- Maquina donde se publica el site del proyecto -->
+                    <!-- Maquina donde se publica el site del proyecto -->
         <site>
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>

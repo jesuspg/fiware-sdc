@@ -8,22 +8,9 @@ Scope
 
   * We provides basic calls (install, uninstall, configure, etc.) but no combinations of them.
 
-  * There is no mechanism to manage the catalog (OS's, products or applications) (<<working to fix it>>).
-
   * AppConf implements its own  API, and isn't able to proccess standard formats like OVF or TCloud.
 
-  * Although it was though as a modular architecture based on four components,
-    this implementation is based in a single monolitic application.
-
-  * There is no mechanism to ensure the referential integrity.
-   (i.e a validate a product is installed in a running VM, or not uninstall a product
-   that is not installed, etc.). So the application could be in a unstable state
-   after a call (<<working to fix it>>).
-
   * SDC-Server only provides a Rest-API (but no web view, etc.).
-
-  * The server where SDC is installed shall be able to access throgh ssh as root
-    with no password to every node where we want to install a product or application (<<working to fix it>>).
 
   * SDC does not store configuration actions made on attributes .
     Question: Are we interested on storing all the configuration actions

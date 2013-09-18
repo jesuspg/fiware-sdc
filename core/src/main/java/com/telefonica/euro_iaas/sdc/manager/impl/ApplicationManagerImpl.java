@@ -15,7 +15,8 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriter
  * @author Sergio Arroyo
  *
  */
-public class ApplicationManagerImpl implements ApplicationManager {
+public class ApplicationManagerImpl extends BaseInstallableManager
+implements ApplicationManager {
 
     private ApplicationDao applicationDao;
     private ApplicationReleaseDao applicationReleaseDao;

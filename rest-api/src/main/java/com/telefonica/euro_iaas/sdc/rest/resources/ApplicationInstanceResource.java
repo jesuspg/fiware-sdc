@@ -14,7 +14,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
+import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
@@ -37,13 +41,20 @@ public interface ApplicationInstanceResource {
      *  be installed
      *
      * @return the installed application.
+     * @throws IncompatibleProductsException if the selected products are
+     * not compatible with the given application
+     * @throws AlreadyInstalledException if the application is running on the
+     *  system
+     * @throws NotInstalledProductsException if the needed products to install
+     *  the application are not installed
      */
     @POST
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     ApplicationInstance install(ApplicationInstanceDto application)
-    throws ChefExecutionException;
+    throws NodeExecutionException, AlreadyInstalledException,
+    IncompatibleProductsException, NotInstalledProductsException;
 
     /**
      * Uninstall a previously installed application.
@@ -55,7 +66,7 @@ public interface ApplicationInstanceResource {
     @Path("/{aId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void uninstall(@PathParam("aId") Long applicationId)
-    throws ChefExecutionException;
+    throws NodeExecutionException, FSMViolationException;
 
     /**
      * Configure the selected application.
@@ -73,7 +84,7 @@ public interface ApplicationInstanceResource {
     @Consumes(MediaType.APPLICATION_XML)
     ApplicationInstance configure(@PathParam("aId") Long id,
             Attributes arguments)
-    throws ChefExecutionException;
+    throws NodeExecutionException, FSMViolationException ;
 
 
     /**
@@ -92,7 +103,8 @@ public interface ApplicationInstanceResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ApplicationInstance upgrade(@PathParam("aId") Long id,
       @PathParam("newVersion") String version)
-    throws ChefExecutionException;
+    throws NodeExecutionException, IncompatibleProductsException,
+    FSMViolationException ;
 
     /**
      * Retrieve all ApplicationInstance that match with a given criteria.
@@ -123,7 +135,7 @@ public interface ApplicationInstanceResource {
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("orderType") String orderType,
-            @QueryParam("status") Status status);
+            @QueryParam("status") List<Status> status);
 
     /**
      * Retrieve the selected OSInstance.

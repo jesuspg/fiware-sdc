@@ -6,6 +6,18 @@ package com.telefonica.euro_iaas.sdc.util;
  * @author Sergio Arroyo
  */
 public interface SystemPropertiesProvider {
+
+	// CHEF PROPERTIES //
+    public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";
+    public final static String UPLOAD_RECIPES_SCRIPT = "uploadRecipesScript";
+    public final static String DELETE_RECIPES_SCRIPT = "deleteRecipesScript";
+
+    public final static String COPY_APP_FILES_FROM_SERVER_TO_NODE = "copyAppFilesFromServerToNode";
+    public final static String DEFAULT_APP_FILES_SOURCE_FOLDER = "defaultAppFilesSourceFolder";
+    public final static String DEFAULT_APP_FILES_DESTINATION_FOLDER = "defaultAppFilesDestinationFolder";
+
+    public final static String DEFAULT_HOST_DOMAIN = "defaultHostDomain";
+
     ////////// RECIPE TEMPLATES ///////////
     public final static String INSTALL_PRODUCT_RECIPE_TEMPLATE = "installProductRecipeTemplate";
     public final static String UNINSTALL_PRODUCT_RECIPE_TEMPLATE = "uninstallProductRecipeTemplate";
@@ -27,9 +39,14 @@ public interface SystemPropertiesProvider {
 
     public final static String CHEF_DATE_FORMAT = "chefDateFormat";
     public final static String CHEF_TIME_ZONE = "chefTimeZone";
-
+    
+    public final static String CHEF_DIRECTORY_COOKBOOK = "chefDirectoryCookbook";
     public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
-
+    
+    //WEBDAV
+    public final static String WEBDAV_BASE_URL = "webdavBaseUrl";
+    public final static String WEBDAV_USERNAME = "webdavUsername";
+    public final static String WEBDAV_PASSWD = "webdavPassword";
     /**
      * Get the property for a given key.
      *

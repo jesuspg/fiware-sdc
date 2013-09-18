@@ -55,5 +55,17 @@
               Use Chef's Rest API instead of scripts to call knife.'
             </action>
         </release>
+        <release version="1.1.0" date="2011-08-04"
+        description="Include validations on provisioning  use cases and begin
+        the catalog management">
+            <action dev="jmovilla" type="add">
+            Include ProductManagement functionality.
+            </action>
+            <action dev="sarroyo" type="update">
+             Defines the alternative flows in Provisioning use cases and implements
+             them.
+            </action>
+
+        </release>
     </body>
 </document>

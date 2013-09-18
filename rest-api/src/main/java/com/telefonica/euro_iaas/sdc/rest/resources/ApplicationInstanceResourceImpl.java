@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
+import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -64,7 +68,8 @@ public class ApplicationInstanceResourceImpl implements
      */
     @Override
     public ApplicationInstance install(ApplicationInstanceDto application)
-    throws ChefExecutionException {
+    throws NodeExecutionException, IncompatibleProductsException,
+    AlreadyInstalledException, NotInstalledProductsException {
         try {
             VM vm = application.getVm();
             if (!vm.canWorkWithChef()) {
@@ -73,21 +78,29 @@ public class ApplicationInstanceResourceImpl implements
 
             List<ProductInstance> productList =
                 new ArrayList<ProductInstance>();
-
             // get the product instances
             List<ReleaseDto> products = application.getProducts();
             if (products != null) {
-                ProductRelease product = null;
+                List<ProductRelease> notFoundProducts =
+                        new ArrayList<ProductRelease>();
                 ProductInstanceSearchCriteria criteria =
                     new ProductInstanceSearchCriteria();
-                criteria.setStatus(ProductInstance.Status.INSTALLED);
                 criteria.setVm(vm);
-                for (ReleaseDto app : products) {
-                    Product p = productManager.load(app.getProduct());
-                    product = productManager.load(p, app.getVersion());
+                for (ReleaseDto relDto : products) {
+                    Product p = productManager.load(relDto.getProduct());
+                    ProductRelease product = productManager.load(p, relDto.getVersion());
                     criteria.setProduct(product);
-                    productList.add(productInstanceManager
-                            .loadByCriteria(criteria));
+                    try {
+                        productList.add(productInstanceManager
+                                .loadByCriteria(criteria));
+                    } catch (NotUniqueResultException e) {
+                        notFoundProducts.add(product);
+                    } catch (EntityNotFoundException e) {
+                        notFoundProducts.add(product);
+                    }
+                }
+                if (!notFoundProducts.isEmpty()) {
+                    throw new NotInstalledProductsException(notFoundProducts);
                 }
             }
             Application app = applicationManager.load(
@@ -104,8 +117,6 @@ public class ApplicationInstanceResourceImpl implements
 
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
-        } catch (NotUniqueResultException e) {
-            throw new SdcRuntimeException(e);
         }
     }
 
@@ -113,7 +124,7 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(Long applicationId) throws ChefExecutionException {
+    public void uninstall(Long applicationId) throws NodeExecutionException, FSMViolationException {
         try {
 
             ApplicationInstance app =
@@ -129,7 +140,7 @@ public class ApplicationInstanceResourceImpl implements
      */
     @Override
     public ApplicationInstance configure(Long id, Attributes arguments)
-    throws ChefExecutionException{
+    throws NodeExecutionException, FSMViolationException{
         try {
             ApplicationInstance application = applicationInstanceManager.load(id);
             return applicationInstanceManager.configure(application, arguments);
@@ -143,7 +154,8 @@ public class ApplicationInstanceResourceImpl implements
      */
     @Override
     public ApplicationInstance upgrade(Long id, String version)
-            throws ChefExecutionException {
+            throws NodeExecutionException, IncompatibleProductsException,
+            FSMViolationException {
         try {
             ApplicationInstance instance =
                 applicationInstanceManager.load(id);
@@ -172,7 +184,7 @@ public class ApplicationInstanceResourceImpl implements
     @Override
     public List<ApplicationInstance> findAll(
             Integer page, Integer pageSize, String orderBy,
-            String orderType, Status status) {
+            String orderType, List<Status> status) {
         ApplicationInstanceSearchCriteria criteria =
             new ApplicationInstanceSearchCriteria();
 

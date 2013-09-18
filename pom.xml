@@ -6,12 +6,13 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
+
 
     <scm>
-        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.0.0/trunk</connection>
-        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.0.0/trunk</developerConnection>
-        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-1.0.0/Configurador_de_Aplicaciones</url>
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</developerConnection>
+        <url>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</url>
     </scm>
     <developers>
         <developer>
@@ -46,6 +47,7 @@
         <system>Jira</system>
         <url>https://jira.tid.es/browse/CLAUDIA</url>
     </issueManagement>
+
 
     <modules>
         <module>core</module>
@@ -91,6 +93,22 @@
             </plugin>
 
             <plugin>
+                <groupId>net.sourceforge.xuse</groupId>
+                <artifactId>maven-xuse-m2-plugin</artifactId>
+                <version>01.00.00-RC2</version>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <id>gendocs</id>
+                        <goals>
+                            <goal>xuse</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
@@ -100,27 +118,11 @@
                     <goals>deploy site-deploy</goals>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>./src/build/assembly.xml</descriptor>
-                    </descriptors>
-                    <finalName>${artifactId}-dist</finalName>
-                    <outputDirectory>target/site/downloads</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>assembly</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        -->
+            <!-- <plugin> <artifactId>maven-assembly-plugin</artifactId> <version>2.2.1</version>
+                <configuration> <descriptors> <descriptor>./src/build/assembly.xml</descriptor> </descriptors>
+                <finalName>${artifactId}-dist</finalName> <outputDirectory>target/site/downloads</outputDirectory>
+                </configuration> <executions> <execution> <phase>site</phase> <goals> <goal>assembly</goal>
+                </goals> </execution> </executions> </plugin> -->
         </plugins>
     </build>
 
@@ -167,9 +169,21 @@
         </plugins>
     </reporting>
 
-    <!--
-        ===================================== Distribution Management ====
-    -->
+    <repositories>
+        <repository>
+            <id>thirdparty</id>
+            <name>3rd party</name>
+            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>thirdparty</id>
+            <name>3rd party</name>
+            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <!-- ===================================== Distribution Management ==== -->
     <distributionManagement>
         <!-- Repositorio para hacer el deploy de las releases -->
         <repository>
@@ -178,11 +192,8 @@
             <url>${repoMavenUrl}</url>
         </repository>
         <!--Don't want deploy snapshots -->
-        <!--
-            <snapshotRepository> <id>${repoMavenSnapshotId}</id>
-            <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository>
-        -->
+        <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
+            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
         <!-- Maquina donde se publica el site del proyecto -->
         <site>
             <id>${repoSiteId}</id>

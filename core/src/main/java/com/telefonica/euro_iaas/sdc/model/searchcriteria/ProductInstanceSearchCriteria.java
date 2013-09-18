@@ -29,6 +29,9 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * The product.
      */
     private ProductRelease product;
+
+    private String productName;
+
     /**
      * Default constructor
      */
@@ -147,10 +150,25 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
         this.product = product;
     }
 
+
+    /**
+     * @return the productName
+     */
+    public String getProductName() {
+        return productName;
+    }
+
+    /**
+     * @param productName the productName to set
+     */
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     @Override
     public String toString() {
         return "ProductInstanceSearchCriteria [vm=" + vm + ", status=" + status
-                + ", product=" + product + "]";
+                + ", product=" + product + ", productName=" + productName + "]";
     }
 
 

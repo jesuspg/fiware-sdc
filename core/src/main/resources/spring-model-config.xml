@@ -21,26 +21,36 @@
     <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="validator" ref="productInstanceValidator"/>
         <property name="ip2vm" ref="ip2vm"/>
     </bean>
 
     <bean id="applicationInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl">
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+        <property name="validator" ref="applicationInstanceValidator"/>
     </bean>
 
     <!-- CATALOG MANAGER -->
 
-    <bean id="productManager" lazy-init="true"
+    <bean id="productManager" lazy-init="true" parent="baseInstallableManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
+        <property name="osDao" ref="osDao"/>
         <property name="productDao" ref="productDao"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
     </bean>
 
-    <bean id="applicationManager" lazy-init="true"
+    <bean id="applicationManager" lazy-init="true" parent="baseInstallableManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationManagerImpl">
         <property name="applicationDao" ref="applicationDao"/>
         <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
+    </bean>
+
+     <bean id="baseInstallableManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
+        <property name="commandExecutor" ref="commandExecutor"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="webDavDao" ref="webDavDao"/>
     </bean>
 
     <!-- UTILS CLASSES -->
@@ -70,6 +80,12 @@
         <property name="client" ref="restClient"/>
     </bean>
 
+    <bean id="webDavDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.WebDavDaoImpl">
+          <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+          <property name="client" ref="restClient"/>
+    </bean>
+
     <bean id="sdcClientUtils" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
                 <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
@@ -80,5 +96,25 @@
         class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
                 <property name="sdcClientUtils" ref="sdcClientUtils"/>
     </bean>
+
+    <!-- ===========
+    == VALIDATORS ==
+    ================ -->
+
+    <bean id="fsmValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.FSMValidatorImpl">
+    </bean>
+
+    <bean id="productInstanceValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidatorImpl">
+            <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+            <property name="fsmValidator" ref="fsmValidator"/>
+    </bean>
+    <bean id="applicationInstanceValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.ApplicationInstanceValidatorImpl">
+            <property name="fsmValidator" ref="fsmValidator"/>
+    </bean>
+
+
 
 </beans>

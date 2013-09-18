@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
-import com.telefonica.euro_iaas.sdc.exception.ChefExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -42,7 +42,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      * {@inheritDoc}
      */
     @Override
-    public void execute(VM vm) throws ChefExecutionException {
+    public void execute(VM vm) throws NodeExecutionException {
         try {
             String url = MessageFormat.format(
                     propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE),
@@ -50,7 +50,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
             WebResource webResource = client.resource(url);
             webResource.accept(MediaType.APPLICATION_XML).post();
         } catch (UniformInterfaceException e) {
-            throw new ChefExecutionException(e);
+            throw new NodeExecutionException(e);
         }
     }
 

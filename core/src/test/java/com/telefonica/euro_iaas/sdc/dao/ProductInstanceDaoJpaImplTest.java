@@ -2,6 +2,7 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -99,6 +100,22 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         instances = productInstanceDao.findByCriteria(criteria);
         assertEquals(1, instances.size());
         assertEquals(pi1, instances.get(0));
+
+        criteria.setProductName("asd");
+        instances = productInstanceDao.findByCriteria(criteria);
+        assertEquals(0, instances.size());
+        try {
+           productInstanceDao.findUniqueByCriteria(criteria);
+           fail("NotUniqueResultException expected");
+        } catch (NotUniqueResultException e) {
+            //it's ok, exception expected
+        }
+
+        criteria.setProductName(PRODUCT_NAME);
+        instances = productInstanceDao.findByCriteria(criteria);
+        assertEquals(1, instances.size());
+        assertEquals(pi1, instances.get(0));
+        assertEquals(pi1, productInstanceDao.findUniqueByCriteria(criteria));
     }
 
     /**

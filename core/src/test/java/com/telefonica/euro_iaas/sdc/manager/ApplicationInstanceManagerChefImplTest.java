@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
@@ -29,9 +30,11 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
 import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.euro_iaas.sdc.validation.ApplicationInstanceValidator;
 
 public class ApplicationInstanceManagerChefImplTest{
 
@@ -40,6 +43,7 @@ public class ApplicationInstanceManagerChefImplTest{
     private RecipeNamingGenerator recipeNamingGenerator;
     private ChefNodeDao chefNodeDao;
     private SDCClientUtils sdcClientUtils;
+    private ApplicationInstanceValidator aiValidator;
 
 
     VM vm;
@@ -85,6 +89,9 @@ public class ApplicationInstanceManagerChefImplTest{
         applicationInstanceDao = mock(ApplicationInstanceDao.class);
         when(applicationInstanceDao.create(Mockito
            .any(ApplicationInstance.class))).thenReturn(applicationInstance);
+        when(applicationInstanceDao.findUniqueByCriteria(Mockito
+                .any(ApplicationInstanceSearchCriteria.class)))
+                .thenThrow(new NotUniqueResultException());
 
         chefNodeDao = mock(ChefNodeDao.class);
         when(chefNodeDao.loadNode(vm))
@@ -92,6 +99,7 @@ public class ApplicationInstanceManagerChefImplTest{
         when(chefNodeDao.updateNode((ChefNode)anyObject()))
         .thenReturn(new ChefNode());
 
+        aiValidator = mock(ApplicationInstanceValidator.class);
     }
 
     /**
@@ -107,6 +115,7 @@ public class ApplicationInstanceManagerChefImplTest{
         manager.setRecipeNamingGenerator(recipeNamingGenerator);
         manager.setChefNodeDao(chefNodeDao);
         manager.setSdcClientUtils(sdcClientUtils);
+        manager.setValidator(aiValidator);
         // execution
         ApplicationInstance installedApp = manager.install(vm, products,
                 appRelease, new ArrayList<Attribute>());
@@ -125,6 +134,9 @@ public class ApplicationInstanceManagerChefImplTest{
         verify(chefNodeDao, times(2)).loadNode(vm);
         verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());
         verify(sdcClientUtils, times(2)).execute(vm);
+        verify(aiValidator, times(1)).validateInstall(
+                Mockito.any(ApplicationInstance.class));
+
 
     }
 }
