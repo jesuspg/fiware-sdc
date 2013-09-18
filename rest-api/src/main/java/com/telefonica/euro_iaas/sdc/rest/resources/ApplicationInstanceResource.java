@@ -7,6 +7,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 
 /**
  * Provides a rest api to works with ApplicationInstances
@@ -40,7 +42,7 @@ public interface ApplicationInstanceResource {
      * @return the installed application.
      */
     @POST
-    @Path("/action/install")
+    @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     ApplicationInstance install(@FormParam("hostname") String hostname,
@@ -55,9 +57,26 @@ public interface ApplicationInstanceResource {
      *            the candidate to uninstall
      */
     @DELETE
-    @Path("/{aId}/action/uninstall")
+    @Path("/{aId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void uninstall(@PathParam("aId") Long applicationId);
+
+    /**
+     * Configure the selected application.
+     *
+     * @param id
+     *            the application instance id
+     * @param arguments
+     *            the configuration properties
+     *
+     * @return the configured application.
+     */
+    @PUT
+    @Path("/{aId}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes(MediaType.APPLICATION_XML)
+    ApplicationInstance configure(@PathParam("aId") Long id,
+            Attributes arguments);
 
     /**
      * Retrieve all ApplicationInstance that match with a given criteria.

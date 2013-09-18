@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import com.telefonica.euro_iaas.sdc.model.Image;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.OSInstance;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.SOSearchCriteria;
@@ -52,7 +54,11 @@ public class ImageManagerImpl implements ImageManager {
             Image image = new Image();
             image.setSo(soInstance);
             image.setCustomer(customer);
-            image.setApps(productInstanceManager.install(vm, products));
+            List<ProductInstance> instances = new ArrayList<ProductInstance>();
+            for (Product product : products) {
+                instances.add(productInstanceManager.install(vm, product));
+            }
+            image.setApps(instances);
 
             LOGGER.log(Level.INFO, " The Products has been successfully "
                     + "installed  ");

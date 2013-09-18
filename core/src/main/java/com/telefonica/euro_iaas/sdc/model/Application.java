@@ -1,14 +1,23 @@
 package com.telefonica.euro_iaas.sdc.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Defines the catalog of applications available in the system. An application
@@ -17,13 +26,17 @@ import javax.persistence.Version;
  * @author Sergio Arroyo
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @XmlTransient
     private Long id;
 
     @SuppressWarnings("unused")
     @Version
+    @XmlTransient
     private Long v;
 
     @Column(unique=true, nullable=false, length=256)
@@ -32,6 +45,9 @@ public class Application {
     private String description;
     @ManyToMany
     private List<Product> supportedProducts;
+
+    @OneToMany(cascade=CascadeType.ALL)
+    private List<Attribute> attributes;
 
     private String type;
 
@@ -103,7 +119,6 @@ public class Application {
         this.supportedProducts = supportedProducts;
     }
 
-
     /**
      * @return the type
      */
@@ -116,6 +131,42 @@ public class Application {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+    /**
+     * Add a new attribute.
+     *
+     * @param attribute the attribute
+     */
+    public void addAttribute(Attribute attribute) {
+        if (attributes == null) {
+            attributes = new ArrayList<Attribute>();
+        }
+        attributes.add(attribute);
+    }
+
+    /**
+     * @return the attributes as a Map
+     */
+    public Map<String, String> getMapAttributes() {
+        Map<String, String> atts = new HashMap<String, String>();
+        for (Attribute att : attributes) {
+            atts.put(att.getKey(), att.getValue());
+        }
+        return atts;
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
@@ -39,6 +40,15 @@ public interface ApplicationInstanceManager {
      *            the candidate to uninstall
      */
     void uninstall(ApplicationInstance applicationInstance);
+
+    /**
+     * Configure an installed product
+     * @param applicationInstance the installed product to configure
+     * @param configuration the configuration parameters.
+     * @return the configured application.
+     */
+    ApplicationInstance configure(ApplicationInstance applicationInstance,
+            List<Attribute> configuration);
 
     /**
      * Find the ApplicationInstance using the given id.

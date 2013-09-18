@@ -1,16 +1,24 @@
 # Where the various parts of tomcat6 are
-case platform
-when "centos"
-  set[:tomcat][:start]           = "/opt/apache-tomcat-7.0.12/bin/catalina.sh restart"  
-  set[:tomcat][:webapp_base_dir] = "/opt/apache-tomcat-7.0.12/webapp/"
-  set[:tomcat][:webapp_xml_dir]  = "/opt/apache-tomcat-7.0.12/conf/Catalina/localhost/"
-  set[:tomcat][:port]            = 8080
-  set[:tomcat][:ssl_port]        = 8433
-else
-  set[:tomcat][:start]           = "/opt/apache-tomcat-7.0.12/bin/catalina.sh restart"  
-  set[:tomcat][:webapp_base_dir] = "/opt/apache-tomcat-7.0.12/webapp/"
-  set[:tomcat][:port]            = 8080
-  set[:tomcat][:ssl_port]        = 8433
-end
+# General settings
 
-set_unless[:tomcat][:version]          = "7.0.12"
+#Apache Home
+default[:war][:tomcat_home] = "/opt/apache-tomcat-7.0.14"
+
+#SDC install home.
+default[:war][:application_context] = "sdc"
+default[:war][:driver_class_name] = "org.postgresql.Driver"
+default[:war][:sdc_install_home] = "/opt/sdc/app/war/sdc/install"
+default[:war][:sdc_uninstall_home] = "/opt/sdc/app/war/sdc/uninstall"
+default[:war][:sdc_home] = "/opt/sdc/app/war/sdc"
+default[:war][:sdc_home_scripts] = "/opt/sdc/scripts"
+default[:war][:sdc_war_name] = "sdc-server-rest-api.war"
+
+#Postgresql attributes
+#Postgresql url
+default[:war][:postgresql_url] = "jdbc:postgresql://localhost:5432/sdc"
+#User postgresql is listening
+default[:war][:postgresql_db_user] = "postgres"
+#Password postgresql is listening
+default[:war][:postgresql_db_password] = "postgres"
+#Postgresql url
+default[:war][:postgresql_url] = "jdbc:postgresql://localhost:5432/sdc"

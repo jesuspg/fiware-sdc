@@ -1,6 +1,5 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
@@ -17,6 +16,7 @@ import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 
@@ -40,17 +40,12 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductInstance> install(String hostname, String domain,
-            String ip, List<String> products) {
+    public ProductInstance install(String hostname, String domain,
+            String ip, String product) {
         try {
-            List<Product> productList = new ArrayList<Product>();
-            if(products != null) {
-                for(String app : products) {
-                    productList.add(productDao.load(app));
-                }
-            }
+            Product loadedProduct = productDao.load(product);
             return productInstanceManager.install(
-                    new VM(ip, hostname, domain), productList);
+                    new VM(ip, hostname, domain), loadedProduct);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -67,6 +62,22 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInstance configure(Long id, Attributes arguments) {
+        ProductInstance product;
+        try {
+            product = productInstanceManager.load(id);
+        } catch (EntityNotFoundException e) {
+            throw new SdcRuntimeException(
+                    "There is no productInstance with id " + id, e);
+        }
+        productInstanceManager.configure(product, arguments);
+        return product;
     }
 
     /**

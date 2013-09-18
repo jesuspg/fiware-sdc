@@ -56,4 +56,33 @@ User Stories
      conflict.
 
 
+* 0.1.2 Version
+
+** Configure Products
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-486}jira entry}}
+
+*** Test Criteria
+
+  *  Check the product is previously installed (i.e accessing via HTTP for Apache2 or Tomcat).
+
+  *  Check the attributes we can configure and it descriptions.
+
+  *  Configure the product providing the configuration parameters.
+
+  *  Check the updated parameters are changed.
+
+** Configure Application
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-502}jira entry}}
+
+*** Test Criteria
+
+  *  Check the application is previously installed (i.e accessing via HTTP for Apache2 or Tomcat).
+
+  *  Check the attributes we can configure and it descriptions.
+
+  *  Configure the application providing the configuration parameters.
+
+  *  Check the updated parameters are changed.
 

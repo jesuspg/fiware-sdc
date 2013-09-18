@@ -23,6 +23,7 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
@@ -60,7 +61,7 @@ public class ApplicationInstanceResourceImpl implements
             String ip, List<String> products, String appname) {
         try {
             VM vm;
-            if (!ip.isEmpty()) {
+            if (hostname.isEmpty() || domain.isEmpty()) {
                 vm = ip2vm.getVm(ip);
             } else {
                 vm = new VM(ip, hostname, domain);
@@ -113,6 +114,22 @@ public class ApplicationInstanceResourceImpl implements
             throw new SdcRuntimeException(e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance configure(Long id, Attributes arguments) {
+        try {
+            ApplicationInstanceManager manager =
+                applicationInstanceManagerFactory.getInstance();
+            ApplicationInstance application = manager.load(id);
+            return manager.configure(application, arguments);
+        } catch (EntityNotFoundException e) {
+            throw new SdcRuntimeException(e);
+        }
+    }
+
 
     /**
      * {@inheritDoc}

@@ -3,10 +3,10 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNINSTALL_RECIPE_TEMPLATE;
 
+import java.io.File;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,12 +20,12 @@ import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.AbstractShellCommand;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
 
 /**
@@ -34,7 +34,8 @@ import com.telefonica.euro_iaas.sdc.util.IpToVM;
  * @author Sergio Arroyo
  *
  */
-public class ProductInstanceManagerChefImpl extends AbstractShellCommand
+public class ProductInstanceManagerChefImpl
+        extends BaseInstallableInstanceManager
         implements ProductInstanceManager {
 
     private ProductInstanceDao productInstanceDao;
@@ -47,8 +48,25 @@ public class ProductInstanceManagerChefImpl extends AbstractShellCommand
      */
     @Override
     public ProductInstance configure(ProductInstance productInstance,
-            Map<String, String> configuration) {
-        throw new IllegalStateException();
+            List<Attribute> configuration) {
+
+        String filename = "role-"  + productInstance.getProduct().getName()
+        + new Date().getTime();
+
+        String populatedRole = populateRoleTemplate(productInstance.getVM(),
+                productInstance.getProduct().getName(), configuration, filename,
+                productInstance.getProduct().getName());
+
+        File file = createRoleFile(populatedRole, filename);
+        try {
+            updateAttributes(filename, file.getAbsolutePath(),
+                    productInstance.getVM());
+
+        } catch (ShellCommandException e) {
+            throw new SdcRuntimeException(e);
+        }
+
+        return productInstance;
         // don't want use this method yet
     }
 
@@ -56,40 +74,27 @@ public class ProductInstanceManagerChefImpl extends AbstractShellCommand
      * {@inheritDoc}
      */
     @Override
-    public List<ProductInstance> install(VM vm, List<Product> products) {
+    public ProductInstance install(VM vm, Product product) {
         try {
             //we need the hostname + domain so if we haven't that information,
             // shall to get it.
             if (!vm.canWorkWithChef()) {
                 vm = ip2vm.getVm(vm.getIp());
             }
-
             String installTemplate = propertiesProvider
             .getProperty(INSTALL_RECIPE_TEMPLATE);
 
-            List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
-            for (Product product : products) {
-                ProductInstance productInstance;
-                String recipe = MessageFormat.format(installTemplate, product
-                        .getName());
+            String recipe = MessageFormat.format(installTemplate, product
+                    .getName());
                 // tell Chef assign the product installation to a client
-                assignRecipes(vm, recipe);
-                productInstance = productInstanceDao
-                        .create(new ProductInstance(product, Status.INSTALLED, vm));
-                productInstances.add(productInstance);
-            }
-            // tell Chef the assigned recipes shall be installed:
-            LOGGER.log(Level.INFO, "Installing products in Host" + vm);
+
+            assignRecipes(vm, recipe);
             executeRecipes(vm);
+            unassignRecipes(vm, recipe);
 
-            //unassign the recipes
-            for (Product product : products) {
-                String recipe = MessageFormat.format(installTemplate, product
-                        .getName());
-                unassignRecipes(vm, recipe);
-            }
+            return productInstanceDao.create(
+                    new ProductInstance(product, Status.INSTALLED, vm));
 
-            return productInstances;
         } catch (ShellCommandException sce) {
             LOGGER.log(Level.SEVERE, sce.getMessage());
             throw new SdcRuntimeException(sce);

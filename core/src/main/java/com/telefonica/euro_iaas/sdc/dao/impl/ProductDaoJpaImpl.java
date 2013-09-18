@@ -2,10 +2,14 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 /**
  * JPA implementation for ApplicationDao.
  *
@@ -25,6 +29,17 @@ public class ProductDaoJpaImpl extends AbstractBaseDao<Product, String>
     @Override
     public Product load(String name) throws EntityNotFoundException {
         return super.loadByField(Product.class, "name", name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Product> findByCriteria(ProductSearchCriteria criteria) {
+        Session session = (Session) getEntityManager().getDelegate();
+        Criteria baseCriteria = session.createCriteria(Product.class);
+        return setOptionalPagination(criteria, baseCriteria).list();
     }
 
 }

@@ -1,10 +1,10 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
 import java.util.List;
-import java.util.Map;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -21,11 +21,11 @@ public interface ProductInstanceManager {
     /**
      * Install a list of products in a given vm.
      * @param vm the vm where  instance will be running in
-     * @param products the list of products to install
+     * @param product the product to install
      *
-     * @return the list of installed products.
+     * @return the of installed product.
      */
-    List<ProductInstance> install(VM vm, List<Product> products);
+    ProductInstance install(VM vm, Product product);
 
     /**
      * Configure an installed product
@@ -34,7 +34,7 @@ public interface ProductInstanceManager {
      * @return the configured product.
      */
     ProductInstance configure(ProductInstance productInstance,
-            Map<String, String> configuration);
+            List<Attribute> configuration);
 
     /**
      * Uninstall a previously installed product.

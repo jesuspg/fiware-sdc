@@ -4,8 +4,10 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL_APP_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNINSTALL_APP_RECIPE_TEMPLATE;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,11 +21,11 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.AbstractShellCommand;
 
 /**
  * Chef based ApplicationInstanceManager implementation.
@@ -31,27 +33,11 @@ import com.telefonica.euro_iaas.sdc.util.AbstractShellCommand;
  * @author Sergio Arroyo
  *
  */
-public class ApplicationInstanceManagerChefImpl extends AbstractShellCommand
+public class ApplicationInstanceManagerChefImpl
+    extends BaseInstallableInstanceManager
         implements ApplicationInstanceManager {
 
     private ApplicationInstanceDao applicationInstanceDao;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ApplicationInstance> findAll() {
-        return applicationInstanceDao.findAll();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ApplicationInstance> findByCriteria(
-            ApplicationInstanceSearchCriteria criteria) {
-        return applicationInstanceDao.findByCriteria(criteria);
-    }
 
     /**
      * {@inheritDoc}
@@ -85,14 +71,6 @@ public class ApplicationInstanceManagerChefImpl extends AbstractShellCommand
      * {@inheritDoc}
      */
     @Override
-    public ApplicationInstance load(Long id) throws EntityNotFoundException {
-        return applicationInstanceDao.load(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void uninstall(ApplicationInstance applicationInstance) {
         try {
             String recipe = getUninstallRecipe(applicationInstance.getProducts(),
@@ -112,6 +90,62 @@ public class ApplicationInstanceManagerChefImpl extends AbstractShellCommand
         } catch (ShellCommandException e) {
             throw new SdcRuntimeException("Can not exectue the script", e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance configure(
+            ApplicationInstance applicationInstance,
+            List<Attribute> configuration) {
+        String filename = "role-"  + getBaseRecipe("{0}{1}{2}",
+                applicationInstance.getProducts(),
+                applicationInstance.getApplication()) + new Date().getTime();
+        String recipe = getBaseRecipe(
+                propertiesProvider.getProperty(INSTALL_APP_RECIPE_TEMPLATE),
+                applicationInstance.getProducts(),
+                applicationInstance.getApplication());
+
+        //the application shall be installed over, at least, one product
+        VM vm = applicationInstance.getProducts().get(0).getVM();
+
+        String populatedRole = populateRoleTemplate(vm, recipe, configuration,
+                filename, applicationInstance.getApplication().getType());
+        File file = createRoleFile(populatedRole, filename);
+        try {
+            updateAttributes(filename, file.getAbsolutePath(), vm);
+
+        } catch (ShellCommandException e) {
+            throw new SdcRuntimeException(e);
+        }
+
+        return applicationInstance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance load(Long id) throws EntityNotFoundException {
+        return applicationInstanceDao.load(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ApplicationInstance> findAll() {
+        return applicationInstanceDao.findAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ApplicationInstance> findByCriteria(
+            ApplicationInstanceSearchCriteria criteria) {
+        return applicationInstanceDao.findByCriteria(criteria);
     }
 
     /**
