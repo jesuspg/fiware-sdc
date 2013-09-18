@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+        default-autowire="no">
+
+    <bean id="productDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ProductDaoJpaImpl"/>
+    <bean id="productInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
+    <bean id="applicationDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationDaoJpaImpl"/>
+    <bean id="applicationInstance" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationInstanceDaoJpaImpl"/>
+    <bean id="customerDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.CustomerDaoJpaImpl"/>
+    <bean id="soDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.SODaoJpaImpl"/>
+    <bean id="soInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.SOInstanceDaoJpaImpl"/>
+    <bean id="imageDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ImageDaoJpaImpl"/>
+
+
+</beans>

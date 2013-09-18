@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.telefonica.euro_iass</groupId>
+    <artifactId>sdc-server</artifactId>
+    <packaging>pom</packaging>
+    <name>sdc-server</name>
+    <version>0.1.0</version>
+
+    <scm>
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-0.1.0/trunk</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-0.1.0/trunk</developerConnection>
+        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-0.1.0/Configurador_de_Aplicaciones</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Cristian Jaramillo</name>
+            <timezone>+1</timezone>
+            <id>cjc</id>
+            <roles>
+                <role>soft. developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Jesus Movilla</name>
+            <timezone>+1</timezone>
+            <id>jmms392</id>
+            <roles>
+                <role>soft. developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Sergio Arroyo</name>
+            <email>sergio.arroyo@tic.alten.es</email>
+            <timezone>+1</timezone>
+            <id>sa245</id>
+            <roles>
+                <role>soft. developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+
+    <issueManagement>
+        <system>Jira</system>
+        <url>https://jira.tid.es/browse/CLAUDIA</url>
+    </issueManagement>
+
+    <modules>
+        <module>core</module>
+        <module>rest-api</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-subprojects-sites</id>
+                        <phase>site</phase>
+                        <configuration>
+                            <tasks>
+                                <!-- Copy NVOTB Core site -->
+                                <mkdir dir="./target/site/core-site" />
+                                <copy todir="./target/site/core-site">
+                                    <fileset dir="./core/target/site/" />
+                                </copy>
+                                <mkdir dir="./target/site/rest-api" />
+                                <copy todir="./target/site/rest-api">
+                                    <fileset dir="./rest-api/target/site/" />
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <scmCommentPrefix>CLAUDIA-1 SDC server released</scmCommentPrefix>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <generateJiraAnnouncement>false</generateJiraAnnouncement>
+                    <goals>deploy site-deploy</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.4</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>cim</report>
+                            <report>scm</report>
+                            <report>mailing-list</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>dependency-convergence</report>
+                            <report>dependency-management</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <dependencyLocationsEnabled>
+                        false
+                    </dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <!--
+        ===================================== Distribution Management ====
+    -->
+    <distributionManagement>
+        <!-- Repositorio para hacer el deploy de las releases -->
+        <repository>
+            <id>${repoMavenId}</id>
+            <name>${repoMavenName}</name>
+            <url>${repoMavenUrl}</url>
+        </repository>
+        <!--Don't want deploy snapshots -->
+        <!--
+            <snapshotRepository> <id>${repoMavenSnapshotId}</id>
+            <name>${repoMavenSnapshotName}</name>
+            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository>
+        -->
+        <!-- Maquina donde se publica el site del proyecto -->
+        <site>
+            <id>${repoSiteId}</id>
+            <name>${repoSiteName}</name>
+            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
+               </url>
+        </site>
+    </distributionManagement>
+</project>

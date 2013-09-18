@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="SCD-Server">
+    <bannerLeft>
+        <name>SCD Server</name>
+        <src>img/logo.png</src>
+        <href>index.html</href>
+    </bannerLeft>
+    <bannerRight>
+        <name>TID</name>
+        <src>http://www.crandsustainability.telefonica.com/includes/css/images/lgo_telefonica_main.gif</src>
+        <href>http://www.tid.es</href>
+    </bannerRight>
+
+    <publishDate format="dd MMM yyyy" position="left" />
+    <version position="left" />
+
+    <body>
+        <menu name="Documentation">
+            <item name="Index" href="index.html" />
+            <item name="Installation" href="installation.html"/>
+            <item name="Troubleshooting" ref="troubleshooting.apt"/>
+        </menu>
+
+        <menu name="Downloads">
+            <item name="Downloads" href="downloads.html" />
+        </menu>
+
+        <menu name="Development">
+            <item name="Views" href="views.html" />
+            <item name="User Stories" href="user-stories.html" />
+        </menu>
+
+        <menu name="Modules">
+            <item name="Core"
+                  href="core-site/project-reports.html"/>
+            <item name="Rest API Site"
+                  href="rest-api/project-reports.html"/>
+        </menu>
+
+        ${reports}
+
+    </body>
+</project>

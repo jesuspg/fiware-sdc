@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-autowire="no">
+
+    <bean id="imageManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.ImageManagerImpl">
+        <property name="soInstanceDao" ref="soInstanceDao"/>
+        <property name="soDao" ref="soDao"/>
+        <property name="productDao" ref="productDao"/>
+        <property name="imageDao" ref="imageDao"></property>
+        <property name="appDeployer" ref="appDeployer"/>
+        <property name="soDeployer" ref="soDeployer"/>
+        <property name="soStatusChecker" ref="soStatusChecker"/>
+    </bean>
+
+
+    <bean id="appDeployer" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.AppDeployerChefImpl">
+    </bean>
+
+    <bean id="soDeployer" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.SODeployerCristianToolsImpl">
+    </bean>
+
+    <bean id="soStatusChecker" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.SOStatusCheckerImpl">
+    </bean>
+
+</beans>

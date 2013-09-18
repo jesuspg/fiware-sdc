@@ -1,0 +1,13 @@
+User Stories
+
+* Create an Image with installed products
+
+[img/us/CreateImageWithProducts.png] Activity diagram
+
+** Test Criteria
+
+  The user shall be able to select some products from a web form (for a given OS)
+  and the app-conf shall generate an image file accessible through webdav.
+
+  <<<Note:for this version is only needed getting the image file but is not important,
+   get the execution trace, etc.  >>>
