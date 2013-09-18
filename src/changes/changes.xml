@@ -6,11 +6,24 @@
         <release version="0.1.0" date="2011-05-11"
             description="Versión inicial del proyecto">
             <action dev="sarroyo" type="add">
-                Versión inicial del proyecto en la que se añade la funcionalidad
-                básica para desplegar un instalable en un host.
-                Ver el roadmap de Jira para más información.
+                Initial version with basic functionallity to deploy an os in a
+                VM and generate an image with some installed products.
             </action>
         </release>
-
+        <release version="0.1.1" date="2011-06-10"
+            description="Versión inicial del proyecto">
+            <action dev="sarroyo" type="add">
+            Added uninstall product functionallity ()
+            (see https://jira.tid.es/browse/CLAUDIA-275 for more information)
+            </action>
+            <action dev="sarroyo" type="add">
+            Added install application functionallity
+            (see https://jira.tid.es/browse/CLAUDIA-197 for more information)
+            </action>
+            <action dev="sarroyo" type="add">
+            Added uninstall application functionallity
+            (see https://jira.tid.es/browse/CLAUDIA-484 for more information)
+            </action>
+        </release>
     </body>
 </document>

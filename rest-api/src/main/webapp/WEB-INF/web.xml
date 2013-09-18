@@ -59,13 +59,25 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
 
     <!-- BOOTSTRAP ACTIONS -->
+    <!-- Init the db with some "fake" data...Delete this when preconditions
+     are implemented -->
     <listener>
         <listener-class>
             com.telefonica.euro_iaas.sdc.bootstrap.InitDbBootstrap
         </listener-class>
     </listener>
-
-    <!-- SECURITY -->
+    <!-- init the properties -->
+    <listener>
+        <listener-class>
+            com.telefonica.euro_iaas.sdc.bootstrap.PropertiesLoaderBootstrap
+        </listener-class>
+    </listener>
+    <!-- register the properties through jmx-->
+    <listener>
+        <listener-class>
+            com.telefonica.euro_iaas.sdc.bootstrap.PropertiesMBeanRegisterBootstrap
+        </listener-class>
+    </listener>    <!-- SECURITY -->
 
 
     <!--  ERROR PAGES -->

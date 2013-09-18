@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<enunciate label="sdc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://enunciate.codehaus.org/schemas/enunciate-1.18.xsd">
+  <modules>
+    <csharp disabled="true"/>
+  </modules>
+</enunciate>
+
+
+

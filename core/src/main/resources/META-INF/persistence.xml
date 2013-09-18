@@ -5,7 +5,9 @@
   http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
     version="1.0">
 
-    <persistence-unit name="sdc" transaction-type="RESOURCE_LOCAL"><!--
+    <persistence-unit name="sdc" transaction-type="RESOURCE_LOCAL">
+        <class>com.telefonica.euro_iaas.commons.properties.PersistentProperty</class>
+    <!--
         <class>com.telefonica.euro_iaas.sdc.model.Application</class>
         <class>com.telefonica.euro_iaas.sdc.model.ApplicationInstance</class>
         <class>com.telefonica.euro_iaas.sdc.model.Customer</class>
@@ -14,5 +16,6 @@
         <class>com.telefonica.euro_iaas.sdc.model.ProductInstance</class>
         <class>com.telefonica.euro_iaas.sdc.model.SO</class>
         <class>com.telefonica.euro_iaas.sdc.model.SOInstance</class>
-    --></persistence-unit>
+    -->
+    </persistence-unit>
 </persistence>

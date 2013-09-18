@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,20 +9,33 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Defines a concrete application running over a concrete product instance.
  *
  * @author Sergio Arroyo
- * @version $Id: $
+ *
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance {
+
+    public final static String STATUS_FIELD = "status";
+    public final static String APPLICATION_FIELD = "application";
+
     /**
      * Defines the value of the different status the Application could be.
      */
+    @XmlType(namespace="application")
     public enum Status {INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED};
 
     @Id
@@ -30,12 +44,17 @@ public class ApplicationInstance {
 
     @SuppressWarnings("unused")
     @Version
+    @XmlTransient
     private Long version;
 
     @ManyToOne(optional=false)
     private Application application;
-    @ManyToOne(optional=false)
-    private ProductInstance productInstance;
+
+    @ManyToMany
+    private List<ProductInstance> products;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private Date date;
 
@@ -49,14 +68,14 @@ public class ApplicationInstance {
      * <p>Constructor for ApplicationInstance.</p>
      *
      * @param application a {@link com.telefonica.euro_iaas.sdc.model.Application} object.
-     * @param productInstance a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance} object.
+     * @param products a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance} object.
      * @param status a {@link com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status} object.
      */
     public ApplicationInstance(Application application,
-            ProductInstance productInstance, Status status) {
+            List<ProductInstance> products, Status status) {
         this();
         this.application = application;
-        this.productInstance = productInstance;
+        this.products = products;
         this.status = status;
     }
     /**
@@ -69,11 +88,7 @@ public class ApplicationInstance {
         this.id = id;
     }
 
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    /**
+   /**
      * <p>Getter for the field <code>application</code>.</p>
      *
      * @return the application
@@ -96,8 +111,8 @@ public class ApplicationInstance {
      *
      * @return the productInstance
      */
-    public ProductInstance getProductInstance() {
-        return productInstance;
+    public List<ProductInstance> getProducts() {
+        return products;
     }
 
     /**
@@ -105,8 +120,8 @@ public class ApplicationInstance {
      *
      * @param productInstance the productInstance to set
      */
-    public void setProductInstance(ProductInstance productInstance) {
-        this.productInstance = productInstance;
+    public void setProducts(List<ProductInstance> products) {
+        this.products = products;
     }
 
     /**

@@ -1,7 +1,8 @@
 package com.telefonica.euro_iaas.sdc.dao;
 
-import com.telefonica.euro_iaas.sdc.model.SOInstance;
-import com.telefonica.euro_iaas.sdc.model.SOInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.OSInstance;
+import com.telefonica.euro_iaas.sdc.model.OSInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
  * Unit test for SODaoJpaImpl
@@ -10,8 +11,8 @@ import com.telefonica.euro_iaas.sdc.model.SOInstance.Status;
  */
 public class SOInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
-    private SOInstanceDao soInstanceDao;
-    private SODao soDao;
+    private OSInstanceDao soInstanceDao;
+    private OSDao soDao;
 
 
     protected void createSO() throws Exception {
@@ -25,8 +26,9 @@ public class SOInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
      */
     public void testCreate() throws Exception {
         createSO();
-        SOInstance instance = new SOInstance(
-                soDao.load(SODaoJpaImplTest.SO_NAME), Status.RUNNING);
+        OSInstance instance = new OSInstance(
+                soDao.load(SODaoJpaImplTest.SO_NAME), Status.RUNNING,
+                new VM("", ""));
         assertEquals(0, soInstanceDao.findAll().size());
 
         instance = soInstanceDao.create(instance);
@@ -39,14 +41,14 @@ public class SOInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * @param soInstanceDao the soInstanceDao to set
      */
-    public void setSoInstanceDao(SOInstanceDao soInstanceDao) {
+    public void setSoInstanceDao(OSInstanceDao soInstanceDao) {
         this.soInstanceDao = soInstanceDao;
     }
 
     /**
      * @param soDao the soDao to set
      */
-    public void setSoDao(SODao soDao) {
+    public void setSoDao(OSDao soDao) {
         this.soDao = soDao;
     }
 

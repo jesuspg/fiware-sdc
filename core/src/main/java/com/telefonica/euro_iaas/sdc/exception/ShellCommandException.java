@@ -1,8 +1,9 @@
 package com.telefonica.euro_iaas.sdc.exception;
 
+@SuppressWarnings("serial")
 public class ShellCommandException extends Exception {
 
-	private String description;
+    private String description;
 
     /**
      * Constructor of the class.

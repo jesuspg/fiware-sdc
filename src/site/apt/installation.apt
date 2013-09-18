@@ -22,7 +22,7 @@ Installation guide
 +-------
 
 
-** Instalación de MySQL
+** Postgresql Installation
 
   See {{{http://www.postgresql.org/}postgresql website}} to install it.
 
@@ -111,8 +111,10 @@ knife client list
 * SDC-Server installation
 
   Once the prerequisites are satisfied, you shall create the context file. To do
-  that, creates an xml file (i.e sdc.xml) and store it in folder
-  <<$CATALINA_HOME/conf/Catalina/localhost>> with the code bellow:
+  that, change sdc.xml found in distribution file and store it in folder
+  <<$CATALINA_HOME/conf/Catalina/localhost>>.
+
+  See the snipet bellow to know how it works:
 
 +----
 <Context path="/sdc" docBase="path dond está el fichero war" reloadable="true" debug="5">
@@ -125,19 +127,12 @@ knife client list
 </Context>
 +----
 
-  You also have to add the next scripts:
-
-       * {{{scripts/assignRecipes.sh}assignRecipes.sh}} to assign the list of products
-     that a client shall install. Shall be stored located in
-     <<</root/chef-repo/scripts/>>> to run.
-
-     * {{{scripts/executeRecipes.sh}executeRecipes.sh}} to perform the installation.
-     Shall be stored located in <<</root/chef-repo/scripts/>>> to run.
-
-     * {{{scripts/newVm.py}newVm.py}} necessary to clone the image and get
-     the OS running. Shall be stored located in <<</home/images/kvm/>>> to run.
-
-     * {{{scripts/haltVM.py}haltVM.py}} used to create the image file of the
-     running OS. Shall be stored located in <<</home/images/kvm/>>> to run.
+  You also have to add the provided scripts found in the
+  {{{./downloads/sdc-server-dist-bin.zip} dist file}} (in folder /opt/sdc/scripts/)
+  in the same folder (or everywhere you want if you prefer to change the default
+  configuration).
 
   Finally, run Tomcat and enjoy!!!
+
+  <<Note:>> The distribution file also provides some recipes you can add to your
+  chef server if needed.

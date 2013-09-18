@@ -1,0 +1,69 @@
+System Configuration
+
+  SDC Server is using <<commons-properties>> project it means, it provides persistent
+  properties through data base. It also expose these properties through MBean.
+  This feature give us the possibility to change the values in runtime instead of
+  using java standard properties that only allow change its values offline.
+
+* Properties
+
+  The list bellow show the different properties the system is using and their meaning:
+
+  *  <<cloneImageScript>> = The script called to get a OS running using Cristian Tools.
+   Is parametrized with OS name and the hostname (<<</home/images/kvm/newVm.py {0} {1}>>>).
+
+  *  <<timeWaitingForRunning>> = Time in ms the system is waiting before checking the
+  status of an deployed OS (<<<180000>>>).
+
+  *  <<waitForRunningScript>> = The way to check if the OS is already running.
+   The meaning of the placeholder is the hostname (<<<ssh -l root {0} cat /tmp/status>>>).
+
+  *  <<freezeImageScript>> = The script called to get the OS stoped and an image file
+  stored in an HTTP accessible place (the parameter is the hostname) (<<</home/images/kvm/haltVM.py {0}>>>).
+
+  *  <<assignRecipesScript>> = The script called to assign a recipe to a chef node.
+  (the parameters are the hostname + domain and the recipe-template )
+  (<<</root/chef-repo/scripts/assignRecipes.sh {0} {1}>>>).
+
+  *  <<unassignRecipesScript>> = The script called to unassign a recipe to a chef node.
+  (the parameters are the hostname + domain and the recipe-template )
+  (<<</root/chef-repo/scripts/unassignRecipes.sh {0} {1}>>>).
+
+  *  <<executeRecipesScript>> = The script to perfomr the installation usign chef.
+  It will receive the conection params, (ip or hostname + domain) (<<</root/chef-repo/scripts/executeRecipes.sh root@{0}>>>).
+
+  *  <<uninstallRecipeTemplate>> = The template name used in uninstall recipes. It will
+  receive the product/application name (<<<{0}::uninstall>>>).
+
+  *  <<installRecipeTemplate>> = The template name used in install recipes. It will
+  receive the product/application name (<<<{0}>>>).
+
+  *  <<uninstallAppRecipeTemplate>> = The template name used in uninstall applications. It will
+  receive the application type (war, etc.), application name, and the products
+  name (orderded) separated by -  (<<<{0}::uninstall-{1}{2}>>>).
+
+  *  <<installAppRecipeTemplate>> = The template name used in install applications. It will
+  receive the application type (war, etc.), application name, and the products
+  name (orderded) separated by - (<<<{0}::{1}{2}>>>).
+
+  *  <<installAppRecipeSeparator>> = The base url base when the images will be stored.
+  (<<<->>>).
+
+  *  <<copyAppFilesFromServerToNode>> = The script used to copy the application files from server to node.
+  It will receive the node connection url, the destination folder and the source folder
+  (<<</opt/sdc/scripts/copyAppFilesFromServerToNode.sh {0} {1} {2}>>>).
+
+  *  <<defaultAppFilesSourceFolder>> = The folder where the files for an application are in the server.
+  It will receive the application type and the application name (<<</opt/sdc/app/{0}/{1}/>>>).
+
+  *  <<defaultAppFilesDestinationFolder>> = The folder where the files for an application will be in the node.
+  It will receive the application type and the application name (<<</opt/sdc/app/{0}/>>>).
+
+  defaultAppFilesDestinationFolder = /opt/sdc/app/{0}/
+
+
+  *  <<webdavBaseUrl>> = The base url base when the images will be stored.
+  It will recevie the hostname (<<<http://piolin3.hi.inet/images/{0}.img>>>).
+
+  *  <<defaultHostDomain>> = The default domain, used when no host is passed in OS installation
+   (<<<.hi.inet>>>).

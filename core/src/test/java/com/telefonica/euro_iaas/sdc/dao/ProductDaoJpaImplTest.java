@@ -10,7 +10,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
 
     private ProductDao productDao;
-    private SODao soDao;
+    private OSDao soDao;
 
     public final static String PRODUCT_NAME = "productName";
     public final static String PRODUCT_VERSION = "productVersion";
@@ -49,7 +49,7 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * @param soDao the soDao to set
      */
-    public void setSoDao(SODao soDao) {
+    public void setSoDao(OSDao soDao) {
         this.soDao = soDao;
     }
 

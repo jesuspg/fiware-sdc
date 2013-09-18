@@ -2,6 +2,7 @@ package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.Date;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,6 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 /**
  *  Defines a product that is installed in the system.
  *
@@ -17,10 +25,18 @@ import javax.persistence.Version;
  * @version $Id: $
  */
 @Entity
-public class ProductInstance {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ProductInstance implements Comparable<ProductInstance>{
+
+    public final static String VM_FIELD = "vm";
+    public final static String STATUS_FIELD = "status";
+    public final static String PRODUCT_FIELD = "product";
+
     /**
      * Defines the value of the different status the Application could be.
      */
+    @XmlType(namespace="product")
     public enum Status {INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED};
 
     @Id
@@ -29,6 +45,7 @@ public class ProductInstance {
 
     @SuppressWarnings("unused")
     @Version
+    @XmlTransient
     private Long version;
 
     @ManyToOne(optional=false)
@@ -39,7 +56,8 @@ public class ProductInstance {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-
+    @Embedded
+    private VM vm;
     /**
      * <p>Constructor for ProductInstance.</p>
      */
@@ -53,9 +71,10 @@ public class ProductInstance {
      * @param application a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
      * @param status a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
      */
-    public ProductInstance(Product product, Status status) {
+    public ProductInstance(Product product, Status status, VM vm) {
         this.product = product;
         this.status = status;
+        this.vm = vm;
         this.date = new Date();
     }
 
@@ -122,7 +141,19 @@ public class ProductInstance {
         return id;
     }
 
-    //TODO (Sergio Arroyo) define equals criteria.
+    /**
+     * @return the vm
+     */
+    public VM getVM() {
+        return vm;
+    }
+
+    /**
+     * @param vm the vm to set
+     */
+    public void setVM(VM vm) {
+        this.vm = vm;
+    }
 
 
     /* (non-Javadoc)
@@ -156,6 +187,11 @@ public class ProductInstance {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(ProductInstance o) {
+        return this.getProduct().getName().compareTo(o.getProduct().getName());
     }
 
 

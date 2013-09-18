@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
         default-autowire="no">
 
     <bean id="productDao" lazy-init="true"
@@ -13,14 +13,14 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
     <bean id="applicationDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationDaoJpaImpl"/>
-    <bean id="applicationInstance" lazy-init="true"
+    <bean id="applicationInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationInstanceDaoJpaImpl"/>
     <bean id="customerDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.CustomerDaoJpaImpl"/>
-    <bean id="soDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.SODaoJpaImpl"/>
-    <bean id="soInstanceDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.SOInstanceDaoJpaImpl"/>
+    <bean id="osDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.OSDaoJpaImpl"/>
+    <bean id="osInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.OSInstanceDaoJpaImpl"/>
     <bean id="imageDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ImageDaoJpaImpl"/>
 

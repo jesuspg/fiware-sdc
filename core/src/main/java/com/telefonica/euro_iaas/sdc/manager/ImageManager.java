@@ -3,10 +3,11 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.exception.CanNotDeployException;
-import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.Customer;
-import com.telefonica.euro_iaas.sdc.model.SO;
 import com.telefonica.euro_iaas.sdc.model.Image;
+import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.SOSearchCriteria;
 
@@ -33,18 +34,19 @@ public interface ImageManager {
      * @return the SO list
      * @param criteria a {@link com.telefonica.euro_iaas.sdc.model.searchcriteria.SOSearchCriteria} object.
      */
-    List<SO> findAllSSOO(SOSearchCriteria criteria);
+    List<OS> findAllSSOO(SOSearchCriteria criteria);
 
     /**
      * Deploy a list of applications in the selected SO.
      *
-     * @param so a {@link com.telefonica.euro_iaas.sdc.model.SO} object.
+     * @param so a {@link com.telefonica.euro_iaas.sdc.model.OS} object.
+     * @param vm the virtual machine where the application will be installed
      * @param apps a {@link java.util.List} object.
      * @return the Virtual Appliance.
      * @throws com.telefonica.euro_iaas.sdc.exception.CanNotDeployException if any.
      * @param customer a {@link com.telefonica.euro_iaas.sdc.model.Customer} object.
      */
-    Image deploy(Customer customer, SO so, List<Product> apps)
+    Image deploy(Customer customer, OS so, VM vm, List<Product> apps)
         throws CanNotDeployException;
 
 }
