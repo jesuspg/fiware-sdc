@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telefonica.euro_iaas</groupId>
@@ -10,8 +11,12 @@
 
 
     <scm>
-        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</connection>
-        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</developerConnection>
+        <connection>
+            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk
+        </connection>
+        <developerConnection>
+            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk
+        </developerConnection>
         <url>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</url>
     </scm>
     <developers>
@@ -75,13 +80,13 @@
                         <configuration>
                             <tasks>
                                 <!-- Copy NVOTB Core site -->
-                                <mkdir dir="./target/site/core-site" />
+                                <mkdir dir="./target/site/core-site"/>
                                 <copy todir="./target/site/core-site">
-                                    <fileset dir="./core/target/site/" />
+                                    <fileset dir="./core/target/site/"/>
                                 </copy>
-                                <mkdir dir="./target/site/rest-api" />
+                                <mkdir dir="./target/site/rest-api"/>
                                 <copy todir="./target/site/rest-api">
-                                    <fileset dir="./rest-api/target/site/" />
+                                    <fileset dir="./rest-api/target/site/"/>
                                 </copy>
                             </tasks>
                         </configuration>
@@ -173,14 +178,14 @@
         <repository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
         </pluginRepository>
     </pluginRepositories>
     <!-- ===================================== Distribution Management ==== -->
@@ -199,7 +204,7 @@
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>
             <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-               </url>
+            </url>
         </site>
     </distributionManagement>
 </project>

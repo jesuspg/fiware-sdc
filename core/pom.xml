@@ -191,6 +191,12 @@
             <groupId>net.sourceforge.xuse</groupId>
             <artifactId>xuse-annotation-tool</artifactId>
             <version>01.00.00-RC2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -277,7 +283,7 @@
                         <version>4.4</version>
                     </docletArtifact>
                     <additionalparam>
-                     <![CDATA[
+                        <![CDATA[
  -charset UTF-8
  -docencoding UTF-8
  -version
@@ -330,7 +336,7 @@
         <repository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
         </repository>
 
     </repositories>
@@ -339,7 +345,7 @@
         <pluginRepository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://ci-eurolass/nexus/content/repositories/thirdparty/</url>
+            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -354,12 +360,12 @@
         <!--Don't want deploy snapshots -->
         <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
             <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-                    <!-- Maquina donde se publica el site del proyecto -->
+        <!-- Maquina donde se publica el site del proyecto -->
         <site>
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>
             <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-               </url>
+            </url>
         </site>
     </distributionManagement>
 
