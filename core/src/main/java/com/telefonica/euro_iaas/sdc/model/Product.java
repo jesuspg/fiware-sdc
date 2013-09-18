@@ -8,11 +8,11 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,13 +20,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 /**
- * Represents an Product (like application server, data base manager, etc.)
- * available in the system.
+ * Installable means executable units that can be installed, uninstalled,
+ * configured or updated in a VM.
  *
  * @author Sergio Arroyo
- * @version $Id: $
+ *
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Product {
@@ -43,79 +44,11 @@ public class Product {
 
     @Column(unique=true, nullable=false, length=256)
     private String name;
-    @Column(length=128)
-    private String version;
-    @ManyToMany(fetch=FetchType.EAGER)
-    private List<OS> suportedSSOO;
+    @Column(length=2048)
+    private String description;
+
     @OneToMany(cascade=CascadeType.ALL)
     private List<Attribute> attributes;
-
-    /**
-     * <p>Constructor for Product.</p>
-     */
-    public Product() {
-    }
-
-    /**
-     * <p>Constructor for Product.</p>
-     *
-     * @param name a {@link java.lang.String} object.
-     * @param version a {@link java.lang.String} object.
-     * @param suportedSSOO a {@link java.util.List} object.
-     */
-    public Product(String name, String version, List<OS> suportedSSOO) {
-        this.name = name;
-        this.version = version;
-        this.suportedSSOO = suportedSSOO;
-    }
-    /**
-     * <p>Getter for the field <code>name</code>.</p>
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-    /**
-     * <p>Setter for the field <code>name</code>.</p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-    /**
-     * <p>Getter for the field <code>version</code>.</p>
-     *
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
-    /**
-     * <p>Setter for the field <code>version</code>.</p>
-     *
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-    /**
-     * <p>Getter for the field <code>suportedSSOO</code>.</p>
-     *
-     * @return the suportedSSOO
-     */
-    public List<OS> getSuportedSSOO() {
-        return suportedSSOO;
-    }
-    /**
-     * <p>Setter for the field <code>suportedSSOO</code>.</p>
-     *
-     * @param suportedSSOO the suportedSSOO to set
-     */
-    public void setSuportedSSOO(List<OS> suportedSSOO) {
-        this.suportedSSOO = suportedSSOO;
-    }
 
     /**
      * @return the attributes
@@ -154,8 +87,47 @@ public class Product {
     }
 
     /**
-     * <p>Getter for the field <code>id</code>.</p>
-     *
+     * Constructor.
+     */
+    public Product() {
+    }
+
+
+    /**
+     * Constructor.
+     * @param name
+     * @param description
+     */
+    public Product(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    /**
      * @return the id
      */
     public Long getId() {
@@ -165,7 +137,6 @@ public class Product {
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -177,7 +148,6 @@ public class Product {
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -194,5 +164,6 @@ public class Product {
             return false;
         return true;
     }
+
 
 }

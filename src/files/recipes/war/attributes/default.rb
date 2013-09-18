@@ -2,15 +2,15 @@
 # General settings
 
 #Apache Home
-default[:war][:tomcat_home] = "/opt/apache-tomcat-7.0.14"
+default[:war][:tomcat_home] = "/opt/apache-tomcat"
 
 #SDC install home.
 default[:war][:application_context] = "sdc"
-default[:war][:driver_class_name] = "org.postgresql.Driver"
-default[:war][:sdc_install_home] = "/opt/sdc/app/war/sdc/install"
-default[:war][:sdc_uninstall_home] = "/opt/sdc/app/war/sdc/uninstall"
-default[:war][:sdc_home] = "/opt/sdc/app/war/sdc"
-default[:war][:sdc_home_scripts] = "/opt/sdc/scripts"
+#default[:war][:driver_class_name] = "org.postgresql.Driver"
+default[:war][:sdc_install_home] = "/opt/sdc/app/war/sdc/0.4.0/install"
+#default[:war][:sdc_uninstall_home] = "/opt/sdc/app/war/sdc/0.4.0/uninstall"
+#default[:war][:sdc_home] = "/opt/sdc/app/war/sdc/0.4.0"
+#default[:war][:sdc_home_scripts] = "/opt/sdc/scripts"
 default[:war][:sdc_war_name] = "sdc-server-rest-api.war"
 
 #Postgresql attributes

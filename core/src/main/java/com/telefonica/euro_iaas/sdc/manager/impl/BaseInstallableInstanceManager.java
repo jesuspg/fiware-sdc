@@ -24,6 +24,7 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
+import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 /**
  * Provides some methods to work with deployable units
@@ -34,7 +35,21 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class BaseInstallableInstanceManager {
 
     protected SystemPropertiesProvider propertiesProvider;
+    protected RecipeNamingGenerator recipeNamingGenerator;
     private CommandExecutor commandExecutor;
+
+
+    protected void callChef(String recipe, VM vm) throws ShellCommandException {
+        assignRecipes(vm, recipe);
+        try {
+            executeRecipes(vm);
+            unassignRecipes(vm, recipe);
+        } catch (ShellCommandException e) {
+            unassignRecipes(vm, recipe);
+            //even if execution fails  want to unassign the recipe
+            throw new ShellCommandException(e.getMessage());
+        }
+    }
 
     /**
      * Tell Chef the previously assigned recipes are ready to be installed.
@@ -173,5 +188,13 @@ public class BaseInstallableInstanceManager {
     public void setCommandExecutor(CommandExecutor commandExecutor) {
         this.commandExecutor = commandExecutor;
     }
+
+    /**
+     * @param recipeNamingGenerator the recipeNamingGenerator to set
+     */
+    public void setRecipeNamingGenerator(RecipeNamingGenerator recipeNamingGenerator) {
+        this.recipeNamingGenerator = recipeNamingGenerator;
+    }
+
 
 }

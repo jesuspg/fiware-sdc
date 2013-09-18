@@ -2,13 +2,13 @@ Scope
 
 * Limitations
 
-  * This version is only a <<prototipe>>.
+  * This version is only a <<prototipe>> (<<working to fix it>>).
 
-  * No assynchrony mechanism are implemented (note that operations could take many time).
+  * No assynchrony mechanism are implemented (note that operations could take many time) (<<working to fix it>>).
 
   * We provides basic calls (install, uninstall, configure, etc.) but no combinations of them.
 
-  * There is no mechanism to manage the catalog (OS's, products or applications).
+  * There is no mechanism to manage the catalog (OS's, products or applications) (<<working to fix it>>).
 
   * AppConf implements its own  API, and isn't able to proccess standard formats like OVF or TCloud.
 
@@ -18,17 +18,19 @@ Scope
   * There is no mechanism to ensure the referential integrity.
    (i.e a validate a product is installed in a running VM, or not uninstall a product
    that is not installed, etc.). So the application could be in a unstable state
-   after a call.
+   after a call (<<working to fix it>>).
 
   * SDC-Server only provides a Rest-API (but no web view, etc.).
 
   * The server where SDC is installed shall be able to access throgh ssh as root
-  whith no password to every node where we want to install a product or application.
-  
-  * SDC does not store configuration actions made on attributes . 
-    Question: Are we interested on storing all the configuration actions 
+    with no password to every node where we want to install a product or application (<<working to fix it>>).
+
+  * SDC does not store configuration actions made on attributes .
+    Question: Are we interested on storing all the configuration actions
     performed on each node? or only the last action performed per attribute?
 
+  * There is no mechanism to manage the transactions. It means, there is no way to
+    J2EE and Chef run by its own (<<working to fix it>>).
 
 * Risks
 

@@ -1,8 +1,8 @@
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
-import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
@@ -28,7 +28,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     /**
      * The product.
      */
-    private Product product;
+    private ProductRelease product;
     /**
      * Default constructor
      */
@@ -45,7 +45,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
             String orderBy, String orderType, VM vm, Status status,
-            Product product) {
+            ProductRelease product) {
         super(page, pageSize, orderBy, orderType);
         this.vm = vm;
         this.status = status;
@@ -59,7 +59,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param product
      */
     public ProductInstanceSearchCriteria(String orderBy, String orderType,
-            VM vm, Status status, Product product) {
+            VM vm, Status status, ProductRelease product) {
         super(orderBy, orderType);
         this.vm = vm;
         this.status = status;
@@ -73,7 +73,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param product
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
-            VM vm, Status status, Product product) {
+            VM vm, Status status, ProductRelease product) {
         super(page, pageSize);
         this.vm = vm;
         this.status = status;
@@ -84,7 +84,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param vm
      */
     public ProductInstanceSearchCriteria(
-            VM vm, Status status, Product product) {
+            VM vm, Status status, ProductRelease product) {
         this.vm = vm;
         this.status = status;
         this.product = product;
@@ -129,7 +129,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     /**
      * @return the product
      */
-    public Product getProduct() {
+    public ProductRelease getProduct() {
         return product;
     }
 
@@ -143,7 +143,7 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     /**
      * @param product the product to set
      */
-    public void setProduct(Product product) {
+    public void setProduct(ProductRelease product) {
         this.product = product;
     }
 

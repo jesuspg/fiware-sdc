@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -16,7 +15,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 
 /**
@@ -28,27 +28,20 @@ import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 public interface ApplicationInstanceResource {
 
     /**
-     * Install a list of application in a given host.
+     * Install a list of application in a given host running
+     * on the selected products.
      *
-     * @param hostname
-     *            the host where the product will be installed
-     * @param domain
-     *            the domain where the host is
-     * @param ip
-     *            the ip where the machine is located
-     * @param products
-     *            the list of products to install
+     * @param application the application to install containing the VM,
+     *  the appName and the products where the application is going to
+     *  be installed
      *
      * @return the installed application.
      */
     @POST
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    ApplicationInstance install(@FormParam("hostname") String hostname,
-            @FormParam("domain") String domain, @FormParam("ip") String ip,
-            @FormParam("products") List<String> products,
-            @FormParam("application") String appname);
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    ApplicationInstance install(ApplicationInstanceDto application);
 
     /**
      * Uninstall a previously installed application.

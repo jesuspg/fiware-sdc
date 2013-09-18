@@ -19,8 +19,10 @@
             <item name="Index" href="index.html" />
             <item name="Scope" href="scope.html"/>
             <item name="Installation" href="installation.html"/>
+            <item name="Create chef recipes" href="add-recipes.html"/>
             <item name="Configuration" href="configuration.html"/>
             <item name="Troubleshooting" href="troubleshooting.html"/>
+            <item name="Products Life Cycle" href="life-cycle.html"/>
         </menu>
 
         <menu name="Downloads">
@@ -28,7 +30,9 @@
         </menu>
 
         <menu name="Development">
+            <item name="Work Log" href="work-log.html"/>
             <item name="Roadmap" href="roadmap.html"/>
+            <item name="Scalability Plan" href="scalability.html" />
             <item name="Views" href="views.html" />
             <item name="User Stories" href="user-stories.html" />
         </menu>

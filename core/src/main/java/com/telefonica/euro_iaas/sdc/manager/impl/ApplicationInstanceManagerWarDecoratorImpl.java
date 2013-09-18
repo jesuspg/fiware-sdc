@@ -13,6 +13,7 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -58,14 +59,15 @@ public class ApplicationInstanceManagerWarDecoratorImpl
      */
     @Override
     public ApplicationInstance install(VM vm, List<ProductInstance> products,
-            Application application) {
+            ApplicationRelease application) {
         //prepare the installation
+        Application app = application.getApplication();
         String fromFolder =  MessageFormat.format(
                 propertiesProvider.getProperty(DEFAULT_APP_FILES_SOURCE_FOLDER),
-                application.getType(), application.getName());
+                app.getType(), app.getName(), application.getVersion());
         String toFolder =  MessageFormat.format(
                 propertiesProvider.getProperty(DEFAULT_APP_FILES_DESTINATION_FOLDER),
-                application.getType(), application.getName());
+                app.getType(), app.getName(), application.getVersion());
         String copyFilesCommand = MessageFormat.format(propertiesProvider.getProperty(
                 COPY_APP_FILES_FROM_SERVER_TO_NODE),
                 vm.getExecuteChefConectionUrl(), toFolder, fromFolder);

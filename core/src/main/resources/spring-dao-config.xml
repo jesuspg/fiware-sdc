@@ -15,14 +15,11 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationDaoJpaImpl"/>
     <bean id="applicationInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationInstanceDaoJpaImpl"/>
-    <bean id="customerDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.CustomerDaoJpaImpl"/>
     <bean id="osDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.OSDaoJpaImpl"/>
-    <bean id="osInstanceDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.OSInstanceDaoJpaImpl"/>
-    <bean id="imageDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ImageDaoJpaImpl"/>
-
+    <bean id="productReleaseDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ProductReleaseDaoJpaImpl"/>
+    <bean id="applicationReleaseDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationReleaseDaoJpaImpl"/>
 
 </beans>

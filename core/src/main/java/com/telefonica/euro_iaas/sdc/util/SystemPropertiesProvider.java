@@ -6,31 +6,14 @@ package com.telefonica.euro_iaas.sdc.util;
  * @author Sergio Arroyo
  */
 public interface SystemPropertiesProvider {
-    // CRISTIAN TOOLS PROPERTIES //
-    public final static String CLONE_IMAGE_SCRIPT = "cloneImageScript";
-    public final static String WAIT_FOR_RUNNING_SCRIPT = "waitForRunningScript";
-    public final static String TIME_WAITING_FOR_RUNNING = "timeWaitingForRunning";
-    public final static String FREEZE_IMAGE_SCRIPT = "freezeImageScript";
     // CHEF PROPERTIES //
     public final static String ASSING_RECIPES_SCRIPT = "assignRecipesScript";
     public final static String UNASSING_RECIPES_SCRIPT = "unassignRecipesScript";
     public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";
-    public final static String INSTALL_RECIPE_TEMPLATE = "installRecipeTemplate";
-    public final static String UNINSTALL_RECIPE_TEMPLATE = "uninstallRecipeTemplate";
-    public final static String CONFIGURE_RECIPE_TEMPLATE = "configureRecipeTemplate";
 
     public final static String COPY_APP_FILES_FROM_SERVER_TO_NODE = "copyAppFilesFromServerToNode";
     public final static String DEFAULT_APP_FILES_SOURCE_FOLDER = "defaultAppFilesSourceFolder";
     public final static String DEFAULT_APP_FILES_DESTINATION_FOLDER = "defaultAppFilesDestinationFolder";
-
-
-
-    public final static String INSTALL_APP_RECIPE_TEMPLATE = "installAppRecipeTemplate";
-    public final static String UNINSTALL_APP_RECIPE_TEMPLATE = "uninstallAppRecipeTemplate";
-    public final static String INSTALL_APP_RECIPE_SEPARATOR = "installAppRecipeSeparator";
-
-    // //
-    public final static String WEBDAV_BASE_URL = "webdavBaseUrl";
 
     public final static String DEFAULT_HOST_DOMAIN = "defaultHostDomain";
 
@@ -41,6 +24,22 @@ public interface SystemPropertiesProvider {
     public final static String CHEF_ATTRIBUTES_SEPARATOR = "chefAttributesSeparator";
 
     public final static String UPDATE_ATTRIBUTES_SCRIPT = "updateAttributesScript";
+
+    ////////// RECIPE TEMPLATES ///////////
+    public final static String INSTALL_PRODUCT_RECIPE_TEMPLATE = "installProductRecipeTemplate";
+    public final static String UNINSTALL_PRODUCT_RECIPE_TEMPLATE = "uninstallProductRecipeTemplate";
+    public final static String BACKUP_PRODUCT_RECIPE_TEMPLATE = "backupProductRecipeTemplate";
+    public final static String RESTORE_PRODUCT_RECIPE_TEMPLATE = "restoreProductRecipeTemplate";
+
+    public final static String INSTALL_APPLICATION_RECIPE_TEMPLATE = "installApplicationRecipeTemplate";
+    public final static String UNINSTALL_APPLICATION_RECIPE_TEMPLATE = "uninstallApplicationRecipeTemplate";
+    public final static String BACKUP_APPLICATION_RECIPE_TEMPLATE = "backupApplicationRecipeTemplate";
+    public final static String RESTORE_APPLICATION_RECIPE_TEMPLATE = "restoreApplicationRecipeTemplate";
+
+    public final static String PRODUCT_LIST_TEMPLATE = "productListTemplate";
+    public final static String PRODUCT_LIST_SEPARATOR = "productListSeparator";
+
+
     /**
      * Get the property for a given key.
      *

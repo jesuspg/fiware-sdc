@@ -6,4 +6,4 @@
 #
 # All rights reserved - Do Not Redistribute
 
-include_recipe "war::sdc-postgresql_server-tomcat"
+include_recipe "war::sdc-0.4_install_postgresql-8.4_tomcat-6"

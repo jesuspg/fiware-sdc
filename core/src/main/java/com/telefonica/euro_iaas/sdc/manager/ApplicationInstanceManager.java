@@ -3,8 +3,8 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -31,7 +31,7 @@ public interface ApplicationInstanceManager {
      * @return the installed application.
      */
     ApplicationInstance install(VM vm, List<ProductInstance> products,
-            Application application);
+            ApplicationRelease application);
 
     /**
      * Uninstall a previously installed application.

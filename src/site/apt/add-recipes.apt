@@ -1,0 +1,32 @@
+How to create new Recipes
+
+  SDC is supported by Chef so we need to create some recipes to install both products
+  and applications.
+
+  To be SDC-server compliant the recipes shall be according to some restrictions
+  that goes form name's conventions to cookbook structure or file ubication.
+
+* SDC-Server needs a set of operations that are:
+
+   * <<Install:>> this action shall install a product or application in the system.
+
+   * <<Uninstall:>> executed when an installed product (or application) shall be uninstalled.
+
+   * <<Configure:>> to change some configuration properties of a installed product in a concrete node.
+
+   * <<Backup:>> to save the configuration changes when the product or application is going to be updated
+
+   * <<Restore:>> this action is executed when the product is updated and needs to recover the previous state.
+
+* Naming conventions
+
+  See {{{./chef-naming-conventions.html} naming conventions}} to know how is structured
+    a cookbook.
+
+* Writing a product's recipe
+
+  TBD
+
+* Writing an application's recipe
+
+  TBD

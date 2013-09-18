@@ -11,19 +11,23 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ApplicationDao;
-import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManagerFactory;
+import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
@@ -45,10 +49,10 @@ public class ApplicationInstanceResourceImpl implements
     private ApplicationInstanceManagerFactory applicationInstanceManagerFactory;
     @InjectParam("productInstanceManager")
     private ProductInstanceManager productInstanceManager;
-    @InjectParam("productDao")
-    private ProductDao productDao;
-    @InjectParam("applicationDao")
-    private ApplicationDao applicationDao;
+    @InjectParam("productManager")
+    private ProductManager productManager;
+    @InjectParam("applicationManager")
+    private ApplicationManager applicationManager;
     @InjectParam("ip2vm")
     private IpToVM ip2vm;
 
@@ -57,38 +61,41 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public ApplicationInstance install(String hostname, String domain,
-            String ip, List<String> products, String appname) {
+    public ApplicationInstance install(ApplicationInstanceDto application) {
         try {
-            VM vm;
-            if (hostname.isEmpty() || domain.isEmpty()) {
-                vm = ip2vm.getVm(ip);
-            } else {
-                vm = new VM(ip, hostname, domain);
+            VM vm = application.getVm();
+            if (!vm.canWorkWithChef()) {
+                vm = ip2vm.getVm(vm.getIp());
             }
 
             List<ProductInstance> productList =
                 new ArrayList<ProductInstance>();
 
             // get the product instances
+            List<ReleaseDto> products = application.getProducts();
             if (products != null) {
-                Product product = null;
+                ProductRelease product = null;
                 ProductInstanceSearchCriteria criteria =
                     new ProductInstanceSearchCriteria();
                 criteria.setStatus(ProductInstance.Status.INSTALLED);
                 criteria.setVm(vm);
-                for (String app : products) {
-                    product = productDao.load(app);
+                for (ReleaseDto app : products) {
+                    Product p = productManager.load(app.getProduct());
+                    product = productManager.load(p, app.getVersion());
                     criteria.setProduct(product);
                     productList.add(productInstanceManager
                             .loadByCriteria(criteria));
                 }
             }
-            Application app = applicationDao.load(appname);
+            Application app = applicationManager.load(
+                    application.getApplicationName());
+            ApplicationRelease release = applicationManager.load(
+                    app, application.getVersion());
 
             ApplicationInstanceManager manager =
-                applicationInstanceManagerFactory.getInstance(app.getType());
-            return manager.install(vm, productList,app);
+                applicationInstanceManagerFactory.getInstance(
+                        release.getApplication().getType());
+            return manager.install(vm, productList, release);
 
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -108,7 +115,7 @@ public class ApplicationInstanceResourceImpl implements
                 .getInstance().load(applicationId);
             ApplicationInstanceManager manager =
                 applicationInstanceManagerFactory.getInstance(
-                        app.getApplication().getType());
+                        app.getApplication().getApplication().getType());
             manager.uninstall(app);
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);

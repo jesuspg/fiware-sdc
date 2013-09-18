@@ -29,8 +29,6 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
 
         Product product = new Product();
         product.setName(PRODUCT_NAME);
-        product.setVersion(PRODUCT_VERSION);
-        product.setSuportedSSOO(soDao.findAll());
 
         assertEquals(0, productDao.findAll().size());
         product = productDao.create(product);
