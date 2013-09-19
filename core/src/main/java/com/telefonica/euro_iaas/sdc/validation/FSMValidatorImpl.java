@@ -28,9 +28,9 @@ public class FSMValidatorImpl implements FSMValidator {
     private final static List<Status> CONFIGURING_STATES =
             Arrays.asList(Status.INSTALLED, Status.ERROR);
     private final static List<Status> UNINSTALLED_STATES =
-            Arrays.asList(Status.ERROR);
+            Arrays.asList(Status.ERROR, Status.INSTALLING);
     private final static List<Status> ERROR_STATES =
-            Arrays.asList();
+            Arrays.asList(Status.INSTALLING);
 
     @SuppressWarnings("serial")
     private final static Map<Status, List<Status>> TRANSITIONS =

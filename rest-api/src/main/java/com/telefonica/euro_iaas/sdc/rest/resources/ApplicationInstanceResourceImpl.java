@@ -87,7 +87,7 @@ public class ApplicationInstanceResourceImpl implements
                     new ProductInstanceSearchCriteria();
                 criteria.setVm(vm);
                 for (ReleaseDto relDto : products) {
-                    Product p = productManager.load(relDto.getProduct());
+                    Product p = productManager.load(relDto.getName());
                     ProductRelease product = productManager.load(p, relDto.getVersion());
                     criteria.setProduct(product);
                     try {

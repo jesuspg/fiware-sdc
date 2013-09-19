@@ -50,7 +50,7 @@
         class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
         <property name="commandExecutor" ref="commandExecutor"/>
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="webDavDao" ref="webDavDao"/>
+        <property name="fileDao" ref="fileDao"/>
     </bean>
 
     <!-- UTILS CLASSES -->
@@ -80,8 +80,8 @@
         <property name="client" ref="restClient"/>
     </bean>
 
-    <bean id="webDavDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.WebDavDaoImpl">
+    <bean id="fileDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.FileDaoWebDavImpl">
           <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
           <property name="client" ref="restClient"/>
     </bean>
@@ -96,6 +96,12 @@
         class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
                 <property name="sdcClientUtils" ref="sdcClientUtils"/>
     </bean>
+
+    <bean id="taskNotificator" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.util.TaskNotificatorImpl">
+          <property name="client" ref="restClient"/>
+    </bean>
+
 
     <!-- ===========
     == VALIDATORS ==
@@ -114,7 +120,14 @@
         class="com.telefonica.euro_iaas.sdc.validation.ApplicationInstanceValidatorImpl">
             <property name="fsmValidator" ref="fsmValidator"/>
     </bean>
-
-
+    <bean id="productReleaseValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
+            <property name="productInstanceDao" ref="productInstanceDao"/>
+    </bean>
+    <bean id="applicationReleaseValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.ApplicationReleaseValidatorImpl">
+            <property name="productReleaseDao" ref="productReleaseDao"/>
+            <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+    </bean>
 
 </beans>

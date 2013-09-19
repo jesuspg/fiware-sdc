@@ -86,7 +86,6 @@ public interface ProductInstanceManager {
      */
     ProductInstance load(Long id) throws EntityNotFoundException;
 
-
     /**
      * Find the ProductInstance that match with the given criteria.
      * @param criteria the search criteria
@@ -110,4 +109,10 @@ public interface ProductInstanceManager {
      */
     List<ProductInstance> findByCriteria(ProductInstanceSearchCriteria criteria);
 
+    /**
+     * Updates a product instance and persist it in the database∫
+     * @param productInstance
+     * @return
+     */
+    ProductInstance update(ProductInstance productInstance);
 }

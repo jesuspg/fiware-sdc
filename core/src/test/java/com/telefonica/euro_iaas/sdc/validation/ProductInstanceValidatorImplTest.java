@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
-import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
@@ -70,20 +69,13 @@ public class ProductInstanceValidatorImplTest {
     public void validateInstall() throws Exception {
         ProductInstanceValidatorImpl validator =
                 new ProductInstanceValidatorImpl();
+        validator.setFsmValidator(fsmValidator);
+
         ProductInstance instance = new ProductInstance(
                 release1, Status.INSTALLED, new VM("ip"));
         validator.validateInstall(instance);
         instance = new ProductInstance(5l);
         instance.setStatus(Status.ERROR);
-        validator.validateInstall(instance);
-    }
-
-    @Test(expected = AlreadyInstalledException.class)
-    public void validateInstallShouldThrowsAlreadyInstalledException() throws Exception {
-        ProductInstanceValidatorImpl validator =
-                new ProductInstanceValidatorImpl();
-        ProductInstance instance = new ProductInstance(5l);
-        instance.setStatus(Status.CONFIGURING);
         validator.validateInstall(instance);
     }
 

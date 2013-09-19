@@ -132,6 +132,10 @@ knife client list
   in the same folder (or everywhere you want if you prefer to change the default
   configuration).
 
+  The last step is configure the system to log into Chef Server. To do that, the only
+  thing shall do is specify where is located the pem file containig the Chef Server's
+  private key (by default /opt/sdc/private.pem).
+
   Finally, run Tomcat and enjoy!!!
 
   <<Note:>> The distribution file also provides some recipes you can add to your

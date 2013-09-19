@@ -1,6 +1,13 @@
 package com.telefonica.euro_iaas.sdc.dao;
 
+import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -17,6 +24,57 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         pdaoTest.setProductDao(productDao);
         pdaoTest.setSoDao(soDao);
         pdaoTest.testCreate();
+    }
+
+   protected void createProductRelease() throws Exception  {
+
+        ProductRelease productRelease = new ProductRelease();
+        productRelease.setVersion("0.1.1");
+        productRelease.setReleaseNotes("prueba ReelaseNotes");
+
+        OS so = new OS("Prueba I", "Prueba I Description","Prueba I Version");
+        try{
+            so = soDao.load(so.getName());
+            System.out.println("The OS " + so.getName()
+                    + " already exists");
+        } catch (EntityNotFoundException e)
+        {
+            System.out.println("The Product " +so.getName()
+                + " does not exist");
+            so = soDao.create(so);
+        }
+
+        List<OS> supportedOOSS =  Arrays.asList(so);
+        productRelease.setSupportedOOSS(supportedOOSS);
+
+        Product product = new Product();
+        product.setName("yum");
+        product.setDescription("yum description");
+        try{
+            product = productDao.load(product.getName());
+            System.out.println("The Product " +product.getName()
+                    + " already exists");
+        } catch (EntityNotFoundException e)
+        {
+            System.out.println("The Product " +product.getName()
+                    + " does not exist");
+            product = productDao.create(product);
+        }
+        productRelease.setProduct(product);
+
+        Attribute privateAttribute = new Attribute("ssl_port",
+        "8443", "The ssl listen port");
+        Attribute privateAttributeII = new Attribute("port",
+         "8080", "The listen port");
+
+        List<Attribute> privateAttributes =
+            Arrays.asList(privateAttribute, privateAttributeII);
+        productRelease.setPrivateAttributes(privateAttributes);
+
+        ProductRelease createdRelease = productReleaseDao.create(productRelease);
+
+        Assert.assertEquals(createdRelease, productRelease);
+
     }
 
     public void testCreateAndFindByCriteria() throws Exception {
@@ -43,6 +101,17 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
             //it's ok, this exception was expected
         }
     }
+
+//    public void testDuplicateProductRelease() throws Exception{
+//        createProductRelease();
+//        try {
+//            createProductRelease();
+//            fail("AlreadyExistsEntityException expected");
+//        } catch (AlreadyExistsEntityException e) {
+//            //it's ok, this exception was expected
+//        }
+//    }
+
 
     /**
      * @param productDao the productDao to set

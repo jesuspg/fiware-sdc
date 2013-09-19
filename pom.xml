@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>1.1.0</version>
-
+    <version>1.2.0</version>
 
     <scm>
-        <connection>
-            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk
-        </connection>
-        <developerConnection>
-            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk
-        </developerConnection>
-        <url>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.1.0/trunk</url>
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.2.0/trunk</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.2.0/trunk</developerConnection>
+        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-1.2.0/Configurador_de_Aplicaciones</url>
     </scm>
     <developers>
         <developer>
@@ -80,13 +74,13 @@
                         <configuration>
                             <tasks>
                                 <!-- Copy NVOTB Core site -->
-                                <mkdir dir="./target/site/core-site"/>
+                                <mkdir dir="./target/site/core-site" />
                                 <copy todir="./target/site/core-site">
-                                    <fileset dir="./core/target/site/"/>
+                                    <fileset dir="./core/target/site/" />
                                 </copy>
-                                <mkdir dir="./target/site/rest-api"/>
+                                <mkdir dir="./target/site/rest-api" />
                                 <copy todir="./target/site/rest-api">
-                                    <fileset dir="./rest-api/target/site/"/>
+                                    <fileset dir="./rest-api/target/site/" />
                                 </copy>
                             </tasks>
                         </configuration>
@@ -204,7 +198,7 @@
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>
             <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-            </url>
+               </url>
         </site>
     </distributionManagement>
 </project>

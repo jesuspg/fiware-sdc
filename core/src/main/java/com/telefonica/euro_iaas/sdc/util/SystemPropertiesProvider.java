@@ -7,7 +7,7 @@ package com.telefonica.euro_iaas.sdc.util;
  */
 public interface SystemPropertiesProvider {
 
-	// CHEF PROPERTIES //
+    // CHEF PROPERTIES //
     public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";
     public final static String UPLOAD_RECIPES_SCRIPT = "uploadRecipesScript";
     public final static String DELETE_RECIPES_SCRIPT = "deleteRecipesScript";
@@ -39,14 +39,22 @@ public interface SystemPropertiesProvider {
 
     public final static String CHEF_DATE_FORMAT = "chefDateFormat";
     public final static String CHEF_TIME_ZONE = "chefTimeZone";
-    
+
     public final static String CHEF_DIRECTORY_COOKBOOK = "chefDirectoryCookbook";
     public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
-    
+
     //WEBDAV
     public final static String WEBDAV_BASE_URL = "webdavBaseUrl";
+    public final static String WEBDAV_FILE_URL = "webdavFileUrl";
     public final static String WEBDAV_USERNAME = "webdavUsername";
     public final static String WEBDAV_PASSWD = "webdavPassword";
+
+
+    public final static String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
+    public final static String APPLICATION_INSTANCE_BASE_URL = "applicationInstanceBaseUrl";
+    public final static String TASK_BASE_URL = "taskBaseUrl";
+
+    public final static String UNTAR_COMMAND = "untarCommand";
     /**
      * Get the property for a given key.
      *

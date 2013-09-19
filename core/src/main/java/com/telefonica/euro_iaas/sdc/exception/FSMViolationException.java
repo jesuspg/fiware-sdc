@@ -15,7 +15,7 @@ public class FSMViolationException extends Exception {
     private Status futureState;
 
     public FSMViolationException(Status previousState, Status futureState) {
-        super("Invalid transition from " + previousState  + "to " + futureState);
+        super("Invalid transition from " + previousState  + " to " + futureState);
         this.previousState = previousState;
         this.futureState = futureState;
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -15,13 +16,10 @@ import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
-import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
@@ -40,6 +38,8 @@ public interface ProductInstanceResource {
      *            the concrete release of a product to install. It also contains
      *            information about the VM where the product is going to be
      *            installed
+     * @param callback if not empty, contains the url where the result of the
+     * async operation will be sent
      *
      * @return the installed product.
      */
@@ -47,74 +47,71 @@ public interface ProductInstanceResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance install(ProductInstanceDto product)
+    Task install(ProductInstanceDto product,
+            @HeaderParam("callback") String callback)
             throws NodeExecutionException, AlreadyInstalledException;
 
     /**
      * Upgrade the selected product version.
      *
-     * @param id
-     *            the product instance id
+     * @param host the vm where the product is installed
+     * @param domain the domain where is the vm
+     * @param name the name of the product
      * @param new version the new version to upgrade to
+     * @param callback if not empty, contains the url where the result of the
+     * async operation will be sent
      *
-     * @return the configured product Instance.
-     * @throws NotTransitableException if the selected version is not compatible
-     * with the installed product
-     * @throws NodeExecutionException if any error happen during the
-     *  upgrade in node
-     * @throws FSMViolationException if try to make a forbidden transition
-     * @throws ApplicationIncompatibleException if any application which is
-     * installed on the upgraded product is not compatible with the new version
+     * @return the task
      */
-
     @PUT
-    @Path("/{pId}/{newVersion}")
+    @Path("/{host}/{domain}/{name}/{newVersion}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance upgrade(@PathParam("pId") Long id,
-            @PathParam("newVersion") String version)
-            throws NotTransitableException, NodeExecutionException,
-            ApplicationIncompatibleException, FSMViolationException;
+    Task upgrade(@PathParam("host") String host,
+            @PathParam("domain") String domain,
+            @PathParam("name") String name,
+            @PathParam("newVersion") String version,
+            @HeaderParam("callback") String callback);
 
     /**
      * Configure the selected product.
      *
-     * @param id
-     *            the product instance id
+     * @param host the vm where the product is installed
+     * @param domain the domain where is the vm
+     * @param name the name of the product
      * @param arguments
      *            the configuration properties
+     * @param callback if not empty, contains the url where the result of the
+     * async operation will be sent
      *
-     * @return the configured product.
-     * @throws FSMViolationException
-     *             if try to make a forbidden transition.
-     * @throws NodeExecutionException
-     *             if any error happen during the configuration in node
+     * @return the task.
      */
     @PUT
-    @Path("/{pId}")
+    @Path("/{host}/{domain}/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance configure(@PathParam("pId") Long id, Attributes arguments)
-            throws NodeExecutionException, FSMViolationException;
+    Task configure(@PathParam("host") String host,
+            @PathParam("domain") String domain,
+            @PathParam("name") String name,
+            @HeaderParam("callback") String callback, Attributes arguments);
 
     /**
      * Uninstall a previously installed product.
      *
-     * @param productId
-     *            the candidate to uninstall
-     * @throws ApplicationInstalledException
-     *             if the product has some applications which depend on it
-     * @throws FSMViolationException
-     *             if try to make a forbidden transition.
-     * @throws NodeExecutionException
-     *             if any error happen during the uninstallation in node
+     * @param host the vm where the product is installed
+     * @param domain the domain where is the vm
+     * @param name the name of the product
+     * @param callback if not empty, contains the url where the result of the
+     * async operation will be sent
+     * @return the task.
      */
     @DELETE
-    @Path("/{pId}")
+    @Path("/{host}/{domain}/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void uninstall(@PathParam("pId") Long productId)
-            throws NodeExecutionException, ApplicationInstalledException,
-            FSMViolationException;
+    Task uninstall(@PathParam("host") String host,
+            @PathParam("domain") String domain,
+            @PathParam("name") String name,
+            @HeaderParam("callback") String callback);
 
     /**
      * Retrieve all OSInstance created in the system.
@@ -137,7 +134,7 @@ public interface ProductInstanceResource {
      *            default <i>nullable</i>)
      * @param status
      *            the status the product (<i>nullable</i>)
-     * @return the created OS instances.
+     * @return the product instances that match with the criteria.
      */
     @GET
     @Path("/")
@@ -150,18 +147,20 @@ public interface ProductInstanceResource {
             @QueryParam("orderType") String orderType,
             @QueryParam("status") Status status);
 
+
     /**
-     * Retrieve the selected OSInstance.
-     *
-     * @param id
-     *            the osInstance id
-     * @return the created OS instances.
+     * Retrieve the selected product instance.
+     * @param host the vm where the product is installed
+     * @param domain the domain where is the vm
+     * @param name the name of the product
+     * @return the product instance
      * @throws EntityNotFoundException
-     *             if the osInstance does not exists
      */
     @GET
-    @Path("/{pId}")
+    @Path("/{host}/{domain}/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductInstance load(@PathParam("pId") Long id)
+    ProductInstance load(@PathParam("host") String host,
+            @PathParam("domain") String domain,
+            @PathParam("name") String name)
             throws EntityNotFoundException;
 }

@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,13 +14,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.multipart.MultiPart;
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 /**
  * Provides a rest api to works with Product.
@@ -40,7 +44,12 @@ public interface ProductResource {
      * @param The set of installables requires fot the recipe to install/
      * /uninstall the product
      * @return the product.
-     * @throws 
+     * @throws AlreadyExistsProductReleaseException if the Product Release exists
+     * @throws InvalidProductReleaseException if the Product Release is invalid
+     * due to either OS, Product or Product Release
+     * @throws InvalidMultiPartRequestException when the MUltipart object 
+     * in the request is null, or its size is different to three or the type sof
+     * the sifferente parts are not ProductReleaseDto, File and File 
      *             
      */
     
@@ -49,7 +58,8 @@ public interface ProductResource {
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes("multipart/mixed")
     ProductRelease insert(MultiPart multiPart)
-    	throws AlreadyExistsEntityException, InvalidEntityException;
+    	throws AlreadyExistsProductReleaseException, 
+    	InvalidProductReleaseException, InvalidMultiPartRequestException;
     
     /**
      * Retrieve all Products available created in the system.
@@ -149,12 +159,14 @@ public interface ProductResource {
     
     /**
      * Delete the ProductRelease in BBDD, the associated Recipe in chef server
-     * and the installlable files in webdav
+     * and the installable files in webdav
      * @param name
      *            the product name
      * @param version the concrete version
-     * @throws EntityNotFoundException
+     * @throws ProductReleaseNotFoundException
      *             if the Product Release does not exists
+     *  @throws ProductReleaseStillInstalledException
+     *             if the Product Release is still installed on some VMs         
      */
     
     @DELETE
@@ -162,9 +174,33 @@ public interface ProductResource {
     @Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name,
     		@PathParam("version") String version) 
-    throws EntityNotFoundException;;
+    throws ProductReleaseNotFoundException,ProductReleaseStillInstalledException;
     
+    /**
+     * Update the ProductRelease in BBDD, the associated Recipe in chef server
+     * and the installable files in webdav
+     * @param name
+     *            the product name
+     * @param version the concrete version
+     * @param MultiPart with three parts (ProductReleaseDto, File cookbook and
+     * File installable)
+     * @throws ProductReleaseNotFoundException
+     *             if the Product Release does not exists
+     *  @throws ProductReleaseStillInstalledException
+     *             if the Product Release is still installed on some VMs         
+     */
     
+    @PUT
+    @Path("/{pName}/release/{version}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes("multipart/mixed")
+    ProductRelease update(@PathParam("pName") String name,
+    	@PathParam("version") String version, MultiPart multipart) 
+    	throws ProductReleaseNotFoundException, 
+    	InvalidProductReleaseException, 
+    	InvalidProductReleaseUpdateRequestException, 
+    	InvalidMultiPartRequestException;
+      
     /**
      * Retrieve the attributes for the selected product release. The result is
      * a merge between common attributes (of the product) and the private

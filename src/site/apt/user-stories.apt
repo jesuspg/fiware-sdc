@@ -123,3 +123,15 @@ User Stories
 
   *  Every previous functionallity shall be available after this refactor so we
   shall pass the previous test criteria for every user stories.
+
+
+* 1.2.0 Version
+
+** Make asynchronous the ProductInstance management
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-744}jira entry}}
+
+    *** Test Criteria
+
+  *  Perform Install, Update, Configure and Uninstall and check the system return
+  a Tcloud Task object and the execution continues in a diferent flow.

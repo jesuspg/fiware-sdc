@@ -5,13 +5,13 @@
     <artifactId>sdc-server-rest-api</artifactId>
     <packaging>war</packaging>
     <name>sdc-server-rest-api</name>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-core</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
         <!--JERSEY DEPENDENCIES-->
         <dependency>
@@ -57,7 +57,11 @@
             <artifactId>jersey-multipart</artifactId>
             <version>1.6</version>
         </dependency>
-        
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.6</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

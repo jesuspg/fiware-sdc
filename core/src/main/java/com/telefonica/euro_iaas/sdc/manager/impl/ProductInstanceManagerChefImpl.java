@@ -1,8 +1,6 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -12,8 +10,8 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -42,7 +40,6 @@ public class ProductInstanceManagerChefImpl extends
     private IpToVM ip2vm;
     private ProductInstanceValidator validator;
 
-    private static Logger LOGGER = Logger.getLogger("ProductManagerChefImpl");
 
     /**
      * {@inheritDoc}
@@ -53,8 +50,13 @@ public class ProductInstanceManagerChefImpl extends
             ProductRelease productRelease) throws NotTransitableException,
             NodeExecutionException, FSMViolationException,
             ApplicationIncompatibleException {
+        Status previousStatus = productInstance.getStatus();
         try {
             validator.validateUpdate(productInstance, productRelease);
+            //update the status
+            productInstance.setStatus(Status.UPGRADING);
+            productInstance =  productInstanceDao.update(productInstance);
+
             VM vm = productInstance.getVM();
 
             String backupRecipe = recipeNamingGenerator
@@ -75,14 +77,23 @@ public class ProductInstanceManagerChefImpl extends
                     .getRestoreRecipe(productInstance);
             callChef(restoreRecipe, vm);
 
+            productInstance.setStatus(Status.INSTALLED);
             return productInstanceDao.update(productInstance);
 
         } catch (CanNotCallChefException sce) {
-            LOGGER.log(Level.SEVERE, sce.getMessage());
+            restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            //don't restore the status because this exception is storing the
+            //product in database so it will fail anyway
             throw new SdcRuntimeException(e);
+        } catch (RuntimeException e) { //by runtime restore the previous state
+            //restore the status
+            restoreInstance(previousStatus, productInstance);
+            throw new SdcRuntimeException(e);
+        } catch (NodeExecutionException e) {
+            restoreInstance(Status.ERROR, productInstance);
+            throw e;
         }
     }
 
@@ -93,18 +104,35 @@ public class ProductInstanceManagerChefImpl extends
     public ProductInstance configure(ProductInstance productInstance,
             List<Attribute> configuration) throws NodeExecutionException,
             FSMViolationException {
-
-        validator.validateConfigure(productInstance);
-        String recipe = recipeNamingGenerator.getInstallRecipe(
-                productInstance);
+        Status previousStatus = productInstance.getStatus();
         try {
-            callChef(productInstance.getProduct().getProduct().getName(),
-                    recipe, productInstance.getVM(), configuration);
+            validator.validateConfigure(productInstance);
+            productInstance.setStatus(Status.CONFIGURING);
+            productInstance = productInstanceDao.update(productInstance);
+
+            String recipe = recipeNamingGenerator.getInstallRecipe(
+                    productInstance);
+                callChef(productInstance.getProduct().getProduct().getName(),
+                        recipe, productInstance.getVM(), configuration);
+            productInstance.setStatus(Status.INSTALLED);
+            return productInstanceDao.update(productInstance);
+
         } catch (CanNotCallChefException e) {
+            restoreInstance(previousStatus, productInstance);
+            throw new SdcRuntimeException(e);
+        } catch (RuntimeException e) { //by runtime restore the previous state
+            //restore the status
+            restoreInstance(previousStatus, productInstance);
+            throw new SdcRuntimeException(e);
+        } catch (NodeExecutionException e) {
+            restoreInstance(Status.ERROR, productInstance);
+            throw e;
+        } catch (InvalidEntityException e) {
             throw new SdcRuntimeException(e);
         }
-        return productInstance;
+
     }
+
 
     /**
      * {@inheritDoc}
@@ -114,6 +142,8 @@ public class ProductInstanceManagerChefImpl extends
     public ProductInstance install(VM vm, ProductRelease product,
             List<Attribute> attributes) throws NodeExecutionException,
             AlreadyInstalledException {
+        Status previousStatus = null;
+        ProductInstance instance = null;
         try {
             // we need the hostname + domain so if we haven't that information,
             // shall to get it.
@@ -121,42 +151,39 @@ public class ProductInstanceManagerChefImpl extends
                 vm = ip2vm.getVm(vm.getIp());
             }
             //makes the validations
-            ProductInstance instance;
-            try {
-                ProductInstanceSearchCriteria criteria =
-                        new ProductInstanceSearchCriteria();
-                criteria.setVm(vm);
-                criteria.setProductName(product.getProduct().getName());
-                instance = productInstanceDao.findUniqueByCriteria(criteria);
-                instance.setProduct(product);
-            } catch (NotUniqueResultException e) {
-                instance = new ProductInstance(product,
-                        Status.INSTALLED, vm);
-            }
-
+            instance = getProductToInstall(product, vm);
+            previousStatus = instance.getStatus();
             //now we have the productInstance so can validate the operation
             validator.validateInstall(instance);
-            instance.setStatus(Status.INSTALLED);
-            String installRecipe = recipeNamingGenerator
-                    .getInstallRecipe(instance);
-            callChef(product.getProduct().getName(), installRecipe, vm,
-                    attributes);
+            instance.setStatus(Status.INSTALLING);
+
             if (instance.getId() != null) {
                 instance = productInstanceDao.update(instance);
             } else {
                 instance = productInstanceDao.create(instance);
             }
-            return instance;
+
+            String installRecipe = recipeNamingGenerator
+                    .getInstallRecipe(instance);
+            callChef(product.getProduct().getName(), installRecipe, vm,
+                    attributes);
+            instance.setStatus(Status.INSTALLED);
+            return productInstanceDao.update(instance);
 
         } catch (CanNotCallChefException sce) {
-            LOGGER.log(Level.SEVERE, sce.getMessage());
+            restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
             throw new SdcRuntimeException(e);
         } catch (AlreadyExistsEntityException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
             throw new SdcRuntimeException(e);
+        } catch (RuntimeException e) {
+            //by default restore the previous state when a runtime is thrown
+            restoreInstance(previousStatus, instance);
+            throw new SdcRuntimeException(e);
+        } catch (NodeExecutionException e) {
+            restoreInstance(Status.ERROR, instance);
+            throw e;
         }
     }
 
@@ -170,27 +197,31 @@ public class ProductInstanceManagerChefImpl extends
     public void uninstall(ProductInstance productInstance)
         throws NodeExecutionException,
         ApplicationInstalledException, FSMViolationException {
-        validator.validateUninstall(productInstance);
-        // at least has one
-        String uninstallRecipe = recipeNamingGenerator
-                .getUninstallRecipe(productInstance);
+        Status previousStatus = productInstance.getStatus();
         try {
+            validator.validateUninstall(productInstance);
+            productInstance.setStatus(Status.UNINSTALLING);
+            productInstance = productInstanceDao.update(productInstance);
+
+            // at least has one
+            String uninstallRecipe = recipeNamingGenerator
+                    .getUninstallRecipe(productInstance);
             callChef(uninstallRecipe, productInstance.getVM());
 
             productInstance.setStatus(Status.UNINSTALLED);
             productInstanceDao.update(productInstance);
         } catch (CanNotCallChefException e) {
-            LOGGER.log(
-                    Level.SEVERE,
-                    "Can not uninstall prodcut due to a unexpected error: "
-                            + e.getMessage());
+            restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (InvalidEntityException e) {
-            LOGGER.log(
-                    Level.SEVERE,
-                    "Can not update the ProductInstance due to: "
-                            + e.getMessage());
             throw new SdcRuntimeException(e);
+        } catch (RuntimeException e) {
+            //by default restore the previous state when a runtime is thrown
+            restoreInstance(previousStatus, productInstance);
+            throw new SdcRuntimeException(e);
+        } catch (NodeExecutionException e) {
+            restoreInstance(Status.ERROR, productInstance);
+            throw e;
         }
     }
 
@@ -236,6 +267,52 @@ public class ProductInstanceManagerChefImpl extends
         return products.get(0);
     }
 
+    @Override
+    public ProductInstance update(ProductInstance productInstance) {
+        try {
+            return productInstanceDao.update(productInstance);
+        } catch (InvalidEntityException e) {
+            throw new SdcRuntimeException(e);
+        }
+    }
+
+
+    ////////// PRIVATE METHODS ///////////
+    /**
+     * Go to previous state when a runtime exception is thrown in any method which
+     * can change the status of the product instance.
+     * @param previousStatus the previous status
+     * @param instance the product instance
+     * @return the instance.
+     */
+    private ProductInstance restoreInstance(Status previousStatus,
+            ProductInstance instance) {
+        instance.setStatus(previousStatus);
+        return update(instance);
+    }
+
+    /**
+     * Creates or find the product instance in installation operation.
+     * @param product
+     * @param vm
+     * @return
+     */
+    private ProductInstance getProductToInstall(ProductRelease product, VM vm) {
+        ProductInstance instance;
+        try {
+            ProductInstanceSearchCriteria criteria =
+                    new ProductInstanceSearchCriteria();
+            criteria.setVm(vm);
+            criteria.setProductName(product.getProduct().getName());
+            instance = productInstanceDao.findUniqueByCriteria(criteria);
+            instance.setProduct(product);
+        } catch (NotUniqueResultException e) {
+            instance = new ProductInstance(product,
+                    Status.UNINSTALLED, vm);
+        }
+        return instance;
+    }
+
     // //////////// I.O.C /////////////
     /**
      * @param productInstanceDao
@@ -259,6 +336,5 @@ public class ProductInstanceManagerChefImpl extends
     public void setValidator(ProductInstanceValidator validator) {
         this.validator = validator;
     }
-
 
 }

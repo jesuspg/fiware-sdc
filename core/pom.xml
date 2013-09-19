@@ -5,7 +5,7 @@
     <artifactId>sdc-server-core</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-core</name>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -283,7 +283,7 @@
                         <version>4.4</version>
                     </docletArtifact>
                     <additionalparam>
-                        <![CDATA[
+                     <![CDATA[
  -charset UTF-8
  -docencoding UTF-8
  -version
@@ -360,12 +360,11 @@
         <!--Don't want deploy snapshots -->
         <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
             <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <!-- Maquina donde se publica el site del proyecto -->
         <site>
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>
             <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-            </url>
+               </url>
         </site>
     </distributionManagement>
 

@@ -3,9 +3,11 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.io.File;
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -57,23 +59,40 @@ public interface ProductManager {
      */
     List<ProductRelease> findReleasesByCriteria(
             ProductReleaseSearchCriteria criteria);
-    
+
     /**
      * Insert the Product Release consisting on.
      * @param ProductRelease Object with name, version, transitableUploads..
      * @param The recipes to be uploaded to the chef server in a tar file
-     * @param The scripts/packages required to install/uninstall/configure 
-     * 		  the product
+     * @param The scripts/packages required to install/uninstall/configure
+     *           the product
+     * @throws AlreadyExistsProductReleaseException
      * @return the products releases.
      */
-    ProductRelease insert( ProductRelease productRelase, File recipes,
-    		File installable)  
-    		throws AlreadyExistsEntityException, InvalidEntityException;
-    
+    ProductRelease insert(ProductRelease productRelase,
+            File recipes, File installable)
+            throws AlreadyExistsProductReleaseException,
+            InvalidProductReleaseException;
+
     /**
      * Delete the Product Release consisting on.
      * @param ProductRelease Object with name, version, transitableUploads..
      * @return the products releases.
      */
-    void delete( ProductRelease productRelase);
+    void delete( ProductRelease productRelease )
+        throws ProductReleaseNotFoundException,
+        ProductReleaseStillInstalledException;
+
+    /**
+     * Update the Product Release (either the cookbook/installable)
+     * @param type "cookbook" or "installable"
+     * @param file to be uploaded
+     * @return productRelease
+     * @throws ProductReleaseNotFoundException
+     * @throws InvalidProductReleaseException
+     * @throws ProductReleaseNotFoundException
+     */
+    ProductRelease update(ProductRelease productRelease, File recipes,
+        File installable)  throws ProductReleaseNotFoundException,
+        InvalidProductReleaseException, ProductReleaseNotFoundException;
 }

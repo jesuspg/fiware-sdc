@@ -2,16 +2,21 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DIRECTORY_COOKBOOK;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DELETE_RECIPES_SCRIPT;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNTAR_COMMAND;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UPLOAD_RECIPES_SCRIPT;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_BASE_URL;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_FILE_URL;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.googlecode.sardine.util.SardineException;
-import com.telefonica.euro_iaas.sdc.dao.WebDavDao;
+import com.telefonica.euro_iaas.sdc.dao.FileDao;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -19,238 +24,237 @@ public class BaseInstallableManager {
 
 	private CommandExecutor commandExecutor;
 	protected SystemPropertiesProvider propertiesProvider;
-	private WebDavDao webdavDao;
+	private FileDao fileDao;
 	
 	private String INSTALLABLE_NOT_FOUND = "404";
+	private static Logger LOGGER = Logger.getLogger("BaseInstallableManager");
 	
-	protected void uploadRecipe(File cookbook, String productName) 
-		throws ShellCommandException {
-	    	
-	   
-	    String untarCommand = "tar xvf " + cookbook.getAbsolutePath() 
-	       	+ " -C "
-	       	+ propertiesProvider.getProperty(CHEF_DIRECTORY_COOKBOOK);
-	       	
-	    
-	    System.out.println("untarCommand : " + untarCommand);
-	    commandExecutor.executeCommand(untarCommand);
-	       
-	    String uploadRecipeCommand = MessageFormat.format(propertiesProvider
-	    		.getProperty(UPLOAD_RECIPES_SCRIPT), productName);
-	        
-	    System.out.println("uploadRecipeCommand : " + uploadRecipeCommand);
-	    commandExecutor.executeCommand(uploadRecipeCommand);
+	// *************** METHODS RELATED TO CHEF SERVER ******************
+	protected void uploadRecipe(File cookbook, String name) {
+	    String untarCommand = MessageFormat.format(propertiesProvider
+	    	.getProperty(UNTAR_COMMAND), cookbook.getAbsolutePath(),
+	    	propertiesProvider.getProperty(CHEF_DIRECTORY_COOKBOOK)); 
+	   try {
+		   LOGGER.log(Level.INFO, "untarCommand : " + untarCommand);
+		   commandExecutor.executeCommand(untarCommand);
+		       
+		    String uploadRecipeCommand = MessageFormat.format(propertiesProvider
+		    		.getProperty(UPLOAD_RECIPES_SCRIPT), name);
+		        
+		    LOGGER.log(Level.INFO,"uploadRecipeCommand : " + uploadRecipeCommand);
+			commandExecutor.executeCommand(uploadRecipeCommand);
+			LOGGER.log(Level.INFO, "Recipe UPLOADED ");
+			
+		} catch (ShellCommandException e) {
+			 LOGGER.log(Level.SEVERE, e.getMessage());
+			throw new SdcRuntimeException(e);
+		}
 	    cookbook.deleteOnExit();
 	        
 	}
 	    
-	protected void deleteRecipe(String productName, 
-			String version) throws ShellCommandException {
-    	
-	    	String deleteRecipeCommand = MessageFormat.format(propertiesProvider
-                    .getProperty(DELETE_RECIPES_SCRIPT), productName, version);
+	protected void deleteRecipe(String name, String version){
+		
+		String deleteRecipeCommand = MessageFormat.format(propertiesProvider
+				.getProperty(DELETE_RECIPES_SCRIPT), name, version);
         
-	    	System.out.println("deleteRecipeCommand : " + deleteRecipeCommand);
-	    	commandExecutor.executeCommand(deleteRecipeCommand);
-	    }
+		try {
+	    	LOGGER.log(Level.INFO,"deleteRecipeCommand : " 
+	    			+ deleteRecipeCommand);
+			commandExecutor.executeCommand(deleteRecipeCommand);
+			LOGGER.log(Level.INFO, "Recipe DELETED ");
+		} catch (ShellCommandException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+			throw new SdcRuntimeException(e);
+		}
+	}
+    
+	   
+	// ****  FILE UPLOAD TO WEBDAV *****//
+	   
+	protected void uploadInstallable(File installable,
+		ReleaseDto releaseDto){
 	    
-	    protected void uploadInstallable(File installable, 
-	    			ProductRelease productRelease){
-	    	
-	    	String webdavFileUrl = 
+		String webdavFileUrl = MessageFormat.format(propertiesProvider
+				.getProperty(WEBDAV_FILE_URL), 	
+				propertiesProvider.getProperty(WEBDAV_BASE_URL), 
+				releaseDto.getType(),
+				releaseDto.getName(),
+				releaseDto.getVersion());
+		        				
+	    createWebDavDirectoryStructure(releaseDto);
+	    try {
+	       	fileDao.insertFile(webdavFileUrl, installable);
+	    } catch (SardineException e) {
+	    	throw new SdcRuntimeException (e);
+	    } finally{
+	    	installable.deleteOnExit();
+	    }    
+	}
+	        
+	private void createWebDavDirectoryStructure (
+	   	ReleaseDto releaseDto){
+	        	
+	   	LOGGER.log(Level.INFO, propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	   			"/" + releaseDto.getType() + "/" + releaseDto.getName() + "/");
+	    try {
+	    	if (!fileDao.directoryExists(
 	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-    			"/product/"
-				+ productRelease.getProduct().getName() + "/"
-				+ productRelease.getVersion() + "/"
-				+ "installable-"
-				+ productRelease.getProduct().getName() + "-"
-				+ productRelease.getVersion() +  ".tar";	
-				
-	    	createWebDavDirectoryStructure(productRelease);
-	    	try {
-				webdavDao.insertFile(webdavFileUrl, installable);
-			} catch (SardineException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally
-			{
-				installable.deleteOnExit();
-			}
-	    	
-    	}
-	    
-	    
-	    protected void deleteInstallable(ProductRelease productRelease){
-    	
-    	String webdavFileUrl = 
-    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-			"/product/"
-			+ productRelease.getProduct().getName() + "/"
-			+ productRelease.getVersion() + "/"
-			+ "installable-"
-			+ productRelease.getProduct().getName() + "-"
-			+ productRelease.getVersion() +  ".tar";	
-    	
-    		try {
-	    		if (webdavDao.directoryExists(
+	    		"/" + releaseDto.getType() + "/",
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    		"/" + releaseDto.getType() + "/"
+	    		+ releaseDto.getName() + "/"))	    		
+	    			
+	        		fileDao.createDirectory(
 	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-	    				"/product/"
-	    				+ productRelease.getProduct().getName() + "/"
-	    				+ productRelease.getVersion() + "/", webdavFileUrl))	    		
-	    			webdavDao.delete(webdavFileUrl);
-	    		else
-					System.out.println ("File " + 
-							propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-							"/product/"
-							+ productRelease.getProduct().getName()	+ "/" + 
-							" does NOT exist");	
-			} catch (SardineException e) {
-				if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)){
-					System.out.println (webdavFileUrl + " does not EXIST");
-				}
-				else
-					e.printStackTrace();
+	    				"/" + releaseDto.getType() + "/"
+	    				+ releaseDto.getName());
+	        else
+	        	LOGGER.log(Level.INFO,"Directory " + 
+	        		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	        		"/" + releaseDto.getType() + "/"
+	    			+ releaseDto.getName()	+ "/" + 
+	    			" already CREATED");	
+	    } catch (SardineException e) {
+	    	throw new SdcRuntimeException(e);
+	    }
+	        	
+	    try {
+	      	if (!fileDao.directoryExists(
+	       		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	       		"/" + releaseDto.getType() + "/"
+	    		+ releaseDto.getName() + "/",
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    		"/" + releaseDto.getType() + "/"
+	       		+ releaseDto.getName() + "/"
+	       		+ releaseDto.getVersion() + "/"))
+	       			fileDao.createDirectory(
+	       				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	       				"/" + releaseDto.getType() + "/"
+	       				+ releaseDto.getName() + "/"
+	       				+ releaseDto.getVersion());	
+	       	else
+	       		LOGGER.log(Level.INFO,"Directory " + 
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			"/" + releaseDto.getType() + "/"
+	        		+ releaseDto.getName() + "/"
+	        		+ releaseDto.getVersion()	+ 
+	    			" already CREATED");
+	    } catch (SardineException e) {
+	       	throw new SdcRuntimeException(e);
+	    }
+	}	    
+	 
+	protected void deleteInstallable(ReleaseDto releaseDto){
+		String webdavFileUrl = MessageFormat.format(propertiesProvider
+				.getProperty(WEBDAV_FILE_URL), 	
+				propertiesProvider.getProperty(WEBDAV_BASE_URL), 
+				releaseDto.getType(),
+				releaseDto.getName(),
+				releaseDto.getVersion());
+    	
+    	try {
+	    	if (fileDao.directoryExists(
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			"/" + releaseDto.getType() + "/"
+	    			+ releaseDto.getName() + "/"
+	    			+ releaseDto.getVersion() + "/", webdavFileUrl))	    		
+	    			
+	    		fileDao.delete(webdavFileUrl);
+	    	else
+	    		LOGGER.log(Level.INFO,"File " + 
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			"/" + releaseDto.getType() + "/"
+					+ releaseDto.getName()	+ "/" + 
+					" does NOT exist");	
+		} catch (SardineException e) {
+			if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)){
+				LOGGER.log(Level.INFO,webdavFileUrl + " does not EXIST");
 			}
+			else
+				throw new SdcRuntimeException(e);
+		}
 			
-			deleteWebDavDirectoryStructure(productRelease);
+			deleteWebDavDirectoryStructure(releaseDto);
 	    }
     
-	    private void deleteWebDavDirectoryStructure (ProductRelease productRelease)
-	    {
+	private void deleteWebDavDirectoryStructure (
+		ReleaseDto releaseDto){
 	    		
-	    	try {	
-	    		if (webdavDao.directoryExists(
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-						"/product/"
-						+ productRelease.getProduct().getName() + "/",
-						propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-		    			"/product/"
-	    				+ productRelease.getProduct().getName() + "/"
-	    				+ productRelease.getVersion() + "/"))
+	    try {	
+	    	if (fileDao.directoryExists(
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			"/" + releaseDto.getType() + "/"
+					+ releaseDto.getName() + "/",
+					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+					"/" + releaseDto.getType() + "/"
+	    			+ releaseDto.getName() + "/"
+	    			+ releaseDto.getVersion() + "/"))
 					
-						webdavDao.delete(propertiesProvider.getProperty(WEBDAV_BASE_URL) 
-							+ "/product/"
-							+ productRelease.getProduct().getName() + "/"
-							+ productRelease.getVersion() + "/");
-				else
-					System.out.println ("Directory " + 
-							propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-			    			"/product/"
-		    				+ productRelease.getProduct().getName() + "/"
-		    				+ productRelease.getVersion() + "/" + 
-							" does NOT exist");
-	    	} catch (SardineException e) {
-	    		if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)){
-					System.out.println (
-		    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-							"/product/"
-							+ productRelease.getProduct().getName() + "/"
-							+ " does not EXIST");
-				}
-				else
-					e.printStackTrace();
+	    		fileDao.delete(propertiesProvider.getProperty(WEBDAV_BASE_URL) 
+	    			+ "/" + releaseDto.getType() + "/"
+					+ releaseDto.getName() + "/"
+					+ releaseDto.getVersion() + "/");
+			else
+				LOGGER.log(Level.INFO,"Directory " + 
+					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+						"/" + releaseDto.getType() + "/"
+		    			+ releaseDto.getName() + "/"
+		    			+ releaseDto.getVersion() + "/" + 
+						" does NOT exist");
+	    } catch (SardineException e) {
+	    	if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)){
+	    		LOGGER.log(Level.INFO,
+					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+						"/" + releaseDto.getType() + "/"
+						+ releaseDto.getName() + "/"
+						+ " does not EXIST");
 	    	}
+	    	else
+				throw new SdcRuntimeException(e);
+	    }
 	    	
-	    	try {
-	    		if (webdavDao.directoryExists(
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-	    	    		"/product/",
-	    	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-	    				"/product/"
-	    				+ productRelease.getProduct().getName() + "/"))
+	    try {
+	    	if (fileDao.directoryExists(
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    		"/" + releaseDto.getType() + "/",
+	    	   		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    	   		"/" + releaseDto.getType() + "/"
+	    			+ releaseDto.getName() + "/"))
 					
-						webdavDao.delete(propertiesProvider.getProperty(WEBDAV_BASE_URL) 
-							+ "/product/"
-							+ productRelease.getProduct().getName()+ "/");
-					
-				else
-	    	    	System.out.println ("Directory " + 
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL)
-	    				+ "/product/"
-	    				+ productRelease.getProduct().getName()	+ "/"
+	    		fileDao.delete(propertiesProvider.getProperty(WEBDAV_BASE_URL) 
+	    			+ "/" + releaseDto.getType() + "/"
+					+ releaseDto.getName()+ "/");
+			else
+				LOGGER.log(Level.INFO,"Directory " + 
+					propertiesProvider.getProperty(WEBDAV_BASE_URL)
+	    				+ 	"/" + releaseDto.getType() + "/"
+	    				+ releaseDto.getName()	+ "/"
 	    				+ "  does NOT exist");
-	    	} catch (SardineException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    } catch (SardineException e) {
+	    	throw new SdcRuntimeException(e);
+		}
+	}	
 
-	    }
+	/**
+	* @param propertiesProvider
+	*            the propertiesProvider to set
+	*/
+	public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
+		this.propertiesProvider = propertiesProvider;
+	}
+	
+	/**
+	* @param commandExecutor the commandExecutor to set
+	*/
+	public void setCommandExecutor(CommandExecutor commandExecutor) {
+		this.commandExecutor = commandExecutor;
+	}
 	    
-	    private void createWebDavDirectoryStructure (ProductRelease productRelease)
-	    {
-	    	
-	    	System.out.println(propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-			"/product/"+ productRelease.getProduct().getName() + "/");
-	    	try {
-	    		if (!webdavDao.directoryExists(
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-	    				"/product/",
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-						"/product/"
-						+ productRelease.getProduct().getName() + "/"))	    		
-				
-	    			webdavDao.createDirectory(
-						propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-						"/product/"
-						+ productRelease.getProduct().getName());
-	    		else
-					System.out.println ("Directory " + 
-							propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-							"/product/"
-							+ productRelease.getProduct().getName()	+ "/" + 
-							" already CREATED");	
-			} catch (SardineException e) {
-				e.printStackTrace();
-			}
-	    	
-	    	try {
-	    		
-	    		if (!webdavDao.directoryExists(
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-						"/product/"
-						+ productRelease.getProduct().getName() + "/",
-						propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-		    			"/product/"
-	    				+ productRelease.getProduct().getName() + "/"
-	    				+ productRelease.getVersion() + "/"))
-	    		webdavDao.createDirectory(
-		    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-		    			"/product/"
-	    				+ productRelease.getProduct().getName() + "/"
-	    				+ productRelease.getVersion());	
-	    		else
-					System.out.println ("Directory " + 
-							propertiesProvider.getProperty(WEBDAV_BASE_URL) +
-			    			"/product/"
-		    				+ productRelease.getProduct().getName() + "/"
-		    				+ productRelease.getVersion()	+ 
-							" already CREATED");
-	    	
-	    	} catch (SardineException e) {
-	    		e.printStackTrace();
-			}
-	    	
-	    }
-	    
-	    /**
-	     * @param propertiesProvider
-	     *            the propertiesProvider to set
-	     */
-	    public void setPropertiesProvider(
-	            SystemPropertiesProvider propertiesProvider) {
-	        this.propertiesProvider = propertiesProvider;
-	    }
-	    /**
-	     * @param commandExecutor the commandExecutor to set
-	     */
-	    public void setCommandExecutor(CommandExecutor commandExecutor) {
-	        this.commandExecutor = commandExecutor;
-	    }
-	    
-	    /**
-	     * @param WebDavDao the webdavDao to set
-	     */
-	    public void setWebDavDao(WebDavDao webdavDao) {
-	        this.webdavDao = webdavDao;
-	    }
+	/**
+	* @param FileDao the fileDao to set
+	*/
+	public void setFileDao(FileDao fileDao) {
+		this.fileDao = fileDao;
+	}
 }

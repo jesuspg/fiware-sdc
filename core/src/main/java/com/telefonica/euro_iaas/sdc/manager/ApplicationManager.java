@@ -1,10 +1,20 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
+import java.io.File;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriteria;
 
@@ -54,4 +64,44 @@ public interface ApplicationManager {
      */
     List<ApplicationRelease> findReleasesByCriteria(
             ApplicationReleaseSearchCriteria criteria);
+    
+    
+    /**
+     * Insert the Application Release consisting on.
+     * @param ApplicationRelease Object with name, version, transitableUploads..
+     * @param The recipes to be uploaded to the chef server in a tar file
+     * @param The scripts/packages required to install/uninstall/configure 
+     * 		  the product
+     * @throws AlreadyExistsProductReleaseException
+     * @throws InvalidProductReleaseException
+     * @throws ProductReleaseNotFoundException
+     */
+    ApplicationRelease insert(ApplicationRelease appRelase, File recipes, 
+    	File installable) throws AlreadyExistsApplicationReleaseException, 
+    	InvalidApplicationReleaseException, ProductReleaseNotFoundException;
+
+    /**
+     * Delete the Application Release consisting on.
+     * @param ApplicationRelease Object with name, version, transitableUploads..
+     * @throws ProductReleaseNotFoundException
+     * @throws ProductReleaseStillInstalledException
+     */
+    void delete(ApplicationRelease applicationRelase)
+    	throws ApplicationReleaseNotFoundException, 
+    	ApplicationReleaseStillInstalledException;
+    
+
+    /**
+     * Update the Application Release (either the cookbook/installable)
+     * @param type "cookbook" or "installable"
+     * @param file to be uploaded
+     * @return applicationRelease
+     * @throws ApplicationReleaseNotFoundException
+     * @throws InvalidApplicationReleaseException
+     * @throws ProductReleaseNotFoundException
+     */
+    ApplicationRelease update(ApplicationRelease appRelease, File recipes, 
+    	File installable) throws ApplicationReleaseNotFoundException, 
+		InvalidApplicationReleaseException, ProductReleaseNotFoundException;
+    
 }

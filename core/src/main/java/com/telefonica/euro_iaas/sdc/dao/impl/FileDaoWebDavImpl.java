@@ -6,6 +6,8 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 
@@ -14,22 +16,24 @@ import com.googlecode.sardine.Sardine;
 import com.googlecode.sardine.SardineFactory;
 import com.googlecode.sardine.util.SardineException;
 import com.sun.jersey.api.client.Client;
-import com.telefonica.euro_iaas.sdc.dao.WebDavDao;
+import com.telefonica.euro_iaas.sdc.dao.FileDao;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
- * Default implementation of WebDavDao.
+ * Default implementation of FileDao.
  *
  * @author Jesus M. Movilla
  *
  */
 
-public class WebDavDaoImpl implements WebDavDao{
+public class FileDaoWebDavImpl implements FileDao{
 
 	SystemPropertiesProvider propertiesProvider;
     Client client;
     Sardine sardine;
-	
+    private static Logger LOGGER = Logger.getLogger("FileDaoWebDavImpl");
+    
 	/**
      * {@inheritDoc}
      */
@@ -40,7 +44,7 @@ public class WebDavDaoImpl implements WebDavDao{
 				SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME), 
 					propertiesProvider.getProperty(WEBDAV_PASSWD));
 			sardine.createDirectory(webdavDirectoryUrl);
-			System.out.println(webdavDirectoryUrl + " CREATED ");
+			LOGGER.log(Level.INFO,webdavDirectoryUrl + " CREATED ");
 	}
 	
     /**
@@ -57,10 +61,10 @@ public class WebDavDaoImpl implements WebDavDao{
 			data = FileUtils.readFileToByteArray(
 					new File(installable.getAbsolutePath()));
 	    	sardine.put(webdavFileUrl, data);
-	    	System.out.println(webdavFileUrl + " INSERTED ");
+	    	LOGGER.log(Level.INFO,webdavFileUrl + " INSERTED ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new SdcRuntimeException(e);
 		}
     	
 		return  installable.getAbsolutePath();
@@ -75,7 +79,7 @@ public class WebDavDaoImpl implements WebDavDao{
     	sardine = SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME), 
 		propertiesProvider.getProperty(WEBDAV_PASSWD));
 		sardine.delete(webdavUrl);
-		System.out.println(webdavUrl + " DELETED ");
+		LOGGER.log(Level.INFO,webdavUrl + " DELETED ");
 	}
     
     /**
@@ -92,7 +96,7 @@ public class WebDavDaoImpl implements WebDavDao{
 		for (DavResource res : resources)
 		{
 		    if (res.getAbsoluteUrl().equals(webdavUrl)){  
-		    	System.out.println(webdavUrl + " exists in " +
+		    	LOGGER.log(Level.INFO,webdavUrl + " exists in " +
 		    			directoryBase);
 		    	exist = true;
 		    }

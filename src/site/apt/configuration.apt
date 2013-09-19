@@ -10,35 +10,35 @@ System Configuration
   The list bellow show the different properties the system is using and their meaning:
 
   *  <<uninstallProductRecipeTemplate>> = The template name used in uninstall
-  prouctsrecipes. It will receive the product name and version (<<<{0}::{1}_uninstall>>>).
+  prouctsrecipes. It will receive the product name and version (<<<\{0\}::\{1\}_uninstall>>>).
 
   *  <<installProductRecipeTemplate>> = The template name used in install
-  proucts recipes. It will receive the product name and version (<<<{0}::{1}_install>>>).
+  proucts recipes. It will receive the product name and version (<<<\{0\}::\{1\}_install>>>).
 
   *  <<backupProductRecipeTemplate>> = The template name used in backup
-  proucts recipes. It will receive the product name and version (<<<{0}::{1}_backup>>>).
+  proucts recipes. It will receive the product name and version (<<<\{0\}::\{1\}_backup>>>).
 
   *  <<restoreProductRecipeTemplate>> = The template name used in restore
-  proucts recipes. It will receive the product name and version (<<<{0}::{1}_restore>>>).
+  proucts recipes. It will receive the product name and version (<<<\{0\}::\{1\}_restore>>>).
 
 
   *  <<uninstallAppRecipeTemplate>> = The template name used in uninstall applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_uninstall_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<\{1\}::\{2\}_uninstall_\{3\}>>>).
 
   *  <<installAppRecipeTemplate>> = The template name used in install applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_install_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<\{1\}::\{2\}_install_\{3\}>>>).
 
   *  <<backupAppRecipeTemplate>> = The template name used in backup applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_backup_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<\{1\}::\{2\}_backup_\{3\}>>>).
 
   *  <<restoreAppRecipeTemplate>> = The template name used in restore applications. It will
   receive the application type (war, etc.), application name, version, and the products
-  name (orderded) separated by <<productListSeparator>>  (<<<{1}::{2}_restore_{3}>>>).
+  name (orderded) separated by <<productListSeparator>>  (<<<\{1\}::\{2\}_restore_\{3\}>>>).
 
-  *  <<productListTemplate>> = The product list item, parametrized by product name and version (<<<{0}-{1}>>>).
+  *  <<productListTemplate>> = The product list item, parametrized by product name and version (<<<\{0\}-\{1\}>>>).
 
   *  <<productListSeparator>> = The product list separator (<<<->>>).
 
@@ -48,12 +48,29 @@ System Configuration
 
   *  <<chefServerUrl>> = The Chef server URL (<<<http://109.231.82.12:4000>>>).
 
-  *  <<chefServerNodesPath>> = The path to access to chef's nodes (<<</nodes/{0}>>>).
+  *  <<chefServerNodesPath>> = The path to access to chef's nodes (<<</nodes/\{0\}>>>).
 
   *  <<chefDateFormat>> = The date format to send the Rest request to Chef (<<< yyyy-MM-dd'T'HH:mm:ss'Z'>>>).
 
   *  <<chefTimeZone>> = The time zone to send the Rest request to Chef (<<<GMT>>>).
 
   *  <<chefClientUrlTemplate>> = The template url where the sdc-client is
-   (parametrized with client url) (<<< http://{0}:9990/sdc-client>>>).
+   (parametrized with client url) (<<< http://\{0\}:9990/sdc-client>>>).
 
+  *  <<untarCommand>> = The command to untar the recipes.
+
+  *  <<uploadRecipesScript>> = The script to upload the recipe to Chef Server.
+  Is parametrized with the name of the recipe.
+
+  * <<deleteRecipesScript>> = The script to delete the recipe from Chef Server.
+  I parametrized by the recipe's name and its version.
+
+  * <<productInstanceBaseUrl>> = The template url where the product is. Is parametrized
+  by the product id, the vm's hostname  and domain where the machine is installed
+  and the product's name (<<<http://localhost:8080/sdc/rest/product/\{1\}/\{2\}/\{3\}>>>)
+
+  * <<applicationInstanceBaseUrl>> = The template url where the product is. Is parametrized
+  by the product id, the vm's hostname  and domain where the machine is installed
+  and the application's name (<<<http://localhost:8080/sdc/rest/application/\{1\}/\{2\}/\{3\}>>>)
+
+  * <<taskBaseUrl>> = The url template where the task can be viewed (<<<http://localhost:8080/sdc/rest/task/\{0\}>>>).

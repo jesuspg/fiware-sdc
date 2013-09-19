@@ -21,5 +21,7 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductReleaseDaoJpaImpl"/>
     <bean id="applicationReleaseDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationReleaseDaoJpaImpl"/>
+    <bean id="taskDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.TaskDaoJpaImpl"/>
 
 </beans>

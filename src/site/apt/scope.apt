@@ -2,8 +2,6 @@ Scope
 
 * Limitations
 
-  * This version is only a <<prototipe>> (<<working to fix it>>).
-
   * No assynchrony mechanism are implemented (note that operations could take many time) (<<working to fix it>>).
 
   * We provides basic calls (install, uninstall, configure, etc.) but no combinations of them.

@@ -45,4 +45,10 @@ public class AlreadyInstalledException extends Exception {
     public void setInstace(InstallableInstance instace) {
         this.instace = instace;
     }
+
+    @Override
+    public String getMessage() {
+        return "The " + instace.getClass().getSimpleName() + " " + instace.getId() +
+        " is already installed.";
+    }
 }

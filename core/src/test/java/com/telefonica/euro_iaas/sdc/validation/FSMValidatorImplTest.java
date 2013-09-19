@@ -196,13 +196,8 @@ public class FSMValidatorImplTest {
         FSMValidatorImpl validator = new FSMValidatorImpl();
         //possible transitions
         validator.validate(instance, Status.ERROR);
+        validator.validate(instance, Status.INSTALLING);
         //invalid transitions
-        try{
-            validator.validate(instance, Status.INSTALLING);
-            TestCase.fail("FSMViolationException expected");
-        } catch (FSMViolationException e) {
-            //it's ok
-        }
         try{
             validator.validate(instance, Status.CONFIGURING);
             TestCase.fail("FSMViolationException expected");
@@ -237,13 +232,8 @@ public class FSMValidatorImplTest {
 
         FSMValidatorImpl validator = new FSMValidatorImpl();
         //possible transitions
+        validator.validate(instance, Status.INSTALLING);
         //invalid transitions
-        try{
-            validator.validate(instance, Status.INSTALLING);
-            TestCase.fail("FSMViolationException expected");
-        } catch (FSMViolationException e) {
-            //it's ok
-        }
         try{
             validator.validate(instance, Status.INSTALLED);
             TestCase.fail("FSMViolationException expected");

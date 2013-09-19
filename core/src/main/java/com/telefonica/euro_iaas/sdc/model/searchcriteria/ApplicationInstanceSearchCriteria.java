@@ -3,14 +3,14 @@ package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
  * Provides some criteria to search ProductInstance entities.
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo 
  *
  */
 public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
@@ -81,7 +81,7 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param vm
      */
     public ApplicationInstanceSearchCriteria(List<Status> status,
-            ProductInstance product, VM vm, String applicationName) {
+    		ProductInstance product, VM vm, String applicationName) {
         this.status = status;
         this.product = product;
         this.vm = vm;
@@ -110,7 +110,7 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
     }
 
     /**
-     * @param product the product to set
+     * @param product the application to set
      */
     public void setProduct(ProductInstance product) {
         this.product = product;

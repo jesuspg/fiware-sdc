@@ -8,9 +8,9 @@ Working log
 *-------------------------------*-----------------------*-----------------*-----------------*--------------------*----------------*-----------------*
 | UC                            | Basic Functionallity  | Validations     |Call Chef RestAPI| Transacctional Env | Assynchrony    | Integration Test|
 *-------------------------------*-----------------------*-----------------*-----------------*--------------------*----------------*-----------------*
-| ProductInstanceManagement     | implemented           | not implemented | not implemented | not implemented    | not implemented| not implemented |
+| ProductInstanceManagement     | implemented           | implemented     | implemented     | not implemented    |   implemented  | not implemented |
 *-------------------------------*-----------------------*-----------------*-----------------*--------------------*----------------*-----------------*
-| ApplicationInstanceManagement | implemented           | not implemented | not implemented | not implemented    | not implemented| not implemented |
+| ApplicationInstanceManagement | implemented           | implemented     | implemented     | not implemented    | not implemented| not implemented |
 *-------------------------------*-----------------------*-----------------*-----------------*--------------------*----------------*-----------------*
 | ProductReleaseManagement      | partially implemented | not implemented | not implemented | not implemented    | not implemented| not implemented |
 *-------------------------------*-----------------------*-----------------*-----------------*--------------------*----------------*-----------------*
@@ -26,7 +26,7 @@ Working log
 *-----------------*---------*
 | Performance and load test| Pending |
 *-----------------*---------*
-| SDC-Client      | Pending |
+| SDC-Client      | Implemented |
 *-----------------*---------*
 | Documentation (User guide, troubleshoting, etc) | Pending |
 *-----------------*---------*

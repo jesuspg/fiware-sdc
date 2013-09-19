@@ -11,9 +11,9 @@ import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.xmlsolutions.annotation.Requirement;
 
@@ -33,10 +33,10 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
     @Override
     public void validateInstall(ProductInstance product)
             throws AlreadyInstalledException {
-        if (product.getId() != null &&
-            product.getStatus() != Status.UNINSTALLED &&
-            product.getStatus() != Status.ERROR) {
-                throw new AlreadyInstalledException(product);
+        try {
+            fsmValidator.validate(product, Status.INSTALLING);
+        } catch (FSMViolationException e) {
+            throw new AlreadyInstalledException(product);
         }
     }
 

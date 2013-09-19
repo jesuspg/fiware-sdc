@@ -39,7 +39,7 @@ import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
  * @author Sergio Arroyo
  *
  */
-public class ProductManagerChefImplTest {
+public class ProductInstanceManagerChefImplTest {
 
     private SystemPropertiesProvider propertiesProvider;
     private ProductInstanceDao productInstanceDao;
@@ -127,7 +127,7 @@ public class ProductManagerChefImplTest {
                 any(ProductInstance.class));
         verify(productInstanceDao, times(1)).findUniqueByCriteria(
                 any(ProductInstanceSearchCriteria.class));
-        verify(productInstanceDao, times(0)).update(any(ProductInstance.class));
+        verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
 
         verify(chefNodeDao, times(2)).loadNode(host);
         verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());
@@ -153,7 +153,7 @@ public class ProductManagerChefImplTest {
                 any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
-        verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
+        verify(productInstanceDao, times(2)).update(any(ProductInstance.class));
 
         verify(chefNodeDao, times(2)).loadNode(host);
         verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());

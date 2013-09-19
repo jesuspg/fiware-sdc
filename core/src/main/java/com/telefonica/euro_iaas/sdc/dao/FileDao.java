@@ -9,7 +9,7 @@ import com.googlecode.sardine.util.SardineException;
  * @author Jesus M. Movilla
  *
  */
-public interface WebDavDao {
+public interface FileDao {
 
     /**
      * Create the webdavDirectory directory into the webdav

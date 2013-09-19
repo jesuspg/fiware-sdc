@@ -14,36 +14,52 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ReleaseDto {
 
-    private String product;
+    private String name;
     private String version;
+    private String type;
 
     /**
      * Default constructor
      */
     public ReleaseDto() {
     }
-
+   
     /**
      * Constructor of the class
-     * @param product
+     * @param name
      * @param version
+     * @param type
      */
-    public ReleaseDto(String product, String version) {
-        this.product = product;
+    public ReleaseDto(String name, String version, String type) {
+        this.name = name;
         this.version = version;
+        this.type = type;
     }
+    
+    /**
+     * @return the type
+     */
+    public String getType() {
+		return type;
+	}
+    /**
+     * @param type the type to set
+     */
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    /**
-     * @return the product
+	/**
+     * @return the name
      */
-    public String getProduct() {
-        return product;
+    public String getName() {
+        return name;
     }
     /**
-     * @param product the product to set
+     * @param name the name to set
      */
-    public void setProduct(String product) {
-        this.product = product;
+    public void setName(String name) {
+        this.name = name;
     }
     /**
      * @return the version

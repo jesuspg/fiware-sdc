@@ -65,7 +65,16 @@
              Defines the alternative flows in Provisioning use cases and implements
              them.
             </action>
-
+        </release>
+        <release version="1.2.0" date="2011-08-19"
+        description="Make ProductInstance management asynchornous and add funtions
+        to manage the product and product releases">
+            <action dev="jmovilla" type="add">
+            ProductRelease management to add new products and releases to the catalog.
+            </action>
+            <action dev="sarroyo" type="update">
+             Make ProductInstance management asynchronous
+            </action>
         </release>
     </body>
 </document>

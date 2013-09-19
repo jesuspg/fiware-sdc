@@ -47,5 +47,43 @@
         </xuse:classification>
         <xuse:stakeholder-ref refId="scrum-master" />
     </xuse:req>
+
+    <xuse:req strength="shall" id="RF002" version="1.2.0"
+        creation-date="2011-08-18">
+        <xuse:title>ProductInstance management shall be asynchornous</xuse:title>
+        <xuse:description>
+          The operation will return a TCloud task in at the moment of the execution.
+          After that the flow continues while the client is liberated.
+        </xuse:description>
+        <xuse:classification>
+            <xuse:type is-feature="true">constraint</xuse:type>
+            <xuse:status>implemented</xuse:status>
+            <xuse:package>system</xuse:package>
+        </xuse:classification>
+        <xuse:stakeholder-ref refId="product-owner" />
+    </xuse:req>
+
+
+    <xuse:req strength="shall" id="BR001" version="1.2.0"
+        creation-date="2011-08-18">
+        <xuse:title>Rollback condition for ProductInstances</xuse:title>
+        <xuse:description>
+            During the execution the flow could fail. The product instance
+            shall be in a consistent status after the operation.
+            There rule will be:
+            <xhtml:ul>
+                <xhtml:li>If the execution fails during the node is performing the
+                action, the new status will be ERROR.</xhtml:li>
+                <xhtml:li>Otherwise the new status will be the previous status.</xhtml:li>
+            </xhtml:ul>
+        </xuse:description>
+        <xuse:classification>
+            <xuse:type is-feature="true">constraint</xuse:type>
+            <xuse:status>implemented</xuse:status>
+            <xuse:package>system</xuse:package>
+        </xuse:classification>
+        <xuse:stakeholder-ref refId="architect" />
+    </xuse:req>
+
 </xuse:requirements>
 

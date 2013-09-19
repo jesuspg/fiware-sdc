@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,20 +12,18 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
-import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
+import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.Task;
+import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -41,29 +40,34 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCr
 @Scope("request")
 public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
-    @InjectParam("productInstanceManager")
-    private ProductInstanceManager productInstanceManager;
+    @InjectParam("productInstanceAsyncManager")
+    private ProductInstanceAsyncManager productInstanceAsyncManager;
     @InjectParam("productManager")
     private ProductManager productManager;
+    @InjectParam("taskManager")
+    private TaskManager taskManager;
 
     /**
      * {@inheritDoc}
-     *
-     * @throws AlreadyInstalledException
      */
     @Override
-    public ProductInstance install(ProductInstanceDto product)
-            throws NodeExecutionException, AlreadyInstalledException {
+    public Task install(ProductInstanceDto product, String callback) {
         try {
-            Product p = productManager.load(product.getProduct().getProduct());
+            Product p = productManager.load(product.getProduct().getName());
             ProductRelease loadedProduct = productManager.load(p, product
                     .getProduct().getVersion());
             List<Attribute> attributes = product.getAttributes();
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
             }
-            return productInstanceManager.install(product.getVm(),
-                    loadedProduct, attributes);
+
+            Task task = createTask(MessageFormat.format(
+                    "Install product {0} in  VM {1}{2}",
+                    product.getProduct().getName(),
+                    product.getVm().getHostname(), product.getVm().getDomain()));
+            productInstanceAsyncManager.install(product.getVm(), loadedProduct,
+                    attributes, task, callback);
+            return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -73,12 +77,14 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      * {@inheritDoc}
      */
     @Override
-    public void uninstall(Long productId) throws NodeExecutionException,
-            ApplicationInstalledException, FSMViolationException {
+    public Task uninstall(String host, String domain, String name,
+            String callback) {
         try {
-            ProductInstance productInstance = productInstanceManager
-                    .load(productId);
-            productInstanceManager.uninstall(productInstance);
+            ProductInstance product = load(host, domain, name);
+            Task task = createTask(MessageFormat.format(
+                    "Uninstall product {0} in  VM {1}{2}", name, host, domain));
+            productInstanceAsyncManager.uninstall(product, task, callback);
+            return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
@@ -87,51 +93,59 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     /**
      * {@inheritDoc}
      */
-
     @Override
-    public ProductInstance upgrade(Long id, String newVersion)
-            throws NotTransitableException, NodeExecutionException,
-            ApplicationIncompatibleException, FSMViolationException {
-        ProductInstance productInstance;
+    public Task upgrade(String host, String domain, String name,
+            String version, String callback) {
         try {
-            productInstance = productInstanceManager.load(id);
+            ProductInstance product = load(host, domain, name);
+            //work around to fix problem with lazy init when validator looks
+            //for transitable releases.
+            product.getProduct().getTransitableReleases().size();
+            ProductRelease newRelease = productManager.load(product
+                    .getProduct().getProduct(), version);
+            Task task = createTask(MessageFormat.format(
+                    "Upgrade product {0} in  VM {1}{2} from version {3} to {4}",
+                    name, host, domain, product.getProduct().getVersion(), version));
+            productInstanceAsyncManager.upgrade(product, newRelease, task, callback);
+            return task;
         } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(
-                    "There is no productInstance with id " + id, e);
+            throw new SdcRuntimeException(e);
         }
-
-        ProductRelease productRelease;
-        try {
-            productRelease = productManager.load(productInstance.getProduct()
-                    .getProduct(), newVersion);
-            productInstance = productInstanceManager.upgrade(productInstance,
-                    productRelease);
-        } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(
-                    "There is no productInstance with id " + id, e);
-        } catch (NotTransitableException nte) {
-            throw new SdcRuntimeException(
-                    "This upgrade requested is NOT allowed for "
-                            + "productInstance with id " + id, nte);
-        }
-        return productInstance;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ProductInstance configure(Long id, Attributes arguments)
-            throws NodeExecutionException, FSMViolationException {
-        ProductInstance product;
+    public Task configure(String host, String domain, String name,
+            String callback, Attributes arguments) {
         try {
-            product = productInstanceManager.load(id);
+            ProductInstance product = load(host, domain, name);
+            Task task = createTask(MessageFormat.format(
+                    "Configure product {0} in  VM {1}{2}", name, host, domain));
+            productInstanceAsyncManager.configure(product, arguments, task,
+                    callback);
+            return task;
         } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(
-                    "There is no productInstance with id " + id, e);
+            throw new SdcRuntimeException(e);
         }
-        productInstanceManager.configure(product, arguments);
-        return product;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInstance load(String host, String domain, String name)
+            throws EntityNotFoundException {
+        ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
+        criteria.setProductName(name);
+        criteria.setVm(new VM(host, domain));
+        try {
+            return productInstanceAsyncManager.loadByCriteria(criteria);
+        } catch (NotUniqueResultException e) {
+            throw new EntityNotFoundException(ProductInstance.class, "id",
+                    criteria);
+        }
     }
 
     /**
@@ -164,15 +178,13 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             criteria.setOrderBy(orderType);
         }
 
-        return productInstanceManager.findByCriteria(criteria);
+        return productInstanceAsyncManager.findByCriteria(criteria);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ProductInstance load(Long id) throws EntityNotFoundException {
-        return productInstanceManager.load(id);
-    }
 
+    private Task createTask(String description) {
+        Task task = new Task(TaskStates.RUNNING);
+        task.setDescription(description);
+        return taskManager.createTask(task);
+    }
 }
