@@ -28,21 +28,23 @@ public class EnvironmentInstanceManagerImpl implements
 		EnvironmentInstanceManager {
 
 	private EnvironmentInstanceValidator validator;
-    private ProductInstanceDao productInstanceDao;
-    private EnvironmentDao environmentDao;
-    private EnvironmentInstanceDao environmentInstanceDao;
-    private static Logger LOGGER = Logger.getLogger("EnvironmentManagerInstanceImpl");
-    
+	private ProductInstanceDao productInstanceDao;
+	private EnvironmentDao environmentDao;
+	private EnvironmentInstanceDao environmentInstanceDao;
+	private static Logger LOGGER = Logger
+			.getLogger("EnvironmentManagerInstanceImpl");
+
 	@Override
 	public EnvironmentInstance load(Long id)
 			throws EnvironmentInstanceNotFoundException {
-    	try {
+		try {
 			return environmentInstanceDao.load(id);
 		} catch (EntityNotFoundException e) {
-			String environmentInstanceNotFoundException = " The Environment Instance" +
-				id +	" DOES NOT EXIST ";
+			String environmentInstanceNotFoundException = " The Environment Instance"
+					+ id + " DOES NOT EXIST ";
 			LOGGER.log(Level.SEVERE, environmentInstanceNotFoundException);
-			throw new EnvironmentInstanceNotFoundException(environmentInstanceNotFoundException);
+			throw new EnvironmentInstanceNotFoundException(
+					environmentInstanceNotFoundException);
 		}
 	}
 
@@ -60,201 +62,224 @@ public class EnvironmentInstanceManagerImpl implements
 
 	@Override
 	public EnvironmentInstance insert(EnvironmentInstance environmentInstance)
-			throws EnvironmentNotFoundException, ProductInstanceNotFoundException,
-			InvalidEnvironmentInstanceException, AlreadyExistsEnvironmentInstanceException {
-		
+			throws EnvironmentNotFoundException,
+			ProductInstanceNotFoundException,
+			InvalidEnvironmentInstanceException,
+			AlreadyExistsEnvironmentInstanceException {
+
 		validator.validateInsert(environmentInstance);
-		
-		return insertEnvironmentInstanceBBDD (environmentInstance);
+
+		return insertEnvironmentInstanceBBDD(environmentInstance);
 	}
 
 	@Override
-	public void delete(Long Id)
-			throws EnvironmentInstanceNotFoundException, 
+	public void delete(Long Id) throws EnvironmentInstanceNotFoundException,
 			ApplicationInstanceStillInstalledException {
-		
+
 		deleteEnvironmentInstanceBBDD(Id);
 	}
 
 	@Override
 	public EnvironmentInstance update(EnvironmentInstance environmentInstance)
 			throws EnvironmentInstanceNotFoundException,
-			EnvironmentNotFoundException, 
-			ProductInstanceNotFoundException, InvalidEnvironmentInstanceException {
-		
-		validator.validateUpdate(environmentInstance);   	
+			EnvironmentNotFoundException, ProductInstanceNotFoundException,
+			InvalidEnvironmentInstanceException {
+
+		validator.validateUpdate(environmentInstance);
 		return updateEnvironmentInstanceBBDD(environmentInstance);
 	}
-	
-	
-	
-    private EnvironmentInstance insertEnvironmentInstanceBBDD (
-    		EnvironmentInstance environmentInstance) 
-    		throws EnvironmentNotFoundException, ProductInstanceNotFoundException,
-    		InvalidEnvironmentInstanceException, AlreadyExistsEnvironmentInstanceException {
-    	
-    	ProductInstance productInstance;
-    	Environment environment = environmentInstance.getEnvironment();
-    	Environment environmentEnv; 
-    	List<ProductInstance> productInstances = environmentInstance.getProductInstances();
-    	List<ProductInstance> productInstancesEnvironment = 
-    			new ArrayList<ProductInstance>();
-    	EnvironmentInstance envInstance;
-    	
-    	//Environment
-    	try {
-    		environmentEnv = environmentDao.load(environment.getName());
+
+	private EnvironmentInstance insertEnvironmentInstanceBBDD(
+			EnvironmentInstance environmentInstance)
+			throws EnvironmentNotFoundException,
+			ProductInstanceNotFoundException,
+			InvalidEnvironmentInstanceException,
+			AlreadyExistsEnvironmentInstanceException {
+
+		ProductInstance productInstance;
+		Environment environment = environmentInstance.getEnvironment();
+		Environment environmentEnv;
+		List<ProductInstance> productInstances = environmentInstance
+				.getProductInstances();
+		List<ProductInstance> productInstancesEnvironment = new ArrayList<ProductInstance>();
+		EnvironmentInstance envInstance;
+
+		// Environment
+		try {
+			environmentEnv = environmentDao.load(environment.getName());
 		} catch (EntityNotFoundException e) {
-			String environmentNotFoundException = "The Environment " +
-					environment.getName() + " NOT FOUND ";
+			String environmentNotFoundException = "The Environment "
+					+ environment.getName() + " NOT FOUND ";
 			LOGGER.log(Level.SEVERE, environmentNotFoundException);
-			throw new EnvironmentNotFoundException (environmentNotFoundException);
-			
+			throw new EnvironmentNotFoundException(environmentNotFoundException);
+
 		}
-    	
-    	//ProductInstances
-    	for (int i =0; i < productInstances.size(); i++) {
-    		ProductInstance pInstance = productInstances.get(i);
-    		try {
+
+		// ProductInstances
+		for (int i = 0; i < productInstances.size(); i++) {
+			ProductInstance pInstance = productInstances.get(i);
+			try {
 				productInstance = productInstanceDao.load(pInstance.getId());
 			} catch (EntityNotFoundException e) {
-				String productInstanceNotFoundException = " The Product Instance" +
-						pInstance.getProduct().getProduct().getName() +	
-						"with id " + pInstance.getId() + "  DOES NOT EXIST ";
+				String productInstanceNotFoundException = " The Product Instance"
+						+ pInstance.getProductRelease().getProduct().getName()
+						+ "with id " + pInstance.getId() + "  DOES NOT EXIST ";
 				LOGGER.log(Level.SEVERE, productInstanceNotFoundException);
-				throw new ProductInstanceNotFoundException(productInstanceNotFoundException);
+				throw new ProductInstanceNotFoundException(
+						productInstanceNotFoundException);
 			}
-    		productInstancesEnvironment.add(productInstance);
-    	}
-    	
-    	//EnvironmentInstance
-    	EnvironmentInstance environmentInstanceIn =
-    			new EnvironmentInstance (environmentEnv, productInstancesEnvironment);   	
-    	try {
-			envInstance = environmentInstanceDao.load(environmentInstance.getId());
+			productInstancesEnvironment.add(productInstance);
+		}
+
+		// EnvironmentInstance
+		EnvironmentInstance environmentInstanceIn = new EnvironmentInstance(
+				environmentEnv, productInstancesEnvironment);
+		try {
+			envInstance = environmentInstanceDao.load(environmentInstance
+					.getId());
 		} catch (EntityNotFoundException e) {
 			try {
-				envInstance = environmentInstanceDao.create(environmentInstanceIn);
+				envInstance = environmentInstanceDao
+						.create(environmentInstanceIn);
 			} catch (InvalidEntityException e1) {
-				String invalidEnvironmentInstanceException = " The Environment " +
-						environmentInstanceIn.getEnvironment().getName() + " with ID = " +
-						environmentInstanceIn.getId() +	" is INVALID ";
+				String invalidEnvironmentInstanceException = " The Environment "
+						+ environmentInstanceIn.getEnvironment().getName()
+						+ " with ID = "
+						+ environmentInstanceIn.getId()
+						+ " is INVALID ";
 				LOGGER.log(Level.SEVERE, invalidEnvironmentInstanceException);
-				throw new InvalidEnvironmentInstanceException(invalidEnvironmentInstanceException);
+				throw new InvalidEnvironmentInstanceException(
+						invalidEnvironmentInstanceException);
 
 			} catch (AlreadyExistsEntityException e1) {
-				String alreadyExistsEnvironmentInstanceException = " The Environment " +
-						environmentInstanceIn.getEnvironment().getName() +	 "with ID " +
-						environmentInstanceIn.getId() +	" ALREADY EXISTS ";
-				LOGGER.log(Level.SEVERE, alreadyExistsEnvironmentInstanceException);
-				throw new AlreadyExistsEnvironmentInstanceException(alreadyExistsEnvironmentInstanceException);
+				String alreadyExistsEnvironmentInstanceException = " The Environment "
+						+ environmentInstanceIn.getEnvironment().getName()
+						+ "with ID "
+						+ environmentInstanceIn.getId()
+						+ " ALREADY EXISTS ";
+				LOGGER.log(Level.SEVERE,
+						alreadyExistsEnvironmentInstanceException);
+				throw new AlreadyExistsEnvironmentInstanceException(
+						alreadyExistsEnvironmentInstanceException);
 
 			}
-					
+
 		}
-    	return envInstance;
-    }
-	
-    
-    private EnvironmentInstance updateEnvironmentInstanceBBDD (
-    		EnvironmentInstance environmentInstance) throws
-    		EnvironmentInstanceNotFoundException, 
-            ProductInstanceNotFoundException, 
-            EnvironmentNotFoundException {
-    	
-    	ProductInstance productInstance;
-    	Environment environment;
-    	List<ProductInstance> productInstances = environmentInstance.getProductInstances();
-    	List <ProductInstance> existedProductInstances = new ArrayList<ProductInstance>();
-    	
-    	LOGGER.log(Level.INFO, "Environment Instance Before Loading " + 
-					environmentInstance.getEnvironment().getName() + " with ID "
-					+ environmentInstance.getId() );
-		//Environment
-    	try {
+		return envInstance;
+	}
+
+	private EnvironmentInstance updateEnvironmentInstanceBBDD(
+			EnvironmentInstance environmentInstance)
+			throws EnvironmentInstanceNotFoundException,
+			ProductInstanceNotFoundException, EnvironmentNotFoundException {
+
+		ProductInstance productInstance;
+		Environment environment;
+		List<ProductInstance> productInstances = environmentInstance
+				.getProductInstances();
+		List<ProductInstance> existedProductInstances = new ArrayList<ProductInstance>();
+
+		LOGGER.log(Level.INFO, "Environment Instance Before Loading "
+				+ environmentInstance.getEnvironment().getName() + " with ID "
+				+ environmentInstance.getId());
+		// Environment
+		try {
 			environment = environmentDao.load(environmentInstance
 					.getEnvironment().getName());
 		} catch (EntityNotFoundException e) {
-			String environmentNotFoundException = "The Environment " +
-					environmentInstance.getEnvironment().getName() + " NOT FOUND ";
+			String environmentNotFoundException = "The Environment "
+					+ environmentInstance.getEnvironment().getName()
+					+ " NOT FOUND ";
 			LOGGER.log(Level.SEVERE, environmentNotFoundException);
-			throw new EnvironmentNotFoundException (environmentNotFoundException);
+			throw new EnvironmentNotFoundException(environmentNotFoundException);
 		}
 
-    	//ProductInstances
-    	for (int i =0; i < productInstances.size(); i++) {
-    		ProductInstance pInstance = productInstances.get(i);
-    		try {
+		// ProductInstances
+		for (int i = 0; i < productInstances.size(); i++) {
+			ProductInstance pInstance = productInstances.get(i);
+			try {
 				productInstance = productInstanceDao.load(pInstance.getId());
 			} catch (EntityNotFoundException e) {
-				String productInstanceNotFoundException = " The Product Instance" +
-						pInstance.getProduct().getProduct().getName() +	
-						"with id " + pInstance.getId() + "  DOES NOT EXIST ";
+				String productInstanceNotFoundException = " The Product Instance"
+						+ pInstance.getProductRelease().getProduct().getName()
+						+ "with id " + pInstance.getId() + "  DOES NOT EXIST ";
 				LOGGER.log(Level.SEVERE, productInstanceNotFoundException);
-				throw new ProductInstanceNotFoundException(productInstanceNotFoundException);
+				throw new ProductInstanceNotFoundException(
+						productInstanceNotFoundException);
 			}
-    		existedProductInstances.add(productInstance);
-    	}
-    	
-    	environmentInstance.setProductInstances(existedProductInstances);
-    	environmentInstance.setEnvironment(environment );
-		
-		//Update Environment Instance
+			existedProductInstances.add(productInstance);
+		}
+
+		environmentInstance.setProductInstances(existedProductInstances);
+		environmentInstance.setEnvironment(environment);
+
+		// Update Environment Instance
 		try {
-			environmentInstance = environmentInstanceDao.update(environmentInstance);
+			environmentInstance = environmentInstanceDao
+					.update(environmentInstance);
 		} catch (InvalidEntityException e) {
-			String InvalidEnvironmentInstanceNotFoundException = " The Environment Instance" +
-					environmentInstance.getEnvironment().getName() + " with ID " +
-					environmentInstance.getId() + " IS NOT VALID ";
-			LOGGER.log(Level.SEVERE, InvalidEnvironmentInstanceNotFoundException);
-			throw new EnvironmentInstanceNotFoundException(InvalidEnvironmentInstanceNotFoundException);
-	
+			String InvalidEnvironmentInstanceNotFoundException = " The Environment Instance"
+					+ environmentInstance.getEnvironment().getName()
+					+ " with ID "
+					+ environmentInstance.getId()
+					+ " IS NOT VALID ";
+			LOGGER.log(Level.SEVERE,
+					InvalidEnvironmentInstanceNotFoundException);
+			throw new EnvironmentInstanceNotFoundException(
+					InvalidEnvironmentInstanceNotFoundException);
+
 		}
 		return environmentInstance;
-    }
-	
-	private void deleteEnvironmentInstanceBBDD (Long Id) 
-	    throws EnvironmentInstanceNotFoundException, 
-	    ApplicationInstanceStillInstalledException {
-	    
+	}
+
+	private void deleteEnvironmentInstanceBBDD(Long Id)
+			throws EnvironmentInstanceNotFoundException,
+			ApplicationInstanceStillInstalledException {
+
 		EnvironmentInstance env;
-	    try {
+		try {
 			env = environmentInstanceDao.load(Id);
 			validator.validateDelete(env);
 		} catch (EntityNotFoundException e) {
-			String environmentIntanceNotFoundException = " The Environment Instance" +
-					Id +	" DOES NOT EXIST ";
+			String environmentIntanceNotFoundException = " The Environment Instance"
+					+ Id + " DOES NOT EXIST ";
 			LOGGER.log(Level.SEVERE, environmentIntanceNotFoundException);
-			throw new EnvironmentInstanceNotFoundException(environmentIntanceNotFoundException);
+			throw new EnvironmentInstanceNotFoundException(
+					environmentIntanceNotFoundException);
 		}
-	    environmentInstanceDao.remove(env);
-	}    
-	
-    /**
-     * @param productInstanceDao the productInstanceDao to set
-     */
-    public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
-        this.productInstanceDao = productInstanceDao;
-    }
+		environmentInstanceDao.remove(env);
+	}
 
-    /**
-     * @param environmentDao the environmentDao to set
-     */
-    public void setEnvironmentDao(EnvironmentDao environmentDao) {
-        this.environmentDao = environmentDao;
-    }
-    
-    /**
-     * @param environmentInstanceDao the environmentInstanceDao to set
-     */
-    public void setEnvironmentInstanceDao(EnvironmentInstanceDao environmentInstanceDao) {
-        this.environmentInstanceDao = environmentInstanceDao;
-    }
-    
-    /**
-     * @param validator the validator to set
-     */
-    public void setValidator(EnvironmentInstanceValidator validator) {
-        this.validator = validator;
-    }
+	/**
+	 * @param productInstanceDao
+	 *            the productInstanceDao to set
+	 */
+	public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
+		this.productInstanceDao = productInstanceDao;
+	}
+
+	/**
+	 * @param environmentDao
+	 *            the environmentDao to set
+	 */
+	public void setEnvironmentDao(EnvironmentDao environmentDao) {
+		this.environmentDao = environmentDao;
+	}
+
+	/**
+	 * @param environmentInstanceDao
+	 *            the environmentInstanceDao to set
+	 */
+	public void setEnvironmentInstanceDao(
+			EnvironmentInstanceDao environmentInstanceDao) {
+		this.environmentInstanceDao = environmentInstanceDao;
+	}
+
+	/**
+	 * @param validator
+	 *            the validator to set
+	 */
+	public void setValidator(EnvironmentInstanceValidator validator) {
+		this.validator = validator;
+	}
 }

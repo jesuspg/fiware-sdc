@@ -28,7 +28,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     </listener>
     <!-- END SPRING -->
 
-    <!-- This way can see lazy initialized objects -->
     <filter>
         <filter-name>jpaFilter</filter-name>
         <filter-class>
@@ -42,9 +41,30 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
     <filter-mapping>
         <filter-name>jpaFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/*</url-pattern>    
     </filter-mapping>
 
+    <!-- The CORS filter with parameters -->
+ <!--     <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+        
+        <init-param>
+            <param-name>cors.allowOrigin</param-name>
+         
+            <param-value>*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.supportedHeaders</param-name>
+            <param-value>Content-Type,Accept-Type,X-Auth-Token,Origin,Accept</param-value>
+        </init-param>
+        
+    </filter>  
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>  -->   
+ 
     <!-- Jersey Servlet  -->
     <servlet>
         <servlet-name>SDC Rest Servlet</servlet-name>
@@ -57,8 +77,19 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
 
+    <!-- SPRING SECURITY -->
+ <!--     <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name> 
+        <url-pattern>/*</url-pattern>
+  </filter-mapping>   -->  
 
-    <!-- BOOTSTRAP ACTIONS -->
+    
+ 
+          <!-- BOOTSTRAP ACTIONS -->
     <!-- Init the db with some "fake" data...Delete this when preconditions
      are implemented -->
     <listener>

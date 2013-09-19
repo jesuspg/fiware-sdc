@@ -11,11 +11,11 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 
 @SuppressWarnings("serial")
 @XmlRootElement
-@XmlSeeAlso({ApplicationInstance.class})
-public class ApplicationInstances extends ArrayList<ApplicationInstance>{
+@XmlSeeAlso( { ApplicationInstance.class })
+public class ApplicationInstances extends ArrayList<ApplicationInstance> {
 
-      @XmlElement(name = "applicationInstance")
-      public List<ApplicationInstance> getApplicationInstances() {
-        return this;
-      }
+	@XmlElement(name = "applicationInstance")
+	public List<ApplicationInstance> getApplicationInstances() {
+		return this;
+	}
 }

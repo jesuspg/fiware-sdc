@@ -5,221 +5,223 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.sf.json.JSONObject;
 
 /**
  * Models a chef node.
- *
+ * 
  * @author Sergio Arroyo
- *
+ * 
  */
 public class ChefNode {
 
-    private final static String RECIPE_ITEM_TEMPLATE = "recipe[{0}]";
+	private final static String RECIPE_ITEM_TEMPLATE = "recipe[{0}]";
 
-    private String name;
-    private Map<String, Object> attributes;
-    private Map<String, Object> overrides;
-    private Map<String, Object> defaults;
-    private List<String> runlList;
-    private String chefType = "node";
-    private String jsonClass = "Chef::Node";
+	private String name;
+	private Map<String, Object> attributes;
+	private Map<String, Object> overrides;
+	private Map<String, Object> defaults;
+	private List<String> runlList;
+	private String chefType = "node";
+	private String jsonClass = "Chef::Node";
 
-
-    /**
+	/**
      *
      */
-    public ChefNode() {
-        attributes = new HashMap<String, Object>();
-        overrides = new HashMap<String, Object>();
-        defaults = new HashMap<String, Object>();
-        runlList = new ArrayList<String>();
-    }
+	public ChefNode() {
+		attributes = new HashMap<String, Object>();
+		overrides = new HashMap<String, Object>();
+		defaults = new HashMap<String, Object>();
+		runlList = new ArrayList<String>();
+	}
 
+	public void addRecipe(String recipe) {
+		String formatedRecipe = MessageFormat.format(RECIPE_ITEM_TEMPLATE,
+				recipe);
+		if (!runlList.contains(formatedRecipe)) {
+			runlList.add(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
+		}
+	}
 
-    public void addRecipe(String recipe) {
-        String formatedRecipe =
-            MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe);
-        if (!runlList.contains(formatedRecipe)) {
-            runlList.add(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
-        }
-    }
-    public void removeRecipe(String recipe) {
-        runlList.remove(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
-    }
+	public void removeRecipe(String recipe) {
+		runlList.remove(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
+	}
 
+	public void addOverride(String key, String value) {
+		overrides.put(key, value);
+	}
 
-    public void addOverride(String key, String value) {
-        overrides.put(key, value);
-    }
+	public void addOverride(String process, String key, String value) {
+		overrides = addNewAttribute(overrides, process, key, value);
+	}
 
-    public void addOverride(String process, String key, String value) {
-        overrides = addNewAttribute(overrides, process, key, value);
-    }
+	public void addDefault(String process, String key, String value) {
+		defaults = addNewAttribute(defaults, process, key, value);
+	}
 
-    public void addDefault(String process, String key, String value) {
-        defaults = addNewAttribute(defaults, process, key, value);
-    }
+	public void addAttribute(String process, String key, String value) {
+		attributes = addNewAttribute(attributes, process, key, value);
+	}
 
-    public void addAttribute(String process, String key, String value) {
-        attributes = addNewAttribute(attributes, process, key, value);
-    }
+	private Map<String, Object> addNewAttribute(Map<String, Object> map,
+			String process, String key, String value) {
+		JSONObject attr;
+		if (map.containsKey(process)) {
+			attr = (JSONObject) map.get(process);
+		} else {
+			attr = new JSONObject();
+		}
+		attr.put(key, value);
+		map.put(process, attr);
+		return map;
+	}
 
+	public void removeOverride(String key) {
+		overrides.remove(key);
+	}
 
-    private Map<String, Object> addNewAttribute(Map<String, Object> map, String process,
-            String key, String value) {
-        JSONObject attr;
-        if (map.containsKey(process)) {
-            attr = (JSONObject) map.get(process);
-        } else{
-            attr = new JSONObject();
-        }
-        attr.put(key, value);
-        map.put(process, attr);
-        return map;
-    }
+	public void addDefault(String key, String value) {
+		defaults.put(key, value);
+	}
 
-    public void removeOverride(String key) {
-        overrides.remove(key);
-    }
+	public void removeDefault(String key) {
+		defaults.remove(key);
+	}
 
-    public void addDefault(String key, String value) {
-        defaults.put(key, value);
-    }
-    public void removeDefault(String key) {
-        defaults.remove(key);
-    }
+	public void addAttritube(String key, String value) {
+		attributes.put(key, value);
+	}
 
+	public void removeAttritube(String key) {
+		attributes.remove(key);
+	}
 
-    public void addAttritube(String key, String value) {
-        attributes.put(key, value);
-    }
-    public void removeAttritube(String key) {
-        attributes.remove(key);
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @return the attributes
+	 */
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
 
-    /**
-     * @return the attributes
-     */
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
+	/**
+	 * @param attributes
+	 *            the attributes to set
+	 */
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
 
-    /**
-     * @param attributes the attributes to set
-     */
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
+	/**
+	 * @return the overrides
+	 */
+	public Map<String, Object> getOverrides() {
+		return overrides;
+	}
 
-    /**
-     * @return the overrides
-     */
-    public Map<String, Object> getOverrides() {
-        return overrides;
-    }
+	/**
+	 * @param overrides
+	 *            the overrides to set
+	 */
+	public void setOverrides(Map<String, Object> overrides) {
+		this.overrides = overrides;
+	}
 
-    /**
-     * @param overrides the overrides to set
-     */
-    public void setOverrides(Map<String, Object> overrides) {
-        this.overrides = overrides;
-    }
+	/**
+	 * @return the defaults
+	 */
+	public Map<String, Object> getDefaults() {
+		return defaults;
+	}
 
-    /**
-     * @return the defaults
-     */
-    public Map<String, Object> getDefaults() {
-        return defaults;
-    }
+	/**
+	 * @param defaults
+	 *            the defaults to set
+	 */
+	public void setDefaults(Map<String, Object> defaults) {
+		this.defaults = defaults;
+	}
 
+	/**
+	 * @return the runlList
+	 */
+	public List<String> getRunlList() {
+		return runlList;
+	}
 
-    /**
-     * @param defaults the defaults to set
-     */
-    public void setDefaults(Map<String, Object> defaults) {
-        this.defaults = defaults;
-    }
+	/**
+	 * @param runlList
+	 *            the runlList to set
+	 */
+	public void setRunlList(List<String> runlList) {
+		this.runlList = runlList;
+	}
 
-    /**
-     * @return the runlList
-     */
-    public List<String> getRunlList() {
-        return runlList;
-    }
+	/**
+	 * @return the chefType
+	 */
+	public String getChefType() {
+		return chefType;
+	}
 
-    /**
-     * @param runlList the runlList to set
-     */
-    public void setRunlList(List<String> runlList) {
-        this.runlList = runlList;
-    }
+	/**
+	 * @param chefType
+	 *            the chefType to set
+	 */
+	public void setChefType(String chefType) {
+		this.chefType = chefType;
+	}
 
+	/**
+	 * @return the jsonClass
+	 */
+	public String getJsonClass() {
+		return jsonClass;
+	}
 
-    /**
-     * @return the chefType
-     */
-    public String getChefType() {
-        return chefType;
-    }
+	/**
+	 * @param jsonClass
+	 *            the jsonClass to set
+	 */
+	public void setJsonClass(String jsonClass) {
+		this.jsonClass = jsonClass;
+	}
 
-    /**
-     * @param chefType the chefType to set
-     */
-    public void setChefType(String chefType) {
-        this.chefType = chefType;
-    }
+	/**
+	 * JSon serializer
+	 */
+	public String toJson() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.accumulate("name", name);
+		jsonObject.accumulate("json_class", "Chef::Node");
+		jsonObject.accumulate("normal", attributes);
+		jsonObject.accumulate("default", defaults);
+		jsonObject.accumulate("override", overrides);
+		jsonObject.accumulate("run_list", runlList);
+		return jsonObject.toString();
+	}
 
-    /**
-     * @return the jsonClass
-     */
-    public String getJsonClass() {
-        return jsonClass;
-    }
-
-    /**
-     * @param jsonClass the jsonClass to set
-     */
-    public void setJsonClass(String jsonClass) {
-        this.jsonClass = jsonClass;
-    }
-
-    /**
-     * JSon serializer
-     */
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.accumulate("name", name);
-        jsonObject.accumulate("json_class", "Chef::Node");
-        jsonObject.accumulate("normal", attributes);
-        jsonObject.accumulate("default", defaults);
-        jsonObject.accumulate("override", overrides);
-        jsonObject.accumulate("run_list", runlList);
-        return jsonObject.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    public void fromJson(JSONObject jsonNode) {
-        name = jsonNode.getString("name");
-        runlList= jsonNode.getJSONArray("run_list");
-        overrides = jsonNode.getJSONObject("override");
-        defaults = jsonNode.getJSONObject("default");
-        attributes = jsonNode.getJSONObject("normal");
-    }
+	@SuppressWarnings("unchecked")
+	public void fromJson(JSONObject jsonNode) {
+		name = jsonNode.getString("name");
+		runlList = jsonNode.getJSONArray("run_list");
+		overrides = jsonNode.getJSONObject("override");
+		defaults = jsonNode.getJSONObject("default");
+		attributes = jsonNode.getJSONObject("normal");
+	}
 
 }

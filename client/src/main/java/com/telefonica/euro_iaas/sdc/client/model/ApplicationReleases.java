@@ -11,11 +11,11 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 
 @SuppressWarnings("serial")
 @XmlRootElement
-@XmlSeeAlso({ApplicationRelease.class})
-public class ApplicationReleases extends ArrayList<ApplicationRelease>{
+@XmlSeeAlso( { ApplicationRelease.class })
+public class ApplicationReleases extends ArrayList<ApplicationRelease> {
 
-      @XmlElement(name = "applicationRelease")
-      public List<ApplicationRelease> getProductReleases() {
-        return this;
-      }
+	@XmlElement(name = "applicationRelease")
+	public List<ApplicationRelease> getProductReleases() {
+		return this;
+	}
 }

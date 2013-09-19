@@ -1,12 +1,12 @@
 package com.telefonica.euro_iaas.sdc.validation;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
 
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
@@ -16,110 +16,108 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class ApplicationReleaseValidatorImplTest {
 
-    private ApplicationReleaseValidatorImpl applicationreleaseValidator;
-    private ApplicationRelease applicationRelease;
-    private ApplicationInstance applicationInstance;
-    private List<ProductInstance> productInstances;
+	private ApplicationReleaseValidatorImpl applicationreleaseValidator;
+	private ApplicationRelease applicationRelease;
+	private ApplicationInstance applicationInstance;
+	private List<ProductInstance> productInstances;
 
-    private ApplicationInstanceDao applicationInstanceDao;
-    private ProductReleaseDao productReleaseDao;
+	private ApplicationInstanceDao applicationInstanceDao;
+	private ProductReleaseDao productReleaseDao;
 
-    @Before
-    public void setUp(){
-        applicationreleaseValidator = new ApplicationReleaseValidatorImpl();
-        applicationRelease = new ApplicationRelease();
+	@Before
+	public void setUp() {
+		applicationreleaseValidator = new ApplicationReleaseValidatorImpl();
+		applicationRelease = new ApplicationRelease();
 
-        Application application = new Application();
-        application.setName("abcd");
-        application.setDescription("descritpion");
+		Application application = new Application();
+		application.setName("abcd");
+		application.setDescription("descritpion");
 
-        applicationRelease.setApplication(application);
-        applicationRelease.setVersion("0.1.1");
+		applicationRelease.setApplication(application);
+		applicationRelease.setVersion("0.1.1");
 
-        Product product = new Product();
-        product.setName("tomcat");
+		Product product = new Product();
+		product.setName("tomcat");
 
-        ProductRelease productRelease = new ProductRelease();
-        productRelease.setProduct(product);
-        productRelease.setVersion("1.0.0");
+		ProductRelease productRelease = new ProductRelease();
+		productRelease.setProduct(product);
+		productRelease.setVersion("1.0.0");
 
-        List<ProductRelease> supportedProducts= Arrays.asList(productRelease);
-        applicationRelease.setEnvironment(new Environment(supportedProducts));
+		List<ProductRelease> supportedProducts = Arrays.asList(productRelease);
+		applicationRelease.setEnvironment(new Environment(supportedProducts));
 
-        Attribute privateAttribute = new Attribute("ssl_port",
-            "8443", "The ssl listen port");
-        Attribute privateAttributeII = new Attribute("port",
-            "8080", "The listen port");
+		Attribute privateAttribute = new Attribute("ssl_port", "8443",
+				"The ssl listen port");
+		Attribute privateAttributeII = new Attribute("port", "8080",
+				"The listen port");
 
-        List<Attribute> privateAttributes =
-             Arrays.asList(privateAttribute, privateAttributeII);
-        applicationRelease.setPrivateAttributes(privateAttributes);
+		List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
+				privateAttributeII);
+		applicationRelease.setPrivateAttributes(privateAttributes);
 
-        //***** ProductInstances
-        ProductInstance productInstance = new ProductInstance();
-        productInstance.setProduct(productRelease);
-        productInstance.setVm(new VM("localhost", "ip", "domain"));
+		// ***** ProductInstances
+		ProductInstance productInstance = new ProductInstance();
+		productInstance.setProductRelease(productRelease);
+		productInstance.setVm(new VM("localhost", "ip", "domain"));
 
-        productInstances= Arrays.asList(productInstance);
+		productInstances = Arrays.asList(productInstance);
 
-        //*********** ApplicationInstance
+		// *********** ApplicationInstance
 
-        applicationInstance = new ApplicationInstance();
-        applicationInstance.setApplication(applicationRelease);
-        applicationInstance.setEnvironmentInstance(
-        		new EnvironmentInstance (
-        				new Environment(applicationRelease.getEnvironment().getProductReleases()),
-        				productInstances)
-        		);
-        		
-        applicationInstance.setStatus(Status.INSTALLED);
+		applicationInstance = new ApplicationInstance();
+		applicationInstance.setApplication(applicationRelease);
+		applicationInstance.setEnvironmentInstance(new EnvironmentInstance(
+				new Environment(applicationRelease.getEnvironment()
+						.getProductReleases()), productInstances));
 
-        applicationInstanceDao = mock(ApplicationInstanceDao.class);
-        productReleaseDao = mock(ProductReleaseDao.class);
+		applicationInstance.setStatus(Status.INSTALLED);
 
-        applicationreleaseValidator = new ApplicationReleaseValidatorImpl();
-        applicationreleaseValidator.setProductReleaseDao(productReleaseDao);
-        applicationreleaseValidator.setApplicationInstanceDao(applicationInstanceDao);
-    }
+		applicationInstanceDao = mock(ApplicationInstanceDao.class);
+		productReleaseDao = mock(ProductReleaseDao.class);
 
-    @Test
-    public void testValidateDeleteKO() throws Exception{
-        /*
-        applicationInstanceDao.create(applicationInstance);
-        try {
-            applicationreleaseValidator.validateDelete(applicationRelease);
-            Assert.fail();
-        } catch (ApplicationReleaseStillInstalledException e) {
+		applicationreleaseValidator = new ApplicationReleaseValidatorImpl();
+		applicationreleaseValidator.setProductReleaseDao(productReleaseDao);
+		applicationreleaseValidator
+				.setApplicationInstanceDao(applicationInstanceDao);
+	}
 
-        }*/
-    }
+	@Test
+	public void testValidateDeleteKO() throws Exception {
+		/*
+		 * applicationInstanceDao.create(applicationInstance); try {
+		 * applicationreleaseValidator.validateDelete(applicationRelease);
+		 * Assert.fail(); } catch (ApplicationReleaseStillInstalledException e)
+		 * {
+		 * 
+		 * }
+		 */
+	}
 
-    @Test
-    public void testValidateInsertOK() throws Exception{
-        //applicationreleaseValidator.validateInsert(applicationRelease);
+	@Test
+	public void testValidateInsertOK() throws Exception {
+		// applicationreleaseValidator.validateInsert(applicationRelease);
 
-    }
+	}
 
-    @Test
-    public void testValidateInsertKO() throws Exception{
-        //applicationreleaseValidator.validateInsert(applicationRelease);
-       // applicationreleaseValidator.validateInsert(applicationRelease);
+	@Test
+	public void testValidateInsertKO() throws Exception {
+		// applicationreleaseValidator.validateInsert(applicationRelease);
+		// applicationreleaseValidator.validateInsert(applicationRelease);
 
-    }
+	}
 
-    @Test
-    public void testValidateDeleteOK() throws Exception{
+	@Test
+	public void testValidateDeleteOK() throws Exception {
 
-        //applicationreleaseValidator.validateDelete(applicationRelease);
-    }
-
+		// applicationreleaseValidator.validateDelete(applicationRelease);
+	}
 
 }

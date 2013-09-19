@@ -11,11 +11,11 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 
 @SuppressWarnings("serial")
 @XmlRootElement
-@XmlSeeAlso({Task.class})
-public class Tasks extends ArrayList<Task>{
+@XmlSeeAlso( { Task.class })
+public class Tasks extends ArrayList<Task> {
 
-      @XmlElement(name = "task")
-      public List<Task> getTasks() {
-        return this;
-      }
+	@XmlElement(name = "task")
+	public List<Task> getTasks() {
+		return this;
+	}
 }

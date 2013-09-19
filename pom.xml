@@ -7,16 +7,13 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>1.9.9</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <scm>
-        <connection>
-            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.9
-        </connection>
-        <developerConnection>
-            scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.9
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk
         </developerConnection>
-        <url>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.9</url>
+        <url>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk</url>
 
     </scm>
 
@@ -51,7 +48,7 @@
         <module>model</module>
         <module>core</module>
         <module>rest-api</module>
-        <module>integration-test</module>
+        <!-- <module>integration-test</module>  -->
         <module>client</module>
     </modules>
 
@@ -61,19 +58,19 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>sdc-server-model</artifactId>
-                <version>1.9.9</version>
+                <version>2.0.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>sdc-server-core</artifactId>
-                <version>1.9.9</version>
+                <version>2.0.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>sdc-client</artifactId>
-                <version>1.9.9</version>
+                <version>2.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -105,7 +102,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
@@ -156,7 +153,9 @@
                 <configuration>
                     <goals>install</goals>
                     <checkoutDirectory>${scmCheckoutDirectory}</checkoutDirectory>
-                    <tagBase>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags</tagBase>
+                    <tagBase>
+                        https://barricada.hi.inet/repositorio/boi/europ-iaas/paas-manager/paas-manager-server/tags
+                    </tagBase>
                 </configuration>
             </plugin>
 
@@ -201,7 +200,7 @@
             </plugin>
 
             <!-- modificar las opciones del compilador -->
-            <plugin>
+            <!-- <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
@@ -214,13 +213,19 @@
                     <showDeprecation>${compilerShowDeprecation}</showDeprecation>
                     <verbose>${compilerVerbose}</verbose>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
             <!-- Generacion de test -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <!-- <version>2.3</version>-->
+                <configuration>
+                    <includes>
+                        <include>**/*Test*.java</include>
+                    </includes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>unit-test</id>
@@ -229,7 +234,6 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-
                             <excludes>
                                 <exclude>**/test/acceptance/**</exclude>
                                 <exclude>**/test/utils/**</exclude>
@@ -238,50 +242,45 @@
                                 <include>**/test/Component.java</include>
                             </includes>
                         </configuration>
-
                     </execution>
-                    <execution>
-                        <id>it-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/test/Component.java</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/test/acceptance/*.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <concordion.output.dir>target/site/concordion</concordion.output.dir>
-                            </systemPropertyVariables>
-
-                        </configuration>
-                    </execution>
-
+                    <!--	<execution>
+                            <id>it-test</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/test/Component.java</exclude>
+                                </excludes>
+                                <includes>
+                                    <include>**/test/acceptance/*.java</include>
+                                </includes>
+                                <systemPropertyVariables>
+                                    <concordion.output.dir>target/site/concordion</concordion.output.dir>
+                                </systemPropertyVariables>
+                            </configuration>
+                        </execution>-->
                 </executions>
             </plugin>
-            <!-- En modo SNAPSHOT se hace coincidir con el numero de revision del
-                    SVN -->
-            <plugin>
-
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>true</doUpdate>
-                </configuration>
-            </plugin>
+            <!-- En modo SNAPSHOT se hace coincidir con el numero de revision del SVN -->
+            <!--  	<plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>buildnumber-maven-plugin</artifactId>
+                  <version>1.0</version>
+                  <executions>
+                      <execution>
+                          <phase>validate</phase>
+                          <goals>
+                              <goal>create</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                  <configuration>
+                      <doCheck>false</doCheck>
+                      <doUpdate>true</doUpdate>
+                  </configuration>
+              </plugin>-->
             <!-- Enviar un mail con las releases notes descritas en el src/changes/changes.xml -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -344,7 +343,7 @@
                         <id>instrument</id>
                         <phase>site</phase>
                         <goals>
-                            <goal>instrument</goal>
+                            <!--   	<goal>instrument</goal> -->
                             <goal>cobertura</goal>
                             <goal>check</goal>
                         </goals>
@@ -433,6 +432,199 @@
 
 
     <profiles>
+
+        <profile>
+            <id>runCobertura</id>
+            <activation>
+                <property>
+                    <name>runCobertura</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <cobertura.format>html</cobertura.format>
+                <working.dir>/tmp</working.dir>
+                <cobertura.working.dir>${working.dir}/${project.version}/cobertura</cobertura.working.dir>
+                <cobertura.complete.ser.file>${cobertura.working.dir}/complete.ser</cobertura.complete.ser.file>
+
+                <!-- scope which determines whether or not cobertura is included in .war file: overriden here -->
+                <cobertura.dependency.scope>compile</cobertura.dependency.scope>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>2.4.1</version>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>.</directory>
+                                    <includes>
+                                        <include>**/cobertura.ser</include>
+                                    </includes>
+                                </fileset>
+                                <fileset>
+                                    <directory>${cobertura.working.dir}</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>cobertura-Instrument</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <taskdef resource="tasks.properties"/>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+                                        <echo message="::PROCESS CLASSES: ${artifactId}"/>
+
+                                        <if>
+                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage"/>
+                                            <then>
+                                                <echo message="::SKIPPING PHASE for integration test"/>
+                                            </then>
+                                            <else>
+                                                <if>
+                                                    <available file="${project.build.outputDirectory}"/>
+                                                    <then>
+                                                        <echo message="::BEFORE INSTRUMENT"/>
+                                                        <cobertura-instrument>
+                                                            <fileset dir="${project.build.outputDirectory}">
+                                                                <include name="**/*.class"/>
+                                                            </fileset>
+                                                        </cobertura-instrument>
+                                                    </then>
+                                                </if>
+                                            </else>
+                                        </if>
+
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>cobertura-createCombinedSerFile</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <taskdef resource="tasks.properties"/>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+                                        <echo message=":::generate-test-sources"/>
+
+
+                                        <if>
+                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage"/>
+                                            <then>
+                                                <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test"/>
+                                                <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser"/>
+                                                <copy file="${cobertura.complete.ser.file}"
+                                                      tofile="${basedir}/cobertura.ser"/>
+                                            </then>
+                                            <else>
+                                                <if>
+                                                    <available file="${basedir}/cobertura.ser"/>
+                                                    <then>
+                                                        <echo message="::: Is available ${basedir}/cobertura.ser"/>
+                                                    </then>
+                                                </if>
+
+                                                <if>
+                                                    <available file="${cobertura.complete.ser.file}"/>
+                                                    <then>
+                                                        <echo message="before merge1"/>
+                                                        <cobertura-merge datafile="${basedir}/tmp.ser">
+                                                            <fileset file="${cobertura.complete.ser.file}"/>
+                                                            <fileset file="${basedir}/cobertura.ser"/>
+                                                        </cobertura-merge>
+                                                        <echo message="move temp.ser to ${basedir}/cobertura.ser"/>
+                                                        <move file="${basedir}/tmp.ser"
+                                                              tofile="${basedir}/cobertura.ser"/>
+                                                    </then>
+                                                </if>
+                                            </else>
+                                        </if>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>cobertura-copyResultSerFileAndSources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <taskdef resource="tasks.properties"/>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+                                        <echo message=":::copyResultSerFileAndSources -beforeIf"/>
+                                        <if>
+                                            <available file="${basedir}/cobertura.ser"/>
+                                            <then>
+                                                <echo message="move1"/>
+                                                <move file="${basedir}/cobertura.ser"
+                                                      tofile="${cobertura.complete.ser.file}"/>
+                                                <mkdir dir="${cobertura.working.dir}/source"/>
+                                                <if>
+                                                    <available file="${basedir}/src/main/java"/>
+                                                    <then>
+                                                        <copy todir="${cobertura.working.dir}/source">
+                                                            <fileset dir="src/main/java">
+                                                                <include name="**/*.java"/>
+                                                            </fileset>
+                                                        </copy>
+                                                    </then>
+                                                </if>
+                                                <echo message="runreport"/>
+                                                <cobertura-report datafile="${cobertura.complete.ser.file}"
+                                                                  format="${cobertura.format}"
+                                                                  destdir="${cobertura.working.dir}/report">
+                                                    <fileset dir="${cobertura.working.dir}/source"/>
+                                                </cobertura-report>
+                                            </then>
+                                        </if>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.cobertura</groupId>
+                                <artifactId>cobertura</artifactId>
+                                <version>1.9.4.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>ant-contrib</groupId>
+                                <artifactId>ant-contrib</artifactId>
+                                <version>20020829</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sourceforge.cobertura</groupId>
+                    <artifactId>cobertura</artifactId>
+                    <version>1.9.4.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <!-- Profile desarrollo (Activo por defecto) -->
         <profile>
             <id>development</id>
@@ -576,11 +768,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-report-plugin</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <includes>
-                                <include>**/*Test*.java</include>
-                            </includes>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -846,11 +1033,6 @@
                                     <groupId>org.apache.maven.plugins</groupId>
                                     <artifactId>maven-surefire-report-plugin</artifactId>
                                     <version>${maven-surefire-plugin.version}</version>
-                                    <configuration>
-                                        <includes>
-                                            <include>**/*Test*.java</include>
-                                        </includes>
-                                    </configuration>
                                 </plugin>
                                 <!-- Plugin para analizar las tags en el codigo, por ejemplo para
                                     generar un informe con todos los TODO -->
@@ -893,7 +1075,7 @@
                                     <version>2.5.1</version>
                                     <configuration>
                                         <formats>
-                                            <format>xml</format>
+                                            <!--<format>xml</format>-->
                                             <format>html</format>
                                         </formats>
                                     </configuration>
@@ -919,51 +1101,41 @@
             </pluginRepositories>
         </profile>
     </profiles>
+
+
     <repositories>
-
-
+        <!--  Dejar hasta que haya releases del sdc en el repositorio nexus -->
         <repository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
+            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
         </repository>
-
         <repository>
             <id>nexus</id>
             <name>nexus</name>
-            <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/releases/</url>
+            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/releases/</url>
+        </repository>
+        <!--   <repository>
+              <id>ReleasesClaudia</id>
+              <name>Releases Claudia</name>
+              <url>http://ci-cpr01.hi.inet/nexus/content/repositories/releases/</url>
+          </repository>-->
+        <repository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/snapshots/</url>
+        </repository>
+
+
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
         </repository>
     </repositories>
 
-    <!-- <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <name>central-repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>java.net</id>
-            <name>java.net</name>
-            <url>http://download.java.net/maven/2/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>stat-scm</id>
-            <name>stat-scm</name>
-            <url>http://stat-scm.sourceforge.net/maven2/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>codehaus</id>
-            <name>codehaus</name>
-            <url>http://repository.codehaus.org</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>thirdparty</id>
-            <name>3rd party</name>
-            <url>http://ci-eurolass.hi.inet/nexus/content/repositories/thirdparty/</url>
-        </pluginRepository>
-    </pluginRepositories>-->
 
-
+    <!-- ===================================== Distribution Management ==== -->
     <distributionManagement>
         <repository>
             <id>${repoMavenId}</id>
@@ -982,94 +1154,7 @@
             <name>${repoSiteName}</name>
             <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}</url>
         </site>
-
-        <!--  	<repository>
-                <id>${repoMavenId}</id>
-                <name>Releases</name>
-                 <url>http://ci-eurolass/nexus/content/repositories/releases</url>
-             </repository>
-             <snapshotRepository>
-             <id>${repoMavenSnapshotId}</id>
-              <name>Snapshots</name> <url>http://ci-eurolass/nexus/content/repositories/snapshots/</url>
-              </snapshotRepository>-->
-
     </distributionManagement>
-
-
-    <dependencies>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.8</version>
-            <classifier>jdk15</classifier>
-
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-multipart</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>1.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.googlecode.sardine</groupId>
-            <artifactId>sardine</artifactId>
-            <version>146</version>
-        </dependency>
-        <!-- Persistence -->
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-            <version>140</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.xuse</groupId>
-            <artifactId>xuse-annotation-tool</artifactId>
-            <version>01.00.00-RC2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>sun.jdk</groupId>
-                    <artifactId>tools</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
-
 
     <properties>
         <!-- Forzamos a los plugins a utilizar UTF-8, para evitar problemas con
@@ -1087,144 +1172,5 @@
         <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
     </properties>
+
 </project>
-
-
-        <!-- <plugin> <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.2.1</version> <configuration> <descriptors> <descriptor>./src/build/assembly.xml</descriptor>
-            </descriptors> <finalName>${artifactId}-dist</finalName> <outputDirectory>target/site/downloads</outputDirectory>
-            </configuration> <executions> <execution> <phase>site</phase> <goals> <goal>assembly</goal>
-            </goals> </execution> </executions> </plugin> -->
-
-        <!--  <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-site-plugin</artifactId>
-              <version>3.0-beta-3</version>
-              <configuration>
-                  <reportPlugins>
-                      <plugin>
-                          <groupId>org.apache.maven.plugins</groupId>
-                          <artifactId>maven-project-info-reports-plugin</artifactId>
-                          <version>2.2</version>
-                          <reports>
-                              <report>index</report>
-                              <report>project-team</report>
-                              <report>license</report>
-                              <report>mailing-list</report>
-                              <report>dependencies</report>
-                              <report>dependency-convergence</report>
-                              <report>plugin-management</report>
-                              <report>cim</report>
-                              <report>issue-tracking</report>
-                              <report>scm</report>
-                              <report>summary</report>
-                          </reports>
-                      </plugin>
-                      <plugin>
-                          <groupId>org.apache.maven.plugins</groupId>
-                          <artifactId>maven-changes-plugin</artifactId>
-                          <version>2.4</version>
-                          <reportSets>
-                              <reportSet>
-                                  <reports>
-                                      <report>changes-report</report>
-                                  </reports>
-                              </reportSet>
-                          </reportSets>
-                      </plugin>
-                  </reportPlugins>
-              </configuration>
-          </plugin>
-
-
-      </plugins>
-
-  </build>
-
-  <reporting>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-changes-plugin</artifactId>
-              <version>2.4</version>
-              <reportSets>
-                  <reportSet>
-                      <reports>
-                          <report>changes-report</report>
-                      </reports>
-                  </reportSet>
-              </reportSets>
-          </plugin>
-
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-project-info-reports-plugin</artifactId>
-              <reportSets>
-                  <reportSet>
-                      <reports>
-                          <report>dependencies</report>
-                          <report>project-team</report>
-                          <report>cim</report>
-                          <report>scm</report>
-                          <report>mailing-list</report>
-                          <report>issue-tracking</report>
-                          <report>license</report>
-                          <report>dependency-convergence</report>
-                          <report>dependency-management</report>
-                          <report>summary</report>
-                      </reports>
-                  </reportSet>
-              </reportSets>
-              <configuration>
-                  <dependencyLocationsEnabled>
-                      false
-                  </dependencyLocationsEnabled>
-              </configuration>
-          </plugin>
-      </plugins>
-  </reporting>
-
-  <repositories>
-      <repository>
-          <id>thirdparty</id>
-          <name>3rd party</name>
-          <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
-      </repository>
-  </repositories>
-  <pluginRepositories>
-      <pluginRepository>
-          <id>thirdparty</id>
-          <name>3rd party</name>
-          <url>http://ci-eurolass02.hi.inet/nexus/content/repositories/thirdparty/</url>
-      </pluginRepository>
-  </pluginRepositories>-->
-        <!-- ===================================== Distribution Management ==== -->
-        <!--   <distributionManagement>
-
-              <repository>
-                  <id>${repoMavenId}</id>
-                  <name>${repoMavenName}</name>
-                  <url>${repoMavenUrl}</url>
-              </repository>
-
-              <repository>
-                <id>${nexus.release.id}</id>
-                <name>Releases</name>
-                <url>${nexus.release.url}/content/repositories/${nexus.release.repository.name}</url>
-              </repository>
-
-              <snapshotRepository>
-                <id>${nexus.snapshot.id}</id>
-                <name>Snapshots</name>
-                <url>${nexus.release.url}/content/repositories/${nexus.snapshot.repository.name}</url>
-                </snapshotRepository>
-
-              <site>
-                  <id>${repoSiteId}</id>
-                  <name>${repoSiteName}</name>
-                  <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-                     </url>
-              </site>
-          </distributionManagement>-->
-    
-

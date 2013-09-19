@@ -11,10 +11,10 @@
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>sdc-server</artifactId>
-        <version>1.9.9</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <properties>
-        <cuke4duke.version>0.4.4</cuke4duke.version>
+        <cuke4duke.version>0.4.3</cuke4duke.version>
     </properties>
 
     <dependencies>
@@ -24,18 +24,7 @@
 
         </dependency>
 
-        <dependency>
-            <groupId>org.picocontainer</groupId>
-            <artifactId>picocontainer</artifactId>
-            <version>2.10.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cuke4duke</groupId>
-            <artifactId>cuke4duke</artifactId>
-            <version>${cuke4duke.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -66,60 +55,7 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>it-execution</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>cuke4duke</groupId>
-                        <artifactId>cuke4duke-maven-plugin</artifactId>
-                        <version>${cuke4duke.version}</version>
-                        <configuration>
-                            <jvmArgs>
-                                <jvmArg>
-                                    -Dcuke4duke.objectFactory=cuke4duke.internal.jvmclass.PicoFactory
-                                </jvmArg>
-                                <jvmArg>-Dfile.encoding=UTF-8</jvmArg>
-                            </jvmArgs>
-                            <!-- You may not need all of these arguments
-                                in your own project. We have a lot here for testing purposes... -->
-                            <cucumberArgs>
-                                <cucumberArg>--backtrace</cucumberArg>
-                                <cucumberArg>--color</cucumberArg>
-                                <cucumberArg>--verbose</cucumberArg>
-                                <cucumberArg>--format</cucumberArg>
-                                <cucumberArg>pretty</cucumberArg>
-                                <cucumberArg>--format</cucumberArg>
-                                <cucumberArg>junit</cucumberArg>
-                                <cucumberArg>--out</cucumberArg>
-                                <cucumberArg>${project.build.directory}/cucumber-reports</cucumberArg>
-                                <cucumberArg>--require</cucumberArg>
-                                <cucumberArg>${basedir}/target/test-classes</cucumberArg>
-                                <!-- HTML REPORT -->
-                                <cucumberArg>--format</cucumberArg>
-                                <cucumberArg>html</cucumberArg>
-                                <cucumberArg>--out</cucumberArg>
-                                <cucumberArg>${project.basedir}/target/cuke.html</cucumberArg>
-                            </cucumberArgs>
-                            <gems>
-                                <gem>install cuke4duke --version
-                                    ${cuke4duke.version}
-                                </gem>
-                            </gems>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>run-features</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>cucumber</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+
 
         <profile>
             <id>it-execution-debug</id>
@@ -205,6 +141,8 @@
             <id>cukes</id>
             <url>http://cukes.info/maven</url>
         </pluginRepository>
+
+
     </pluginRepositories>
 
 

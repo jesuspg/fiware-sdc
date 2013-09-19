@@ -11,6 +11,7 @@
         <class>com.telefonica.euro_iaas.sdc.model.ApplicationInstance</class>
         <class>com.telefonica.euro_iaas.sdc.model.ApplicationRelease</class>
         <class>com.telefonica.euro_iaas.sdc.model.Attribute</class>
+        <class>com.telefonica.euro_iaas.sdc.model.Artifact</class> 
 
         <class>com.telefonica.euro_iaas.sdc.model.InstallableInstance</class>
         <class>com.telefonica.euro_iaas.sdc.model.InstallableRelease</class>

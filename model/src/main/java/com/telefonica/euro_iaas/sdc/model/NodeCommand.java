@@ -1,104 +1,126 @@
 package com.telefonica.euro_iaas.sdc.model;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
+
 
 @Entity
 public class NodeCommand {
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	
-    @SuppressWarnings("unused")
-    @Version
-    private Long v;
-    
-    @ManyToOne
-    private OS os;
-    @Column(nullable=false, length=128)
-    private String key;
-    @Column(nullable=false, length=128)
-    private String value;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    /**
-     * Default constructor
-     */
-    public NodeCommand(){
-    	
-    }
-	
-    /**
-     * <p>Constructor for NodeCommand.</p>
-     * 
-     * @param os a {@link com.telefonica.euro_iaas.sdc.model.OS} object.
-     * @param key a {@link java.lang.String} object.
-     * @param value a {@link java.lang.String} object.
+	@SuppressWarnings("unused")
+	@Version
+	private Long v;
 
-     */
-    public NodeCommand(OS os, String key, String value) {
-        this.os = os;
-        this.key = key;
-        this.value = value;
-    }
-    
-    
-    
-    /**
-     * <p>Getter for the field <code>os</code>.</p>
-     *
-     * @return the os
-     */
-    public OS getOS() {
-        return os;
-    }
-    /**
-     * <p>Setter for the field <code>os</code>.</p>
-     *
-     * @param os the os to set
-     */
-    public void setOS(OS os) {
-        this.os = os;
-    }
+	@ManyToOne
+	private OS os;
+	@Column(nullable = false, length = 128)
+	private String key;
+	@Column(nullable = false, length = 128)
+	private String value;
 
-    /**
-     * <p>Getter for the field <code>key</code>.</p>
-     *
-     * @return the key
-     */
-    public String getKey() {
-        return key;
-    }
-    /**
-     * <p>Setter for the field <code>key</code>.</p>
-     *
-     * @param name the key to set
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-    /**
-     * <p>Getter for the field <code>value</code>.</p>
-     *
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
-    /**
-     * <p>Setter for the field <code>value</code>.</p>
-     *
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-    
-    @Override
+	/**
+	 * Default constructor
+	 */
+	public NodeCommand() {
+
+	}
+
+	/**
+	 * <p>
+	 * Constructor for NodeCommand.
+	 * </p>
+	 * 
+	 * @param os
+	 *            a {@link com.telefonica.euro_iaas.sdc.model.OS} object.
+	 * @param key
+	 *            a {@link java.lang.String} object.
+	 * @param value
+	 *            a {@link java.lang.String} object.
+	 */
+	public NodeCommand(OS os, String key, String value) {
+		this.os = os;
+		this.key = key;
+		this.value = value;
+	}
+
+	/**
+	 * <p>
+	 * Getter for the field <code>os</code>.
+	 * </p>
+	 * 
+	 * @return the os
+	 */
+	public OS getOS() {
+		return os;
+	}
+
+	/**
+	 * <p>
+	 * Setter for the field <code>os</code>.
+	 * </p>
+	 * 
+	 * @param os
+	 *            the os to set
+	 */
+	public void setOS(OS os) {
+		this.os = os;
+	}
+
+	/**
+	 * <p>
+	 * Getter for the field <code>key</code>.
+	 * </p>
+	 * 
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+
+	/**
+	 * <p>
+	 * Setter for the field <code>key</code>.
+	 * </p>
+	 * 
+	 * @param name
+	 *            the key to set
+	 */
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	/**
+	 * <p>
+	 * Getter for the field <code>value</code>.
+	 * </p>
+	 * 
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/**
+	 * <p>
+	 * Setter for the field <code>value</code>.
+	 * </p>
+	 * 
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -109,6 +131,7 @@ public class NodeCommand {
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -146,5 +169,4 @@ public class NodeCommand {
 		return true;
 	}
 
-    
 }

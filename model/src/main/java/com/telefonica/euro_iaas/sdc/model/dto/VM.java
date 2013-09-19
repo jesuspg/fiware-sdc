@@ -4,302 +4,299 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Represents a host where a OS is running. It is formed by
- *
+ * 
  * @author Sergio Arroyo
- *
+ * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class VM {
-    /** The ip where the host is located. */
-    private String ip;
-    /** The computer's hostname. */
-    private String hostname;
-    /** The domain. */
-    private String domain;
-    /** the fqn ***/
-    private String fqn;
-    /** the OSType ***/
-    private String osType;
-    
-    public VM() {
-        this.ip = "";
-        this.fqn = "";
-        this.hostname = "";
-        this.domain = "";
-        this.osType = "";
-    }
+	/** The ip where the host is located. */
+	private String ip;
+	/** The computer's hostname. */
+	private String hostname;
+	/** The domain. */
+	private String domain;
+	/** the fqn ***/
+	private String fqn;
+	/** the OSType ***/
+	private String osType;
 
-    /**
-     * @param fqn
-     * @param hostname
-     * @param domain
-     */
-    public VM(String fqn, String hostname, String domain) {
-        if (fqn == null) {
-            this.fqn = "";
-        } else {
-            this.fqn = fqn;
-        }
-        if (hostname == null) {
-            this.hostname = "";
-        } else {
-            this.hostname = hostname;
-        }
-        if (domain == null) {
-            this.domain = "";
-        } else {
-            this.domain = domain;
-        }
-        this.ip = "";
-        this.osType = "";
-    }
-    
-    /**
-     * @param ip
-     * @param fqn
-     * @param hostname
-     * @param domain
-     */
-    public VM(String fqn, String ip, String hostname, String domain) {
-        this.osType = "";
-    	if (ip == null) {
-            this.ip = "";
-        } else {
-            this.ip = ip;
-        }
-        if (fqn == null) {
-            this.fqn = "";
-        } else {
-            this.fqn = fqn;
-        }
-        if (hostname == null) {
-            this.hostname = "";
-        } else {
-            this.hostname = hostname;
-        }
-        if (domain == null) {
-            this.domain = "";
-        } else {
-            this.domain = domain;
-        }
-    }
-    
-    /**
-     * @param hostname
-     * @param domain
-     */
-    /*public VM(String hostname, String domain) {
-        this.ip = "";
-        this.fqn = "";
-        if (hostname == null) {
-            this.hostname = "";
-        } else {
-            this.hostname = hostname;
-        }
-        if (domain == null) {
-            this.domain = "";
-        } else {
-            this.domain = domain;
-        }
-    }*/
-    
-    /**
-     * @param fqn
-     * @param ip
-     */
-    public VM(String fqn, String ip) {
-        this.hostname = "";
-        this.domain = "";
-        this.osType = "";
-        if (fqn == null) {
-            this.fqn = "";
-        } else {
-            this.fqn = fqn;
-        }
-        if (ip == null) {
-            this.ip = "";
-        } else {
-            this.ip = ip;
-        }
-    }
-    
-    /**
-     * @param fqn
-     */
-    public VM(String fqn) {
-        if (fqn == null) {
-            this.fqn = "";
-        } else {
-            this.fqn = fqn;
-        }
-        this.ip = "";
-        this.hostname = "";
-        this.domain = "";
-        this.osType = "";
-    }
-    
-    /**
-     * @param ip
-     * @param fqn
-     * @param hostname
-     * @param domain
-     */
-    public VM(String fqn, String ip, String hostname, String domain, String osType) {
-    	if (ip == null) {
-            this.ip = "";
-        } else {
-            this.ip = ip;
-        }
-        if (fqn == null) {
-            this.fqn = "";
-        } else {
-            this.fqn = fqn;
-        }
-        if (hostname == null) {
-            this.hostname = "";
-        } else {
-            this.hostname = hostname;
-        }
-        if (domain == null) {
-            this.domain = "";
-        } else {
-            this.domain = domain;
-        }
-        if (osType == null) {
-            this.osType = "";
-        } else {
-            this.osType = osType;
-        }
-    }
-    
-    
-    /**
-     * Decides if chef can work with this VM or if doesn't.
-     *
-     * @return <code>true</code> if Chef can work with the available information
-     *         for this VM
-     */
-    public Boolean canWorkWithChef() {
-        return !StringUtils.isEmpty(hostname) && !StringUtils.isEmpty(domain);
-    }
-    
-    /**
-     * Decides if SDC Server can communicate with VM or if can't
-     *
-     * @return <code>true</code> if SDC can communicate with VM 
-     * 		with the available information for this VM
-     */
-    public Boolean canWorkWithNodes() {
-        return !StringUtils.isEmpty(ip);
-    }
-    
-    /**
-     * Get the name that Chef needs to work with.
-     *
-     * @return
-     */
-    public String getChefClientName() {
-        if (StringUtils.isEmpty(hostname + domain)) {
-            throw new IllegalStateException("ChefClientName can not be empty");
-        }
-        return hostname + domain;
-    }
+	public VM() {
+		this.ip = "";
+		this.fqn = "";
+		this.hostname = "";
+		this.domain = "";
+		this.osType = "";
+	}
 
-    public String getExecuteChefConectionUrl() {
-        if (!StringUtils.isEmpty(ip)) {
-            return ip;
-        } else {
-            return hostname + domain;
-        }
-    }
+	/**
+	 * @param fqn
+	 * @param hostname
+	 * @param domain
+	 */
+	public VM(String fqn, String hostname, String domain) {
+		if (fqn == null) {
+			this.fqn = "";
+		} else {
+			this.fqn = fqn;
+		}
+		if (hostname == null) {
+			this.hostname = "";
+		} else {
+			this.hostname = hostname;
+		}
+		if (domain == null) {
+			this.domain = "";
+		} else {
+			this.domain = domain;
+		}
+		this.ip = "";
+		this.osType = "";
+	}
 
-    // // ACCESSORS ////
+	/**
+	 * @param ip
+	 * @param fqn
+	 * @param hostname
+	 * @param domain
+	 */
+	public VM(String fqn, String ip, String hostname, String domain) {
+		this.osType = "";
+		if (ip == null) {
+			this.ip = "";
+		} else {
+			this.ip = ip;
+		}
+		if (fqn == null) {
+			this.fqn = "";
+		} else {
+			this.fqn = fqn;
+		}
+		if (hostname == null) {
+			this.hostname = "";
+		} else {
+			this.hostname = hostname;
+		}
+		if (domain == null) {
+			this.domain = "";
+		} else {
+			this.domain = domain;
+		}
+	}
 
-    /**
-     * @return the ip
-     */
-    public String getIp() {
-        return ip;
-    }
+	/**
+	 * @param hostname
+	 * @param domain
+	 */
+	/*
+	 * public VM(String hostname, String domain) { this.ip = ""; this.fqn = "";
+	 * if (hostname == null) { this.hostname = ""; } else { this.hostname =
+	 * hostname; } if (domain == null) { this.domain = ""; } else { this.domain
+	 * = domain; } }
+	 */
 
-    /**
-     * @param ip
-     *            the ip to set
-     */
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
+	/**
+	 * @param fqn
+	 * @param ip
+	 */
+	public VM(String fqn, String ip) {
+		this.hostname = "";
+		this.domain = "";
+		this.osType = "";
+		if (fqn == null) {
+			this.fqn = "";
+		} else {
+			this.fqn = fqn;
+		}
+		if (ip == null) {
+			this.ip = "";
+		} else {
+			this.ip = ip;
+		}
+	}
 
-    /**
-     * @return the hostname
-     */
-    public String getHostname() {
-        return hostname;
-    }
+	/**
+	 * @param fqn
+	 */
+	public VM(String fqn) {
+		if (fqn == null) {
+			this.fqn = "";
+		} else {
+			this.fqn = fqn;
+		}
+		this.ip = "";
+		this.hostname = "";
+		this.domain = "";
+		this.osType = "";
+	}
 
-    /**
-     * @param hostname
-     *            the hostname to set
-     */
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
+	/**
+	 * @param ip
+	 * @param fqn
+	 * @param hostname
+	 * @param domain
+	 */
+	public VM(String fqn, String ip, String hostname, String domain,
+			String osType) {
+		if (ip == null) {
+			this.ip = "";
+		} else {
+			this.ip = ip;
+		}
+		if (fqn == null) {
+			this.fqn = "";
+		} else {
+			this.fqn = fqn;
+		}
+		if (hostname == null) {
+			this.hostname = "";
+		} else {
+			this.hostname = hostname;
+		}
+		if (domain == null) {
+			this.domain = "";
+		} else {
+			this.domain = domain;
+		}
+		if (osType == null) {
+			this.osType = "";
+		} else {
+			this.osType = osType;
+		}
+	}
 
-    /**
-     * @return the domain
-     */
-    public String getDomain() {
-        return domain;
-    }
+	/**
+	 * Decides if chef can work with this VM or if doesn't.
+	 * 
+	 * @return <code>true</code> if Chef can work with the available information
+	 *         for this VM
+	 */
+	public Boolean canWorkWithChef() {
+		return !StringUtils.isEmpty(hostname) && !StringUtils.isEmpty(domain);
+	}
 
-    /**
-     * @param domain
-     *            the domain to set
-     */
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-    
-    /**
-     * @return the fqn
-     */
-    public String getFqn() {
+	/**
+	 * Decides if SDC Server can communicate with VM or if can't
+	 * 
+	 * @return <code>true</code> if SDC can communicate with VM with the
+	 *         available information for this VM
+	 */
+	public Boolean canWorkWithNodes() {
+		return !StringUtils.isEmpty(ip);
+	}
+
+	/**
+	 * Get the name that Chef needs to work with.
+	 * 
+	 * @return
+	 */
+	public String getChefClientName() {
+		if (StringUtils.isEmpty(hostname + domain)) {
+			throw new IllegalStateException("ChefClientName can not be empty");
+		}
+		
+		if (hostname.contains(domain))
+			return hostname;
+		else
+			return hostname + domain;
+	}
+
+	public String getExecuteChefConectionUrl() {
+		if (!StringUtils.isEmpty(ip)) {
+			return ip;
+		} else {
+			return hostname + domain;
+		}
+	}
+
+	// // ACCESSORS ////
+
+	/**
+	 * @return the ip
+	 */
+	public String getIp() {
+		return ip;
+	}
+
+	/**
+	 * @param ip
+	 *            the ip to set
+	 */
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	/**
+	 * @return the hostname
+	 */
+	public String getHostname() {
+		return hostname;
+	}
+
+	/**
+	 * @param hostname
+	 *            the hostname to set
+	 */
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	/**
+	 * @return the domain
+	 */
+	public String getDomain() {
+		return domain;
+	}
+
+	/**
+	 * @param domain
+	 *            the domain to set
+	 */
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	/**
+	 * @return the fqn
+	 */
+	public String getFqn() {
 		return fqn;
 	}
-    
-    /**
-     * @param fqn
-     *            the fqn to set
-     */
+
+	/**
+	 * @param fqn
+	 *            the fqn to set
+	 */
 	public void setFqn(String fqn) {
 		this.fqn = fqn;
 	}
 
 	/**
-     * @return the osType
-     */
-    public String getOsType() {
+	 * @return the osType
+	 */
+	public String getOsType() {
 		return osType;
 	}
-    
-    /**
-     * @param osType
-     *            the osType to set
-     */
+
+	/**
+	 * @param osType
+	 *            the osType to set
+	 */
 	public void setOsType(String osType) {
 		this.osType = osType;
 	}
-	
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -313,10 +310,10 @@ public class VM {
 	}
 
 	/*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -348,16 +345,16 @@ public class VM {
 			return false;
 		return true;
 	}
-	
-	/*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip
-                + ", fqn=" + fqn + ", osType=" + osType + "]";
-    }
 
- }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip
+				+ ", fqn=" + fqn + ", osType=" + osType + "]";
+	}
+
+}

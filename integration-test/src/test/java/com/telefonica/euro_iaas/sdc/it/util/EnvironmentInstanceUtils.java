@@ -16,60 +16,66 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 public class EnvironmentInstanceUtils {
 
-    private SDCClient client = new SDCClient();
-    private EnvironmentInstanceService service;
+	private SDCClient client = new SDCClient();
+	private EnvironmentInstanceService service;
 
-    public EnvironmentInstance load(Long environmentInstanceID)
-            throws ResourceNotFoundException {
-        service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
-                getProperty(MIME_TYPE));
-        return service.load(environmentInstanceID);
-    }
+	public EnvironmentInstance load(Long environmentInstanceID)
+			throws ResourceNotFoundException {
+		service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+		return service.load(environmentInstanceID);
+	}
 
-    /**
-     * Insert the environmentInstance
-     * @param environmentDto the name
-     * @param productInstanceDtos
-     * @return the EnvironmentInstance
-     */
-    public EnvironmentInstance insert(EnvironmentDto environmentDto,
-            List<ProductInstanceDto> productInstanceDtos) {
-        service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
-                        getProperty(MIME_TYPE));
+	/**
+	 * Insert the environmentInstance
+	 * 
+	 * @param environmentDto
+	 *            the name
+	 * @param productInstanceDtos
+	 * @return the EnvironmentInstance
+	 */
+	public EnvironmentInstance insert(EnvironmentDto environmentDto,
+			List<ProductInstanceDto> productInstanceDtos) {
+		service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
 
-        EnvironmentInstanceDto instance = new EnvironmentInstanceDto();
-        instance.setEnvironment(environmentDto);
-        instance.setProducts(productInstanceDtos);
-        
-        return service.insert(instance);
-    }
-    
-    /**
-     * Update the environmentInstance
-     * @param environmentDto the environmentDto
-     * @param productInstanceDtos
-     * @return the EnvironmentInstance
-     */
-    public EnvironmentInstance update(EnvironmentDto environmentDto,
-            List<ProductInstanceDto> productInstanceDtos) {
-        	
-    	service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
-                getProperty(MIME_TYPE));
+		EnvironmentInstanceDto instance = new EnvironmentInstanceDto();
+		instance.setEnvironment(environmentDto);
+		instance.setProducts(productInstanceDtos);
 
-    	 EnvironmentInstanceDto instance = new EnvironmentInstanceDto();
-         instance.setEnvironment(environmentDto);
-         instance.setProducts(productInstanceDtos);
+		return service.insert(instance);
+	}
 
-        return service.update(instance);
-    }
-    
-    /**
-     * Delete the environmentInstance
-     * @param environmentId the id
-     */
-    public void delete(Long Id) {
-        service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
-                        getProperty(MIME_TYPE));
-        service.delete(Id);
-    }
+	/**
+	 * Update the environmentInstance
+	 * 
+	 * @param environmentDto
+	 *            the environmentDto
+	 * @param productInstanceDtos
+	 * @return the EnvironmentInstance
+	 */
+	public EnvironmentInstance update(EnvironmentDto environmentDto,
+			List<ProductInstanceDto> productInstanceDtos) {
+
+		service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+
+		EnvironmentInstanceDto instance = new EnvironmentInstanceDto();
+		instance.setEnvironment(environmentDto);
+		instance.setProducts(productInstanceDtos);
+
+		return service.update(instance);
+	}
+
+	/**
+	 * Delete the environmentInstance
+	 * 
+	 * @param environmentId
+	 *            the id
+	 */
+	public void delete(Long Id) {
+		service = client.getEnvironmentInstanceService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+		service.delete(Id);
+	}
 }

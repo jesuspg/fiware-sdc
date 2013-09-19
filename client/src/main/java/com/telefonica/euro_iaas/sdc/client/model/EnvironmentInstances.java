@@ -1,6 +1,5 @@
 package com.telefonica.euro_iaas.sdc.client.model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +11,11 @@ import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 
 @SuppressWarnings("serial")
 @XmlRootElement
-@XmlSeeAlso({EnvironmentInstance.class})
-public class EnvironmentInstances extends ArrayList<EnvironmentInstance>{
+@XmlSeeAlso( { EnvironmentInstance.class })
+public class EnvironmentInstances extends ArrayList<EnvironmentInstance> {
 
-      @XmlElement(name = "environmentInstance")
-      public List<EnvironmentInstance> getEnvironmentInstances() {
-        return this;
-      }
+	@XmlElement(name = "environmentInstance")
+	public List<EnvironmentInstance> getEnvironmentInstances() {
+		return this;
+	}
 }

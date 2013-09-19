@@ -13,6 +13,8 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
     <bean id="applicationDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationDaoJpaImpl"/>
+    <bean id="artifactDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ArtifactDaoJpaImpl"/>
     <bean id="applicationInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationInstanceDaoJpaImpl"/>
     <bean id="osDao" lazy-init="true"

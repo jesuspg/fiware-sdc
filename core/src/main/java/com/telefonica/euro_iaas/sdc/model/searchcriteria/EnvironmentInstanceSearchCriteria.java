@@ -4,98 +4,94 @@ import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
-
 /**
  * Provides some criteria to search EnvironmentInstance entities.
- *
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 public class EnvironmentInstanceSearchCriteria extends AbstractSearchCriteria {
 
-    /**
-    * The environment
-    */
-    private Environment environment;
-    
-    /**
-     * The productInstance
-    */
-    private ProductInstance productInstance;
+	/**
+	 * The environment
+	 */
+	private Environment environment;
 
-    /**
-     * Default constructor
-     */
-    public EnvironmentInstanceSearchCriteria() {
-    }
+	/**
+	 * The productInstance
+	 */
+	private ProductInstance productInstance;
 
-    /**
-     * @param page
-     * @param pagesize
-     * @param orderBy
-     * @param orderType
-     * @param environment
-     * @param productInstance
-     */
-    public EnvironmentInstanceSearchCriteria(Integer page, Integer pageSize,
-            String orderBy, String orderType, Environment environment,
-            ProductInstance productInstance) {
-        super(page, pageSize, orderBy, orderType);
-        this.productInstance = productInstance;
-        this.environment = environment;
-    }
+	/**
+	 * Default constructor
+	 */
+	public EnvironmentInstanceSearchCriteria() {
+	}
 
-    /**
-     * @param environment
-     */
-    public EnvironmentInstanceSearchCriteria(Environment environment) {
-        this.environment = environment;
-    }
-    
-    /**
-     * @param productInstance
-     */
-    public EnvironmentInstanceSearchCriteria(ProductInstance productInstance) {
-        this.productInstance = productInstance;
-    }
+	/**
+	 * @param page
+	 * @param pagesize
+	 * @param orderBy
+	 * @param orderType
+	 * @param environment
+	 * @param productInstance
+	 */
+	public EnvironmentInstanceSearchCriteria(Integer page, Integer pageSize,
+			String orderBy, String orderType, Environment environment,
+			ProductInstance productInstance) {
+		super(page, pageSize, orderBy, orderType);
+		this.productInstance = productInstance;
+		this.environment = environment;
+	}
 
-    /**
-     * @return the environment
-     */
-    public Environment getEnvironment() {
-        return environment;
-    }
+	/**
+	 * @param environment
+	 */
+	public EnvironmentInstanceSearchCriteria(Environment environment) {
+		this.environment = environment;
+	}
 
-    /**
-     * @param environment
-     *            the environment to set
-     */
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
+	/**
+	 * @param productInstance
+	 */
+	public EnvironmentInstanceSearchCriteria(ProductInstance productInstance) {
+		this.productInstance = productInstance;
+	}
 
-    /**
-     * @return the productInstance
-     */
-    public ProductInstance getProductInstance() {
-        return productInstance;
-    }
+	/**
+	 * @return the environment
+	 */
+	public Environment getEnvironment() {
+		return environment;
+	}
 
-    /**
-     * @param productInstance
-     *            the productInstance to set
-     */
-    public void setProductInstance(ProductInstance productInstance) {
-        this.productInstance = productInstance;
-    }
-    
+	/**
+	 * @param environment
+	 *            the environment to set
+	 */
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
 
-    @Override
-    public String toString() {
-        return "ProductInstanceSearchCriteria [Environment=" + environment
-        		+ ", product=" + productInstance + "]";
-    }
+	/**
+	 * @return the productInstance
+	 */
+	public ProductInstance getProductInstance() {
+		return productInstance;
+	}
 
+	/**
+	 * @param productInstance
+	 *            the productInstance to set
+	 */
+	public void setProductInstance(ProductInstance productInstance) {
+		this.productInstance = productInstance;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductInstanceSearchCriteria [Environment=" + environment
+				+ ", product=" + productInstance + "]";
+	}
 
 }
-

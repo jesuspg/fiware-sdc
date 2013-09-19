@@ -15,65 +15,74 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public class EnvironmentUtils {
 
-    private SDCClient client = new SDCClient();
-    private EnvironmentService service;
+	private SDCClient client = new SDCClient();
+	private EnvironmentService service;
 
-    public Environment load(String environmentName)
-            throws ResourceNotFoundException {
-        service = client.getEnvironmentService(getProperty(BASE_URL),
-                getProperty(MIME_TYPE));
-        return service.load(environmentName);
-    }
+	public Environment load(String environmentName)
+			throws ResourceNotFoundException {
+		service = client.getEnvironmentService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+		return service.load(environmentName);
+	}
 
-    /**
-     * Insert the environment
-     * @param environmentName the name
-     * @param environmentDescription the Description
-     * @param productReleaseDtos
-     * @return the Environment
-     */
-    public Environment insert(String environmentName, String environmentDescription,
-            List<ProductReleaseDto> productReleaseDtos) {
-        service = client.getEnvironmentService(getProperty(BASE_URL),
-                        getProperty(MIME_TYPE));
+	/**
+	 * Insert the environment
+	 * 
+	 * @param environmentName
+	 *            the name
+	 * @param environmentDescription
+	 *            the Description
+	 * @param productReleaseDtos
+	 * @return the Environment
+	 */
+	public Environment insert(String environmentName,
+			String environmentDescription,
+			List<ProductReleaseDto> productReleaseDtos) {
+		service = client.getEnvironmentService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
 
-        EnvironmentDto instance = new EnvironmentDto();
-        instance.setDescription(environmentDescription);
-        instance.setName(environmentName);
-        instance.setProducts(productReleaseDtos);
-        
-        return service.insert(instance);
-    }
-    
-    /**
-     * Update the environment
-     * @param environmentName the name
-     * @param environmentDescription the Description
-     * @param productReleaseDtos
-     * @return the Environment
-     */
-    public Environment update(String environmentName, 
-    		String environmentDescription,
-            List<ProductReleaseDto> productReleaseDtos) {
-        	
-    	service = client.getEnvironmentService(getProperty(BASE_URL),
-                getProperty(MIME_TYPE));
+		EnvironmentDto instance = new EnvironmentDto();
+		instance.setDescription(environmentDescription);
+		instance.setName(environmentName);
+		instance.setProducts(productReleaseDtos);
 
-        EnvironmentDto instance = new EnvironmentDto();
-        instance.setDescription(environmentDescription);
-        instance.setName(environmentName);
-        instance.setProducts(productReleaseDtos);
+		return service.insert(instance);
+	}
 
-        return service.update(instance);
-    }
-    
-    /**
-     * Delete the environment
-     * @param environmentName the environment name
-     */
-    public void delete(String envName) {
-        service = client.getEnvironmentService(getProperty(BASE_URL),
-                        getProperty(MIME_TYPE));
-        service.delete(envName);
-    }
+	/**
+	 * Update the environment
+	 * 
+	 * @param environmentName
+	 *            the name
+	 * @param environmentDescription
+	 *            the Description
+	 * @param productReleaseDtos
+	 * @return the Environment
+	 */
+	public Environment update(String environmentName,
+			String environmentDescription,
+			List<ProductReleaseDto> productReleaseDtos) {
+
+		service = client.getEnvironmentService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+
+		EnvironmentDto instance = new EnvironmentDto();
+		instance.setDescription(environmentDescription);
+		instance.setName(environmentName);
+		instance.setProducts(productReleaseDtos);
+
+		return service.update(instance);
+	}
+
+	/**
+	 * Delete the environment
+	 * 
+	 * @param environmentName
+	 *            the environment name
+	 */
+	public void delete(String envName) {
+		service = client.getEnvironmentService(getProperty(BASE_URL),
+				getProperty(MIME_TYPE));
+		service.delete(envName);
+	}
 }

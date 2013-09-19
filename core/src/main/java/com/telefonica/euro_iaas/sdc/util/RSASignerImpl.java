@@ -22,131 +22,136 @@ import org.bouncycastle.jce.provider.JCERSAPublicKey;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PasswordFinder;
 
+
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+
 /**
- * RSA Implementation of Signer using Private key to encrypt
- * and Public to decrypt.
- *
+ * RSA Implementation of Signer using Private key to encrypt and Public to
+ * decrypt.
+ * 
  * @author Sergio Arroyo
- *
+ * 
  */
 public class RSASignerImpl implements Signer {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String sign(String message, File pemFile) {
-        try {
-            Security.addProvider(new BouncyCastleProvider());
-            PrivateKey privateKey = readKeyPair(pemFile, "".toCharArray())
-                    .getPrivate();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String sign(String message, File pemFile) {
+		try {
+			Security.addProvider(new BouncyCastleProvider());
+			PrivateKey privateKey = readKeyPair(pemFile, "".toCharArray())
+					.getPrivate();
 
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+			Cipher cipher = Cipher.getInstance("RSA");
+			cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
-            byte[] digest = cipher.doFinal(message.getBytes());
-            return Base64.encodeBase64String(digest);
-        } catch (IOException e) {
-            throw new SdcRuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new SdcRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new SdcRuntimeException(e);
-        } catch (NoSuchPaddingException e) {
-            throw new SdcRuntimeException(e);
-        } catch (IllegalBlockSizeException e) {
-            throw new SdcRuntimeException(e);
-        } catch (BadPaddingException e) {
-            throw new SdcRuntimeException(e);
-        }
-    }
+			byte[] digest = cipher.doFinal(message.getBytes());
+			return Base64.encodeBase64String(digest);
+		} catch (IOException e) {
+			throw new SdcRuntimeException(e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new SdcRuntimeException(e);
+		} catch (InvalidKeyException e) {
+			throw new SdcRuntimeException(e);
+		} catch (NoSuchPaddingException e) {
+			throw new SdcRuntimeException(e);
+		} catch (IllegalBlockSizeException e) {
+			throw new SdcRuntimeException(e);
+		} catch (BadPaddingException e) {
+			throw new SdcRuntimeException(e);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String unsign(String message,  File pemFile) {
-        try {
-            Security.addProvider(new BouncyCastleProvider());
-            JCERSAPublicKey publicKey = readPublicKey(pemFile,
-                    "".toCharArray());
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String unsign(String message, File pemFile) {
+		try {
+			Security.addProvider(new BouncyCastleProvider());
+			JCERSAPublicKey publicKey = readPublicKey(pemFile, "".toCharArray());
 
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, publicKey);
+			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 
-            // decryption:
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            baos.write(cipher.doFinal(org.bouncycastle.util.encoders.Base64
-                    .decode(message.getBytes("UTF-8"))));
-            return baos.toString();
-        } catch (IOException e) {
-            throw new SdcRuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new SdcRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new SdcRuntimeException(e);
-        } catch (NoSuchPaddingException e) {
-            throw new SdcRuntimeException(e);
-        } catch (IllegalBlockSizeException e) {
-            throw new SdcRuntimeException(e);
-        } catch (BadPaddingException e) {
-            throw new SdcRuntimeException(e);
-        }
-    }
+			// decryption:
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos.write(cipher.doFinal(org.bouncycastle.util.encoders.Base64
+					.decode(message.getBytes("UTF-8"))));
+			return baos.toString();
+		} catch (IOException e) {
+			throw new SdcRuntimeException(e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new SdcRuntimeException(e);
+		} catch (InvalidKeyException e) {
+			throw new SdcRuntimeException(e);
+		} catch (NoSuchPaddingException e) {
+			throw new SdcRuntimeException(e);
+		} catch (IllegalBlockSizeException e) {
+			throw new SdcRuntimeException(e);
+		} catch (BadPaddingException e) {
+			throw new SdcRuntimeException(e);
+		}
+	}
 
-    /**
-     * Get the private key
-     * @param privateKey
-     * @param keyPassword
-     * @return
-     * @throws IOException
-     */
-    private static KeyPair readKeyPair(File privateKey, char[] keyPassword)
-            throws IOException {
-        FileReader fileReader = new FileReader(privateKey);
-        PEMReader r = new PEMReader(fileReader, new DefaultPasswordFinder(
-                keyPassword));
-        try {
-            return (KeyPair) r.readObject();
-        } catch (IOException ex) {
-            throw new IOException("The private key could not be decrypted", ex);
-        } finally {
-            r.close();
-            fileReader.close();
-        }
-    }
+	/**
+	 * Get the private key
+	 * 
+	 * @param privateKey
+	 * @param keyPassword
+	 * @return
+	 * @throws IOException
+	 */
+	private static KeyPair readKeyPair(File privateKey, char[] keyPassword)
+			throws IOException {
+		FileReader fileReader = new FileReader(privateKey);
+		PEMReader r = new PEMReader(fileReader, new DefaultPasswordFinder(
+				keyPassword));
+		try {
+			return (KeyPair) r.readObject();
+		} catch (IOException ex) {
+			throw new IOException("The private key could not be decrypted", ex);
+		} finally {
+			r.close();
+			fileReader.close();
+		}
+	}
 
-    /**
-     * Get the public key
-     * @param privateKey
-     * @param keyPassword
-     * @return
-     * @throws IOException
-     */
-    private static JCERSAPublicKey readPublicKey(File privateKey,
-            char[] keyPassword) throws IOException {
-        FileReader fileReader = new FileReader(privateKey);
-        PEMReader r = new PEMReader(fileReader, new DefaultPasswordFinder(
-                keyPassword));
-        try {
-            return (JCERSAPublicKey) r.readObject();
-        } catch (IOException ex) {
-            throw new IOException("The private key could not be decrypted", ex);
-        } finally {
-            r.close();
-            fileReader.close();
-        }
-    }
+	/**
+	 * Get the public key
+	 * 
+	 * @param privateKey
+	 * @param keyPassword
+	 * @return
+	 * @throws IOException
+	 */
+	private static JCERSAPublicKey readPublicKey(File privateKey,
+			char[] keyPassword) throws IOException {
+		FileReader fileReader = new FileReader(privateKey);
+		PEMReader r = new PEMReader(fileReader, new DefaultPasswordFinder(
+				keyPassword));
+		try {
+			return (JCERSAPublicKey) r.readObject();
+		} catch (IOException ex) {
+			throw new IOException("The private key could not be decrypted", ex);
+		} finally {
+			r.close();
+			fileReader.close();
+		}
+	}
 
-    private static class DefaultPasswordFinder implements PasswordFinder {
-        private final char[] password;
-        private DefaultPasswordFinder(char[] password) {
-            this.password = password;
-        }
-        @Override
-        public char[] getPassword() {
-            return Arrays.copyOf(password, password.length);
-        }
-    }
+	private static class DefaultPasswordFinder implements PasswordFinder {
+		private final char[] password;
+
+		private DefaultPasswordFinder(char[] password) {
+			this.password = password;
+		}
+
+		@Override
+		public char[] getPassword() {
+			return Arrays.copyOf(password, password.length);
+		}
+	}
 }

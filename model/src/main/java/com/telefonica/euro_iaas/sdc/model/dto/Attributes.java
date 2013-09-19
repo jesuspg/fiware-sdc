@@ -8,19 +8,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+
 /**
- *
+ * 
  * @author Sergio Arroyo
- *
+ * 
  */
 @SuppressWarnings("serial")
 @XmlRootElement
-@XmlSeeAlso({Attribute.class})
+@XmlSeeAlso( { Attribute.class })
 public class Attributes extends ArrayList<Attribute> {
 
-      @XmlElement(name = "attribute")
-      public List<Attribute> getAttributes() {
-        return this;
-      }
+	@XmlElement(name = "attribute")
+	public List<Attribute> getAttributes() {
+		return this;
+	}
 
 }

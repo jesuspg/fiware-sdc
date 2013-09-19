@@ -11,73 +11,80 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.model.EnvironmentInstances;
-import com.telefonica.euro_iaas.sdc.client.model.Environments;
 import com.telefonica.euro_iaas.sdc.client.services.EnvironmentInstanceService;
-import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentInstanceDto;
 
 public class EnvironmentInstanceServiceImpl extends AbstractBaseService
 		implements EnvironmentInstanceService {
 
-	public EnvironmentInstanceServiceImpl(Client client, String baseUrl, String mediaType) {
-        setBaseHost(baseUrl);
-        setType(mediaType);
-        setClient(client);
+	public EnvironmentInstanceServiceImpl(Client client, String baseUrl,
+			String mediaType) {
+		setBaseHost(baseUrl);
+		setType(mediaType);
+		setClient(client);
 	}
-	
-	
+
 	@Override
 	public EnvironmentInstance insert(
 			EnvironmentInstanceDto environmentInstanceDto) {
-        String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
-        WebResource wr = getClient().resource(url);
-        return wr.accept(getType()).type(getType()).entity(environmentInstanceDto)
-                .post(EnvironmentInstance.class);
+		String url = getBaseHost()
+				+ ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
+		WebResource wr = getClient().resource(url);
+		return wr.accept(getType()).type(getType()).entity(
+				environmentInstanceDto).post(EnvironmentInstance.class);
 	}
 
 	@Override
 	public List<EnvironmentInstance> findAll(Integer page, Integer pageSize,
 			String orderBy, String orderType) {
-        String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
-        
-        WebResource wr = getClient().resource(url);
-        MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams = addParam(searchParams, "page", page);
-        searchParams = addParam(searchParams, "pageSize", pageSize);
-        searchParams = addParam(searchParams, "orderBy", orderBy);
-        searchParams = addParam(searchParams, "orderType", orderType);
-        return wr.queryParams(searchParams)
-                .accept(getType()).get(EnvironmentInstances.class);
+		String url = getBaseHost()
+				+ ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
+
+		WebResource wr = getClient().resource(url);
+		MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
+		searchParams = addParam(searchParams, "page", page);
+		searchParams = addParam(searchParams, "pageSize", pageSize);
+		searchParams = addParam(searchParams, "orderBy", orderBy);
+		searchParams = addParam(searchParams, "orderType", orderType);
+		return wr.queryParams(searchParams).accept(getType()).get(
+				EnvironmentInstances.class);
 	}
 
 	@Override
 	public EnvironmentInstance load(Long Id) {
-		String url = getBaseHost() + MessageFormat.format(
-                ClientConstants.ACTION_ENVIRONMENTINSTANCE_INSTANCE_PATH, Id);
-	        WebResource wr = getClient().resource(url);
-	        return wr.accept(getType()).type(getType()).entity(Id)
-	        		.get(EnvironmentInstance.class);
+		String url = getBaseHost()
+				+ MessageFormat
+						.format(
+								ClientConstants.ACTION_ENVIRONMENTINSTANCE_INSTANCE_PATH,
+								Id);
+		WebResource wr = getClient().resource(url);
+		return wr.accept(getType()).type(getType()).entity(Id).get(
+				EnvironmentInstance.class);
 	}
 
 	@Override
 	public void delete(Long Id) {
-		String url = getBaseHost() + MessageFormat.format(
-                ClientConstants.ACTION_ENVIRONMENTINSTANCE_INSTANCE_PATH, Id);
-        WebResource wr = getClient().resource(url);
-        wr.accept(getType()).type(getType()).entity(Id)
-        		.delete(ClientResponse.class);
+		String url = getBaseHost()
+				+ MessageFormat
+						.format(
+								ClientConstants.ACTION_ENVIRONMENTINSTANCE_INSTANCE_PATH,
+								Id);
+		WebResource wr = getClient().resource(url);
+		wr.accept(getType()).type(getType()).entity(Id).delete(
+				ClientResponse.class);
 
 	}
 
 	@Override
 	public EnvironmentInstance update(
 			EnvironmentInstanceDto environmentInstanceDto) {
-		String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
-		
-	        WebResource wr = getClient().resource(url);
-	        return wr.accept(getType()).type(getType()).entity(environmentInstanceDto)
-	                .put(EnvironmentInstance.class);
+		String url = getBaseHost()
+				+ ClientConstants.BASE_ENVIRONMENTINSTANCE_PATH;
+
+		WebResource wr = getClient().resource(url);
+		return wr.accept(getType()).type(getType()).entity(
+				environmentInstanceDto).put(EnvironmentInstance.class);
 	}
 
 }

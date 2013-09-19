@@ -13,164 +13,169 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Represents the concrete version of an application.
- *
+ * 
  * @author Sergio Arroyo, Jesus M. Movilla
- *
+ * 
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationRelease extends InstallableRelease {
 
-    @ManyToOne(optional=false)
-    private Application application;
+	@ManyToOne(optional = false)
+	private Application application;
 
-    @ManyToOne
-    //private List<ProductRelease> supportedProducts;
-    private Environment environment;
-    
-    @XmlTransient
-    @ManyToMany
-    private List<ApplicationRelease> transitableReleases;
+	@ManyToOne
+	private Environment environment;
 
-    /**
-     * Default constructor.
-     */
-    public ApplicationRelease() {
-    }
+	@XmlTransient
+	@ManyToMany
+	private List<ApplicationRelease> transitableReleases;
 
-    /**
-     * Constructor of the class.
-     * @param version
-     * @param releaseNotes
-     * @param privateAttributes
-     * @param application
-     * @param supportedProducts
-     * @param applicationReleases
-     */
-    public ApplicationRelease(String version, String releaseNotes,
-            List<Attribute> privateAttributes, Application application,
-            Environment environment,
-            List<ApplicationRelease> applicationReleases) {
-        super(version, releaseNotes, privateAttributes);
-        this.application = application;
-        this.environment = environment;
-        this.transitableReleases = applicationReleases;
-    }
+	/**
+	 * Default constructor.
+	 */
+	public ApplicationRelease() {
+	}
 
+	/**
+	 * Constructor of the class.
+	 * 
+	 * @param version
+	 * @param releaseNotes
+	 * @param privateAttributes
+	 * @param application
+	 * @param supportedProducts
+	 * @param applicationReleases
+	 */
+	public ApplicationRelease(String version, String releaseNotes,
+			List<Attribute> privateAttributes, Application application,
+			Environment environment,
+			List<ApplicationRelease> applicationReleases) {
+		super(version, releaseNotes, privateAttributes);
+		this.application = application;
+		this.environment = environment;
+		this.transitableReleases = applicationReleases;
+	}
 
-    /**
-     * Merge the private attributes of a concrete version with the common
-     * attributes of the product
-     * @return
-     */
-    public List<Attribute> getAttributes() {
-        List<Attribute> attr = new ArrayList<Attribute>();
-        if (getApplication().getAttributes() != null) {
-            attr.addAll(getApplication().getAttributes());
-        }
-        if (getPrivateAttributes() != null) {
-            attr.addAll(getPrivateAttributes());
-        }
-        return attr;
-    }
+	/**
+	 * Merge the private attributes of a concrete version with the common
+	 * attributes of the product
+	 * 
+	 * @return
+	 */
+	public List<Attribute> getAttributes() {
+		List<Attribute> attr = new ArrayList<Attribute>();
+		if (getApplication().getAttributes() != null) {
+			attr.addAll(getApplication().getAttributes());
+		}
+		if (getPrivateAttributes() != null) {
+			attr.addAll(getPrivateAttributes());
+		}
+		return attr;
+	}
 
+	// /////// GETTERS AND SETTERS ///////////
+	/**
+	 * @return the application
+	 */
+	public Application getApplication() {
+		return application;
+	}
 
-    ///////// GETTERS AND SETTERS ///////////
-    /**
-     * @return the application
-     */
-    public Application getApplication() {
-        return application;
-    }
+	/**
+	 * @param application
+	 *            the application to set
+	 */
+	public void setApplication(Application application) {
+		this.application = application;
+	}
 
-    /**
-     * @param application the application to set
-     */
-    public void setApplication(Application application) {
-        this.application = application;
-    }
+	/**
+	 * @return the environment
+	 */
+	public Environment getEnvironment() {
+		return environment;
+	}
 
-    /**
-     * @return the environment
-     */
-    public Environment getEnvironment() {
-        return environment;
-    }
+	/**
+	 * @param environment
+	 *            the environment to set
+	 */
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
 
-    /**
-     * @param environment the environment to set
-     */
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
+	/**
+	 * @return the applicationReleases
+	 */
+	public List<ApplicationRelease> getTransitableReleases() {
+		return transitableReleases;
+	}
 
-    /**
-     * @return the applicationReleases
-     */
-    public List<ApplicationRelease> getTransitableReleases() {
-        return transitableReleases;
-    }
+	/**
+	 * @param transitableReleases
+	 *            the applicationReleases to set
+	 */
+	public void setTransitableReleases(
+			List<ApplicationRelease> transitableReleases) {
+		this.transitableReleases = transitableReleases;
+	}
 
-    /**
-     * @param transitableReleases the applicationReleases to set
-     */
-    public void setTransitableReleases(
-            List<ApplicationRelease> transitableReleases) {
-        this.transitableReleases = transitableReleases;
-    }
+	/**
+	 * Add a transitable release.
+	 * 
+	 * @param transitableRelease
+	 *            the new release.
+	 */
+	public void addTransitableRelease(ApplicationRelease transitableRelease) {
+		if (transitableReleases == null) {
+			transitableReleases = new ArrayList<ApplicationRelease>();
+		}
+		transitableReleases.add(transitableRelease);
+	}
 
-    /**
-     * Add a transitable release.
-     * @param transitableRelease the new release.
-     */
-    public void addTransitableRelease(ApplicationRelease transitableRelease) {
-        if (transitableReleases == null) {
-            transitableReleases = new ArrayList<ApplicationRelease>();
-        }
-        transitableReleases.add(transitableRelease);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((application == null) ? 0 : application.hashCode());
+		result = prime * result
+				+ ((getVersion() == null) ? 0 : getVersion().hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((application == null) ? 0 : application.hashCode());
-        result = prime
-                * result
-                + ((getVersion() == null) ? 0 : getVersion()
-                        .hashCode());
-        return result;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApplicationRelease other = (ApplicationRelease) obj;
-        if (application == null) {
-            if (other.application != null)
-                return false;
-        } else if (!application.equals(other.application))
-            return false;
-        if (getVersion() == null) {
-            if (other.getVersion() != null)
-                return false;
-        } else if (!getVersion().equals(other.getVersion()))
-            return false;
-        return true;
-    }
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ApplicationRelease other = (ApplicationRelease) obj;
+		if (application == null) {
+			if (other.application != null)
+				return false;
+		} else if (!application.equals(other.application))
+			return false;
+		if (getVersion() == null) {
+			if (other.getVersion() != null)
+				return false;
+		} else if (!getVersion().equals(other.getVersion()))
+			return false;
+		return true;
+	}
 
 }
