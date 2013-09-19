@@ -129,6 +129,8 @@ public class ProductInstanceUtils {
      *            the domain where the machine is (<i>nullable</i>)
      * @param ip
      *            the ip of the host (<i>nullable</i>)
+     * @param fqn
+     *            the fqn of the host (<i>nullable</i>)
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)
      * @param pageSize
@@ -146,12 +148,12 @@ public class ProductInstanceUtils {
      * @return the products
      */
     public List<ProductInstance> loadAll(String hostname, String domain, 
-    		String ip, Integer page, Integer pageSize, String orderBy, 
+    		String ip, String fqn,Integer page, Integer pageSize, String orderBy, 
     		String orderType, Status status, String vdc, String productName) {
         service =
                 client.getProductInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
-        return service.findAll(hostname, domain, ip, page, pageSize, orderBy, 
+        return service.findAll(hostname, domain, ip, fqn, page, pageSize, orderBy, 
         		orderType, status, vdc, productName);
 
     }
@@ -173,7 +175,7 @@ public class ProductInstanceUtils {
         service =
                 client.getProductInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
-        List<ProductInstance> instances = service.findAll(null, null, ip,
+        List<ProductInstance> instances = service.findAll(null, null, ip, null,
                 null, null, null, null, null, vdc, productName);
         if (!instances.isEmpty()) {
             instance = instances.iterator().next();

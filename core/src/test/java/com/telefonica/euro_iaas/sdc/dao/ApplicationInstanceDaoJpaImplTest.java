@@ -80,10 +80,10 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
         //create the instances
         ProductInstance tomcat6Instance = new ProductInstance(tomcat6,
-                Status.INSTALLED, new VM("ip", "host", "domain"), "vdc");
+                Status.INSTALLED, new VM("fqn", "ip", "host", "domain"), "vdc");
         tomcat6Instance = productInstanceDao.create(tomcat6Instance);
         ProductInstance tomcat7Instance = new ProductInstance(tomcat7,
-                Status.INSTALLED, new VM("ip2", "host2", "domain2"), "vdc");
+                Status.INSTALLED, new VM("fqn2", "ip2", "host2", "domain2"), "vdc");
         tomcat7Instance = productInstanceDao.create(tomcat7Instance);
 
         sdc030Instance = new ApplicationInstance(sdc030,
@@ -126,7 +126,7 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         createElements();
         ApplicationInstanceSearchCriteria criteria =
                 new ApplicationInstanceSearchCriteria();
-        criteria.setVm(new VM("ip", "host", "domain"));
+        criteria.setVm(new VM("fqn","ip", "host", "domain"));
         List<ApplicationInstance> instances = applicationInstanceDao.findByCriteria(criteria);
         assertEquals(1, instances.size());
         assertEquals(sdc030Instance, instances.iterator().next());

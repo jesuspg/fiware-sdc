@@ -45,6 +45,8 @@ public interface ApplicationInstanceService
      *            the domain where the machine is (<i>nullable</i>)
      * @param ip
      *            the ip of the host (<i>nullable</i>)
+     * @param fqn
+     *            the fqn of the host (<i>nullable</i>)
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)
      * @param pageSize
@@ -62,7 +64,7 @@ public interface ApplicationInstanceService
      * @return the retrieved application instances.
      */
     List<ApplicationInstance> findAll(String hostname, String domain,
-            String ip, Integer page, Integer pageSize,
+            String ip, String fqn, Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status, String vdc,
             String applicationName);
 

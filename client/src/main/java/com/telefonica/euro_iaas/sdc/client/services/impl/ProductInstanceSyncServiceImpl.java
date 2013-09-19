@@ -92,9 +92,9 @@ public class ProductInstanceSyncServiceImpl implements
      */
     @Override
     public List<ProductInstance> findAll(String hostname, String domain,
-            String ip, Integer page, Integer pageSize, String orderBy,
+            String ip, String fqn, Integer page, Integer pageSize, String orderBy,
             String orderType, Status status, String vdc, String productName) {
-        return productInstanceService.findAll(hostname, domain, ip, page,
+        return productInstanceService.findAll(hostname, domain, ip, fqn, page,
                 pageSize, orderBy, orderType, status, vdc, productName);
     }
 

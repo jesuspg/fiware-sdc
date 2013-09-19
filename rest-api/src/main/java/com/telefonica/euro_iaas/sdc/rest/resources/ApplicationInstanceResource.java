@@ -82,6 +82,7 @@ public interface ApplicationInstanceResource
     List<ApplicationInstance> findAll(@QueryParam("hostname") String hostname,
             @QueryParam("domain") String domain,
             @QueryParam("ip") String ip,
+            @QueryParam("fqn") String fqn,
             @QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,

@@ -59,7 +59,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService
      */
     @Override
     public List<ProductInstance> findAll(String hostname, String domain,
-            String ip, Integer page, Integer pageSize, String orderBy,
+            String ip, String fqn, Integer page, Integer pageSize, String orderBy,
             String orderType, Status status, String vdc, String productName) {
         String url = getBaseHost() + MessageFormat.format(
                 ClientConstants.BASE_PRODUCT_INSTANCE_PATH, vdc);
@@ -68,6 +68,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService
         searchParams = addParam(searchParams, "hostname", hostname);
         searchParams = addParam(searchParams, "domain", domain);
         searchParams = addParam(searchParams, "ip", ip);
+        searchParams = addParam(searchParams, "fqn", fqn);
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
         searchParams = addParam(searchParams, "orderBy", orderBy);

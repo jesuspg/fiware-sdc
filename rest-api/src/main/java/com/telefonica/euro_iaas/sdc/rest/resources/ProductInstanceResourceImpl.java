@@ -146,18 +146,19 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      */
     @Override
     public List<ProductInstance> findAll(String hostname, String domain,
-            String ip, Integer page, Integer pageSize, String orderBy,
+            String ip, String fqn, Integer page, Integer pageSize, String orderBy,
             String orderType, Status status, String vdc, String product) {
         ProductInstanceSearchCriteria criteria =
                 new ProductInstanceSearchCriteria();
         criteria.setVdc(vdc);
         // the parameters are nullable
-        Boolean validHost = !StringUtils.isEmpty(ip)
+        Boolean validHost = (!StringUtils.isEmpty(ip) && !StringUtils.isEmpty(fqn))
                 || (!StringUtils.isEmpty(domain) && !StringUtils
                         .isEmpty(hostname));
         if (validHost) {
-            VM host = new VM(ip != null ? ip : "", hostname != null ? hostname
-                    : "", domain != null ? domain : "");
+            VM host = new VM(fqn != null ? fqn : "", ip != null ? ip : "", 
+            		hostname != null ? hostname: "", 
+                    domain != null ? domain : "");
             criteria.setVM(host);
         }
         criteria.setStatus(status);

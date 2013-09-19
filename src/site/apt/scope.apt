@@ -33,6 +33,10 @@ Scope
     Solution: When deleting cookbooks it should be tested that the version 
     to be deleted is the last one of this product/application otherwise the recipe is not deleted
     [To be implemented]
+    
+  * [Sprint 17 26.10.2001] The fqn becomes the identifier of the VM to be aligned 
+    with Claudia developments. The ip is always needed in order to communicate with 
+    the different nodes (to find out the chef identifier of the node (hostname + domain)
 
 * Risks
 

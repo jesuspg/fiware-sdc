@@ -16,17 +16,20 @@ public abstract class AbstractInstallableInstanceDaoJpaIml<T, Id extends Seriali
 AbstractBaseDao<T, Id>{
 
     public Criterion getVMCriteria(Criteria baseCriteria, VM vm) {
-        if (!StringUtils.isEmpty(vm.getIp()) && !StringUtils.isEmpty(vm.getDomain())
+        if (!StringUtils.isEmpty(vm.getFqn()) && !StringUtils.isEmpty(vm.getIp()) 
+        		&& !StringUtils.isEmpty(vm.getDomain())
                 && !StringUtils.isEmpty(vm.getHostname())) {
             return Restrictions.eq(InstallableInstance.VM_FIELD,
                     vm);
+        } else if (!StringUtils.isEmpty(vm.getFqn())) {
+            return Restrictions.eq("vm.fqn", vm.getFqn());
+        } else if (!StringUtils.isEmpty(vm.getIp())) {
+            return Restrictions.eq("vm.ip", vm.getIp());
         } else if (!StringUtils.isEmpty(vm.getDomain())
                 && !StringUtils.isEmpty(vm.getHostname())) {
             return Restrictions.and(
                     Restrictions.eq("vm.hostname", vm.getHostname()),
                     Restrictions.eq("vm.domain", vm.getDomain()));
-        } else if (!StringUtils.isEmpty(vm.getIp())) {
-            return Restrictions.eq("vm.ip", vm.getIp());
         } else {
             throw new SdcRuntimeException(
                     "Invalid VM while finding products by criteria");

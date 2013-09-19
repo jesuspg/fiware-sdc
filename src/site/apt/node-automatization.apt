@@ -16,19 +16,42 @@ Adding a node to the SDC Server automatically
 
   * ssh into the new machine and change the root password to root/temporal
 
-  * Install apt-get update apt-get install dos2unis and apt-get install sudo
+  * Install apt-get update apt-get install dos2unix and apt-get install sudo apt-get install ntp
+    sudo apt-get install sysv-rc-conf and modify /etc/ntp.conf adding
+
++-------
+#server ntp.ubuntu.com
+server ntp-server.hi.inet
++-------
+  and /etc/rc.local
+
++-------
+/etc/init.d/ntp stop
+ntpdate ntp-server.hi.inet
+/etc/init.d/ntp start
++-------
 
 * Install the sdc-client into the node
 
-  * Install java (apt-get install sun-java6-jre)
+  * Install java (apt-get install sun-java6-jre in Debian)
+  
+  in Ubuntu
+ 
++-------
+apt-get install python-software-properties   
+add-apt-repository "deb http://archive.canonical.com/ lucid partner"
+apt-get update
+apt-get install sun-java6-jre sun-java6-bin sun-java6-jdk sun-java6-plugin sun-java6-fonts
+
++-------
 
   * Install tomcat 7 in /opt/sdc-client/server
 
 +-------
-wget http://apache.rediris.es/tomcat/tomcat-7/v7.0.22/bin/apache-tomcat-7.0.22.tar.gz)
+ wget --user root --password temporal http://109.231.82.11/webdav/product/tomcat/7/tomcat7-bin.tar
 +-------
 
-  * Let us remove the remaining apache-tomcat-7.0.22.tar
+  * Let us remove the remaining tomcat7-bin.tar
 
   * Modify the server.xml from the apache installed modifying the following ports
 
@@ -52,7 +75,7 @@ JAVA_OPTS="$JAVA_OPTS -Djava.net.preferIPv4Stack=true"
 
   * Ftp the tomcat init script to /etc/init.d
 
-  * chmod 7555 /etc/initd/tomat
+  * chmod 7555 /etc/init.d/tomat
 
   * dos2unix tomcat
 
@@ -60,21 +83,22 @@ JAVA_OPTS="$JAVA_OPTS -Djava.net.preferIPv4Stack=true"
 
 * Chef client installation
 
-  * Ftp validation.pem client.rn and the install_scripot_XXX.sh to /tmp
+  * Ftp validation.pem client.rb and the install_scripot_XXX.sh to /tmp
 
   * chmod 777 *
 
-  * ./install_scripot_XXX.sh 
+  * ./install_script_XXX.sh 
 
   * Remember to add http://109.231.82.12:4000 as the chef server url
+    [In Telefonica Private Cloud http://chefserver.hi.inet:4000 ]
 
   * cp /tmp/validation-pem /etc/chef
 
-* Init script to change the hostname
+* Init script to change the hostname (not required in Telefonica Private Cloud)
 
   * FTP newhostname script to /etc/init.d
 
-  * chmod 755 /etc/init.d/newhstname
+  * chmod 755 /etc/init.d/newhostname
 
   * dos2unix newhostname
 

@@ -59,7 +59,7 @@ public class ApplicationInstanceServiceImpl extends AbstractInstallableService
      */
     @Override
     public List<ApplicationInstance> findAll(String hostname, String domain,
-            String ip, Integer page, Integer pageSize,
+            String ip, String fqn, Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status, String vdc,
             String applicationName) {
         String url = getBaseHost() + MessageFormat.format(
@@ -70,6 +70,7 @@ public class ApplicationInstanceServiceImpl extends AbstractInstallableService
         searchParams = addParam(searchParams, "hostname", hostname);
         searchParams = addParam(searchParams, "domain", domain);
         searchParams = addParam(searchParams, "ip", ip);
+        searchParams = addParam(searchParams, "fqn", fqn);
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
         searchParams = addParam(searchParams, "orderBy", orderBy);

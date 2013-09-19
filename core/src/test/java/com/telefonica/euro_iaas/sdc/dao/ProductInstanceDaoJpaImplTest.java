@@ -40,7 +40,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
         ProductRelease release = productReleaseDao.findAll().get(0);
         ProductInstance instance = new ProductInstance(release,
-                Status.INSTALLED, new VM("ip", "hostname", "domain"), "vdc");
+                Status.INSTALLED, new VM("fqn", "ip", "hostname", "domain"), "vdc");
 
         assertEquals(0, productInstanceDao.findAll().size());
         instance = productInstanceDao.create(instance);
@@ -51,7 +51,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     public void testFindByCriteria() throws Exception {
         createProductRelease();
         VM host = new VM(null, "hostname", "domain");
-        VM host2 = new VM("ip");
+        VM host2 = new VM("fqn");
 
         ProductRelease release = productReleaseDao.findAll().get(0);
 

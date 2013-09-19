@@ -142,7 +142,7 @@ public class ApplicationInstanceUtils {
                 client.getApplicationInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
         List<ApplicationInstance> instances = service.findAll(
-                null, null, ip, null, null,
+                null, null, ip, null, null, null,
                 null, null, null, vdc, applicationName);
         if (!instances.isEmpty()) {
             instance = instances.iterator().next();

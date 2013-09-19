@@ -52,7 +52,7 @@ public class ProductInstanceManagerChefImplTest {
     private ProductInstance expectedProduct;
     private ProductRelease productRelease;
     private OS os;
-    private VM host = new VM("hostname", "domain");
+    private VM host = new VM("fqn","ip","hostname", "domain");
 
     public final static String EXECUTE_COMMAND =
         "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";

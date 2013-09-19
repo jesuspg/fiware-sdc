@@ -33,6 +33,8 @@ public interface ProductInstanceService extends BaseInstallableService<ProductIn
      *            the domain where the machine is (<i>nullable</i>)
      * @param ip
      *            the ip of the host (<i>nullable</i>)
+     * @param fqn
+     *            the fqn of the host (<i>nullable</i>)
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)
      * @param pageSize
@@ -50,7 +52,7 @@ public interface ProductInstanceService extends BaseInstallableService<ProductIn
      * @return the product instances that match with the criteria.
      */
     List<ProductInstance> findAll(String hostname, String domain, String ip,
-            Integer page, Integer pageSize, String orderBy, String orderType,
-            Status status, String vdc, String productName);
+    		String fqn, Integer page, Integer pageSize, String orderBy, 
+    		String orderType, Status status, String vdc, String productName);
 
 }

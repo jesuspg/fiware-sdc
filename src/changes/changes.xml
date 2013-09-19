@@ -126,5 +126,13 @@
                  for more information)
             </action>
         </release>
+        <release version="1.7.0" date="2011-11-11"
+        description="Introduce fqn as the identifier of the VM">
+            <action dev="jmms392" type="update">
+                Introducir el fqn en el SDC-Server como identificador de los nodos 
+                https://jira.tid.es/browse/CLAUDIA-1212
+                Afecta a los objetos "Instances"
+            </action>
+        </release>
     </body>
 </document>
