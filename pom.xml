@@ -6,12 +6,12 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>1.9.0</version>
+    <version>1.9.7</version>
 
     <scm>
-        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.0/trunk</connection>
-        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.0/trunk</developerConnection>
-        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-1.9.0/Configurador_de_Aplicaciones</url>
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.7</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.7</developerConnection>
+        <url>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.9.7</url>
     </scm>
     <developers>
         <developer>
@@ -41,10 +41,10 @@
 
 
     <modules>
+        <module>model</module>
         <module>core</module>
         <module>rest-api</module>
         <module>integration-test</module>
-        <module>model</module>
         <module>client</module>
     </modules>
 
@@ -105,20 +105,27 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
                 <configuration>
-                    <scmCommentPrefix>CLAUDIA-1 SDC server released</scmCommentPrefix>
+              <!--    <scmCommentPrefix>CLAUDIA-1 SDC server released</scmCommentPrefix>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <generateJiraAnnouncement>false</generateJiraAnnouncement>
-                    <goals>deploy site-deploy</goals>
+                    <goals>deploy site-deploy</goals>-->
+                    
+					<tagBase>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags</tagBase>
                 </configuration>
             </plugin>
+            
+           
+			
+			
             <!-- <plugin> <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2.1</version> <configuration> <descriptors> <descriptor>./src/build/assembly.xml</descriptor>
                 </descriptors> <finalName>${artifactId}-dist</finalName> <outputDirectory>target/site/downloads</outputDirectory>
                 </configuration> <executions> <execution> <phase>site</phase> <goals> <goal>assembly</goal>
                 </goals> </execution> </executions> </plugin> -->
 
-            <plugin>
+            <plugin> 
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.0-beta-3</version>

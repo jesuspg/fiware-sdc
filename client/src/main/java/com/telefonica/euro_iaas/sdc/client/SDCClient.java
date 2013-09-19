@@ -4,6 +4,8 @@ import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationService;
+import com.telefonica.euro_iaas.sdc.client.services.EnvironmentInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.EnvironmentService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
@@ -11,6 +13,8 @@ import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationInstanceSyncServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.EnvironmentInstanceServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.EnvironmentServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
@@ -42,6 +46,16 @@ public class SDCClient {
         return new ApplicationInstanceServiceImpl(client, baseUrl, mediaType);
     }
 
+    /**
+     * Get the service to work with environment instances.
+     * @param baseUrl the base url where the SDC is
+     * @param mediaType the media type (application/xml or application/json)
+     * @return the environment instance service.
+     */
+    public EnvironmentInstanceService getEnvironmentInstanceService(
+            String baseUrl, String mediaType) {
+        return new EnvironmentInstanceServiceImpl(client, baseUrl, mediaType);
+    }
     /**
      * Get the service to work with tasks
      * @param baseUrl the base url where the SDC is
@@ -146,5 +160,15 @@ public class SDCClient {
      */
     public ApplicationService getApplicationService(String baseUrl, String mediaType){
         return new ApplicationServiceImpl(client, baseUrl, mediaType);
+    }
+    
+    /**
+     * Get the service to work with environments in the catalog.
+     * @param baseUrl the url where the SDC is
+     * @param mediaType the media type (application/xml or application/json)
+     * @return the service.
+     */
+    public EnvironmentService getEnvironmentService(String baseUrl, String mediaType){
+        return new EnvironmentServiceImpl(client, baseUrl, mediaType);
     }
 }

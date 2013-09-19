@@ -12,16 +12,15 @@ import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedExcepti
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
-import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
- * Provides some utility methods to work with Products
- * @author Sergio Arroyo
+ * Provides some utility methods to work with Product Instances
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 public class ProductInstanceUtils {
@@ -47,7 +46,8 @@ public class ProductInstanceUtils {
                 client.getProductInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
         ProductInstanceDto instance = new ProductInstanceDto(
-                new ReleaseDto(productName, version, null),
+                new ProductReleaseDto(	productName, null, version, 
+                						null, null, null, null),
                 new VM(ip));
         return service.install(vdc, instance);
     }

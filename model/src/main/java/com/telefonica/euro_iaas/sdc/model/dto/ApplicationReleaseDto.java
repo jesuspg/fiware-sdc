@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 /**
  * DTO to receive rest request with the application releases objects.
@@ -26,7 +25,8 @@ public class ApplicationReleaseDto {
 	private String version;
 	private String releaseNotes;
 	private List<Attribute> privateAttributes;
-	private List<ProductRelease> supportedProducts;
+	//private List<ProductRelease> supportedProducts;
+	private EnvironmentDto environmentDto;
 	private List<ApplicationRelease> transitableReleases; 
 	
 	
@@ -49,7 +49,7 @@ public class ApplicationReleaseDto {
     		String version, 
     		String releaseNotes,
     		List<Attribute> privateAttributes,
-            List<ProductRelease> supportedProducts,
+            EnvironmentDto environmentDto,
             List<ApplicationRelease> transitableReleases) {
     	this.appName = appName;
     	this.appDescription = appDescription;
@@ -57,7 +57,7 @@ public class ApplicationReleaseDto {
     	this.version = version;
     	this.releaseNotes = releaseNotes;
     	this.privateAttributes = privateAttributes;
-    	this.supportedProducts = supportedProducts;
+    	this.environmentDto = environmentDto;
         this.transitableReleases = transitableReleases;
     }
 	
@@ -98,11 +98,11 @@ public class ApplicationReleaseDto {
 	public void setPrivateAttributes(List<Attribute> privateAttributes) {
 		this.privateAttributes = privateAttributes;
 	}
-	public List<ProductRelease> getSupportedProducts() {
-		return supportedProducts;
+	public EnvironmentDto getEnvironmentDto() {
+		return environmentDto;
 	}
-	public void setSupportedProducts(List<ProductRelease> supportedProducts) {
-		this.supportedProducts = supportedProducts;
+	public void setEnvironmentDto(EnvironmentDto environmentDto) {
+		this.environmentDto = environmentDto;
 	}
 	public List<ApplicationRelease> getTransitableReleases() {
 		return transitableReleases;

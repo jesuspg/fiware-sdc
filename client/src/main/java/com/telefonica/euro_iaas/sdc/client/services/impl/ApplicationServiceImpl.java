@@ -41,7 +41,6 @@ public class ApplicationServiceImpl extends AbstractBaseService implements
     public ApplicationRelease add(ApplicationReleaseDto releaseDto,
             InputStream cookbook, InputStream files) {
         try {
-
         MultiPart payload = new MultiPart().bodyPart(new BodyPart(
                 releaseDto, MediaType.valueOf(getType())))
                 .bodyPart(new BodyPart(

@@ -24,6 +24,8 @@ import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -48,6 +50,7 @@ public class ApplicationInstanceManagerChefImplTest{
 
     VM vm;
     List<ProductInstance> products;
+    EnvironmentInstance envInstance;
     Application application;
     ApplicationRelease appRelease;
     ApplicationInstance applicationInstance;
@@ -75,6 +78,8 @@ public class ApplicationInstanceManagerChefImplTest{
         ProductRelease pr2 = new ProductRelease(
                 "version2", "releaseNotes2", null, p2, null, null);
 
+        Environment env1 = new Environment (Arrays.asList(pr1, pr2));
+        
         products = Arrays.asList(new ProductInstance(pr1,
                 ProductInstance.Status.INSTALLED, vm, "vdc"),
                 new ProductInstance(pr2,
@@ -82,9 +87,10 @@ public class ApplicationInstanceManagerChefImplTest{
         application = new Application("app", "desc", "war");
         appRelease = new ApplicationRelease(
                 "version", "releaseNotes", null, application,
-                Arrays.asList(pr1, pr2), null);
-
-        applicationInstance = new ApplicationInstance(appRelease, products,
+                env1, null);
+        
+        envInstance = new EnvironmentInstance(env1, products);
+        applicationInstance = new ApplicationInstance(appRelease, envInstance,
                 Status.INSTALLED, vm ,"vdc");
 
         applicationInstanceDao = mock(ApplicationInstanceDao.class);
@@ -120,11 +126,11 @@ public class ApplicationInstanceManagerChefImplTest{
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(aiValidator);
         // execution
-        ApplicationInstance installedApp = manager.install(vm, "vdc", products,
+        ApplicationInstance installedApp = manager.install(vm, "vdc", envInstance,
                 appRelease, new ArrayList<Attribute>());
         // make assertions
         Assert.assertEquals(installedApp.getApplication(), appRelease);
-        Assert.assertEquals(installedApp.getProducts(), products);
+        Assert.assertEquals(installedApp.getEnvironmentInstance(), envInstance);
         Assert.assertEquals(installedApp.getStatus(), Status.INSTALLED);
 
         verify(recipeNamingGenerator, times(1)).getInstallRecipe(

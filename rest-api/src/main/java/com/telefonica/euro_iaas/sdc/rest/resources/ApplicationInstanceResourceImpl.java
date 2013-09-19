@@ -14,9 +14,14 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.EnvironmentDao;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentInstanceNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
+import com.telefonica.euro_iaas.sdc.manager.EnvironmentInstanceManager;
+import com.telefonica.euro_iaas.sdc.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ApplicationInstanceAsyncManager;
@@ -25,6 +30,8 @@ import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -35,7 +42,9 @@ import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
@@ -58,6 +67,10 @@ public class ApplicationInstanceResourceImpl implements
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
     @InjectParam("productInstanceManager")
     private ProductInstanceManager productInstanceManager;
+    @InjectParam("environmentInstanceManager")
+    private EnvironmentInstanceManager environmentInstanceManager;
+    @InjectParam("environmentManager")
+    private EnvironmentManager environmentManager;
     @InjectParam("productManager")
     private ProductManager productManager;
     @InjectParam("applicationManager")
@@ -72,10 +85,11 @@ public class ApplicationInstanceResourceImpl implements
      */
     @Override
     public Task install(String vdc, ApplicationInstanceDto application, String callback) {
-        try {
+        String environment_name = "";
+    	try {
             VM vm = application.getVm();
             if (!vm.canWorkWithChef()) {
-                vm = ip2vm.getVm(vm.getIp(), vm.getFqn());
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
             }
 
             Task task = createTask(MessageFormat.format(
@@ -86,21 +100,28 @@ public class ApplicationInstanceResourceImpl implements
             List<ProductInstance> productList =
                 new ArrayList<ProductInstance>();
             // get the product instances
-            List<ReleaseDto> products = application.getProducts();
-            if (products != null) {
+            List<ProductReleaseDto> products = application
+            		.getEnvironmentInstanceDto().getEnvironment().getProducts();
+            
+             if (products != null) {
                 List<ProductRelease> notFoundProducts =
                         new ArrayList<ProductRelease>();
                 ProductInstanceSearchCriteria criteria =
                     new ProductInstanceSearchCriteria();
                 criteria.setVm(vm);
-                for (ReleaseDto relDto : products) {
-                    Product p = productManager.load(relDto.getName());
+                for (ProductReleaseDto relDto : products) {
+                    Product p = productManager.load(relDto.getProductName());
                     ProductRelease product = productManager.load(
                             p, relDto.getVersion());
                     criteria.setProduct(product);
                     try {
-                        productList.add(productInstanceManager
-                                .loadByCriteria(criteria));
+                        ProductInstance pInstance = productInstanceManager
+                                .loadByCriteria(criteria);
+                    	productList.add(pInstance);
+                        environment_name = environment_name + 
+                        		pInstance.getProduct().getProduct().getName() +
+                        		pInstance.getProduct().getVersion() + "_";
+                        		
                     } catch (NotUniqueResultException e) {
                         notFoundProducts.add(product);
                     } catch (EntityNotFoundException e) {
@@ -131,15 +152,29 @@ public class ApplicationInstanceResourceImpl implements
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
             }
-
-            //TODO sarroyo: workaround to fix problem with lazy init.
-            release.getSupportedProducts().size();
-
+            
+           //TODO sarroyo: workaround to fix problem with lazy init.
+            //release.getSupportedProducts().size();
+            
+            // get EnvironmentInstance
+            EnvironmentInstanceDto environmentInstanceDto = 
+            		application.getEnvironmentInstanceDto();
+            
+            Environment environment = environmentManager.load(environment_name);
+            
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(
+            		new EnvironmentInstance(environment, productList).getId());
+            
             applicationInstanceAsyncManager.install(
-                    vm, vdc, productList, release, attributes, task, callback);
+                    vm, vdc, environmentInstance, release, attributes, task, callback);
+            
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
+        } catch (EnvironmentNotFoundException e2) {
+        	throw new SdcRuntimeException(e2);
+        } catch (EnvironmentInstanceNotFoundException e3) {
+        	throw new SdcRuntimeException(e3);
         }
     }
 
@@ -163,7 +198,8 @@ public class ApplicationInstanceResourceImpl implements
     @Override
     public Task uninstall(String vdc, Long id, String callback) {
         ApplicationInstance app = load(id);
-        VM vm = app.getProducts().iterator().next().getVm();
+        VM vm = app.getEnvironmentInstance().getProductInstances()
+        		.iterator().next().getVm();
         Task task = createTask(MessageFormat.format(
                 "Uninstall application {0} in  VM {1}{2}",
                 app.getApplication().getApplication().getName(),
@@ -178,7 +214,8 @@ public class ApplicationInstanceResourceImpl implements
     @Override
     public Task configure(String vdc, Long id, String callback, Attributes arguments) {
         ApplicationInstance application = load(id);
-        VM vm = application.getProducts().iterator().next().getVm();
+        VM vm = application.getEnvironmentInstance().getProductInstances()
+        		.iterator().next().getVm();
         Task task = createTask(MessageFormat.format(
                 "Configure application {0} in  VM {1}{2}",
                 application.getApplication().getApplication().getName(),
@@ -195,7 +232,8 @@ public class ApplicationInstanceResourceImpl implements
     public Task upgrade(String vdc, Long id, String version, String callback) {
         try {
             ApplicationInstance application = load(id);
-            VM vm = application.getProducts().iterator().next().getVm();
+            VM vm = application.getEnvironmentInstance().getProductInstances()
+            		.iterator().next().getVm();
             ApplicationRelease release = applicationManager.load(
                     application.getApplication().getApplication(), version);
             Task task = createTask(MessageFormat.format("Upgrade application"
@@ -207,8 +245,8 @@ public class ApplicationInstanceResourceImpl implements
 
             //TODO sarroyo: workarround to fix lazy init problem:
             application.getApplication().getTransitableReleases().size();
-            application.getApplication().getSupportedProducts().size();
-            release.getSupportedProducts().size();
+            application.getApplication().getEnvironment().getProductReleases().size();
+            release.getEnvironment().getProductReleases().size();
 
             applicationInstanceAsyncManager.upgrade(application, release,
                     task, callback);

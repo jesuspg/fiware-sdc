@@ -22,8 +22,8 @@ public class OSDaoJpaImpl extends AbstractBaseDao<OS, String> implements OSDao {
 
     /** {@inheritDoc} */
     @Override
-    public OS load(String name) throws EntityNotFoundException {
-        return super.loadByField(OS.class, "name", name);
+    public OS load(String osType) throws EntityNotFoundException {
+        return super.loadByField(OS.class, "osType", osType);
     }
 
 

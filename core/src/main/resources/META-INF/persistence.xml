@@ -20,5 +20,9 @@
         <class>com.telefonica.euro_iaas.sdc.model.ProductRelease</class>
         <class>com.telefonica.euro_iaas.sdc.model.OS</class>
         <class>com.telefonica.euro_iaas.sdc.model.Task</class>
+        <class>com.telefonica.euro_iaas.sdc.model.NodeCommand</class>
+        
+        <class>com.telefonica.euro_iaas.sdc.model.Environment</class>
+        <class>com.telefonica.euro_iaas.sdc.model.EnvironmentInstance</class>
     </persistence-unit>
 </persistence>

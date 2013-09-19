@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>sdc-server-model</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-model</name>
-    <version>1.9.0</version>
+    <version>1.9.7</version>
 
-
+    <parent>
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>sdc-server</artifactId>
+        <version>1.9.7</version>
+    </parent>
     <dependencies>
 
         <!-- TEST DEPENDENCIES -->
@@ -103,7 +108,7 @@
                         <version>4.4</version>
                     </docletArtifact>
                     <additionalparam>
-                     <![CDATA[
+                        <![CDATA[
  -charset UTF-8
  -docencoding UTF-8
  -version
@@ -135,22 +140,20 @@
     </repositories>
 
     <!-- ===================================== Distribution Management ==== -->
-    <distributionManagement>
-        <!-- Repositorio para hacer el deploy de las releases -->
-        <repository>
-            <id>${repoMavenId}</id>
-            <name>${repoMavenName}</name>
-            <url>${repoMavenUrl}</url>
-        </repository>
-        <!--Don't want deploy snapshots -->
-        <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-               </url>
-        </site>
-    </distributionManagement>
+    <!--  <distributionManagement>
+
+          <repository>
+              <id>${repoMavenId}</id>
+              <name>${repoMavenName}</name>
+              <url>${repoMavenUrl}</url>
+          </repository>
+
+          <site>
+              <id>${repoSiteId}</id>
+              <name>${repoSiteName}</name>
+              <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
+                 </url>
+          </site>
+      </distributionManagement> -->
 
 </project>

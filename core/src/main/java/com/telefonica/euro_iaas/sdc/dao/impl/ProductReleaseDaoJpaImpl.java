@@ -99,7 +99,7 @@ public class ProductReleaseDaoJpaImpl
         List<ProductRelease> result = new ArrayList<ProductRelease>();
         for (ProductRelease productRelease : productReleases) {
             for (OS os : productRelease.getSupportedOOSS()) {
-            	if (os.getOSType().equals(osType)) {
+            	if (os.getOsType().equals(osType)) {
                     result.add(productRelease);
                 }
             }

@@ -6,6 +6,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
@@ -35,7 +36,8 @@ public interface ProductInstanceManager {
      */
     ProductInstance install(VM vm, String vdc, ProductRelease product,
             List<Attribute> attributes)
-        throws NodeExecutionException, AlreadyInstalledException;
+        throws NodeExecutionException, AlreadyInstalledException,
+        InvalidInstallProductRequestException;
 
     /**
      * Configure an installed product

@@ -22,4 +22,5 @@ public class Attributes extends ArrayList<Attribute> {
       public List<Attribute> getAttributes() {
         return this;
       }
+
 }

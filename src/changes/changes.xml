@@ -153,5 +153,19 @@
                 This bug hide a bad working in configuring applicatins and products
             </action>
         </release>
+        <release version="1.9.1" date="2012-01-18"
+        description="Modify the sdc-client dependening on the OSType to be deployed {CLAUDIA-144}">
+            <action dev="jmms392" type="update">
+               Antes de instalar un producto, actualizar los comandos del sdc-client
+               buscandolos previamente en la BBDD del SDC-Server por SO)
+            </action>
+        </release>
+        <release version="1.9.3" date="2012-02-9"
+        description="Modify the sdc-client to include the concept of Environment {CLAUDIA-1563}">
+            <action dev="jmms392" type="update">
+               Se introduce el concepto de entorno como un conjunto de products sobre los que se instala
+               una aplicación
+            </action>
+        </release>
     </body>
 </document>

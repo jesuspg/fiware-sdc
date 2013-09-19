@@ -22,7 +22,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the create and load method
      */
     public void testCreate() throws Exception {
-        OS so = new OS(SO_NAME, SO_OSTYPE, SO_DESCRIPTION, SO_VERSION);
+        OS so = new OS(SO_OSTYPE, SO_NAME, SO_DESCRIPTION, SO_VERSION);
         assertNull(so.getId());
 
         OS createdSO = soDao.create(so);
@@ -31,7 +31,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(so.getDescription(), createdSO.getDescription());
         assertEquals(so.getVersion(), createdSO.getVersion());
 
-        OS findSo = soDao.load(createdSO.getName());
+        OS findSo = soDao.load(createdSO.getOsType());
         assertEquals(createdSO, findSo);
     }
 
@@ -46,7 +46,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
         OS so = ssoo.get(0);
         so.setName("newName");
         soDao.update(so);
-        assertEquals("newName", soDao.load(so.getName()).getName());
+        assertEquals("newName", soDao.load(so.getOsType()).getName());
         soDao.remove(so);
         assertEquals(0, soDao.findAll().size());
 

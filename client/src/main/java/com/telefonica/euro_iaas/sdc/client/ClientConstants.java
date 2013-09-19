@@ -28,7 +28,14 @@ public class ClientConstants {
 
     public static final String BASE_PRODUCT_PATH = "/catalog/product";
     public static final String BASE_APPLICATION_PATH = "/catalog/application";
+    public static final String BASE_ENVIRONMENT_PATH = "/catalog/environment";
+    public static final String BASE_ENVIRONMENTINSTANCE_PATH = "/catalog/environmentInstance";
 
+    public static final String ACTION_ENVIRONMENT_INSTANCE_PATH =
+    		BASE_ENVIRONMENT_PATH + "/{1}";
+    public static final String ACTION_ENVIRONMENTINSTANCE_INSTANCE_PATH =
+    		BASE_ENVIRONMENT_PATH + "/{1}";
+    
     public static final String PRODUCT_PATH = BASE_PRODUCT_PATH + "/{0}/";
     public static final String APPLICATION_PATH = BASE_APPLICATION_PATH + "/{0}/";
 

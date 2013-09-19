@@ -14,6 +14,8 @@ import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -50,7 +52,7 @@ public class ApplicationReleaseValidatorImplTest {
         productRelease.setVersion("1.0.0");
 
         List<ProductRelease> supportedProducts= Arrays.asList(productRelease);
-        applicationRelease.setSupportedProducts(supportedProducts);
+        applicationRelease.setEnvironment(new Environment(supportedProducts));
 
         Attribute privateAttribute = new Attribute("ssl_port",
             "8443", "The ssl listen port");
@@ -72,7 +74,12 @@ public class ApplicationReleaseValidatorImplTest {
 
         applicationInstance = new ApplicationInstance();
         applicationInstance.setApplication(applicationRelease);
-        applicationInstance.setProducts(productInstances);
+        applicationInstance.setEnvironmentInstance(
+        		new EnvironmentInstance (
+        				new Environment(applicationRelease.getEnvironment().getProductReleases()),
+        				productInstances)
+        		);
+        		
         applicationInstance.setStatus(Status.INSTALLED);
 
         applicationInstanceDao = mock(ApplicationInstanceDao.class);

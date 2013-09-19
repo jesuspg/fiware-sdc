@@ -23,12 +23,15 @@ public class VM {
     private String domain;
     /** the fqn ***/
     private String fqn;
+    /** the OSType ***/
+    private String osType;
     
     public VM() {
         this.ip = "";
         this.fqn = "";
         this.hostname = "";
         this.domain = "";
+        this.osType = "";
     }
 
     /**
@@ -53,6 +56,7 @@ public class VM {
             this.domain = domain;
         }
         this.ip = "";
+        this.osType = "";
     }
     
     /**
@@ -62,7 +66,8 @@ public class VM {
      * @param domain
      */
     public VM(String fqn, String ip, String hostname, String domain) {
-        if (ip == null) {
+        this.osType = "";
+    	if (ip == null) {
             this.ip = "";
         } else {
             this.ip = ip;
@@ -110,6 +115,7 @@ public class VM {
     public VM(String fqn, String ip) {
         this.hostname = "";
         this.domain = "";
+        this.osType = "";
         if (fqn == null) {
             this.fqn = "";
         } else {
@@ -134,6 +140,41 @@ public class VM {
         this.ip = "";
         this.hostname = "";
         this.domain = "";
+        this.osType = "";
+    }
+    
+    /**
+     * @param ip
+     * @param fqn
+     * @param hostname
+     * @param domain
+     */
+    public VM(String fqn, String ip, String hostname, String domain, String osType) {
+    	if (ip == null) {
+            this.ip = "";
+        } else {
+            this.ip = ip;
+        }
+        if (fqn == null) {
+            this.fqn = "";
+        } else {
+            this.fqn = fqn;
+        }
+        if (hostname == null) {
+            this.hostname = "";
+        } else {
+            this.hostname = hostname;
+        }
+        if (domain == null) {
+            this.domain = "";
+        } else {
+            this.domain = domain;
+        }
+        if (osType == null) {
+            this.osType = "";
+        } else {
+            this.osType = osType;
+        }
     }
     
     
@@ -239,6 +280,21 @@ public class VM {
 		this.fqn = fqn;
 	}
 
+	/**
+     * @return the osType
+     */
+    public String getOsType() {
+		return osType;
+	}
+    
+    /**
+     * @param osType
+     *            the osType to set
+     */
+	public void setOsType(String osType) {
+		this.osType = osType;
+	}
+	
     /*
      * (non-Javadoc)
      *
@@ -301,7 +357,7 @@ public class VM {
     @Override
     public String toString() {
         return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip
-                + ", fqn=" + fqn + "]";
+                + ", fqn=" + fqn + ", osType=" + osType + "]";
     }
 
  }

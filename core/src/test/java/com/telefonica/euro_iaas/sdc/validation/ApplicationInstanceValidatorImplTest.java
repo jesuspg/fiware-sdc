@@ -13,6 +13,8 @@ import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -44,10 +46,10 @@ public class ApplicationInstanceValidatorImplTest {
 
     private ApplicationRelease release1 = new ApplicationRelease(
             "1", "releaseNotes", null, app,
-            Arrays.asList(pRelease1), new ArrayList<ApplicationRelease>());
+            new Environment(Arrays.asList(pRelease1)), new ArrayList<ApplicationRelease>());
     private ApplicationRelease release2 = new ApplicationRelease(
             "2", "releaseNotes", null, app,
-            Arrays.asList(pRelease1, pRelease2), Arrays.asList(release1));
+            new Environment(Arrays.asList(pRelease1, pRelease2)), Arrays.asList(release1));
     private FSMValidator fsmValidator;
 
     @Before
@@ -63,15 +65,27 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance();
         application.setApplication(release1);
         application.setStatus(Status.INSTALLING);
-        application.setProducts(Arrays.asList(pInstance));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release1.getEnvironment(),
+        		Arrays.asList(pInstance)
+        		)
+        	);
         validator.validateInstall(application);
 
         application.setStatus(Status.UNINSTALLED);
-        application.setProducts(Arrays.asList(pInstance));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release1.getEnvironment(),
+        		Arrays.asList(pInstance)
+        		)
+        	);
         validator.validateInstall(application);
 
         application.setStatus(Status.ERROR);
-        application.setProducts(Arrays.asList(pInstance));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release1.getEnvironment(),
+        		Arrays.asList(pInstance)
+        		)
+        	);
         validator.validateInstall(application);
     }
 
@@ -84,7 +98,11 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance();
         application.setApplication(release1);
         application.setStatus(Status.INSTALLED);
-        application.setProducts(Arrays.asList(pInstanceUninstalled));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release1.getEnvironment(),
+        		Arrays.asList(pInstanceUninstalled)
+        		)
+        	);
         validator.validateInstall(application);
     }
 
@@ -96,7 +114,11 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance();
         application.setApplication(release1);
         application.setStatus(Status.INSTALLED);
-        application.setProducts(Arrays.asList(pInstance2));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release2.getEnvironment(),
+        		Arrays.asList(pInstance2)
+        		)
+        	);
         validator.validateInstall(application);
     }
 
@@ -112,7 +134,11 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance(2l);
         application.setApplication(release2);
         application.setStatus(Status.INSTALLED);
-        application.setProducts(Arrays.asList(pInstance));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release2.getEnvironment(),
+        		Arrays.asList(pInstance)
+        		)
+        	);
         validator.validateUpdate(application, release1);
     }
 
@@ -124,7 +150,11 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance(2l);
         application.setApplication(release1);
         application.setStatus(Status.INSTALLED);
-        application.setProducts(Arrays.asList(pInstance));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release1.getEnvironment(),
+        		Arrays.asList(pInstance)
+        		)
+        	);
         validator.validateUpdate(application, release2);
     }
 
@@ -136,7 +166,11 @@ public class ApplicationInstanceValidatorImplTest {
         ApplicationInstance application = new ApplicationInstance(2l);
         application.setApplication(release2);
         application.setStatus(Status.INSTALLED);
-        application.setProducts(Arrays.asList(pInstance2));
+        application.setEnvironmentInstance(new EnvironmentInstance(
+        		release2.getEnvironment(),
+        		Arrays.asList(pInstance2)
+        		)
+        	);
         validator.validateUpdate(application, release1);
     }
 }

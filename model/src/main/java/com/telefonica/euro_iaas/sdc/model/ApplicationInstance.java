@@ -1,10 +1,9 @@
 package com.telefonica.euro_iaas.sdc.model;
 
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,7 +13,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 /**
  * Defines a concrete application running over a concrete product instance.
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 @Entity
@@ -28,9 +27,9 @@ public class ApplicationInstance extends InstallableInstance {
     @ManyToOne(optional=false)
     private ApplicationRelease application;
 
-    @ManyToMany
-    private List<ProductInstance> products;
-
+    @OneToOne
+    //private List<ProductInstance> products;
+    private EnvironmentInstance environmentInstance;
 
     /**
      * Default constructor.
@@ -42,15 +41,15 @@ public class ApplicationInstance extends InstallableInstance {
      * <p>Constructor for ApplicationInstance.</p>
      *
      * @param application a {@link com.telefonica.euro_iaas.sdc.model.Application} object.
-     * @param products a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance} object.
+     * @param environmentInstance a {@link com.telefonica.euro_iaas.sdc.model.EnvironmentInstance} object.
      * @param status a {@link com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status} object.
      * @param vm the vm where the application is (or will be) installed
      */
     public ApplicationInstance(ApplicationRelease application,
-            List<ProductInstance> products, Status status, VM vm, String vdc) {
+    		EnvironmentInstance environmentInstance, Status status, VM vm, String vdc) {
         super(status);
         this.application = application;
-        this.products = products;
+        this.environmentInstance = environmentInstance;
         setVm(vm);
         setVdc(vdc);
     }
@@ -82,21 +81,21 @@ public class ApplicationInstance extends InstallableInstance {
     }
 
     /**
-     * <p>Getter for the field <code>productInstance</code>.</p>
+     * <p>Getter for the field <code>environmentInstance</code>.</p>
      *
-     * @return the productInstance
+     * @return the environmentInstance
      */
-    public List<ProductInstance> getProducts() {
-        return products;
+    public EnvironmentInstance getEnvironmentInstance() {
+        return environmentInstance;
     }
 
     /**
-     * <p>Setter for the field <code>productInstance</code>.</p>
+     * <p>Setter for the field <code>environmentInstance</code>.</p>
      *
-     * @param productInstance the productInstance to set
+     * @param environmentInstance the environmentInstance to set
      */
-    public void setProducts(List<ProductInstance> products) {
-        this.products = products;
+    public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
+        this.environmentInstance = environmentInstance;
     }
 
 }

@@ -32,7 +32,7 @@ public class ApplicationReleaseValidatorImpl
             new ArrayList<ProductRelease>();
         
         List<ProductRelease> productReleases = 
-        		applicationRelease.getSupportedProducts();
+        		applicationRelease.getEnvironment().getProductReleases();
         
         for (ProductRelease productRelease : productReleases) {
             try {

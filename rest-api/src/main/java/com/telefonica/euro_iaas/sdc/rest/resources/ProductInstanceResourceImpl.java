@@ -53,7 +53,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     @Override
     public Task install(String vdc, ProductInstanceDto product, String callback) {
         try {
-            Product p = productManager.load(product.getProduct().getName());
+            Product p = productManager.load(product.getProduct().getProductName());
             ProductRelease loadedProduct = productManager.load(p, product
                     .getProduct().getVersion());
             List<Attribute> attributes = product.getAttributes();
@@ -63,7 +63,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
             Task task = createTask(MessageFormat.format(
                     "Install product {0} in  VM {1}{2}", product.getProduct()
-                            .getName(), product.getVm().getHostname(), product
+                            .getProductName(), product.getVm().getHostname(), product
                             .getVm().getDomain()), vdc);
             productInstanceAsyncManager.install(product.getVm(), vdc,
                     loadedProduct, attributes, task, callback);

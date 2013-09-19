@@ -24,7 +24,7 @@ import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.TaskError;
@@ -36,7 +36,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 /**
  * Default ApplicationInstanceAsyncManager implementation.
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 public class ApplicationInstanceAsyncManagerImpl
@@ -54,13 +54,13 @@ public class ApplicationInstanceAsyncManagerImpl
      */
     @Async
     @Override
-    public void install(VM vm,  String vdc, List<ProductInstance> products,
+    public void install(VM vm,  String vdc, EnvironmentInstance environmentInstance,
             ApplicationRelease application, List<Attribute> configuration,
             Task task, String callback) {
         try {
             ApplicationInstance applicationInstance =
                     applicationInstanceManager.install(
-                            vm, vdc, products, application, configuration);
+                            vm, vdc, environmentInstance, application, configuration);
             updateSuccessTask(task, applicationInstance);
             LOGGER.info("Application " + application.getApplication().getName()
                     + '-' + application.getVersion() + " installed successfully");
@@ -243,7 +243,8 @@ public class ApplicationInstanceAsyncManagerImpl
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ApplicationInstance applicationInstance) {
-        VM vm = applicationInstance.getProducts().iterator().next().getVm();
+        VM vm = applicationInstance.getEnvironmentInstance().getProductInstances()
+        		.iterator().next().getVm();
         String aiResource = MessageFormat.format(
                 propertiesProvider.getProperty(APPLICATION_INSTANCE_BASE_URL),
                 applicationInstance.getId(), // the id
@@ -264,7 +265,8 @@ public class ApplicationInstanceAsyncManagerImpl
      */
     private void updateErrorTask(ApplicationInstance applicationInstance, Task task,
             String message, Throwable t) {
-        VM vm = applicationInstance.getProducts().iterator().next().getVm();
+        VM vm = applicationInstance.getEnvironmentInstance().getProductInstances()
+        		.iterator().next().getVm();
         String aiResource = MessageFormat.format(
                 propertiesProvider.getProperty(APPLICATION_INSTANCE_BASE_URL),
                 applicationInstance.getId(), // the id

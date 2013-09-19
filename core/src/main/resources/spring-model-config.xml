@@ -48,6 +48,7 @@
         <property name="applicationDao" ref="applicationDao"/>
         <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="environmentDao" ref="environmentDao"/>
         <property name="productDao" ref="productDao"/>
         <property name="validator" ref="applicationReleaseValidator"/>
     </bean>
@@ -57,6 +58,22 @@
         <property name="commandExecutor" ref="commandExecutor"/>
         <property name="propertiesProvider" ref="systemPropertiesProvider"/>
         <property name="fileDao" ref="fileDao"/>
+    </bean>
+    
+     <bean id="environmentManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.sdc.manager.impl.EnvironmentManagerImpl">
+        <property name="environmentDao" ref="environmentDao"/>
+        <property name="productDao" ref="productDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="validator" ref="environmentValidator"/>
+    </bean>
+    
+    <bean id="environmentInstanceManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.sdc.manager.impl.EnvironmentInstanceManagerImpl">
+        <property name="environmentDao" ref="environmentDao"/>
+        <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="validator" ref="environmentInstanceValidator"/>
     </bean>
 
     <!-- UTILS CLASSES -->
@@ -96,6 +113,8 @@
         class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
                 <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
                 <property name="client" ref="restClient"/>
+                <property name="nodeCommandDao" ref="nodeCommandDao"/>
+                <property name="osDao" ref="osDao"/>
     </bean>
 
     <bean id="ip2vm" lazy-init="true"
@@ -137,5 +156,14 @@
             <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
             <property name="productDao" ref="productDao"/>
     </bean>
-
+    <bean id="environmentValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.EnvironmentValidatorImpl">
+            <property name="productInstanceDao" ref="productInstanceDao"/>
+            <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
+    </bean>
+    <bean id="environmentInstanceValidator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.validation.EnvironmentInstanceValidatorImpl">
+        <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+    </bean>
+    
 </beans>

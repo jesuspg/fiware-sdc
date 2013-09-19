@@ -32,6 +32,7 @@ import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
 import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
+import com.telefonica.euro_iaas.sdc.util.IpToVM;
 
 /**
  * Unit test suite for ProductManagerChefImpl.
@@ -53,7 +54,7 @@ public class ProductInstanceManagerChefImplTest {
     private ProductRelease productRelease;
     private OS os;
     private VM host = new VM("fqn","ip","hostname", "domain");
-
+    
     public final static String EXECUTE_COMMAND =
         "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";
     public final static String ASSIGN_UNINSTALL_COMMAND =
@@ -70,19 +71,18 @@ public class ProductInstanceManagerChefImplTest {
                 any(ProductInstance.class))).thenReturn("Product::uninstall-server");
 
         propertiesProvider = mock(SystemPropertiesProvider.class);
-
+        os = new OS("os1", "1", "os1 description", "v1");
+        host.setOsType(os.getOsType());
+        
         sdcClientUtils = mock(SDCClientUtils.class);
         sdcClientUtils.execute(host);
-
-
+         
         chefNodeDao = mock(ChefNodeDao.class);
         when(chefNodeDao.loadNode(host))
                 .thenReturn(new ChefNode());
         when(chefNodeDao.updateNode((ChefNode)anyObject()))
         .thenReturn(new ChefNode());
-
-
-        os = new OS("os1", "1", "os1 description", "v1");
+       
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease(
                 "version", "releaseNotes", null, product, Arrays.asList(os), null);
@@ -111,7 +111,6 @@ public class ProductInstanceManagerChefImplTest {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
 
-
         ProductInstance installedProduct = manager.install(
                 host, "vdc", productRelease, new ArrayList<Attribute>());
         // make verifications
@@ -120,8 +119,6 @@ public class ProductInstanceManagerChefImplTest {
         verify(recipeNamingGenerator, times(1)).getInstallRecipe(
                 any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
-
-
 
         verify(productInstanceDao, times(1)).create(
                 any(ProductInstance.class));
@@ -132,8 +129,6 @@ public class ProductInstanceManagerChefImplTest {
         verify(chefNodeDao, times(2)).loadNode(host);
         verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());
         verify(piValidator, times(1)).validateInstall(expectedProduct);
-
-
     }
 
     @Test
@@ -145,7 +140,6 @@ public class ProductInstanceManagerChefImplTest {
         manager.setChefNodeDao(chefNodeDao);
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
-
 
         manager.uninstall(expectedProduct);
 
@@ -159,6 +153,5 @@ public class ProductInstanceManagerChefImplTest {
         verify(chefNodeDao, times(2)).updateNode((ChefNode)anyObject());
         verify(sdcClientUtils, times(2)).execute(host);
         verify(piValidator, times(1)).validateUninstall(expectedProduct);
-
     }
 }

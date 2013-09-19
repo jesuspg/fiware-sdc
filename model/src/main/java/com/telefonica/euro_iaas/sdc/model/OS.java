@@ -24,14 +24,16 @@ public class OS {
     private Long v;
 
     @Column(unique=true, nullable=false, length=3)
-    private String OSType;
-    @Column(unique=true, nullable=false, length=256)
+    private String osType;
+    //@Column(unique=true, nullable=false, length=256)
+    @Column(length=128)
     private String name;
     @Column(length=2048)
     private String description;
     @Column(length=128)
     private String version;
 
+    
     /**
      * Default constructor
      */
@@ -41,14 +43,14 @@ public class OS {
     /**
      * <p>Constructor for SO.</p>
      *
-     * @param name a {@link java.lang.String} object.
      * @param OSType a {@link java.lang.String} object.
+     * @param name a {@link java.lang.String} object.
      * @param description a {@link java.lang.String} object.
      * @param version a {@link java.lang.String} object.
      */
-    public OS(String name, String OSType, String description, String version) {
-        this.name = name;
-        this.OSType = OSType;
+    public OS(String osType, String name, String description, String version) {
+        this.osType = osType;
+    	this.name = name;
         this.description = description;
         this.version = version;
     }
@@ -75,16 +77,16 @@ public class OS {
      *
      * @return the OSType
      */
-    public String getOSType() {
-        return OSType;
+    public String getOsType() {
+        return osType;
     }
     /**
-     * <p>Setter for the field <code>OSType</code>.</p>
+     * <p>Setter for the field <code>OsType</code>.</p>
      *
-     * @param name the OSType to set
+     * @param name the OsType to set
      */
-    public void setOSType(String OSType) {
-        this.OSType = OSType;
+    public void setOsType(String osType) {
+        this.osType = osType;
     }
     /**
      * <p>Getter for the field <code>description</code>.</p>
@@ -127,37 +129,29 @@ public class OS {
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    /** {@inheritDoc} */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((osType == null) ? 0 : osType.hashCode());
+		return result;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        OS other = (OS) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OS other = (OS) obj;
+		if (osType == null) {
+			if (other.osType != null)
+				return false;
+		} else if (!osType.equals(other.osType))
+			return false;
+		return true;
+	}
 
 }

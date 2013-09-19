@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
@@ -32,9 +34,12 @@ import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriteria;
@@ -66,7 +71,8 @@ public class ApplicationResourceImpl implements ApplicationResource {
     public ApplicationRelease insert(MultiPart multiPart)
     	throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException, 
-    	InvalidMultiPartRequestException, InvalidProductReleaseException {
+    	InvalidMultiPartRequestException, InvalidProductReleaseException,
+    	EnvironmentNotFoundException {
     	
     	validator.validateInsert(multiPart);
     	
@@ -88,12 +94,31 @@ public class ApplicationResourceImpl implements ApplicationResource {
     	for (int i=0; applicationReleaseDto.getPrivateAttributes().size() < i; i++)
     		application.addAttribute(applicationReleaseDto.getPrivateAttributes().get(i));
 		
+    	//From EnvironmentDto to Environment
+    	EnvironmentDto environmentDto =  applicationReleaseDto.getEnvironmentDto();
+    	List <ProductReleaseDto> productReleaseDtos = environmentDto.getProducts();
+    	List <ProductRelease> productReleases = new ArrayList<ProductRelease>();
+    	
+    	for (int i =0; i<productReleaseDtos.size(); i++){
+    		ProductRelease productRelease = new ProductRelease();
+    		productRelease.setProduct(new Product(
+    				productReleaseDtos.get(i).getProductName(),
+    				productReleaseDtos.get(i).getProductDescription()));
+    		productRelease.setPrivateAttributes(productReleaseDtos.get(i).getPrivateAttributes());
+    		productRelease.setReleaseNotes(productReleaseDtos.get(i).getReleaseNotes());
+    		productRelease.setSupportedOOSS(productReleaseDtos.get(i).getSupportedOS());
+    		productRelease.setTransitableReleases(productReleaseDtos.get(i).getTransitableReleases());
+    		
+    		productReleases.add(productRelease);
+    	}
+    	
+    	
 		ApplicationRelease applicationRelease = new ApplicationRelease(
 				applicationReleaseDto.getVersion(), 
 				applicationReleaseDto.getReleaseNotes(),
 				applicationReleaseDto.getPrivateAttributes(),
                 application,
-                applicationReleaseDto.getSupportedProducts(),
+                new Environment(productReleases),
                 applicationReleaseDto.getTransitableReleases() );
 
         try{
@@ -236,7 +261,8 @@ public class ApplicationResourceImpl implements ApplicationResource {
     	throws ApplicationReleaseNotFoundException,
         InvalidApplicationReleaseException, ProductReleaseNotFoundException,
         InvalidApplicationReleaseUpdateRequestException,
-        InvalidMultiPartRequestException{
+        InvalidMultiPartRequestException, InvalidProductReleaseException,
+        EnvironmentNotFoundException{
         
     	ApplicationReleaseDto applicationReleaseDto =
    				(ApplicationReleaseDto)multiPart.getBodyParts().get(0)
@@ -273,10 +299,29 @@ public class ApplicationResourceImpl implements ApplicationResource {
         if (applicationReleaseDto.getPrivateAttributes() != null)
             applicationRelease.setPrivateAttributes(applicationReleaseDto.getPrivateAttributes());
 
-        //SupportedProducts
-        if (applicationReleaseDto.getSupportedProducts() != null)
-           applicationRelease.setSupportedProducts(applicationReleaseDto.getSupportedProducts());
+        //Environment
+        if (applicationReleaseDto.getEnvironmentDto() != null){
 
+        	EnvironmentDto environmentDto =  applicationReleaseDto.getEnvironmentDto();
+        	List <ProductReleaseDto> productReleaseDtos = environmentDto.getProducts();
+        	List <ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        	
+        	for (int i =0; i<productReleaseDtos.size(); i++){
+        		ProductRelease productRelease = new ProductRelease();
+        		productRelease.setProduct(new Product(
+        				productReleaseDtos.get(i).getProductName(),
+        				productReleaseDtos.get(i).getProductDescription()));
+        		productRelease.setPrivateAttributes(productReleaseDtos.get(i).getPrivateAttributes());
+        		productRelease.setReleaseNotes(productReleaseDtos.get(i).getReleaseNotes());
+        		productRelease.setSupportedOOSS(productReleaseDtos.get(i).getSupportedOS());
+        		productRelease.setTransitableReleases(productReleaseDtos.get(i).getTransitableReleases());
+        		
+        		productReleases.add(productRelease);
+        	}
+        	
+        	applicationRelease.setEnvironment(new Environment(productReleases));
+        
+        }
         //TransitableRelease
         if (applicationReleaseDto.getTransitableReleases() != null)
             applicationRelease.setTransitableReleases(applicationReleaseDto.getTransitableReleases());

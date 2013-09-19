@@ -19,9 +19,10 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductInstanceDto {
 
-    private ReleaseDto product;
+    private ProductReleaseDto product;
     private VM vm;
     private List<Attribute> attributes;
+    private String vdc;
 
     /**
      */
@@ -32,20 +33,20 @@ public class ProductInstanceDto {
      * @param product
      * @param vm
      */
-    public ProductInstanceDto(ReleaseDto product, VM vm) {
+    public ProductInstanceDto(ProductReleaseDto product, VM vm) {
         this.product = product;
         this.vm = vm;
     }
     /**
      * @return the product
      */
-    public ReleaseDto getProduct() {
+    public ProductReleaseDto getProduct() {
         return product;
     }
     /**
      * @param product the product to set
      */
-    public void setProduct(ReleaseDto product) {
+    public void setProduct(ProductReleaseDto product) {
         this.product = product;
     }
     /**
@@ -75,4 +76,17 @@ public class ProductInstanceDto {
         this.attributes = attributes;
     }
 
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 }

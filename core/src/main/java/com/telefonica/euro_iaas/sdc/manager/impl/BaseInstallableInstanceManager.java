@@ -24,7 +24,7 @@ public class BaseInstallableInstanceManager {
     protected SystemPropertiesProvider propertiesProvider;
     protected RecipeNamingGenerator recipeNamingGenerator;
     private ChefNodeDao chefNodeDao;
-    private SDCClientUtils sdcClientUtils;
+    protected SDCClientUtils sdcClientUtils;
 
     protected void callChef(String recipe, VM vm)
         throws CanNotCallChefException, NodeExecutionException {

@@ -19,9 +19,15 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.OSDaoJpaImpl"/>
     <bean id="productReleaseDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductReleaseDaoJpaImpl"/>
+    <bean id="environmentDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.EnvironmentDaoJpaImpl"/>
+    <bean id="environmentInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.EnvironmentInstanceDaoJpaImpl"/>
     <bean id="applicationReleaseDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationReleaseDaoJpaImpl"/>
     <bean id="taskDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.TaskDaoJpaImpl"/>
+    <bean id="nodeCommandDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.NodeCommandDaoJpaImpl"/>
 
 </beans>

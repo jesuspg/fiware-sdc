@@ -21,6 +21,7 @@ import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -32,7 +33,7 @@ import com.xmlsolutions.annotation.UseCase;
 /**
  * Chef based ApplicationInstanceManager implementation.
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 @UseCase(traceTo="UC_002", status="implemented")
@@ -50,12 +51,12 @@ public class ApplicationInstanceManagerChefImpl extends
     @UseCase(traceTo="UC_002.1", status="implemented")
     @Override
     public ApplicationInstance install(VM vm, String vdc,
-            List<ProductInstance> products,
+            EnvironmentInstance environmentInstance,
             ApplicationRelease application, List<Attribute> configuration)
     throws NodeExecutionException, IncompatibleProductsException,
     AlreadyInstalledException, NotInstalledProductsException {
         ApplicationInstance instance = getApplicationToInstall(application,
-                vm, vdc, products, configuration);
+                vm, vdc, environmentInstance, configuration);
         Status previousStatus = instance.getStatus();
         try {
             validator.validateInstall(instance);
@@ -282,7 +283,7 @@ public class ApplicationInstanceManagerChefImpl extends
      */
     private ApplicationInstance getApplicationToInstall(
             ApplicationRelease applicationRelease, VM vm, String vdc,
-            List<ProductInstance> products, List<Attribute> configuration) {
+            EnvironmentInstance environmentInstance, List<Attribute> configuration) {
         ApplicationInstance instance;
         try {
             ApplicationInstanceSearchCriteria criteria =
@@ -290,7 +291,7 @@ public class ApplicationInstanceManagerChefImpl extends
             criteria.setVm(vm);
             criteria.setApplicationName(applicationRelease.getApplication().getName());
             instance = applicationInstanceDao.findUniqueByCriteria(criteria);
-            instance.setProducts(products);
+            instance.setEnvironmentInstance(environmentInstance);
             
             Application application;
 			try {
@@ -308,7 +309,7 @@ public class ApplicationInstanceManagerChefImpl extends
             instance.setApplication(applicationRelease);
         } catch (NotUniqueResultException e) {
             instance = new ApplicationInstance(
-                    applicationRelease, products, Status.UNINSTALLED, vm, vdc);
+                    applicationRelease, environmentInstance, Status.UNINSTALLED, vm, vdc);
         }
         return instance;
     }

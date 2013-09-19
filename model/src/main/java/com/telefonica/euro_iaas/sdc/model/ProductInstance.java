@@ -10,7 +10,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 /**
  *  Defines a product that is installed in the system.
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  * @version $Id: $
  */
 @Entity

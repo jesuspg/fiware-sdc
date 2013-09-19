@@ -99,7 +99,7 @@ public class ApplicationReleaseDaoJpaImpl
             List<ApplicationRelease> applications, ProductRelease product) {
         List<ApplicationRelease> result = new ArrayList<ApplicationRelease>();
         for (ApplicationRelease application : applications) {
-            if (application.getSupportedProducts().contains(product)) {
+            if (application.getEnvironment().getProductReleases().contains(product)) {
                 result.add(application);
             }
         }

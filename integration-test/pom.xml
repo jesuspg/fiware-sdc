@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>sdc-server-it</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-integration-test</name>
-    <version>1.9.0</version>
+    <version>1.9.7</version>
 
-
+    <parent>
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>sdc-server</artifactId>
+        <version>1.9.7</version>
+    </parent>
     <properties>
         <cuke4duke.version>0.4.4</cuke4duke.version>
     </properties>
@@ -16,7 +21,7 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-client</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.7</version>
         </dependency>
 
         <dependency>
@@ -93,13 +98,14 @@
                                 <cucumberArg>${basedir}/target/test-classes</cucumberArg>
                                 <!-- HTML REPORT -->
                                 <cucumberArg>--format</cucumberArg>
-                                <cucumberArg>html </cucumberArg>
+                                <cucumberArg>html</cucumberArg>
                                 <cucumberArg>--out</cucumberArg>
-                                <cucumberArg>${project.basedir}/target/cuke.html </cucumberArg>
+                                <cucumberArg>${project.basedir}/target/cuke.html</cucumberArg>
                             </cucumberArgs>
                             <gems>
                                 <gem>install cuke4duke --version
-                                    ${cuke4duke.version}</gem>
+                                    ${cuke4duke.version}
+                                </gem>
                             </gems>
                         </configuration>
                         <executions>
@@ -142,13 +148,14 @@
                                 <cucumberArg>${basedir}/target/test-classes</cucumberArg>
                                 <!-- HTML REPORT -->
                                 <cucumberArg>--format</cucumberArg>
-                                <cucumberArg>html </cucumberArg>
+                                <cucumberArg>html</cucumberArg>
                                 <cucumberArg>--out</cucumberArg>
-                                <cucumberArg>${project.basedir}/target/cuke.html </cucumberArg>
+                                <cucumberArg>${project.basedir}/target/cuke.html</cucumberArg>
                             </cucumberArgs>
                             <gems>
                                 <gem>install cuke4duke --version
-                                    ${cuke4duke.version}</gem>
+                                    ${cuke4duke.version}
+                                </gem>
                             </gems>
 
                             <jvmArgs>
@@ -211,23 +218,20 @@
     </pluginRepositories>
 
     <!-- ===================================== Distribution Management ==== -->
-    <distributionManagement>
-        <!-- Repositorio para hacer el deploy de las releases -->
-        <repository>
-            <id>${repoMavenId}</id>
-            <name>${repoMavenName}</name>
-            <url>${repoMavenUrl}</url>
-        </repository>
-        <!--Don't want deploy snapshots -->
-        <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <!-- Maquina donde se publica el site del proyecto -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-               </url>
-        </site>
-    </distributionManagement>
+    <!--   <distributionManagement>
+
+          <repository>
+              <id>${repoMavenId}</id>
+              <name>${repoMavenName}</name>
+              <url>${repoMavenUrl}</url>
+          </repository>
+
+          <site>
+              <id>${repoSiteId}</id>
+              <name>${repoSiteName}</name>
+              <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
+                 </url>
+          </site>
+      </distributionManagement> -->
 </project>
 

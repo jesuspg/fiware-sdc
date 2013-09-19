@@ -42,8 +42,9 @@ public class ApplicationInstanceValidatorImpl
         //validate if the products are compatible and installed
         List<ProductInstance> invalidProducts = new ArrayList<ProductInstance>();
         List<ProductRelease> uninstalledProducts = new ArrayList<ProductRelease>();
-        for (ProductInstance product : application.getProducts()) {
-            if (!application.getApplication().getSupportedProducts()
+        for (ProductInstance product : application.getEnvironmentInstance()
+        		.getProductInstances()) {
+            if (!application.getApplication().getEnvironment().getProductReleases()
                     .contains(product.getProduct())) {
                 invalidProducts.add(product);
             }
@@ -97,8 +98,8 @@ public class ApplicationInstanceValidatorImpl
         //validate the products are compatible
         List<ProductInstance> incompatibleProducts =
                 new ArrayList<ProductInstance>();
-        for (ProductInstance product : application.getProducts()) {
-            if (!newRelease.getSupportedProducts()
+        for (ProductInstance product : application.getEnvironmentInstance().getProductInstances()) {
+            if (!newRelease.getEnvironment().getProductReleases()
                     .contains(product.getProduct())) {
                 incompatibleProducts.add(product);
             }

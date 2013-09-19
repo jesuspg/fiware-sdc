@@ -7,7 +7,7 @@ import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
@@ -25,8 +25,8 @@ public interface ApplicationInstanceAsyncManager {
      * @param vm
      *            the vm where instance will be running in
      * @param vdc the vdc where the instance will be installed
-     * @param products
-     *            the list of products where the application will be installed.
+     * @param environmentInstance
+     *            the environmentInstance where the application will be installed.
      * @param application
      *            the application to install.
      * @param configuration the configuration parameters
@@ -35,7 +35,7 @@ public interface ApplicationInstanceAsyncManager {
      * execution will be sent
      *
      */
-    void install(VM vm, String vdc, List<ProductInstance> products,
+    void install(VM vm, String vdc, EnvironmentInstance environmentInstance,
             ApplicationRelease application, List<Attribute> configuration,
             Task task, String callback);
 

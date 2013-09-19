@@ -152,7 +152,8 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
         String productListSeparator =
             propertiesProvider.getProperty(PRODUCT_LIST_SEPARATOR);
         String result = "";
-        List<ProductInstance> producs = applicationInstance.getProducts();
+        List<ProductInstance> producs = applicationInstance
+        		.getEnvironmentInstance().getProductInstances();
         Collections.sort(producs);
         for (ProductInstance pi : producs) {
             if (!result.isEmpty()) {

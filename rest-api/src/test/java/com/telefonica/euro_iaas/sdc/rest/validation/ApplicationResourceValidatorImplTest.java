@@ -1,24 +1,23 @@
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import junit.framework.Assert;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
-import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
 public class ApplicationResourceValidatorImplTest extends ValidatorUtils{
@@ -50,11 +49,26 @@ public class ApplicationResourceValidatorImplTest extends ValidatorUtils{
         ProductRelease productRelease = new ProductRelease();
         productRelease.setProduct(product);
         productRelease.setVersion("0.1.1");
-
+        
+        //From ProductRelase to ProductReleaseDto
         List<ProductRelease> supporteProducts =
              Arrays.asList(productRelease);
+        
+        List<ProductReleaseDto> productReleaseDtos = new ArrayList<ProductReleaseDto>();        
+        
+        for (int i =0; i<supporteProducts.size(); i++){
+    		ProductReleaseDto productReleaseDto = new ProductReleaseDto();
+    		productReleaseDto.setProductName(supporteProducts.get(i).getProduct().getName());
+    		productReleaseDto.setProductDescription(supporteProducts.get(i).getProduct().getDescription());
+    		productReleaseDto.setPrivateAttributes(supporteProducts.get(i).getPrivateAttributes());
+    		productReleaseDto.setReleaseNotes(supporteProducts.get(i).getReleaseNotes());
+    		productReleaseDto.setSupportedOS(supporteProducts.get(i).getSupportedOOSS());
+    		productReleaseDto.setTransitableReleases(supporteProducts.get(i).getTransitableReleases());
+    		
+    		productReleaseDtos.add(productReleaseDto);
+    	}
 
-        applicationReleaseDto.setSupportedProducts(supporteProducts);
+        applicationReleaseDto.setEnvironmentDto(new EnvironmentDto(productReleaseDtos));
 
         Attribute privateAttribute = new Attribute("ssl_port",
             "8443", "The ssl listen port");

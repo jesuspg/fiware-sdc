@@ -15,12 +15,12 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
-import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
  * Provides some utility methods to work with A
- * @author Sergio Arroyo
+ * @author Sergio Arroyo Jesus M. Movilla
  *
  */
 public class ApplicationInstanceUtils {
@@ -41,14 +41,14 @@ public class ApplicationInstanceUtils {
      */
     public ApplicationInstance install(
             String applicationName, String version, String ip, String vdc,
-            List<ReleaseDto> products)
+            EnvironmentInstanceDto environmentInstance )
             throws MaxTimeWaitingExceedException, InvalidExecutionException {
         service =
                 client.getApplicationInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
-
+        
         ApplicationInstanceDto application = new ApplicationInstanceDto(
-                applicationName, version, new VM(ip), products);
+                applicationName, version, new VM(ip), environmentInstance);
         return service.install(vdc, application);
     }
 
@@ -135,7 +135,7 @@ public class ApplicationInstanceUtils {
      */
     public ApplicationInstance installIfNotInstalled(
             String applicationName, String version, String ip, String vdc,
-            List<ReleaseDto> products)
+            EnvironmentInstanceDto envronmentInstance)
             throws MaxTimeWaitingExceedException, InvalidExecutionException {
         ApplicationInstance instance = null;
         service =
@@ -148,11 +148,11 @@ public class ApplicationInstanceUtils {
             instance = instances.iterator().next();
             instance = uninstallIfNeed(instance, version);
         } else {
-            instance = install(applicationName, version, ip, vdc, products);
+            instance = install(applicationName, version, ip, vdc, envronmentInstance);
         }
 
         if (!isInstalled(instance)) {
-            instance = install(applicationName, version, ip, vdc, products);
+            instance = install(applicationName, version, ip, vdc, envronmentInstance);
         }
         return instance;
     }

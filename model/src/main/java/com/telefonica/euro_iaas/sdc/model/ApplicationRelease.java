@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Represents the concrete version of an application.
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 @Entity
@@ -25,9 +25,10 @@ public class ApplicationRelease extends InstallableRelease {
     @ManyToOne(optional=false)
     private Application application;
 
-    @ManyToMany
-    private List<ProductRelease> supportedProducts;
-
+    @ManyToOne
+    //private List<ProductRelease> supportedProducts;
+    private Environment environment;
+    
     @XmlTransient
     @ManyToMany
     private List<ApplicationRelease> transitableReleases;
@@ -49,11 +50,11 @@ public class ApplicationRelease extends InstallableRelease {
      */
     public ApplicationRelease(String version, String releaseNotes,
             List<Attribute> privateAttributes, Application application,
-            List<ProductRelease> supportedProducts,
+            Environment environment,
             List<ApplicationRelease> applicationReleases) {
         super(version, releaseNotes, privateAttributes);
         this.application = application;
-        this.supportedProducts = supportedProducts;
+        this.environment = environment;
         this.transitableReleases = applicationReleases;
     }
 
@@ -91,17 +92,17 @@ public class ApplicationRelease extends InstallableRelease {
     }
 
     /**
-     * @return the supportedProducts
+     * @return the environment
      */
-    public List<ProductRelease> getSupportedProducts() {
-        return supportedProducts;
+    public Environment getEnvironment() {
+        return environment;
     }
 
     /**
-     * @param supportedProducts the supportedProducts to set
+     * @param environment the environment to set
      */
-    public void setSupportedProducts(List<ProductRelease> supportedProducts) {
-        this.supportedProducts = supportedProducts;
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     /**

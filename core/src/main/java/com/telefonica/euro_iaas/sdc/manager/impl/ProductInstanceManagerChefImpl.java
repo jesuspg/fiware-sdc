@@ -12,6 +12,7 @@ import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
@@ -19,14 +20,13 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.sdc.model.Application;
-import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
+import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
 import com.xmlsolutions.annotation.Requirement;
 import com.xmlsolutions.annotation.UseCase;
@@ -48,8 +48,6 @@ public class ProductInstanceManagerChefImpl extends
     private ProductInstanceValidator validator;
 
 
-
-
     /**
      * {@inheritDoc}
      */
@@ -57,14 +55,16 @@ public class ProductInstanceManagerChefImpl extends
     @Override
     public ProductInstance install(VM vm, String vdc, ProductRelease product,
             List<Attribute> attributes) throws NodeExecutionException,
-            AlreadyInstalledException {
+            AlreadyInstalledException, InvalidInstallProductRequestException {
         Status previousStatus = null;
         ProductInstance instance = null;
-        try {
-            // we need the hostname + domain so if we haven't that information,
+        try {     
+        	// we need the hostname + domain so if we haven't that information,
             // shall to get it.
             if (!vm.canWorkWithChef()) {
-                vm = ip2vm.getVm(vm.getIp(), vm.getFqn());
+                sdcClientUtils.setNodeCommands(vm);
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
+              //Configure the node with the corresponding node commands
             }
             //makes the validations
             instance = getProductToInstall(product, vm, vdc, attributes);
@@ -387,6 +387,7 @@ public class ProductInstanceManagerChefImpl extends
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
+    
     /**
      * @param ip2vm
      *            the ip2vm to set
@@ -401,5 +402,4 @@ public class ProductInstanceManagerChefImpl extends
     public void setValidator(ProductInstanceValidator validator) {
         this.validator = validator;
     }
-
 }

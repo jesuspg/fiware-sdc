@@ -45,7 +45,7 @@ public class ApplicationInstanceSteps {
     public void iInstallTheApplicatioOnProducts(
             String applicationName, String version, Table table)
     throws Exception {
-        List<ReleaseDto> products = new ArrayList<ReleaseDto>();
+     /*   List<ReleaseDto> products = new ArrayList<ReleaseDto>();
         for (List<String> product : table.rows()) {
             products.add(new ReleaseDto(product.get(0), product.get(1), null));
         }
@@ -53,7 +53,7 @@ public class ApplicationInstanceSteps {
         String vdc = getProperty(VDC);
         String ip = getProperty(VM);
         createdApplication = manager.installIfNotInstalled(
-                applicationName, version, ip, vdc, products);
+                applicationName, version, ip, vdc, products);*/
     }
 
 

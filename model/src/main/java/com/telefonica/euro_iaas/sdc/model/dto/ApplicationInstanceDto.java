@@ -10,7 +10,7 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 
 /**
  * DTO for application Instance to receive rest request
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 @XmlRootElement
@@ -20,7 +20,8 @@ public class ApplicationInstanceDto {
     private String applicationName;
     private String version;
     private VM vm;
-    private List<ReleaseDto> products;
+    //private List<ReleaseDto> products;
+    private EnvironmentInstanceDto environmentInstanceDto;
     private List<Attribute> attributes;
 
     /**
@@ -30,14 +31,14 @@ public class ApplicationInstanceDto {
     /**
      * @param applicationName
      * @param vm
-     * @param products
+     * @param environmentInstace
      */
     public ApplicationInstanceDto(String applicationName, String version, VM vm,
-            List<ReleaseDto> products) {
+    		EnvironmentInstanceDto environmentInstanceDto) {
         this.version = version;
         this.applicationName = applicationName;
         this.vm = vm;
-        this.products = products;
+        this.environmentInstanceDto = environmentInstanceDto;
     }
     /**
      * @return the applicationName
@@ -64,16 +65,16 @@ public class ApplicationInstanceDto {
         this.vm = vm;
     }
     /**
-     * @return the products
+     * @return the environmentInstanceDto
      */
-    public List<ReleaseDto> getProducts() {
-        return products;
+    public EnvironmentInstanceDto getEnvironmentInstanceDto() {
+        return environmentInstanceDto;
     }
     /**
-     * @param products the products to set
+     * @param environmentInstanceDto the environmentInstanceDto to set
      */
-    public void setProducts(List<ReleaseDto> products) {
-        this.products = products;
+    public void setEnvironmentInstance(EnvironmentInstanceDto environmentInstanceDto) {
+        this.environmentInstanceDto = environmentInstanceDto;
     }
     /**
      * @return the version

@@ -1,5 +1,7 @@
 package com.telefonica.euro_iaas.sdc.dao;
 
+import java.util.List;
+
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 /**

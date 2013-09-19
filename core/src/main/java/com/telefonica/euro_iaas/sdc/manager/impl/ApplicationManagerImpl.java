@@ -11,11 +11,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationDao;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationReleaseDao;
+import com.telefonica.euro_iaas.sdc.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
@@ -24,13 +26,12 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
-import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ApplicationReleaseValidator;
 import com.xmlsolutions.annotation.UseCase;
 
@@ -50,6 +51,7 @@ implements ApplicationManager {
     private ApplicationDao applicationDao;
     private ApplicationReleaseDao applicationReleaseDao;
     private ProductReleaseDao productReleaseDao;
+    private EnvironmentDao environmentDao;
     private ProductDao productDao;
     private static Logger LOGGER = Logger.getLogger("ApplicationManagerImpl");
 
@@ -105,7 +107,7 @@ implements ApplicationManager {
     	File cookbook, File installable)
     	throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException, 
-    	InvalidProductReleaseException {
+    	InvalidProductReleaseException, EnvironmentNotFoundException {
     	
     	validator.validateInsert(applicationRelease);
     	
@@ -167,7 +169,8 @@ implements ApplicationManager {
     public ApplicationRelease update(ApplicationRelease applicationRelease, 
     	File cookbook, File installable) 
      	throws ApplicationReleaseNotFoundException, 
-     	InvalidApplicationReleaseException,	ProductReleaseNotFoundException {
+     	InvalidApplicationReleaseException,	ProductReleaseNotFoundException,
+     	InvalidProductReleaseException, EnvironmentNotFoundException {
     	
     	if (applicationRelease != null)
     		applicationRelease = updateApplicationReleaseBBDD (applicationRelease);
@@ -193,14 +196,18 @@ implements ApplicationManager {
     	ApplicationRelease applicationRelease)
 		throws AlreadyExistsApplicationReleaseException, 
 		InvalidApplicationReleaseException,
-		ProductReleaseNotFoundException, InvalidProductReleaseException {
+		ProductReleaseNotFoundException, InvalidProductReleaseException,
+		EnvironmentNotFoundException {
 	
     	Application application;
     	ApplicationRelease applicationReleaseOut;
     	
-    	List<ProductRelease> productReleases =  loadSupportedProductRelease (
+    	/*List<ProductRelease> productReleases =  loadSupportedProductRelease (
     			applicationRelease);
-    	applicationRelease.setSupportedProducts(productReleases);
+    	applicationRelease.setSupportedProducts(productReleases);*/
+    	
+    	Environment environment =  loadEnvironment (applicationRelease);
+    	applicationRelease.setEnvironment(environment);
     	
     	application = insertApplicationReleaseLoadApplication (applicationRelease);
     	applicationRelease.setApplication(application);
@@ -242,28 +249,109 @@ implements ApplicationManager {
     private ApplicationRelease updateApplicationReleaseBBDD (
         ApplicationRelease applicationRelease) 
     	throws ApplicationReleaseNotFoundException, InvalidApplicationReleaseException,
-    	ProductReleaseNotFoundException {
+    	ProductReleaseNotFoundException,  InvalidProductReleaseException,
+    	EnvironmentNotFoundException {
     	
     	ApplicationRelease applicationReleaseOut;
     	Application application;
     	
-    	if (applicationRelease.getSupportedProducts()!=null)
+    	/*if (applicationRelease.getSupportedProducts()!=null)
     	{
     		List<ProductRelease> productReleases 
     			= updateApplicationReleaseLoadProductRelease (applicationRelease);
     		
     		applicationRelease.setSupportedProducts(productReleases);
+    	}*/
+    	if (applicationRelease.getEnvironment()!=null)
+    	{
+    		Environment environment 
+    			= loadEnvironment (applicationRelease);
+    		
+    		applicationRelease.setEnvironment(environment);
     	}
     	
-    	application = uploadApplicationReleaseLoadApplication (applicationRelease);
+    	application = updateApplicationReleaseLoadApplication (applicationRelease);
     	
     	applicationRelease.setApplication(application);
-    	applicationReleaseOut = uploadApplicationRelease (applicationRelease);
+    	applicationReleaseOut = updateApplicationRelease (applicationRelease);
     	
     	return applicationReleaseOut;
     }
     
-    private List<ProductRelease> loadSupportedProductRelease (
+    private Environment loadEnvironment (ApplicationRelease applicationRelease) 
+    	throws ProductReleaseNotFoundException, InvalidProductReleaseException,
+    	EnvironmentNotFoundException {
+    	
+    	String productNotFoundMessage = null;
+    	ProductRelease productRelease;
+    	Product product;
+    	List<ProductRelease> productReleases  = new ArrayList<ProductRelease>();
+    	Environment environment;
+    	String environment_name = "";
+    	
+		for (int i=0; i<applicationRelease.getEnvironment().getProductReleases().size(); i++) {
+			try { 
+				product = productDao.
+						load(applicationRelease.getEnvironment().getProductReleases().get(i).getProduct().getName());
+				productNotFoundMessage = "Product " + 
+						applicationRelease.getEnvironment().getProductReleases().get(i)
+						.getProduct().getName()	+ " LOADED";
+				
+				LOGGER.log(Level.INFO,productNotFoundMessage);
+			} catch (EntityNotFoundException e) {
+				throw new ProductReleaseNotFoundException(productNotFoundMessage,e);
+			}
+			
+			try {
+				productRelease = productReleaseDao.load(product, 
+						applicationRelease.getEnvironment().getProductReleases()
+						.get(i).getVersion());
+				
+				LOGGER.log(Level.INFO,"ProductRelease " + 
+					applicationRelease.getEnvironment().getProductReleases().get(i)
+					.getProduct().getName()  + "-" + 
+					applicationRelease.getEnvironment().getProductReleases()
+					.get(i).getVersion()
+					+ " LOADED");
+				
+				productReleases.add(productRelease);
+			
+			} catch (EntityNotFoundException e) {
+					String productReleaseNotFoundMessage = "Product Release " + 
+						applicationRelease.getEnvironment().getProductReleases().get(i).
+						getProduct().getName()  + "-" +
+						applicationRelease.getEnvironment().getProductReleases()
+						.get(i).getVersion()
+						+ " has not been Found in the system";
+					
+					LOGGER.log(Level.INFO,productReleaseNotFoundMessage);
+					throw new ProductReleaseNotFoundException (
+							productReleaseNotFoundMessage,e);
+			}
+			environment_name = environment_name + 
+					applicationRelease.getEnvironment().getProductReleases().get(i).
+					getProduct().getName()  + "-" +
+					applicationRelease.getEnvironment().getProductReleases()
+					.get(i).getVersion() + "_";
+		}
+		try {
+			environment = environmentDao.load(environment_name);
+			LOGGER.log(Level.INFO,"Environment " + 	environment_name + " LOADED");
+			
+		} catch (EntityNotFoundException e) {
+				String environmentNotFoundMessage = "Environment " 
+						+ 	environment_name 
+						+ " has not been Found in the system";
+				
+				LOGGER.log(Level.INFO,environmentNotFoundMessage);
+				throw new EnvironmentNotFoundException (
+						environmentNotFoundMessage,e);
+		}
+		
+		return environment;	
+    }
+    
+    /*private List<ProductRelease> loadSupportedProductRelease (
     	ApplicationRelease applicationRelease) 
     	throws ProductReleaseNotFoundException, InvalidProductReleaseException {
     	
@@ -355,6 +443,7 @@ implements ApplicationManager {
     	
     	return productReleases;
     }
+    */
     
     private Application insertApplicationReleaseLoadApplication (
     	ApplicationRelease applicationRelease)
@@ -430,7 +519,7 @@ implements ApplicationManager {
     	return applicationReleaseOut;
     }
     
-    private Application uploadApplicationReleaseLoadApplication (
+    private Application updateApplicationReleaseLoadApplication (
        	ApplicationRelease applicationRelease)
     	throws  ApplicationReleaseNotFoundException{
     	
@@ -451,7 +540,7 @@ implements ApplicationManager {
         return application;
     }
     
-    private ApplicationRelease uploadApplicationRelease (
+    private ApplicationRelease updateApplicationRelease (
     	ApplicationRelease applicationRelease)
     	throws ApplicationReleaseNotFoundException,
     	InvalidApplicationReleaseException{
@@ -474,8 +563,8 @@ implements ApplicationManager {
 				existedApplicationRelease.setPrivateAttributes(applicationRelease.getPrivateAttributes());
 			if ( applicationRelease.getReleaseNotes() != null )
 				existedApplicationRelease.setReleaseNotes(applicationRelease.getReleaseNotes());
-			if ( applicationRelease.getSupportedProducts() != null )
-				existedApplicationRelease.setSupportedProducts(applicationRelease.getSupportedProducts());
+			if ( applicationRelease.getEnvironment() != null )
+				existedApplicationRelease.setEnvironment(applicationRelease.getEnvironment());
 			if ( applicationRelease.getTransitableReleases() != null )
 				existedApplicationRelease.setTransitableReleases(applicationRelease.getTransitableReleases());
 			

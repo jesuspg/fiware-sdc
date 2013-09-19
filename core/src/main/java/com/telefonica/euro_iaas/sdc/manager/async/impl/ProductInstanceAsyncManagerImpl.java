@@ -14,6 +14,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
@@ -71,7 +72,15 @@ public class ProductInstanceAsyncManagerImpl implements
              } else {
                 updateErrorTask(task, errorMsg, e);
             }
-        } catch (Throwable e) {
+        } catch (InvalidInstallProductRequestException e) {
+            String errorMsg = e.getMessage();
+            ProductInstance instance = getInstaslledProduct(product, vm);
+            if (instance != null) {
+            	updateErrorTask(instance, task, errorMsg, e);
+            } else {
+            	updateErrorTask(task, errorMsg, e);
+            }
+        }catch (Throwable e) {
             String errorMsg = "The product " + product.getProduct().getName()
                     + "-" + product.getVersion() + " can not be installed in" + vm;
             ProductInstance instance = getInstaslledProduct(product, vm);

@@ -14,8 +14,9 @@ import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationService;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public class ApplicationUtils {
 	
@@ -46,14 +47,14 @@ public class ApplicationUtils {
     		String type,
     		String description,
             String releaseNotes, List<Attribute> attributes, 
-            List<ProductRelease> supportedProducts,
+            EnvironmentDto environment,
             List<ApplicationRelease> transitableReleases) {
         service = client.getApplicationService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
 
         ApplicationReleaseDto instance = new ApplicationReleaseDto(applicationName,
                 description, type, version, releaseNotes, attributes,
-                supportedProducts, transitableReleases);
+                environment, transitableReleases);
         InputStream cookbook = this.getClass().getResourceAsStream(
                 "/files/" + applicationName + version +"-cookbook.tar");
         InputStream binaries = this.getClass().getResourceAsStream(
@@ -78,13 +79,13 @@ public class ApplicationUtils {
     public ApplicationRelease update(String applicationName, String version, 
     		String description,
             String type, String releaseNotes, List<Attribute> attributes, 
-            List<ProductRelease> supportedProducts, List<ApplicationRelease> transitableReleases) {
+            EnvironmentDto environment, List<ApplicationRelease> transitableReleases) {
         service = client.getApplicationService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
 
         ApplicationReleaseDto instance = new ApplicationReleaseDto(applicationName,
                 description, type, version, releaseNotes, attributes,
-                supportedProducts, transitableReleases);
+                environment, transitableReleases);
         
         InputStream cookbook = this.getClass().getResourceAsStream(
                 "/files/" + applicationName + version +"-cookbook.tar");

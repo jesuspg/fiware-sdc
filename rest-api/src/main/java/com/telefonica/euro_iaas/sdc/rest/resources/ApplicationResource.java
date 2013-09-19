@@ -18,6 +18,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
@@ -64,7 +65,8 @@ public interface ApplicationResource {
     ApplicationRelease insert(MultiPart multiPart)
     	throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException,
-    	InvalidMultiPartRequestException, InvalidProductReleaseException;
+    	InvalidMultiPartRequestException, InvalidProductReleaseException,
+    	EnvironmentNotFoundException;
     
 	/**
      * Retrieve all applications available created in the system.
@@ -204,7 +206,8 @@ public interface ApplicationResource {
         throws ApplicationReleaseNotFoundException,
         InvalidApplicationReleaseException, ProductReleaseNotFoundException,
         InvalidApplicationReleaseUpdateRequestException,
-        InvalidMultiPartRequestException;
+        InvalidMultiPartRequestException,InvalidProductReleaseException,
+        EnvironmentNotFoundException;
 
    /**
      * Retrieve the attributes for the selected application release. The result is

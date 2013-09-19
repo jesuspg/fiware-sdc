@@ -7,11 +7,10 @@ import org.junit.Assert;
 
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.it.util.ApplicationUtils;
-import com.telefonica.euro_iaas.sdc.it.util.ProductUtils;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
-import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 import cuke4duke.Table;
 import cuke4duke.annotation.I18n.EN.Given;
@@ -21,13 +20,15 @@ import cuke4duke.annotation.Pending;
 
 public class ApplicationSteps {
 
-    private List<ProductRelease> supportedProducts;
+    private List<ProductReleaseDto> supportedProducts;
     private List<Attribute> attributes;
     private List<ApplicationRelease> transitableReleases;
     
     private ApplicationRelease existedApplication;
     private ApplicationRelease addedApplication;
     private ApplicationRelease updatedApplication;
+    
+    private EnvironmentDto environmentDto;
     
     //ADD Application
     @Given("^application default attributes:$")
@@ -48,15 +49,18 @@ public class ApplicationSteps {
     }
     
     @Given("^the application supported product release$")
-    public void getProductReleases(Table table) {
-    	supportedProducts = new ArrayList<ProductRelease>();
+    //public void getProductReleases(Table table) {
+    public void getEnvironmentDto(Table table) {
+    	supportedProducts = new ArrayList<ProductReleaseDto>();
         for (List<String> row: table.rows()) {
-        	ProductRelease productRelease = new ProductRelease();
+        	ProductReleaseDto productReleaseDto = new ProductReleaseDto();
         	
-        	productRelease.setProduct(new Product(row.get(0), "description"));
-        	productRelease.setVersion(row.get(1));
-        	supportedProducts.add(productRelease);
+        	productReleaseDto.setProductName(row.get(0));
+        	productReleaseDto.setProductDescription("description");
+        	productReleaseDto.setVersion(row.get(1));
+        	supportedProducts.add(productReleaseDto);
         }
+        environmentDto = new EnvironmentDto(supportedProducts);
     }
     
     @When("^I add application \"([^\"]*)\" \"([^\"]*)\" of type \"([^\"]*)\" \\(\"([^\"]*)\"\\)$")
@@ -64,7 +68,7 @@ public class ApplicationSteps {
     	String version, String type, String description){
     	ApplicationUtils manager = new ApplicationUtils();
     	addedApplication = manager.add(applicationName, version, type, description,
-                "", attributes, supportedProducts, transitableReleases);
+                "", attributes, environmentDto, transitableReleases);
     }
     
     @Then("^I get application \"([^\"]*)\" \"([^\"]*)\" in the catalog")
@@ -82,7 +86,7 @@ public class ApplicationSteps {
     	
     	ApplicationUtils manager = new ApplicationUtils();
     	updatedApplication = manager.update(applicationName, version, type, description,
-                "", attributes, supportedProducts, transitableReleases);
+                "", attributes, environmentDto, transitableReleases);
     }
     
     @Then("^I get updated application \"([^\"]*)\" \"([^\"]*)\" in the catalog$")

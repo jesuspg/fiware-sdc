@@ -6,12 +6,9 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
-import com.telefonica.euro_iaas.sdc.it.util.ProductInstanceUtils;
 import com.telefonica.euro_iaas.sdc.it.util.ProductUtils;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.OS;
-import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
@@ -19,7 +16,6 @@ import cuke4duke.Table;
 import cuke4duke.annotation.I18n.EN.Given;
 import cuke4duke.annotation.I18n.EN.Then;
 import cuke4duke.annotation.I18n.EN.When;
-import cuke4duke.annotation.Pending;
 
 public class ProductSteps {
 

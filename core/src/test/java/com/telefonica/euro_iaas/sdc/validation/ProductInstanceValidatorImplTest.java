@@ -18,6 +18,8 @@ import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -44,7 +46,7 @@ public class ProductInstanceValidatorImplTest {
 
     private ApplicationRelease appRelease1 = new ApplicationRelease(
             "1", "releaseNotes", null, app,
-            Arrays.asList(release2), new ArrayList<ApplicationRelease>());
+            new Environment(Arrays.asList(release2)), new ArrayList<ApplicationRelease>());
 
 
     private ApplicationInstance appInstance1  = new ApplicationInstance();
@@ -62,7 +64,10 @@ public class ProductInstanceValidatorImplTest {
 
         appInstance1.setApplication(appRelease1);
         appInstance1.setStatus(Status.INSTALLED);
-        appInstance1.setProducts(Arrays.asList(pInstance));
+        appInstance1.setEnvironmentInstance(new EnvironmentInstance(
+        			new Environment(Arrays.asList(release1)),
+        			Arrays.asList(pInstance)
+        		));
     }
 
     @Test

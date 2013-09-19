@@ -101,7 +101,7 @@ AbstractInstallableInstanceDaoJpaIml<ApplicationInstance, Long> implements
             List<ApplicationInstance> applications, ProductInstance product) {
         List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
         for (ApplicationInstance application : applications) {
-            if (application.getProducts().contains(product)) {
+            if (application.getEnvironmentInstance().getProductInstances().contains(product)) {
                 result.add(application);
             }
         }

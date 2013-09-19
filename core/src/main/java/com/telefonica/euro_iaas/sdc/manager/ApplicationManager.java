@@ -8,13 +8,13 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseExc
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
+import com.telefonica.euro_iaas.sdc.exception.EnvironmentNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriteria;
 
@@ -75,11 +75,12 @@ public interface ApplicationManager {
      * @throws AlreadyExistsProductReleaseException
      * @throws InvalidProductReleaseException
      * @throws ProductReleaseNotFoundException
+     * @throws EnvironmentNotFoundException
      */
     ApplicationRelease insert(ApplicationRelease appRelase, File recipes, 
     	File installable) throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException,
-    	InvalidProductReleaseException;
+    	InvalidProductReleaseException, EnvironmentNotFoundException;
 
     /**
      * Delete the Application Release consisting on.
@@ -103,6 +104,7 @@ public interface ApplicationManager {
      */
     ApplicationRelease update(ApplicationRelease appRelease, File recipes, 
     	File installable) throws ApplicationReleaseNotFoundException, 
-		InvalidApplicationReleaseException, ProductReleaseNotFoundException;
+		InvalidApplicationReleaseException, ProductReleaseNotFoundException,
+		InvalidProductReleaseException, EnvironmentNotFoundException;
     
 }

@@ -15,7 +15,8 @@ public interface IpToVM {
      *  IP address.
      * @param ip the ip of the associated VM.
      * @param fqn the fqn of the associated VM.
+     * @param osType the osType of the associated VM.
      * @return the VM with the whole information available (ip, host and domain)
      */
-    VM getVm(String ip, String fqn);
+    VM getVm(String ip, String fqn, String osType);
 }

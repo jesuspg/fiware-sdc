@@ -85,8 +85,8 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
                 new ArrayList<ApplicationInstance>();
         //get the product that not support the new release
         for (ApplicationInstance application : applications) {
-            if (!application.getApplication()
-                    .getSupportedProducts().contains(newRelease)) {
+            if (!application.getApplication().getEnvironment().getProductReleases()
+                    .contains(newRelease)) {
                 unsuportedApplications.add(application);
             }
         }

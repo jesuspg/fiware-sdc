@@ -13,14 +13,14 @@ import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
 /**
  * Defines the operations the system shall be able to do with Applications
  *
- * @author Sergio Arroyo
+ * @author Sergio Arroyo, Jesus M. Movilla
  *
  */
 public interface ApplicationInstanceManager {
@@ -30,8 +30,8 @@ public interface ApplicationInstanceManager {
      *
      * @param vm
      *            the vm where instance will be running in
-     * @param products
-     *            the list of products where the application will be installed.
+     * @param environmentInstance
+     *            the environmentInstance where the application will be installed.
      * @param application
      *            the application to install.
      * @param configuration the configuration parameters
@@ -45,7 +45,7 @@ public interface ApplicationInstanceManager {
      *  @throws NotInstalledProductsException if the needed products to install
      *  the application are not installed
      */
-    ApplicationInstance install(VM vm, String vdc, List<ProductInstance> products,
+    ApplicationInstance install(VM vm, String vdc, EnvironmentInstance environmentInstance,
             ApplicationRelease application, List<Attribute> configuration)
     throws NodeExecutionException, IncompatibleProductsException,
     AlreadyInstalledException, NotInstalledProductsException;
