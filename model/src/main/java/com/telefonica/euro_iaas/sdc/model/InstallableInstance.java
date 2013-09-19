@@ -2,6 +2,7 @@ package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.Date;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +14,8 @@ import javax.persistence.InheritanceType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
  * InstallableInstance represents an instance of an execution unit that is (or has been)
@@ -26,6 +29,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InstallableInstance {
+
+    public final static String VM_FIELD = "vm";
+    public final static String STATUS_FIELD = "status";
+    public final static String VDC_FIELD = "vdc";
+
 
     /**
      * Defines the value of the different status the Application could be.
@@ -44,6 +52,11 @@ public class InstallableInstance {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Embedded
+    private VM vm;
+
+    private String vdc;
 
 
     /**
@@ -106,6 +119,35 @@ public class InstallableInstance {
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * @return the vm
+     */
+    public VM getVm() {
+        return vm;
+    }
+
+    /**
+     * @param vm the vm to set
+     */
+    public void setVm(VM vm) {
+        this.vm = vm;
+    }
+
+
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
 
     /* (non-Javadoc)

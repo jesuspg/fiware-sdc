@@ -77,6 +77,10 @@ public class Task implements Serializable {
     @Column(length=1024)
     private String description;
 
+    @XmlElement(required=false)
+    @Column(length=1024)
+    private String vdc;
+
     /**
      * @param href
      */
@@ -230,6 +234,20 @@ public class Task implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
 
 

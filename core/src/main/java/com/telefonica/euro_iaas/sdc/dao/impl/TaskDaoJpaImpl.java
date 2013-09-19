@@ -50,6 +50,10 @@ public class TaskDaoJpaImpl extends AbstractBaseDao<Task, Long>
         Criteria baseCriteria = session
                 .createCriteria(Task.class);
 
+        if (!StringUtils.isEmpty(criteria.getVdc())) {
+            baseCriteria.add(Restrictions.eq("vdc", criteria.getVdc()));
+        }
+
         if (criteria.getStates() != null && !criteria.getStates().isEmpty()) {
             Criterion statusCr = null;
             for (TaskStates states : criteria.getStates()) {

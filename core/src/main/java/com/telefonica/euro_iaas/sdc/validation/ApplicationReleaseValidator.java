@@ -1,10 +1,6 @@
 package com.telefonica.euro_iaas.sdc.validation;
 
-import java.io.File;
-
 import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 
@@ -15,23 +11,23 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
  *
  */
 public interface ApplicationReleaseValidator {
-	
-	/**
+
+    /**
      * Verify if the ApplicationRelase could be inserted
      * @param applicationRelease to be inserted
-     * @throws ProductReleaseNotFoundException if the product Release on which 
+     * @throws ProductReleaseNotFoundException if the product Release on which
      * the Application Release is installed on exists in the system
      */
     void validateInsert(ApplicationRelease applicationRelease)
-     	throws ProductReleaseNotFoundException;
-    
-	/**
+         throws ProductReleaseNotFoundException;
+
+    /**
      * Verify if the ApplicationRelase could be deleted
      * @param applicationRelease to be deleted
-     * @throws ApplicationReleaseStillInstalledException 
+     * @throws ApplicationReleaseStillInstalledException
      * if the application Realease to be deleted is still installed on some vms
      */
     void validateDelete(ApplicationRelease applicationRelease)
-		throws ApplicationReleaseStillInstalledException;
-    
+        throws ApplicationReleaseStillInstalledException;
+
 }

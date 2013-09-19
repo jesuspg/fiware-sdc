@@ -34,10 +34,10 @@ public class ApplicationInstanceValidatorImpl
             throws IncompatibleProductsException, AlreadyInstalledException,
             NotInstalledProductsException {
         //validate if previously installed
-        if (application.getId() != null &&
-                application.getStatus() != Status.UNINSTALLED &&
-                application.getStatus() != Status.ERROR) {
-                    throw new AlreadyInstalledException(application);
+        try {
+            fsmValidator.validate(application, Status.INSTALLING);
+        } catch (FSMViolationException e) {
+            throw new AlreadyInstalledException(application);
         }
         //validate if the products are compatible and installed
         List<ProductInstance> invalidProducts = new ArrayList<ProductInstance>();

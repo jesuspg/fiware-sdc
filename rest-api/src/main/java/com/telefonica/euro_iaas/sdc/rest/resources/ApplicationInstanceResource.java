@@ -3,26 +3,22 @@ package com.telefonica.euro_iaas.sdc.rest.resources;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
-import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
 import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
-import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 
 /**
  * Provides a rest api to works with ApplicationInstances
@@ -30,17 +26,19 @@ import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
  * @author Sergio Arroyo
  *
  */
-public interface ApplicationInstanceResource {
+public interface ApplicationInstanceResource
+    extends BaseInstallableInstanceResource {
 
     /**
      * Install a list of application in a given host running
      * on the selected products.
-     *
+     * @param vdc the vdc where the application will be installed.
      * @param application the application to install containing the VM,
      *  the appName and the products where the application is going to
      *  be installed
-     *
-     * @return the installed application.
+     * @param callback if not null, contains the url where the system shall
+     * notify when the task is done
+     * @return the task referencing the installed application.
      * @throws IncompatibleProductsException if the selected products are
      * not compatible with the given application
      * @throws AlreadyInstalledException if the application is running on the
@@ -52,59 +50,8 @@ public interface ApplicationInstanceResource {
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    ApplicationInstance install(ApplicationInstanceDto application)
-    throws NodeExecutionException, AlreadyInstalledException,
-    IncompatibleProductsException, NotInstalledProductsException;
-
-    /**
-     * Uninstall a previously installed application.
-     *
-     * @param applicationId
-     *            the candidate to uninstall
-     */
-    @DELETE
-    @Path("/{aId}")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void uninstall(@PathParam("aId") Long applicationId)
-    throws NodeExecutionException, FSMViolationException;
-
-    /**
-     * Configure the selected application.
-     *
-     * @param id
-     *            the application instance id
-     * @param arguments
-     *            the configuration properties
-     *
-     * @return the configured application.
-     */
-    @PUT
-    @Path("/{aId}")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes(MediaType.APPLICATION_XML)
-    ApplicationInstance configure(@PathParam("aId") Long id,
-            Attributes arguments)
-    throws NodeExecutionException, FSMViolationException ;
-
-
-    /**
-     * Upgrade the selected product version.
-     *
-     * @param id
-     *            the application instance id
-     * @param new version
-     *            the new version to upgrade to
-     *
-     * @return the configured product Instance.
-     */
-    @PUT
-    @Path("/{aId}/{newVersion}")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance upgrade(@PathParam("aId") Long id,
-      @PathParam("newVersion") String version)
-    throws NodeExecutionException, IncompatibleProductsException,
-    FSMViolationException ;
+    Task install(@PathParam("vdc") String vdc, ApplicationInstanceDto application,
+            @HeaderParam("callback") String callback);
 
     /**
      * Retrieve all ApplicationInstance that match with a given criteria.
@@ -135,20 +82,18 @@ public interface ApplicationInstanceResource {
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("orderType") String orderType,
-            @QueryParam("status") List<Status> status);
+            @QueryParam("status") List<Status> status,
+            @PathParam("vdc") String vdc,
+            @QueryParam("applicationName") String applicationName);
 
     /**
-     * Retrieve the selected OSInstance.
-     *
-     * @param id
-     *            the osInstance id
-     * @return the created OS instances.
-     * @throws EntityNotFoundException
-     *             if the osInstance does not exists
+     * Retrieve the selected application instance.
+     * @param id the application id
+     * @return the application instance
      */
     @GET
-    @Path("/{aId}")
+    @Path("/{id}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance load(@PathParam("aId") Long id)
-            throws EntityNotFoundException;
+    ApplicationInstance load(@PathParam("id") Long id);
+
 }

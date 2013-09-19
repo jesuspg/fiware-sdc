@@ -10,14 +10,12 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
-import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
 /**
@@ -26,7 +24,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSear
  * @author Sergio Arroyo
  */
 public class ApplicationInstanceDaoJpaImpl extends
-        AbstractBaseDao<ApplicationInstance, Long> implements
+AbstractInstallableInstanceDaoJpaIml<ApplicationInstance, Long> implements
         ApplicationInstanceDao {
 
     /** {@inheritDoc} */
@@ -65,13 +63,16 @@ public class ApplicationInstanceDaoJpaImpl extends
             baseCriteria.add(Restrictions.eq("app.name",
                     criteria.getApplicationName()));
         }
-
+        if (!StringUtils.isEmpty(criteria.getVdc())) {
+            baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD,
+                    criteria.getVdc()));
+        }
+        if (criteria.getVm() != null) {
+            baseCriteria.add(getVMCriteria(baseCriteria, criteria.getVm()));
+        }
         List<ApplicationInstance> applications = setOptionalPagination(
                 criteria, baseCriteria).list();
         // TODO sarroyo: try to do this filter using hibernate criteria.
-        if (criteria.getVm() != null) {
-            applications = filterByVM(applications, criteria.getVm());
-        }
         if (criteria.getProduct() != null) {
             applications = filterByProduct(applications, criteria.getProduct());
         }
@@ -86,7 +87,7 @@ public class ApplicationInstanceDaoJpaImpl extends
         if (instances.size() != 1) {
             throw new NotUniqueResultException();
         }
-        return findByCriteria(criteria).iterator().next();
+        return instances.iterator().next();
     }
 
     /**
@@ -107,24 +108,6 @@ public class ApplicationInstanceDaoJpaImpl extends
         return result;
     }
 
-    /**
-     * Filter the result by VM. <b>IMPORTANT: this method only works if the
-     * application is installed over, at least, one product.</b>
-     *
-     * @param applications
-     * @param product
-     * @return
-     */
-    private List<ApplicationInstance> filterByVM(
-            List<ApplicationInstance> applications, VM vm) {
-        List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
-        for (ApplicationInstance application : applications) {
-            if (application.getProducts().iterator().next().getVM().equals(vm)) {
-                result.add(application);
-            }
-        }
-        return result;
-    }
 
     private Criterion addStatus(Criterion statusCr, Status status) {
         SimpleExpression expression = Restrictions.eq("status", status);

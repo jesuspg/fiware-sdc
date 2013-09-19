@@ -76,19 +76,22 @@ public class ApplicationInstanceManagerChefImplTest{
                 "version2", "releaseNotes2", null, p2, null, null);
 
         products = Arrays.asList(new ProductInstance(pr1,
-                ProductInstance.Status.INSTALLED, vm), new ProductInstance(pr2,
-                ProductInstance.Status.INSTALLED, vm));
+                ProductInstance.Status.INSTALLED, vm, "vdc"),
+                new ProductInstance(pr2,
+                ProductInstance.Status.INSTALLED, vm, "vdc"));
         application = new Application("app", "desc", "war");
         appRelease = new ApplicationRelease(
                 "version", "releaseNotes", null, application,
                 Arrays.asList(pr1, pr2), null);
 
         applicationInstance = new ApplicationInstance(appRelease, products,
-                Status.INSTALLED);
+                Status.INSTALLED, vm ,"vdc");
 
         applicationInstanceDao = mock(ApplicationInstanceDao.class);
         when(applicationInstanceDao.create(Mockito
            .any(ApplicationInstance.class))).thenReturn(applicationInstance);
+        when(applicationInstanceDao.update(Mockito
+                .any(ApplicationInstance.class))).thenReturn(applicationInstance);
         when(applicationInstanceDao.findUniqueByCriteria(Mockito
                 .any(ApplicationInstanceSearchCriteria.class)))
                 .thenThrow(new NotUniqueResultException());
@@ -117,7 +120,7 @@ public class ApplicationInstanceManagerChefImplTest{
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(aiValidator);
         // execution
-        ApplicationInstance installedApp = manager.install(vm, products,
+        ApplicationInstance installedApp = manager.install(vm, "vdc", products,
                 appRelease, new ArrayList<Attribute>());
         // make assertions
         Assert.assertEquals(installedApp.getApplication(), appRelease);

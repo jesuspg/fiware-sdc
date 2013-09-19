@@ -80,18 +80,34 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
         //create the instances
         ProductInstance tomcat6Instance = new ProductInstance(tomcat6,
-                Status.INSTALLED, new VM("ip", "host", "domain"));
+                Status.INSTALLED, new VM("ip", "host", "domain"), "vdc");
         tomcat6Instance = productInstanceDao.create(tomcat6Instance);
         ProductInstance tomcat7Instance = new ProductInstance(tomcat7,
-                Status.INSTALLED, new VM("ip2", "host2", "domain2"));
+                Status.INSTALLED, new VM("ip2", "host2", "domain2"), "vdc");
         tomcat7Instance = productInstanceDao.create(tomcat7Instance);
 
         sdc030Instance = new ApplicationInstance(sdc030,
-                Arrays.asList(tomcat6Instance), Status.INSTALLING);
+                Arrays.asList(tomcat6Instance), Status.INSTALLING,
+                tomcat6Instance.getVm(), "vdc");
         sdc030Instance = applicationInstanceDao.create(sdc030Instance);
         sdc040Instance = new ApplicationInstance(sdc040,
-                Arrays.asList(tomcat7Instance), Status.ERROR);
+                Arrays.asList(tomcat7Instance), Status.ERROR,
+                tomcat7Instance.getVm(), "vdc");
         sdc040Instance = applicationInstanceDao.create(sdc040Instance);
+
+        Application wordpress = new Application(
+                "wordpress", "this application", "php");
+        wordpress = applicationDao.create(wordpress);
+
+        ApplicationRelease wp5 = new ApplicationRelease(
+                "5", "Add configuration functionallity", null, wordpress,
+                Arrays.asList(tomcat5, tomcat6, tomcat7), null);
+        wp5 = applicationReleaseDao.create(wp5);
+        ApplicationInstance wp5instance = new ApplicationInstance(wp5,
+                Arrays.asList(tomcat7Instance), Status.UNINSTALLED,
+                tomcat7Instance.getVm(), "vdc");
+        wp5instance = applicationInstanceDao.create(wp5instance);
+
     }
 
 
@@ -102,7 +118,7 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         criteria.setProduct(sdc040Instance.getProducts().iterator().next());
         List<ApplicationInstance> instances =
                 applicationInstanceDao.findByCriteria(criteria);
-        assertEquals(1, instances.size());
+        assertEquals(2, instances.size());
         assertEquals(sdc040Instance, instances.iterator().next());
     }
 
@@ -131,10 +147,10 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(1, instances.size());
         assertEquals(sdc030Instance, instances.iterator().next());
 
-        criteria.setStatus(Arrays.asList(Status.INSTALLING, Status.UPGRADING));
+        criteria.setStatus(Arrays.asList(Status.INSTALLING, Status.UNINSTALLED));
         instances = applicationInstanceDao.findByCriteria(criteria);
 
-        assertEquals(1, instances.size());
+        assertEquals(2, instances.size());
         assertEquals(sdc030Instance, instances.iterator().next());
 
         criteria.setStatus(Arrays.asList(Status.ERROR, Status.INSTALLING));

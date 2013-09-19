@@ -103,7 +103,7 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
         ApplicationInstanceSearchCriteria appCriteria =
                 new ApplicationInstanceSearchCriteria(Arrays.asList(
                         Status.INSTALLED, Status.INSTALLING, Status.CONFIGURING,
-                        Status.UPGRADING), product, null, "");
+                        Status.UPGRADING), product, null, "", "");
         return applicationInstanceDao.findByCriteria(appCriteria);
     }
 

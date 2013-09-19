@@ -88,7 +88,7 @@ public class ProductInstanceManagerChefImplTest {
                 "version", "releaseNotes", null, product, Arrays.asList(os), null);
 
         expectedProduct = new ProductInstance(
-                productRelease, Status.INSTALLED, host);
+                productRelease, Status.INSTALLED, host, "vdc");
 
         productInstanceDao = mock(ProductInstanceDao.class);
         when(productInstanceDao.create(any(ProductInstance.class))).thenReturn(
@@ -113,7 +113,7 @@ public class ProductInstanceManagerChefImplTest {
 
 
         ProductInstance installedProduct = manager.install(
-                host, productRelease, new ArrayList<Attribute>());
+                host, "vdc", productRelease, new ArrayList<Attribute>());
         // make verifications
         assertEquals(expectedProduct, installedProduct);
 

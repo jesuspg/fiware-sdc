@@ -13,6 +13,7 @@ public class TaskSearchCriteria extends AbstractSearchCriteria {
     private String owner;
     private Date fromDate;
     private Date toDate;
+    private String vdc;
 
 
 
@@ -62,12 +63,13 @@ public class TaskSearchCriteria extends AbstractSearchCriteria {
      * @param toDate
      */
     public TaskSearchCriteria(String resource, List<TaskStates> states,
-            String owner, Date fromDate, Date toDate) {
+            String owner, Date fromDate, Date toDate, String vdc) {
         this.resource = resource;
         this.states = states;
         this.owner = owner;
         this.fromDate = fromDate;
         this.toDate = toDate;
+        this.vdc = vdc;
     }
     /**
      * @param resource the product to set
@@ -124,5 +126,18 @@ public class TaskSearchCriteria extends AbstractSearchCriteria {
         this.toDate = toDate;
     }
 
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 
 }

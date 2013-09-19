@@ -11,36 +11,36 @@ import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 
 public class ProductReleaseValidatorImpl implements ProductReleaseValidator{
-	
-	private ProductInstanceDao productInstanceDao;
-	
-	public void validateDelete(ProductRelease productRelease)
+
+    private ProductInstanceDao productInstanceDao;
+
+    public void validateDelete(ProductRelease productRelease)
       throws ProductReleaseStillInstalledException{
-		//validate if the product release are installed on some VMs
-		List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
-		for (ProductInstance product : getProductInstancesByProduct (productRelease)) {
+        //validate if the product release are installed on some VMs
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        for (ProductInstance product : getProductInstancesByProduct (productRelease)) {
             if (product.getStatus().equals(Status.INSTALLED)
                     || product.getStatus().equals(Status.CONFIGURING)
                     || product.getStatus().equals(Status.UPGRADING)
                     || product.getStatus().equals(Status.INSTALLING)) {
-            	productInstances.add(product);
+                productInstances.add(product);
             }
         }
-		//validate if the products are installed
+        //validate if the products are installed
         if (!productInstances.isEmpty()) {
             throw new ProductReleaseStillInstalledException(productInstances);
         }
-	  }
-	
-	private List<ProductInstance> getProductInstancesByProduct(
+      }
+
+    private List<ProductInstance> getProductInstancesByProduct(
             ProductRelease productRelease) {
         ProductInstanceSearchCriteria productCriteria =
-                new ProductInstanceSearchCriteria(null, 
-                		null, productRelease);
+                new ProductInstanceSearchCriteria(null,
+                        null, productRelease, null);
         return productInstanceDao.findByCriteria(productCriteria);
     }
-	
-	/**
+
+    /**
      * @param productInstanceDao the productInstanceDao to set
      */
     public void setProductInstanceDao(

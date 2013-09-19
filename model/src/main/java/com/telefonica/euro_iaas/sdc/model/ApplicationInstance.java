@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
+
 /**
  * Defines a concrete application running over a concrete product instance.
  *
@@ -20,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance extends InstallableInstance {
 
-    public final static String STATUS_FIELD = "status";
     public final static String APPLICATION_FIELD = "application";
 
 
@@ -43,12 +44,15 @@ public class ApplicationInstance extends InstallableInstance {
      * @param application a {@link com.telefonica.euro_iaas.sdc.model.Application} object.
      * @param products a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance} object.
      * @param status a {@link com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status} object.
+     * @param vm the vm where the application is (or will be) installed
      */
     public ApplicationInstance(ApplicationRelease application,
-            List<ProductInstance> products, Status status) {
+            List<ProductInstance> products, Status status, VM vm, String vdc) {
         super(status);
         this.application = application;
         this.products = products;
+        setVm(vm);
+        setVdc(vdc);
     }
     /**
      * <p>Constructor for ApplicationInstance.</p>

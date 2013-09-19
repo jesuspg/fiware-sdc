@@ -40,4 +40,13 @@ public class NotInstalledProductsException extends Exception {
             + listProducts(products);
     }
 
+    /**
+     * @return the products
+     */
+    public List<ProductRelease> getProducts() {
+        return products;
+    }
+
+
+
 }

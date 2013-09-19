@@ -27,12 +27,13 @@ public interface ProductInstanceManager {
     /**
      * Install a list of products in a given vm.
      * @param vm the vm where  instance will be running in
+     * @param vdc the vdc where the instance will be installed
      * @param product the product to install
      * @param attributes the configuration
      *
      * @return the of installed product.
      */
-    ProductInstance install(VM vm, ProductRelease product,
+    ProductInstance install(VM vm, String vdc, ProductRelease product,
             List<Attribute> attributes)
         throws NodeExecutionException, AlreadyInstalledException;
 
@@ -80,11 +81,12 @@ public interface ProductInstanceManager {
 
     /**
      * Find the ProductInstance using the given id.
+     * @param vdc the vdc
      * @param id the productInstance identifier
      * @return the productInstance
      * @throws EntityNotFoundException if the product instance does not exists
      */
-    ProductInstance load(Long id) throws EntityNotFoundException;
+    ProductInstance load(String vdc, Long id) throws EntityNotFoundException;
 
     /**
      * Find the ProductInstance that match with the given criteria.

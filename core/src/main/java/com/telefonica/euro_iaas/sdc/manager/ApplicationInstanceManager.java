@@ -5,10 +5,11 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
-import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
+import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -44,7 +45,7 @@ public interface ApplicationInstanceManager {
      *  @throws NotInstalledProductsException if the needed products to install
      *  the application are not installed
      */
-    ApplicationInstance install(VM vm, List<ProductInstance> products,
+    ApplicationInstance install(VM vm, String vdc, List<ProductInstance> products,
             ApplicationRelease application, List<Attribute> configuration)
     throws NodeExecutionException, IncompatibleProductsException,
     AlreadyInstalledException, NotInstalledProductsException;
@@ -106,6 +107,17 @@ public interface ApplicationInstanceManager {
      *             if the product instance does not exists
      */
     ApplicationInstance load(Long id) throws EntityNotFoundException;
+
+    /**
+     * Find the ApplicationInstance that match with the given criteria.
+     * @param criteria the search criteria
+     * @return the applicationInstance
+     * @throws EntityNotFoundException if the application instance does not exists
+     * @throws NotUniqueResultException if there are more than a application that
+     * match with the given criteria
+     */
+    ApplicationInstance loadByCriteria(ApplicationInstanceSearchCriteria criteria)
+        throws EntityNotFoundException, NotUniqueResultException;
 
     /**
      * Retrieve all ApplicationInstance created in the system.

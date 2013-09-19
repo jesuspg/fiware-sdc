@@ -33,7 +33,7 @@ public class TaskManagerImpl implements TaskManager {
             task = taskDao.create(task);
             task.setHref(MessageFormat.format(
                     propertiesProvider.getProperty(TASK_BASE_URL),
-                    task.getId()));
+                    task.getId(), task.getVdc()));
             return task;
         } catch (InvalidEntityException e) {
             throw new SdcRuntimeException(e);
@@ -50,7 +50,7 @@ public class TaskManagerImpl implements TaskManager {
             task = taskDao.update(task);
             task.setHref(MessageFormat.format(
                     propertiesProvider.getProperty(TASK_BASE_URL),
-                    task.getId()));
+                    task.getId(), task.getVdc()));
             return task;
         } catch (InvalidEntityException e) {
             throw new SdcRuntimeException(e);
@@ -65,7 +65,7 @@ public class TaskManagerImpl implements TaskManager {
         Task task =  taskDao.load(id);
         task.setHref(MessageFormat.format(
                 propertiesProvider.getProperty(TASK_BASE_URL),
-                task.getId()));
+                task.getId(), task.getVdc()));
         return task;
     }
 
@@ -78,7 +78,7 @@ public class TaskManagerImpl implements TaskManager {
         String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);
         for (Task task : tasks) {
             task.setHref(MessageFormat.format(
-                    taskUrl, task.getId()));
+                    taskUrl, task.getId(), task.getVdc()));
         }
         return tasks;
     }

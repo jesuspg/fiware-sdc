@@ -52,29 +52,33 @@ public class ProductInstanceAsyncManagerImpl implements
      */
     @Async
     @Override
-    public void install(VM vm, ProductRelease product,
+    public void install(VM vm, String vdc, ProductRelease product,
             List<Attribute> attributes, Task task, String callback) {
         try {
             ProductInstance productInstance = productInstanceManager.install(
-                    vm, product, attributes);
+                    vm, vdc, product, attributes);
             updateSuccessTask(task, productInstance);
             LOGGER.info("Product " + product.getProduct().getName() + '-'
                     + product.getVersion() + " installed successfully");
         } catch (NodeExecutionException e) {
-            updateErrorTask(task, "The product " + product.getProduct().getName()
-                    + "-" + product.getVersion()
-                    + " can not be installed in" + vm + "due to a problem when"
-                    + " executing in node", e);
-        } catch (Throwable e) {
+            String errorMsg = "The product " + product.getProduct().getName()
+                        + "-" + product.getVersion()
+                        + " can not be installed in" + vm
+                        + "due to a problem when executing in node";
             ProductInstance instance = getInstaslledProduct(product, vm);
             if (instance != null) {
-                updateErrorTask(instance, task, "The product " + product.getProduct().getName()
-                        + "-" + product.getVersion()
-                        + " can not be installed in" + vm, e);
+                updateErrorTask(instance, task, errorMsg, e);
+             } else {
+                updateErrorTask(task, errorMsg, e);
+            }
+        } catch (Throwable e) {
+            String errorMsg = "The product " + product.getProduct().getName()
+                    + "-" + product.getVersion() + " can not be installed in" + vm;
+            ProductInstance instance = getInstaslledProduct(product, vm);
+            if (instance != null) {
+                updateErrorTask(instance, task, errorMsg, e);
             } else {
-                updateErrorTask(task, "The product " + product.getProduct().getName()
-                        + "-" + product.getVersion()
-                        + " can not be installed in" + vm, e);
+                updateErrorTask(task, errorMsg, e);
             }
         } finally {
             notifyTask(callback, task);
@@ -194,8 +198,8 @@ public class ProductInstanceAsyncManagerImpl implements
      * {@inheritDoc}
      */
     @Override
-    public ProductInstance load(Long id) throws EntityNotFoundException {
-        return productInstanceManager.load(id);
+    public ProductInstance load(String vdc, Long id) throws EntityNotFoundException {
+        return productInstanceManager.load(vdc, id);
     }
 
     /**
@@ -225,9 +229,10 @@ public class ProductInstanceAsyncManagerImpl implements
         String piResource = MessageFormat.format(
                 propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
                 productInstance.getId(), // the id
-                productInstance.getVM().getHostname(), // the hostname
-                productInstance.getVM().getDomain(), // the domain
-                productInstance.getProduct().getProduct().getName()); // the product
+                productInstance.getVm().getHostname(), // the hostname
+                productInstance.getVm().getDomain(), // the domain
+                productInstance.getProduct().getProduct().getName(),
+                productInstance.getVdc()); // the product
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
@@ -244,9 +249,10 @@ public class ProductInstanceAsyncManagerImpl implements
         String piResource = MessageFormat.format(
                 propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
                 productInstance.getId(), // the id
-                productInstance.getVM().getHostname(), // the hostname
-                productInstance.getVM().getDomain(), // the domain
-                productInstance.getProduct().getProduct().getName()); // the product
+                productInstance.getVm().getHostname(), // the hostname
+                productInstance.getVm().getDomain(), // the domain
+                productInstance.getProduct().getProduct().getName(),
+                productInstance.getVdc()); // the product
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }

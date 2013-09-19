@@ -21,7 +21,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
  * @author Sergio Arroyo
  *
  */
-@Path("/task")
+@Path("/vdc/{vdc}/task")
 @Component
 @Scope("request")
 public class TaskResourceImpl implements TaskResource {
@@ -37,8 +37,9 @@ public class TaskResourceImpl implements TaskResource {
     @Override
     public List<Task> findAll(Integer page, Integer pageSize, String orderBy,
             String orderType, List<TaskStates> states, String resource,
-            String owner, Date fromDate, Date toDate) {
+            String owner, Date fromDate, Date toDate, String vdc) {
         TaskSearchCriteria criteria = new TaskSearchCriteria();
+        criteria.setVdc(vdc);
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);

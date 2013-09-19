@@ -24,6 +24,8 @@
             <tx:method name="updateTask" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>
             <!-- Other methods use the default transaction settings (see below) -->
             <tx:method name="*" rollback-for="NodeExecutionException"/>
+            <tx:method name="update" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>
+            <tx:method name="create" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>
         </tx:attributes>
     </tx:advice>
 
@@ -45,11 +47,18 @@
         <aop:advisor advice-ref="txAdvice" pointcut-ref="bootstrapOperation" />
     </aop:config>
 
-<!--
     <aop:config>
         <aop:pointcut id="managerOperation"
             expression="execution(* com.telefonica.euro_iaas.sdc..*Manager.*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="managerOperation" />
     </aop:config>
--->
+
+    <aop:config>
+        <aop:pointcut id="propertiesOperation"
+            expression="execution(* com.telefonica.euro_iaas.sdc..*SystemPropertiesProvider.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="propertiesOperation" />
+    </aop:config>
+
+
+
 </beans>

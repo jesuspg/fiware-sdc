@@ -63,6 +63,7 @@ public interface TaskResource {
             @QueryParam("result") String resource,
             @QueryParam("owner") String owner,
             @QueryParam("fromDate") Date fromDate,
-            @QueryParam("toDate") Date toDate);
+            @QueryParam("toDate") Date toDate,
+            @PathParam("vdc") String vdc);
 
 }

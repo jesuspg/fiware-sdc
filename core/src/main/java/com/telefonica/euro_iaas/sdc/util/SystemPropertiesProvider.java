@@ -1,5 +1,7 @@
 package com.telefonica.euro_iaas.sdc.util;
 
+import java.util.Properties;
+
 /**
  * <p>PropertiesProvider interface.</p>
  *
@@ -69,4 +71,17 @@ public interface SystemPropertiesProvider {
      * @return a {@link java.lang.String} object.
      */
     Integer getIntProperty(String key);
+
+    /**
+     * Persist the configuration properties in the SystemConfiguration namespace.
+     * @param configuration the properties to store∫
+     */
+    void setProperties(Properties configuration);
+
+    /**
+     * Find all system configuration properties.
+     * @return
+     */
+    Properties loadProperties();
+
 }

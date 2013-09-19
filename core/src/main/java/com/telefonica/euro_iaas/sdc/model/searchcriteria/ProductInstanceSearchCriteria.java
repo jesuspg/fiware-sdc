@@ -20,6 +20,10 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     private VM vm;
 
     /**
+     * The vdc where the product is installed.
+     */
+    private String vdc;
+    /**
      * The status of the application (<i>this criteria return a list
      * of entities<i>).
      */
@@ -48,11 +52,12 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
             String orderBy, String orderType, VM vm, Status status,
-            ProductRelease product) {
+            ProductRelease product, String vdc) {
         super(page, pageSize, orderBy, orderType);
         this.vm = vm;
         this.status = status;
         this.product = product;
+        this.vdc = vdc;
     }
 
     /**
@@ -62,11 +67,12 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param product
      */
     public ProductInstanceSearchCriteria(String orderBy, String orderType,
-            VM vm, Status status, ProductRelease product) {
+            VM vm, Status status, ProductRelease product, String vdc) {
         super(orderBy, orderType);
         this.vm = vm;
         this.status = status;
         this.product = product;
+        this.vdc = vdc;
     }
 
     /**
@@ -76,21 +82,23 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param product
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
-            VM vm, Status status, ProductRelease product) {
+            VM vm, Status status, ProductRelease product, String vdc) {
         super(page, pageSize);
         this.vm = vm;
         this.status = status;
         this.product = product;
+        this.vdc = vdc;
     }
 
     /**
      * @param vm
      */
     public ProductInstanceSearchCriteria(
-            VM vm, Status status, ProductRelease product) {
+            VM vm, Status status, ProductRelease product, String vdc) {
         this.vm = vm;
         this.status = status;
         this.product = product;
+        this.vdc = vdc;
     }
 
     /**
@@ -106,6 +114,20 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public void setVM(VM vm) {
         this.vm = vm;
+    }
+
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
 
     /**

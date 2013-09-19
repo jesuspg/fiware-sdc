@@ -39,7 +39,7 @@ public class ProductInstanceValidatorImplTest {
             null, product, null, Arrays.asList(release1));
 
     private ProductInstance pInstance = new ProductInstance(release1,
-            Status.INSTALLED, new VM("ip"));
+            Status.INSTALLED, new VM("ip"), "vdc");
     private Application app = new Application("app", "description", "type");
 
     private ApplicationRelease appRelease1 = new ApplicationRelease(
@@ -72,7 +72,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
 
         ProductInstance instance = new ProductInstance(
-                release1, Status.INSTALLED, new VM("ip"));
+                release1, Status.INSTALLED, new VM("ip"), "vdc");
         validator.validateInstall(instance);
         instance = new ProductInstance(5l);
         instance.setStatus(Status.ERROR);
@@ -89,7 +89,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
         validator.setApplicationInstanceDao(applicationInstanceDao);
         ProductInstance instance = new ProductInstance(
-                release1, Status.INSTALLED, new VM("ip"));
+                release1, Status.INSTALLED, new VM("ip"), "vdc");
         validator.validateUninstall(instance);
     }
 
@@ -104,7 +104,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
 
         ProductInstance instance = new ProductInstance(
-                release1, Status.INSTALLED, new VM("ip"));
+                release1, Status.INSTALLED, new VM("ip"), "vdc");
         validator.validateUninstall(instance);
     }
 
@@ -119,7 +119,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
 
         ProductInstance instance = new ProductInstance(
-                release2, Status.INSTALLED, new VM("ip"));
+                release2, Status.INSTALLED, new VM("ip"), "vdc");
 
         validator.validateUpdate(instance, release1);
     }
@@ -135,7 +135,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
 
         ProductInstance instance = new ProductInstance(
-                release1, Status.INSTALLED, new VM("ip"));
+                release1, Status.INSTALLED, new VM("ip"), "vdc");
 
         validator.validateUpdate(instance, release2);
     }
@@ -151,7 +151,7 @@ public class ProductInstanceValidatorImplTest {
         validator.setFsmValidator(fsmValidator);
 
         ProductInstance instance = new ProductInstance(
-                release2, Status.INSTALLED, new VM("ip"));
+                release2, Status.INSTALLED, new VM("ip"), "vdc");
 
         validator.validateUpdate(instance, release1);
     }

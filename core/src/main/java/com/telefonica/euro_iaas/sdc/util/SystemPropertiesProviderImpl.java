@@ -14,7 +14,7 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
     private String namespace;
     private PropertiesProvider propertiesProvider;
 
-    private Properties loadProperties() {
+    public Properties loadProperties() {
         return propertiesProvider.load(namespace);
     }
 
@@ -31,6 +31,14 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
     @Override
     public Integer getIntProperty(String key) {
         return Integer.parseInt(getProperty(key));
+    }
+
+    /**
+     * @ø
+     */
+    @Override
+    public void setProperties(Properties configuration) {
+        propertiesProvider.store(configuration, namespace);
     }
 
     /**
@@ -51,6 +59,5 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
     public void setPropertiesProvider(PropertiesProvider propertiesProvider) {
         this.propertiesProvider = propertiesProvider;
     }
-
 
 }
