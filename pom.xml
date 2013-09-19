@@ -6,12 +6,12 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 
     <scm>
-        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.5.0/trunk</connection>
-        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.5.0/trunk</developerConnection>
-        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-1.5.0/Configurador_de_Aplicaciones</url>
+        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.5.1/trunk</connection>
+        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/sdc-server-1.5.1/trunk</developerConnection>
+        <url>http://wikis.hi.inet/boi/index.php/Configurador_de_Aplicaciones/tags/sdc-server-1.5.1/Configurador_de_Aplicaciones</url>
     </scm>
     <developers>
         <developer>

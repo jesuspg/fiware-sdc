@@ -14,7 +14,7 @@ script "Tomcat stop" do
   user "root"
   cwd "/tmp"
   code <<-EOH
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
+  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
   if [ -f /opt/apache-tomcat/bin/shutdown.sh ] 
   then 
   /opt/apache-tomcat/bin/shutdown.sh

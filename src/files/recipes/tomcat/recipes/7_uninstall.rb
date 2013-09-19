@@ -9,20 +9,22 @@
 # All rights reserved - Do Not Redistribute
 
 
-script "Tomcat stop" do
-  interpreter "bash"
-  user "root"
-  cwd "/tmp"
-  code <<-EOH
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
-  if [ -f /opt/apache-tomcat/bin/shutdown.sh ] 
-  then 
-  /opt/apache-tomcat/bin/shutdown.sh
-  fi 
- EOH
-end
+#script "Tomcat stop" do
+#  interpreter "bash"
+#  user "root"
+#  cwd "/tmp"
+#  code <<-EOH
+#  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
+#  if [ -f /opt/apache-tomcat/bin/shutdown.sh ] 
+#  then 
+#  /opt/apache-tomcat/bin/shutdown.sh
+#  fi 
+# EOH
+#end
 
-script "uninstall_tomcat7.0.16" do
+include_recipe "tomcat::tomcat_stop"
+
+script "uninstall_tomcat7.0.22" do
   interpreter "bash"
   user "root"
   cwd "/opt"

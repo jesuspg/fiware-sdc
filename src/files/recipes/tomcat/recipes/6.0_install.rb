@@ -8,7 +8,7 @@
 #
 # All rights reserved - Do Not Redistribute
 
-script "install_tomcat6.0.16" do
+script "install_tomcat6.0.33" do
   interpreter "bash"
   user "root"
   cwd node["tomcat6.0"]["base_install"] 
@@ -17,10 +17,10 @@ script "install_tomcat6.0.16" do
   then
   echo "Already installed"
   else 
-  wget http://apache.rediris.es/tomcat/tomcat-6/v6.0.32/bin/apache-tomcat-6.0.32.tar.gz
-  gunzip apache-tomcat-6.0.32.tar.gz
-  tar xvf apache-tomcat-6.0.32.tar
-  mv apache-tomcat-6.0.32 apache-tomcat
+  wget --user root --password temporal http://109.231.82.11/webdav/product/tomcat/6/apache-tomcat-6.0.33.tar.gz
+  gunzip apache-tomcat-6.0.33.tar.gz
+  tar xvf apache-tomcat-6.0.33.tar
+  mv apache-tomcat-6.0.33 apache-tomcat
   fi
   EOH
 end
@@ -30,7 +30,7 @@ script "Tomcat start" do
   user "root"
   cwd "/tmp"
   code <<-EOH
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
+  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
   if [ -d /opt/apache-tomcat ]
   then
   /opt/apache-tomcat/bin/startup.sh

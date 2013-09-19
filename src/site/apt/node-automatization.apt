@@ -1,0 +1,54 @@
+Adding a node to the SDC Server automatically
+
+* Prerequisites
+
+The base image is built on a Debian squeeze (October 2010 ) from flexiscale. 
+To apply this procedure to any other Linux distribution these instructions may change.
+The image is called chefnodebaseimage in flexiscale.com eod@tid.es
+
+** Image preparation 
+
+Next we specify the steps to prepare the base image to be cloned in order to get nodes in an automatic way into the SDC Server domain:
+
+1)Generate a server in flexiscale (Debian Squeeze 8ctober 2010)
+
+2)ssh into the new machine and change the root password to root/temporal
+
+3)Install apt-get update apt-get install dos2unis and apt-get install sudo
+
+4)Install the sdc-client into the node
+4.1) Install java (apt-get install sun-java6-jre)
+4.2) Install tomcat 7 in /opt/sdc-client/server
+(wget http://apache.rediris.es/tomcat/tomcat-7/v7.0.22/bin/apache-tomcat-7.0.22.tar.gz)
+4.3) Let us remove the remaining apache-tomcat-7.0.22.tar
+4.4) Modify the server.xml from the apache installed modifying the following ports
+Shutdown port from 8005 to 9005
+Listening port from 8080 to 9990
+Port 8009 to 9009
+4.5)Modify catalina.sh inserting this line at the beginning of the catalina.sh
+JAVA_OPTS="$JAVA_OPTS -Djava.net.preferIPv4Stack=true"
+4.6)mkdir /opt/sdc-client/deployment/ and ftp sdc-client.xml and the corresponding war
+4.7)cp /opt/sdc-client/deployment/sdc-client.xml /opt/sdc-client/server/conf/Catalina/localhost
+
+5)Prepare the tomcat init script
+5.1)Ftp the tomcat init script to /etc/init.d
+5.2)chmod 7555 /etc/initd/tomat
+5.3)dos2unix tomcat
+5.4) in /etc/init.d we execute update-rc.d tomcat defaults
+
+6)Chef client installation
+6.1)Ft validation.pem client.rn and the install_scripot_XXX.sh to /tmp
+6.2)chmod 777 *
+6.3)./install_scripot_XXX.sh 
+6.4)Remember to add http://109.231.82.12:4000 as the chef server url
+6.5)cp /tmp/validation-pem /etc/chef
+
+7)Init script to hange the hostname
+7.1)FTP newhostname script to /etc/init.d
+7.2)chmod 755 /etc/init.d/newhstname
+7.3)dos2unix newhostname
+7.4)update-rc.d newhostname defaults (from /etc/init.d)
+
+8)We shutdown the machine and we build an image. Image ready
+
+

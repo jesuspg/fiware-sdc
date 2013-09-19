@@ -27,31 +27,34 @@ script "restore_tomcat7.0" do
 end
 
 
-script "Tomcat stop" do
-  interpreter "bash"
-  user "root"
-  cwd "/tmp"
-  code <<-EOH
-  sleep 10
-  if [ -f /opt/apache-tomcat/bin/shutdown.sh ]
-  then
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
-  /opt/apache-tomcat/bin/shutdown.sh
-  fi
-  sleep 10
-  EOH
-end
+include_recipe "tomcat::tomcat_stop"
+include_recipe "tomcat::tomcat_start"
 
-script "Tomcat start" do
-  interpreter "bash"
-  user "root"
-  cwd "/tmp"
-  code <<-EOH
-  sleep 10
-  if [ -f /opt/apache-tomcat/bin/startup.sh ] 
-  then
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre 
-  /opt/apache-tomcat/bin/startup.sh
-  fi 
-  EOH
-end
+#script "Tomcat stop" do
+#  interpreter "bash"
+#  user "root"
+#  cwd "/tmp"
+#  code <<-EOH
+#  sleep 10
+#  if [ -f /opt/apache-tomcat/bin/shutdown.sh ]
+#  then
+#  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
+#  /opt/apache-tomcat/bin/shutdown.sh
+#  fi
+#  sleep 10
+#  EOH
+#end
+
+#script "Tomcat start" do
+#  interpreter "bash"
+#  user "root"
+#  cwd "/tmp"
+#  code <<-EOH
+#  sleep 10
+#  if [ -f /opt/apache-tomcat/bin/startup.sh ] 
+#  then
+#  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
+#  /opt/apache-tomcat/bin/startup.sh
+#  fi 
+#  EOH
+#end

@@ -1,0 +1,65 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          newhostname
+# Required-Start:    $time
+# Required-Stop:
+# Should-Start:      glibc
+# Default-Start:     2 3 4 5 
+# Default-Stop:      0 1 6
+# Short-Description: Set hostname based on /etc/hostname
+# Description:       Read the machines hostname from /etc/hostname, and
+#                    update the kernel value with this value.  If
+#                    /etc/hostname is empty, the current kernel value
+#                    for hostname is used.  If the kernel value is
+#                    empty, the value 'localhost' is used.
+### END INIT INFO
+
+PATH=/sbin:/bin
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+do_start () {
+      seconds=`date +%s`
+      HOSTNAME=chefnode
+      NEWHOSTNAME="$HOSTNAME"-"$seconds"
+      mv /etc/hostname /etc/hostname2
+      sed -e 's/debian/'$NEWHOSTNAME'/g' /etc/hostname2 > /etc/hostname
+      rm /etc/hostname2
+      hostname "$(cat /etc/hostname)"
+	
+	mv /etc/hosts /etc/hosts2
+      sed -e 's/debian/'$NEWHOSTNAME'/g' /etc/hosts2 > /etc/hosts
+      rm /etc/hosts2
+}
+
+#do_status () {
+#	HOSTNAME=$(hostname)
+#	if [ "$HOSTNAME" ] ; then
+#		return 0
+#	else
+#		return 4
+#	fi
+#}
+
+case "$1" in
+  start|"")
+	do_start
+	;;
+  restart|reload|force-reload)
+	echo "Error: argument '$1' not supported" >&2
+	exit 3
+	;;
+  stop)
+	# No-op
+	;;
+  status)
+	# No-op
+	;;
+  *)
+	echo "Usage: newhostname [start]" >&2
+	exit 3
+	;;
+esac
+
+:

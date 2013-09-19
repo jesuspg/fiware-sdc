@@ -16,7 +16,7 @@ script "download_files" do
   code <<-EOH
     mkdir -p /tmp/sdc/
     cd /tmp/sdc/
-    wget -nd -r -l 1 --user #{node[:sdc][:webdav_user]} --password #{node[:sdc][:webdav_password]} #{node[:sdc][:webdav_url]}applications/sdc/#{node[:sdc][:version]}/#{node[:sdc][:action]}/
+    wget -nd -r -l 1 --user #{node[:sdc][:webdav_user]} --password #{node[:sdc][:webdav_password]} #{node[:sdc][:webdav_url]}application/sdc/#{node[:sdc][:version]}/#{node[:sdc][:action]}/
   EOH
 end
 

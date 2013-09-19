@@ -15,7 +15,7 @@ script "Tomcat stop" do
   code <<-EOH
   if [ -f /opt/apache-tomcat/bin/shutdown.sh ]
   then
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
+  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
   /opt/apache-tomcat/bin/shutdown.sh
   fi
   EOH
@@ -43,7 +43,7 @@ script "Tomcat start" do
   code <<-EOH
   if [ -f /opt/apache-tomcat/bin/startup.sh ]
   then
-  export JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre
+  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/jre
   /opt/apache-tomcat/bin/startup.sh
   fi
   EOH

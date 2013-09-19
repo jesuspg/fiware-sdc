@@ -106,8 +106,8 @@ public class InitDbBootstrap implements ServletContextListener {
                 Application sdc = new Application(
                         "sdc", "this application", "war");
 
-                sdc.addAttribute(new Attribute("tomcat_home", "/opt/apache-tomcat-7.0.12",
-                "the url where CATALINA is installed"));
+               // sdc.addAttribute(new Attribute("tomcat_home", "/opt/apache-tomcat",
+               // "the url where CATALINA is installed"));
                 sdc.addAttribute(new Attribute("application_context", "sdc",
                         "the context where the application will be deployed"));
 
@@ -135,13 +135,13 @@ public class InitDbBootstrap implements ServletContextListener {
                         Arrays.asList(postgres84,tomcat6), null);
                 sdc030 = applicationReleaseDao.create(sdc030);
 
-                ApplicationRelease sdc040 = new ApplicationRelease(
+               /* ApplicationRelease sdc040 = new ApplicationRelease(
                         "1.1.0", "Add update functionallity", null, sdc,
                         Arrays.asList(postgres84, tomcat5),
                         Arrays.asList(sdc030));
-                sdc040 = applicationReleaseDao.create(sdc040);
+                sdc040 = applicationReleaseDao.create(sdc040);*/
 
-                sdc030.addTransitableRelease(sdc040);
+                //sdc030.addTransitableRelease(sdc040);
                 sdc030 = applicationReleaseDao.update(sdc030);
 
 
