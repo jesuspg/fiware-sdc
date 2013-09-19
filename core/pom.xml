@@ -5,7 +5,7 @@
     <artifactId>sdc-server-core</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-core</name>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
         </dependency>
         <!-- Webedav java client Sardine -->
         <dependency>

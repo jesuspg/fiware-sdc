@@ -5,19 +5,19 @@
     <artifactId>sdc-server-rest-api</artifactId>
     <packaging>war</packaging>
     <name>sdc-server-rest-api</name>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-core</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
         </dependency>
         <!--JERSEY DEPENDENCIES -->
         <dependency>
