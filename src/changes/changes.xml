@@ -93,7 +93,7 @@
                (see https://jira.tid.es/browse/CLAUDIA-867 for more information)
             </action>
         </release>
-        <release version="1.4.0" date="2011-10-03"
+        <release version="1.5.0" date="2011-10-03"
         description="Make Integration Tests for the Catalog Management">
             <action dev="jmms392" type="update">
                 Make Integration Tests for the Catalog Management
@@ -101,6 +101,28 @@
                  https://jira.tid.es/browse/CLAUDIA-910
                  https://jira.tid.es/browse/CLAUDIA-911
                  https://jira.tid.es/browse/CLAUDIA-919
+                 for more information)
+            </action>
+        </release>
+        <release version="1.5.1" date="2011-10-13"
+        description="Incorporating aautomatically a node into de SDC-Server domain">
+            <action dev="jmms392" type="update">
+                Make Integration Tests for the Catalog Management
+                (see https://jira.tid.es/browse/CLAUDIA-812
+                 for more information)
+            </action>
+        </release>
+        <release version="1.6.0" date="2011-10-21"
+        description="Bugs correction regarding Catalog Management">
+            <action dev="jmms392" type="update">
+                Delete Product/Application Releases. The cookbook of the 
+                product/application is always removed when a product/application release is removed
+                (https://jira.tid.es/browse/CLAUDIA-1164
+                 for more information)
+            </action>
+            <action dev="jmms392" type="update">
+                Change of the Installable URL to be uploaded/removed into the WebDav
+                (https://jira.tid.es/browse/CLAUDIA-1163
                  for more information)
             </action>
         </release>

@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 public interface ApplicationInstanceService
     extends BaseInstallableService<ApplicationInstance> {

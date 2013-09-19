@@ -11,9 +11,11 @@ import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 /**
  * Default ApplicationInstanceSyncService implementation using active waiting

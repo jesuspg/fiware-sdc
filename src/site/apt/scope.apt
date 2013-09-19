@@ -2,6 +2,8 @@ Scope
 
 * Limitations
 
+  *  The SDC operates over VMs that are identified by the ip and VDC to which they belong.
+  
   * No assynchrony mechanism are implemented (note that operations could take many time) (<<working to fix it>>).
 
   * We provides basic calls (install, uninstall, configure, etc.) but no combinations of them.
@@ -21,7 +23,16 @@ Scope
     So far, the recipe version is not used, for instance, when sdc deletes a product release or an application release
     it deletes the whole recipe instead of deleting an specific recipe version 
   
-  * [30.09.2011] 
+  * [30.09.2011] The catalog Management should be tested again. So far it is better to perform the
+    Catalog Management manually since it is not synchronized with the recipes.
+  
+  * [18.10.2011] Recipes and Installables should be managed as a product/application Release.
+    However the recipes are handled in chef as product/applications this auses a problem
+    when deleting a product/application release from the Catalog Management since this
+    will delete the whole cookbook for the application/product.
+    Solution: When deleting cookbooks it should be tested that the version 
+    to be deleted is the last one of this product/application otherwise the recipe is not deleted
+    [To be implemented]
 
 * Risks
 

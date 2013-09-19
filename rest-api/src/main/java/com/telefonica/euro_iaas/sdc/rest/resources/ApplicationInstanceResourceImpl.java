@@ -25,6 +25,7 @@ import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -34,6 +35,7 @@ import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
@@ -246,10 +248,31 @@ public class ApplicationInstanceResourceImpl implements
             VM host = new VM(ip != null ? ip : "", hostname != null ? hostname
                     : "", domain != null ? domain : "");
             criteria.setVm(host);
+            
+            /*if (productName != null && productVersion != null){
+            	ProductInstance productInstance = new ProductInstance(
+            			new ProductRelease (
+            					productVersion, 
+            					null,
+            					null,
+            					new Product(
+            							productName,
+            							null),
+            					null, 
+            		            null), 
+            		    null, 
+            		    host,
+            			null);
+            	criteria.setProduct(productInstance);
+            }*/
         }
+        
         criteria.setVdc(vdc);
         criteria.setStatus(status);
         criteria.setApplicationName(applicationName);
+        
+          
+        
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);

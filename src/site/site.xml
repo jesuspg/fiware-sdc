@@ -24,6 +24,7 @@
             <item name="Configuration" href="configuration.html"/>
             <item name="Troubleshooting" href="troubleshooting.html"/>
             <item name="Products Life Cycle" href="life-cycle.html"/>
+            <item name="Node automatization" href="node-automatization.html"/>
         </menu>
 
         <menu name="Downloads">

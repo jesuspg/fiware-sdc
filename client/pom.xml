@@ -5,13 +5,13 @@
     <artifactId>sdc-client</artifactId>
     <packaging>jar</packaging>
     <name>sdc-client</name>
-    <version>1.5.1</version>
+    <version>1.6.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <version>1.5.1</version>
+            <version>1.6.0</version>
         </dependency>
         <!--JERSEY DEPENDENCIES -->
         <dependency>

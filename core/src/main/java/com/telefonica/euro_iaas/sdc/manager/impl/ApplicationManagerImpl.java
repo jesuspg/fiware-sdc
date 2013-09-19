@@ -135,7 +135,12 @@ implements ApplicationManager {
     	throws ApplicationReleaseNotFoundException, 
     	ApplicationReleaseStillInstalledException{
     	
+    	boolean lastRelease = false;
     	validator.validateDelete(applicationRelease);
+    	
+    	//Check if the current application Release is the last one associated to
+    	//the application so you can delete the recipe completely
+    	lastRelease = isLastApplicationRelease(applicationRelease);
     	
     	deleteApplicationReleaseBBDD (applicationRelease);
     	
@@ -146,7 +151,8 @@ implements ApplicationManager {
     	
     	deleteInstallable(releaseDto);
     	
-    	deleteRecipe(releaseDto.getName(), releaseDto.getVersion());
+    	if (lastRelease)
+    		deleteRecipe(releaseDto.getName(), releaseDto.getVersion());
     }
     
     
@@ -207,6 +213,30 @@ implements ApplicationManager {
     private void deleteApplicationReleaseBBDD (
     		ApplicationRelease applicationRelease){
    		applicationReleaseDao.remove(applicationRelease);
+    }
+    
+    private boolean isLastApplicationRelease (ApplicationRelease applicationRelease)
+    throws ApplicationReleaseNotFoundException{
+    	boolean lastRelease = false;
+    	ApplicationReleaseSearchCriteria criteria 
+    		= new ApplicationReleaseSearchCriteria();
+    	
+    	Application application;
+		try {
+			application = applicationDao.load(applicationRelease.getApplication().getName());
+		} catch (EntityNotFoundException e) {
+			throw new ApplicationReleaseNotFoundException(applicationRelease);
+		}
+    	
+		criteria.setApplication(application);
+    	
+    	List<ApplicationRelease> applicationReleases = 
+    			applicationReleaseDao.findByCriteria(criteria);
+    	
+    	if (applicationReleases.size()==1)
+    		lastRelease = true;
+    	
+    	return lastRelease;
     }
     
     private ApplicationRelease updateApplicationReleaseBBDD (

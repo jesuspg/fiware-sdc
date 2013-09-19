@@ -16,6 +16,7 @@ import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
+import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
@@ -23,10 +24,13 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.model.Application;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
@@ -126,8 +130,13 @@ public class ProductManagerImpl extends BaseInstallableManager
     	ProductReleaseStillInstalledException, 
     	ProductReleaseInApplicationReleaseException{
     	
+    	boolean lastRelease = false;
     	validator.validateDelete(productRelease);
        	
+    	//Check if the current application Release is the last one associated to
+    	//the application so you can delete the recipe completely
+    	lastRelease = isLastProductRelease(productRelease);
+    	
     	ReleaseDto releaseDto = new ReleaseDto();
     	releaseDto.setName(productRelease.getProduct().getName());
     	releaseDto.setVersion(productRelease.getVersion());
@@ -137,7 +146,8 @@ public class ProductManagerImpl extends BaseInstallableManager
     	
     	deleteInstallable(releaseDto);
     	
-    	deleteRecipe(releaseDto.getName(), releaseDto.getVersion());
+    	if (lastRelease)
+    		deleteRecipe(releaseDto.getName(), releaseDto.getVersion());
     }
     
     /**
@@ -194,6 +204,31 @@ public class ProductManagerImpl extends BaseInstallableManager
     	productReleaseDao.remove(productRelease);	
     }
     
+    private boolean isLastProductRelease (ProductRelease productRelease)
+    	throws ProductReleaseNotFoundException{
+    	
+    	boolean lastRelease = false;
+    	ProductReleaseSearchCriteria criteria 
+    		= new ProductReleaseSearchCriteria();
+    	    	
+    	Product product;
+    	try {
+    		product = productDao.load(productRelease.getProduct().getName());
+    	} catch (EntityNotFoundException e) {
+    		throw new ProductReleaseNotFoundException();
+    	}
+    	    	
+    	criteria.setProduct(product);
+    	    	
+    	List<ProductRelease> productReleases = 
+    			productReleaseDao.findByCriteria(criteria);
+    	    	
+    	if (productReleases.size()==1)
+    		lastRelease = true;
+    	    	
+    	return lastRelease;
+   }
+   
     private ProductRelease updateProductReleaseBBDD (
     	ProductRelease productRelease) throws ProductReleaseNotFoundException, 
     	InvalidProductReleaseException {

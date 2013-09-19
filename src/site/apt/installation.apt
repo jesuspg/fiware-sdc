@@ -8,9 +8,9 @@ Installation guide
 
 ** Tomcat installation
 
-  The choosen version during the development process will be 7.X.X
+  The chosen version during the development process will be 7.X.X
   {{{http://apache.rediris.es/tomcat/tomcat-7/v7.0.12/bin/apache-tomcat-7.0.12.zip}
-  availbale on the website}}.
+  available on the website}}.
   You only need to extract the files and run the startup and shutdown scripts.
 
 +-------
@@ -35,8 +35,115 @@ Installation guide
    <<$CATALINA_HOME/lib>>.
 
 
-** Chef installation
+** WebDav installation
+    
+   These instructions are based on {{{http://www.debian-administration.org/articles/285}Web Dav how to install}}
 
+   
+   The webdav  is the component of the SDC-Server that stores the installables of
+   the available software (products and applications) to be installed in the nodes.
+   
+   Make sure Apache2 is installed and the optional DAV modules are enabled
+
++-------
+apt-get install apache2
+a2enmod dav_fs
+a2enmod dav
++----------   
+   
+   Create a Virtual host in /etc/apache2/sites-available/sdc.com
+
++-------
+<VirtualHost *:80>
+        ServerAdmin webmaster@example.com
+        ServerName 109.231.82.11
+
+        DocumentRoot /opt/sdc/webdav
+        <Directory /opt/sdc/webdav>
+                Options Indexes MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+</VirtualHost>
++----------  
+
+   We need now to create the directory where all the files managed by our WebDav 
+   are going to be:
+
++-------
+mkdir /home/srw/example.com
+chown www-data /home/srw/example.com
+a2ensite sdc.com
+apache2ctl configtest
+/etc/init.d/apache2 reload
++-------
+   
+   Now we are interested in setup a Basic Authentication mechanism in our WebDav
+   server. Enable the authentication module and create the password file
+
++-------
+a2enmod auth_digest
+htdigest -c /etc/apache2/passwd/passwords webdav-example root
++-------
+   
+   You will be prompted to introduce the password: <<temporal>>
+   
+   After, we introduce the WebDAV section into the Virtual host:
+   
++-------
+# Note Alias goes to our DocumentRoot.
+Alias /webdav /opt/sdc/webdav
+
+# But we apply different settings
+<Location /webdav>
+    Dav on
+    #AuthType Digest
+    #AuthName "webdav-example"
+    #AuthUserFile  /opt/sdc/digest-password
+    #Require valid-user
+    AuthType Basic
+    AuthName "SDC Server Webdav"
+    AuthUserFile /etc/apache2/passwd/passwords
+    Require user root
+ </Location>
+
++-------
+
+   We reconfigure apache and reload it
+
++-------
+apache2ctl configtest
+/etc/init.d/apache2 reload
++-------
+
+   In order to test if the webdav has been configured in a good way, we use
+   the cadaver webdav client
+
++-------
+apt-get install cadaver
+cadaver http://109.231.82.11/webdav/
++-------
+    
+    Finally, create the directories <<product>> and <<application>> in the webdav.
+    This directories will be visible trough the url:
+
++-------
+http://109.231.82.11/webdav/product
+http://109.231.82.11/webdav/application
++-------
+   
+   
+   Useful References:
+   
+   {{{http://www.debian-administration.org/articles/285}Web Dav how to install}}
+   
+   {{{http://httpd.apache.org/docs/2.0/mod/mod_dav.html}mod_dav apache2 module}}
+   
+   {{{ http://www.webdav.org/cadaver/}Cadaver Website}}
+  
+
+** Chef installation
 *** Using the script
 
   Simply {{{./install_chef_knife.sh}download}} the script and execute it .
@@ -135,6 +242,36 @@ knife client list
   The last step is configure the system to log into Chef Server. To do that, the only
   thing shall do is specify where is located the pem file containig the Chef Server's
   private key (by default /opt/sdc/private.pem).
+
+  It is also needed to provide the installables in the WebDav repository installed.
+  So far, due to the fact that the recipes done are in a testing mode, the WebDav structure
+  associated to each product/application should be done manually:
+  
+  Tomcat need the following structure 
+
++----
+  product/tomcat/7/apache-tomcat-7.0.22.tar.gz
+  product/tomcat/6/apache-tomcat-6.0.33.tar.gz
+  product/tomcat/5.5/apache-tomcat-5.5.34.tar.gz
++----
+
+  and this structure can be done leaving the installables in /tmp directory and using 
+  the <<cadaver>> WebDav client ( <<cadaver http://109.231.82.11/webdav>> command
+  <<root/temporal>> and with <<mkdir>> and <<put>> commands)
+  
+  Sdc need the following structure (proceed in a similar way as with tomcat)
+  
++----
+  application/sdc/1.0.0/install/postgresql-8.4-702.jdbc4.jar
+  application/sdc/1.0.0/install/sdc-postgres.sh
+  application/sdc/1.0.0/install/sdc-server-rest-api.war
+  application/sdc/1.0.0/uninstall/uninstall-sdc-postgres.sh
++----
+
+  Postgresql does not need any structure since the installatin/uninstallation
+  is done via apt-get taking the packages directy form debian repo.
+  
+
 
   Finally, run Tomcat and enjoy!!!
 

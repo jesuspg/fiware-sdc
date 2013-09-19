@@ -16,6 +16,7 @@ import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 /**
  * Default implementation of ApplicationInstanceService
  * @author Sergio Arroyo
@@ -64,6 +65,7 @@ public class ApplicationInstanceServiceImpl extends AbstractInstallableService
         String url = getBaseHost() + MessageFormat.format(
                 ClientConstants.BASE_APPLICATION_INSTANCE_PATH, vdc);
         WebResource wr = getClient().resource(url);
+        
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams = addParam(searchParams, "hostname", hostname);
         searchParams = addParam(searchParams, "domain", domain);
@@ -74,6 +76,7 @@ public class ApplicationInstanceServiceImpl extends AbstractInstallableService
         searchParams = addParam(searchParams, "orderType", orderType);
         searchParams = addParam(searchParams, "status", status);
         searchParams = addParam(searchParams, "applicationName", applicationName);
+
 
         return wr.queryParams(searchParams).accept(getType()).get(
                 ApplicationInstances.class);

@@ -6,7 +6,9 @@ import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 /**
  * Provides the operations to work with application instances in a synchronous
@@ -80,6 +82,6 @@ public interface ApplicationInstanceSyncService extends
     List<ApplicationInstance> findAll(String hostname, String domain,
             String ip, Integer page, Integer pageSize, String orderBy,
             String orderType, List<Status> status, String vdc,
-            String applicationNAme);
+            String applicationName);
 
 }

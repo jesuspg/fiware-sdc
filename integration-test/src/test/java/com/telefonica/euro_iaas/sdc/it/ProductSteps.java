@@ -11,6 +11,7 @@ import com.telefonica.euro_iaas.sdc.it.util.ProductUtils;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
@@ -30,6 +31,8 @@ public class ProductSteps {
     
     private ProductRelease existedProduct;
     private ProductInstance existedProductInstance;
+    
+    private List<ProductRelease> productReleases;
     
     //ADD PRODUCT
     @Given("^OS:$")
@@ -118,6 +121,7 @@ public class ProductSteps {
     			"version: " + existedProduct.getVersion());
     }
     
+   
     @When("^I delete \"([^\"]*)\" \"([^\"]*)\"$")
     public void deleteProductToCatalog(String productName, String version)
     throws Exception {
@@ -132,4 +136,39 @@ public class ProductSteps {
     	//Assert.assertNull(manager.load(productName, version));
     }
     
+    //DELETE COOKBOOK
+   /* @Given("^default attributes  Product Releases:$")
+    public void getProductReleasesAttributes(Table table) {
+        attributes = new ArrayList<Attribute>();
+        for (List<String> row: table.rows()) {
+            attributes.add(new Attribute(row.get(0), row.get(1), row.get(2)));
+        }
+    }*/
+    @Given("^following Products Releases added to the SDC Catalog:$")
+    public void addProductReleases(Table table) {
+        productReleases = new ArrayList<ProductRelease>();
+        ProductUtils manager = new ProductUtils();
+        
+        for (List<String> row: table.rows()) {
+            addedProduct = manager.add(row.get(0), row.get(1), row.get(2),
+                    "", attributes, supportedOS, transitableReleases);
+        }
+        
+    }
+    
+    @When("^I delete product release \"([^\"]*)\" \"([^\"]*)\" and \"([^\"]*)\" from the catalog$")
+    public void deleteProductReleaseCookbook(String productName, String version1,
+    		String version2)
+    throws Exception {
+        ProductUtils manager = new ProductUtils();
+        manager.delete(productName, version1);
+        manager.delete(productName, version2);
+    }
+    
+    @Then("^There is not any product release cookbook \"([^\"]*)\" in the chef-server$")
+    public void assertDeletedProductReleaseCookbook(String productName) 
+    		throws ResourceNotFoundException {
+    	//ProductUtils manager = new ProductUtils(); 
+    	//Assert.assertNull(manager.load(productName, version));
+    }
 }

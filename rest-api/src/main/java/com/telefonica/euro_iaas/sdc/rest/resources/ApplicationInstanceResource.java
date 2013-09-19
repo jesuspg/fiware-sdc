@@ -17,6 +17,7 @@ import com.telefonica.euro_iaas.sdc.exception.IncompatibleProductsException;
 import com.telefonica.euro_iaas.sdc.exception.NotInstalledProductsException;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 
