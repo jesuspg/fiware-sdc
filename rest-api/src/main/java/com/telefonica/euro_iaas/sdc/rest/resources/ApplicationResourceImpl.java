@@ -25,14 +25,16 @@ import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledEx
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationReleaseDto;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriteria;
@@ -50,20 +52,21 @@ public class ApplicationResourceImpl implements ApplicationResource {
 
     @InjectParam("applicationManager")
     private ApplicationManager applicationManager;
-    
+
     private ApplicationResourceValidator validator;
     private static Logger LOGGER = Logger.getLogger("ApplicationResourceImpl");
-    
+
     /**
      * {@inheritDoc}
-     * @throws InvalidApplicationReleaseUpdateRequestException 
-     * @throws InvalidMultiPartRequestException 
+     * @throws InvalidApplicationReleaseUpdateRequestException
+     * @throws InvalidMultiPartRequestException
+     * @throws InvalidProductReleaseException 
      */
     @Override
     public ApplicationRelease insert(MultiPart multiPart)
     	throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException, 
-    	InvalidMultiPartRequestException {
+    	InvalidMultiPartRequestException, InvalidProductReleaseException {
     	
     	validator.validateInsert(multiPart);
     	
@@ -71,9 +74,12 @@ public class ApplicationResourceImpl implements ApplicationResource {
     	File installable = null;
     	    	
     	// First part contains a ApplicationReleaseDto object
-    	ApplicationReleaseDto applicationReleaseDto =
-   			(ApplicationReleaseDto)multiPart.getBodyParts().get(0).getEntity();
-    	       
+   		ApplicationReleaseDto applicationReleaseDto =
+   				(ApplicationReleaseDto)multiPart.getBodyParts().get(0)
+   					.getEntityAs(ApplicationReleaseDto.class);
+    	LOGGER.log(Level.INFO," Insert ApplicationRelease " + applicationReleaseDto.getApplicationName() +
+    			" version " + applicationReleaseDto.getVersion());
+    	      
     	Application application = new Application (
     			applicationReleaseDto.getApplicationName(),
     			applicationReleaseDto.getApplicationDescription(),
@@ -89,29 +95,29 @@ public class ApplicationResourceImpl implements ApplicationResource {
                 application,
                 applicationReleaseDto.getSupportedProducts(),
                 applicationReleaseDto.getTransitableReleases() );
-		
-		try{
-			cookbook = File.createTempFile("cookbook-" + 
-					applicationReleaseDto.getApplicationName() + "-" +
-					applicationReleaseDto.getVersion() + ".tar", ".tmp");  
-			
-	    	installable = File.createTempFile("installable-" + 
-	    			applicationReleaseDto.getApplicationName() + "-" +
-	    			applicationReleaseDto.getVersion() + ".tar", ".tmp");
-	    	
-	        cookbook = 
-	        	getFileFromBodyPartEntity ((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), cookbook);
-	        installable = 
-	        	getFileFromBodyPartEntity ((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity() ,installable);
-	       
-		} catch (IOException e){
-			throw new RuntimeException(e);	
-		}
-        return applicationManager.insert(applicationRelease, cookbook, 
-				installable);
+
+        try{
+            cookbook = File.createTempFile("cookbook-" +
+                    applicationReleaseDto.getApplicationName() + "-" +
+                    applicationReleaseDto.getVersion() + ".tar", ".tmp");
+
+            installable = File.createTempFile("installable-" +
+                    applicationReleaseDto.getApplicationName() + "-" +
+                    applicationReleaseDto.getVersion() + ".tar", ".tmp");
+
+            cookbook =
+                getFileFromBodyPartEntity ((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), cookbook);
+            installable =
+                getFileFromBodyPartEntity ((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity() ,installable);
+
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        return applicationManager.insert(applicationRelease, cookbook,
+                installable);
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -193,7 +199,7 @@ public class ApplicationResourceImpl implements ApplicationResource {
 
     /**
      * {@inheritDoc}
-     * @throws  
+     * @throws
      */
     @Override
     public void delete(String name, String version) 
@@ -203,100 +209,113 @@ public class ApplicationResourceImpl implements ApplicationResource {
     	   	
     	LOGGER.log(Level.INFO,"Delete ApplicationRelease. ApplicationName : " 
     			+ name
-    			+ " AppliationVersion : " + version);
+    			+ " ApplicationVersion : " + version);
     	
-    	Application application = new Application();
-    	application.setName(name);
-    	
-    	ApplicationRelease applicationRelease = new ApplicationRelease();
-    	applicationRelease.setApplication(application);
-    	applicationRelease.setVersion(version);
-		
-    	try {
-			applicationManager.load(application, version);
+    	Application application;
+		try {
+			application = applicationManager.load(name);
 		} catch (EntityNotFoundException e) {
 			throw new ApplicationReleaseNotFoundException(e);
 		}
 		
+		ApplicationRelease applicationRelease ;
+    	try {
+    		applicationRelease = applicationManager.load(application, version);
+		} catch (EntityNotFoundException e) {
+			throw new ApplicationReleaseNotFoundException(e);
+		}
+		       	
 		applicationManager.delete(applicationRelease);
-    }
-    
+   }
+
     /**
      * {@inheritDoc}
      */
     @Override
-	public ApplicationRelease update(String name, String version, 
-		MultiPart multiPart) throws ApplicationReleaseNotFoundException, 
+    public ApplicationRelease update(MultiPart multiPart) 
+    	throws ApplicationReleaseNotFoundException,
         InvalidApplicationReleaseException, ProductReleaseNotFoundException,
         InvalidApplicationReleaseUpdateRequestException,
         InvalidMultiPartRequestException{
         
-    	ReleaseDto releaseDto = new ReleaseDto();
-    	releaseDto.setName(name);
-    	releaseDto.setVersion(version);
+    	ApplicationReleaseDto applicationReleaseDto =
+   				(ApplicationReleaseDto)multiPart.getBodyParts().get(0)
+   					.getEntityAs(ApplicationReleaseDto.class);
     	
-      	validator.validateUpdate(releaseDto, multiPart);
+    	LOGGER.log(Level.INFO," Update ApplicationRelease " + 
+    		applicationReleaseDto.getApplicationName() +
+    		" version " + applicationReleaseDto.getVersion());
+    	
+    	Application application = new Application();
+    	ApplicationRelease applicationRelease = new ApplicationRelease ();
+    	
+    	application.setName(applicationReleaseDto.getApplicationName());
+    	
+    	if (applicationReleaseDto.getApplicationDescription() != null)
+    		application.setDescription(applicationReleaseDto.getApplicationDescription());
+    	
+    	if (applicationReleaseDto.getApplicationType()!= null)
+    		application.setType(applicationReleaseDto.getApplicationType());
+    	
+    	for (int i=0; applicationReleaseDto.getPrivateAttributes().size() < 1; i++)
+            application.addAttribute(applicationReleaseDto.getPrivateAttributes().get(i));
+
+        applicationRelease.setApplication(application);
+
+        if (applicationReleaseDto.getVersion() !=null)
+            applicationRelease.setVersion(applicationReleaseDto.getVersion());
+
+        //ReleaseNotes
+        if (applicationReleaseDto.getReleaseNotes() != null)
+            applicationRelease.setReleaseNotes(applicationReleaseDto.getReleaseNotes());
+
+        //PrivateAttributes
+        if (applicationReleaseDto.getPrivateAttributes() != null)
+            applicationRelease.setPrivateAttributes(applicationReleaseDto.getPrivateAttributes());
+
+        //SupportedProducts
+        if (applicationReleaseDto.getSupportedProducts() != null)
+           applicationRelease.setSupportedProducts(applicationReleaseDto.getSupportedProducts());
+
+        //TransitableRelease
+        if (applicationReleaseDto.getTransitableReleases() != null)
+            applicationRelease.setTransitableReleases(applicationReleaseDto.getTransitableReleases());
+
+  	   	
+        validator.validateUpdate(multiPart);
       	
       	File cookbook = null;
        	File installable = null;
-      	ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto();
-       	ApplicationRelease applicationRelease = new ApplicationRelease();
-       	Application application = new Application ();
-              	
-       	applicationReleaseDto =
-       			(ApplicationReleaseDto)multiPart.getBodyParts().get(0).getEntity();
        		
-       	application.setName(applicationReleaseDto.getApplicationName());
-       	application.
-       		setDescription(applicationReleaseDto.getApplicationDescription());
-       	application.setType(applicationReleaseDto.getApplicationType());
-        	
-       	for (int i=0; applicationReleaseDto.getPrivateAttributes().size() < i; i++)
-       		application.addAttribute(applicationReleaseDto.getPrivateAttributes().get(i));
-    		
-       	applicationRelease.setVersion(applicationReleaseDto.getVersion());
-       	applicationRelease.setReleaseNotes(applicationReleaseDto.getReleaseNotes());
-       	applicationRelease.
-       		setPrivateAttributes(applicationReleaseDto.getPrivateAttributes());
-       	applicationRelease.
-       		setSupportedProducts(applicationReleaseDto.getSupportedProducts());
-       	applicationRelease.
-       		setTransitableReleases(applicationReleaseDto.getTransitableReleases());
-        
        	try {
 			cookbook = File.createTempFile("cookbook-" + 
 				applicationReleaseDto.getApplicationName() + "-" +
 				applicationReleaseDto.getVersion() + ".tar", ".tmp");
+			
+			cookbook = 
+				getFileFromBodyPartEntity (
+					(BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), 
+		        	cookbook); 
 		} catch (IOException e) {
 			throw new SdcRuntimeException(e);
 		}  
        	
-		cookbook = 
-           	getFileFromBodyPartEntity (
-        		(BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), 
-        		cookbook); 
-       	
+		
        	try {
 			installable = File.createTempFile("installable-" + 
 			   	applicationReleaseDto.getApplicationName() + "-" +
 			   	applicationReleaseDto.getVersion() + ".tar", ".tmp");
+	       	installable = 
+	       		getFileFromBodyPartEntity (
+	       			(BodyPartEntity) multiPart.getBodyParts().get(2).getEntity() 
+	            	,installable);     	
 		} catch (IOException e) {
 			throw new SdcRuntimeException(e);
 		}  
-       	installable = 
-           	getFileFromBodyPartEntity (
-           		(BodyPartEntity) multiPart.getBodyParts().get(2).getEntity() 
-        	    ,installable);
        	
-       	try {
-			applicationManager.load(application, version);
-		} catch (EntityNotFoundException e) {
-			throw new ApplicationReleaseNotFoundException(e);
-		}
-		
        	return applicationManager.update(applicationRelease,cookbook,installable); 		
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -314,33 +333,52 @@ public class ApplicationResourceImpl implements ApplicationResource {
             throws EntityNotFoundException {
         return load(name, version).getTransitableReleases();
     }
-    
+
     private File getFileFromBodyPartEntity(BodyPartEntity bpe, File file )
     {
         try {
-        	InputStream input = bpe.getInputStream();
-        	
-        	OutputStream out=new FileOutputStream(file);
-          
-        	byte[] buf =new byte[1024];
-        	int len;
-        	while((len=input.read(buf))>0){
-        		out.write(buf,0,len);
-        	}
-        	out.close();
-        	input.close();
-                  
+            InputStream input = bpe.getInputStream();
+
+            OutputStream out=new FileOutputStream(file);
+
+            byte[] buf =new byte[1024];
+            int len;
+            while((len=input.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            input.close();
+
         }catch(IOException e){
-        	LOGGER.log(Level.SEVERE, "An error was produced : "+ e.toString());
-        	throw new SdcRuntimeException ();
+            LOGGER.log(Level.SEVERE, "An error was produced : "+ e.toString());
+            throw new SdcRuntimeException ();
         }
-        return file;      
+        return file;
     }
-    
+
     /**
      * @param validator the validator to set
      */
     public void setValidator(ApplicationResourceValidator validator) {
         this.validator = validator;
+    }
+
+
+    @Override
+    public List<ApplicationRelease> findAllReleases(Integer page,
+            Integer pageSize, String orderBy, String orderType) {
+        ApplicationReleaseSearchCriteria criteria =
+                new ApplicationReleaseSearchCriteria();
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
+        return applicationManager.findReleasesByCriteria(criteria);
     }
 }

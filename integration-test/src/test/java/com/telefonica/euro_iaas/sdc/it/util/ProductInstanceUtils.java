@@ -12,6 +12,7 @@ import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedExcepti
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
@@ -120,6 +121,40 @@ public class ProductInstanceUtils {
         return service.load(vdc, id);
     }
 
+    /**
+     * Load all the product matching the query.
+     * @param hostname
+     *            the host name where the product is installed (<i>nullable</i>)
+     * @param domain
+     *            the domain where the machine is (<i>nullable</i>)
+     * @param ip
+     *            the ip of the host (<i>nullable</i>)
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query
+     *            (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by
+     *            default <i>nullable</i>)
+     * @param status
+     *            the status the product (<i>nullable</i>)
+     * @param vdc defines the vdc where the products are installed
+     *            (<i>not nullable</i>).
+     * @return the products
+     */
+    public List<ProductInstance> loadAll(String hostname, String domain, 
+    		String ip, Integer page, Integer pageSize, String orderBy, 
+    		String orderType, Status status, String vdc, String productName) {
+        service =
+                client.getProductInstanceSyncService(getProperty(BASE_URL),
+                        getProperty(MIME_TYPE));
+        return service.findAll(hostname, domain, ip, page, pageSize, orderBy, 
+        		orderType, status, vdc, productName);
+
+    }
     /**
      * Install the product if not previously installed
      * @param productName

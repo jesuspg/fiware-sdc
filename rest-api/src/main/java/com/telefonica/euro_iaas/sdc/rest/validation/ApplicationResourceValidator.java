@@ -20,9 +20,8 @@ public interface ApplicationResourceValidator {
      * @throws InvalidApplicationReleaseUpdateRequestException 
      * if all the objects are null
      */
-    void validateUpdate (ReleaseDto releaseDto, MultiPart multipart) 
-    	throws InvalidMultiPartRequestException,
-    	InvalidApplicationReleaseUpdateRequestException;
+    void validateUpdate (MultiPart multipart) 
+    	throws InvalidMultiPartRequestException;
 
     /**
      * Verify if the ApplicationRelase could be inserted

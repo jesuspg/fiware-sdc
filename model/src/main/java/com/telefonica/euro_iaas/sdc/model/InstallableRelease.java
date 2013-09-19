@@ -28,11 +28,13 @@ public class InstallableRelease {
     @XmlTransient
     private Long id;
 
-    @SuppressWarnings("unused")
+   //commented out due to problems in updateProductRelease in Catalog Management
+    /*@SuppressWarnings("unused")
     @Version
     @XmlTransient
     private Long v;
-
+	*/
+    
     @Column(length=128)
     private String version;
 

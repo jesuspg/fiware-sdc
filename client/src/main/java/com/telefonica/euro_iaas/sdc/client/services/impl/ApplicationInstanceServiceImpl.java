@@ -57,19 +57,23 @@ public class ApplicationInstanceServiceImpl extends AbstractInstallableService
      * {@inheritDoc}
      */
     @Override
-    public List<ApplicationInstance> findAll(Integer page, Integer pageSize,
+    public List<ApplicationInstance> findAll(String hostname, String domain,
+            String ip, Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status, String vdc,
             String applicationName) {
         String url = getBaseHost() + MessageFormat.format(
-                ClientConstants.APPLICATION_INSTANCE_PATH, vdc);
+                ClientConstants.BASE_APPLICATION_INSTANCE_PATH, vdc);
         WebResource wr = getClient().resource(url);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams.add("page", page.toString());
-        searchParams.add("pageSize", pageSize.toString());
-        searchParams.add("orderBy", orderBy);
-        searchParams.add("orderType", orderType);
-        searchParams.add("status", status.toString());
-        searchParams.add("applicationName", applicationName);
+        searchParams = addParam(searchParams, "hostname", hostname);
+        searchParams = addParam(searchParams, "domain", domain);
+        searchParams = addParam(searchParams, "ip", ip);
+        searchParams = addParam(searchParams, "page", page);
+        searchParams = addParam(searchParams, "pageSize", pageSize);
+        searchParams = addParam(searchParams, "orderBy", orderBy);
+        searchParams = addParam(searchParams, "orderType", orderType);
+        searchParams = addParam(searchParams, "status", status);
+        searchParams = addParam(searchParams, "applicationName", applicationName);
 
         return wr.queryParams(searchParams).accept(getType()).get(
                 ApplicationInstances.class);

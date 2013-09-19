@@ -26,5 +26,26 @@ public class ClientConstants {
     public static final String BASE_TASK_PATH = "/vdc/{0}/task";
     public static final String TASK_PATH = BASE_TASK_PATH + "/{1}";
 
+    public static final String BASE_PRODUCT_PATH = "/catalog/product";
+    public static final String BASE_APPLICATION_PATH = "/catalog/application";
+
+    public static final String PRODUCT_PATH = BASE_PRODUCT_PATH + "/{0}/";
+    public static final String APPLICATION_PATH = BASE_APPLICATION_PATH + "/{0}/";
+
+    public static final String BASE_APPLICATION_RELEASE_PATH =
+            BASE_APPLICATION_PATH + "/{0}/release/";
+    public static final String BASE_PRODUCT_RELEASE_PATH =
+            BASE_PRODUCT_PATH + "/{0}/release/";
+
+    public static final String PRODUCT_RELEASE_PATH =
+            BASE_PRODUCT_RELEASE_PATH + "{1}";
+    public static final String APPLICATION_RELEASE_PATH =
+            BASE_APPLICATION_RELEASE_PATH + "{1}";
+
+    public static final String ALL_PRODUCT_RELEASE_PATH =
+            BASE_PRODUCT_PATH + "/release";
+    public static final String ALL_APPLICATION_RELEASE_PATH =
+            BASE_APPLICATION_PATH + "/release";
+
 
 }

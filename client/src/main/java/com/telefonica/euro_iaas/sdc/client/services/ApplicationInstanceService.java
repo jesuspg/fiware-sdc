@@ -59,7 +59,8 @@ public interface ApplicationInstanceService
      * @param applicationName the applicationName
      * @return the retrieved application instances.
      */
-    List<ApplicationInstance> findAll(Integer page, Integer pageSize,
+    List<ApplicationInstance> findAll(String hostname, String domain,
+            String ip, Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status, String vdc,
             String applicationName);
 

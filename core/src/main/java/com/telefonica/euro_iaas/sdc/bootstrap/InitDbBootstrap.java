@@ -132,14 +132,13 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 ApplicationRelease sdc030 = new ApplicationRelease(
                         "1.0.0", "Add configuration functionallity", null, sdc,
-                        Arrays.asList(postgres84, postgres83, tomcat5,
-                                tomcat6, tomcat7), null);
+                        Arrays.asList(postgres84,tomcat6), null);
                 sdc030 = applicationReleaseDao.create(sdc030);
 
                 ApplicationRelease sdc040 = new ApplicationRelease(
                         "1.1.0", "Add update functionallity", null, sdc,
-                        Arrays.asList(postgres84, postgres83,
-                                tomcat6, tomcat7), Arrays.asList(sdc030));
+                        Arrays.asList(postgres84, tomcat5),
+                        Arrays.asList(sdc030));
                 sdc040 = applicationReleaseDao.create(sdc040);
 
                 sdc030.addTransitableRelease(sdc040);

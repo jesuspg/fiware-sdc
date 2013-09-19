@@ -94,11 +94,12 @@ public class ApplicationInstanceSyncServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<ApplicationInstance> findAll(Integer page, Integer pageSize,
+    public List<ApplicationInstance> findAll(String hostname, String domain,
+            String ip, Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status, String vdc,
             String applicationName) {
-        return applicationInstanceService.findAll(page, pageSize, orderBy,
-                orderType, status, vdc, applicationName);
+        return applicationInstanceService.findAll(hostname, domain, ip, page,
+                pageSize, orderBy, orderType, status, vdc, applicationName);
     }
 
     /**

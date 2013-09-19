@@ -3,13 +3,17 @@ package com.telefonica.euro_iaas.sdc.client;
 import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceSyncService;
+import com.telefonica.euro_iaas.sdc.client.services.ApplicationService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
+import com.telefonica.euro_iaas.sdc.client.services.ProductService;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationInstanceSyncServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.ApplicationServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.TaskServiceImpl;
 
 public class SDCClient {
@@ -123,4 +127,24 @@ public class SDCClient {
                 getTaskService(baseUrl, mediaType, maxWaiting, waitingPeriod));
     }
 
+
+    /**
+     * Get the service to work with products and product releases in the catalog.
+     * @param baseUrl the urle where the SDC is
+     * @param mediaType the media type (application/xml or application/json)
+     * @return the service.
+     */
+    public ProductService getProductService(String baseUrl, String mediaType){
+        return new ProductServiceImpl(client, baseUrl, mediaType);
+    }
+    
+    /**
+     * Get the service to work with applications and application releases in the catalog.
+     * @param baseUrl the url where the SDC is
+     * @param mediaType the media type (application/xml or application/json)
+     * @return the service.
+     */
+    public ApplicationService getApplicationService(String baseUrl, String mediaType){
+        return new ApplicationServiceImpl(client, baseUrl, mediaType);
+    }
 }

@@ -38,18 +38,22 @@
         <property name="osDao" ref="osDao"/>
         <property name="productDao" ref="productDao"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="validator" ref="productReleaseValidator"/>
     </bean>
 
     <bean id="applicationManager" lazy-init="true" parent="baseInstallableManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationManagerImpl">
         <property name="applicationDao" ref="applicationDao"/>
         <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="productDao" ref="productDao"/>
+        <property name="validator" ref="applicationReleaseValidator"/>
     </bean>
 
      <bean id="baseInstallableManager" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
         <property name="commandExecutor" ref="commandExecutor"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"/>
         <property name="fileDao" ref="fileDao"/>
     </bean>
 
@@ -123,11 +127,13 @@
     <bean id="productReleaseValidator" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
             <property name="productInstanceDao" ref="productInstanceDao"/>
+            <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
     </bean>
     <bean id="applicationReleaseValidator" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.validation.ApplicationReleaseValidatorImpl">
             <property name="productReleaseDao" ref="productReleaseDao"/>
             <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+            <property name="productDao" ref="productDao"/>
     </bean>
 
 </beans>

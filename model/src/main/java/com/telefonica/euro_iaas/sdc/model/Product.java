@@ -36,12 +36,14 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @XmlTransient
     private Long id;
-
-    @SuppressWarnings("unused")
+    
+    //commented out due to problems in updateProductRelease in Catalog Management
+    /*@SuppressWarnings("unused")
     @Version
     @XmlTransient
     private Long v;
-
+	*/
+    
     @Column(unique=true, nullable=false, length=256)
     private String name;
     @Column(length=2048)

@@ -16,6 +16,12 @@ Scope
 
   * There is no mechanism to manage the transactions. It means, there is no way to
     J2EE and Chef run by its own (<<working to fix it>>).
+  
+  * [30.09.2011] The recipe version and the version corresponding to products and applications are not correlated.
+    So far, the recipe version is not used, for instance, when sdc deletes a product release or an application release
+    it deletes the whole recipe instead of deleting an specific recipe version 
+  
+  * [30.09.2011] 
 
 * Risks
 

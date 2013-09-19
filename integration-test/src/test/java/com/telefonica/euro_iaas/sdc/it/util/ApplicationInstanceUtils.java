@@ -48,7 +48,7 @@ public class ApplicationInstanceUtils {
                         getProperty(MIME_TYPE));
 
         ApplicationInstanceDto application = new ApplicationInstanceDto(
-                applicationName, version, new VM(ip), products );
+                applicationName, version, new VM(ip), products);
         return service.install(vdc, application);
     }
 
@@ -141,7 +141,8 @@ public class ApplicationInstanceUtils {
         service =
                 client.getApplicationInstanceSyncService(getProperty(BASE_URL),
                         getProperty(MIME_TYPE));
-        List<ApplicationInstance> instances = service.findAll(null, null,
+        List<ApplicationInstance> instances = service.findAll(
+                null, null, ip, null, null,
                 null, null, null, vdc, applicationName);
         if (!instances.isEmpty()) {
             instance = instances.iterator().next();

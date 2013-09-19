@@ -62,8 +62,12 @@ public class ProductRelease extends InstallableRelease {
      */
     public List<Attribute> getAttributes() {
         List<Attribute> attr = new ArrayList<Attribute>();
-        attr.addAll(getProduct().getAttributes());
-        attr.addAll(getPrivateAttributes());
+        if (getProduct().getAttributes() != null) {
+            attr.addAll(getProduct().getAttributes());
+        }
+        if (getPrivateAttributes() != null) {
+            attr.addAll(getPrivateAttributes());
+        }
         return attr;
     }
 

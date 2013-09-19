@@ -163,3 +163,17 @@ User Stories
     *** Test Criteria
 
   *  Execute the integration test and see the report
+  
+ * 1.4.0 Version
+ 
+ ** Integration tests for the Catalog Management
+    
+    See {{{https://jira.tid.es/browse/CLAUDIA-909}jira entry}}
+        {{{https://jira.tid.es/browse/CLAUDIA-910}jira entry}}
+        {{{https://jira.tid.es/browse/CLAUDIA-911}jira entry}}
+        {{{https://jira.tid.es/browse/CLAUDIA-919}jira entry}}
+   
+   *** Test Criteria
+
+  *  Perform Insert, Update and Deelete of product Release and Application Release
+  

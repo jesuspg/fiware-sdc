@@ -21,10 +21,12 @@ import com.telefonica.euro_iaas.sdc.exception.ApplicationReleaseStillInstalledEx
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 
 /**
@@ -35,11 +37,11 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
  */
 public interface ApplicationResource {
 
-	/**
+    /**
      * Insert the selected Application + version (ApplicationRelease)
      *
      * @param Multipart which includes
-     * @param applicationReleaseDto 
+     * @param applicationReleaseDto
      * @param The cookbook in a tar file
      * @param The set of installables requires fot the application to install/
      * /uninstall the product
@@ -49,12 +51,12 @@ public interface ApplicationResource {
      * @throws InvalidApplicationReleaseException if the Application
      *  Release is invalid due to either OS, Product or Product Release
      *  @throws ProductReleaseNotFoundException if any of the productRelease
-     *  the Application release depends on is not found 
+     *  the Application release depends on is not found
      *  @throws  InvalidMultiPartRequestException if the multipart object is null
-     *  or its size is different to three of if the parts are not filled with 
-     *  the right type of Object    
+     *  or its size is different to three of if the parts are not filled with
+     *  the right type of Object
      */
-    
+
     @POST
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -62,7 +64,7 @@ public interface ApplicationResource {
     ApplicationRelease insert(MultiPart multiPart)
     	throws AlreadyExistsApplicationReleaseException, 
     	InvalidApplicationReleaseException, ProductReleaseNotFoundException,
-    	InvalidMultiPartRequestException;
+    	InvalidMultiPartRequestException, InvalidProductReleaseException;
     
 	/**
      * Retrieve all applications available created in the system.
@@ -175,15 +177,15 @@ public interface ApplicationResource {
     @DELETE
     @Path("/{appName}/release/{version}")
     void delete(@PathParam("appName") String name,
-    		@PathParam("version") String version)
-        throws ApplicationReleaseNotFoundException, 
+            @PathParam("version") String version)
+        throws ApplicationReleaseNotFoundException,
         ApplicationReleaseStillInstalledException;
-    
+
     /**
      * Update the selected Application version (only he info in DB)
      *
      * @param Multipart which includes
-     * @param applicationReleaseDto 
+     * @param applicationReleaseDto
      * @param The cookbook in a tar file
      * @param The set of installables requires for the application to install/
      * /uninstall the product
@@ -198,13 +200,12 @@ public interface ApplicationResource {
     @PUT
     @Path("/{appName}/release/{version}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationRelease update(@PathParam("appName") String name,
-    		@PathParam("version") String version, MultiPart multipart)
-        throws ApplicationReleaseNotFoundException, 
+    ApplicationRelease update(MultiPart multipart)
+        throws ApplicationReleaseNotFoundException,
         InvalidApplicationReleaseException, ProductReleaseNotFoundException,
         InvalidApplicationReleaseUpdateRequestException,
         InvalidMultiPartRequestException;
-    
+
    /**
      * Retrieve the attributes for the selected application release. The result is
      * a merge between common attributes (of the application) and the private
@@ -241,5 +242,21 @@ public interface ApplicationResource {
              @PathParam("version") String version)
              throws EntityNotFoundException;
 
+    /**
+     * Find all possible transitions for a concrete release.
+     * It means, the different version of a product which are compatible with
+     * the given release.
+     * @param name the product Name
+     * @param version the product version
+     * @return the transitable releases.
+     * @throws EntityNotFoundException if the given release does not exists.
+     */
+    @GET
+    @Path("/release")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    List<ApplicationRelease> findAllReleases(@QueryParam("page") Integer page,
+            @QueryParam("pageSize") Integer pageSize,
+            @QueryParam("orderBy") String orderBy,
+            @QueryParam("orderType") String orderType);
 
 }

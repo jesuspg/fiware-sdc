@@ -15,8 +15,8 @@ public class ProductResourceValidatorImpl extends MultipartValidator
 	
 		validateMultipart(multiPart, ProductReleaseDto.class);
 	
-		ProductReleaseDto productReleaseDto =
-			(ProductReleaseDto)multiPart.getBodyParts().get(0).getEntity();
+		ProductReleaseDto productReleaseDto = 
+    			multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
 
 		if (!(releaseDto.getName().equals(productReleaseDto.getProductName())) &&
 		!(releaseDto.getVersion().equals(productReleaseDto.getVersion())))

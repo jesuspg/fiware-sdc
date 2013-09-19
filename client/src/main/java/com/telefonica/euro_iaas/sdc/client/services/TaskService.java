@@ -62,6 +62,22 @@ public interface TaskService {
             String owner, Date fromDate, Date toDate, String vdc);
 
     /**
+     * Retrieve all task for a given product.
+     * @param vdc
+     * @param productId
+     * @return
+     */
+    List<Task> findAllByProduct(String vdc, Long productId);
+
+    /**
+     * Retrieve all task for a given application.
+     * @param vdc
+     * @param applicationId
+     * @return
+     */
+    List<Task> findAllByApplication(String vdc, Long applicationId);
+
+    /**
      * Wait while the task is running.
      * @param url the url where the task is
      * @throws MaxTimeWaitingExceedException if the waiting takes more time than

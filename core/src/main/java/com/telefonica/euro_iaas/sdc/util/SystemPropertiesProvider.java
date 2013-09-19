@@ -50,7 +50,8 @@ public interface SystemPropertiesProvider {
     public final static String WEBDAV_FILE_URL = "webdavFileUrl";
     public final static String WEBDAV_USERNAME = "webdavUsername";
     public final static String WEBDAV_PASSWD = "webdavPassword";
-
+    public final static String WEBDAV_PRODUCT_BASEDIR = "webdavProductBaseDir";
+    public final static String WEBDAV_APPLICATION_BASEDIR = "webdavApplicationBasedir";
 
     public final static String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
     public final static String APPLICATION_INSTANCE_BASE_URL = "applicationInstanceBaseUrl";

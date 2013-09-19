@@ -65,8 +65,12 @@ public class ApplicationRelease extends InstallableRelease {
      */
     public List<Attribute> getAttributes() {
         List<Attribute> attr = new ArrayList<Attribute>();
-        attr.addAll(getApplication().getAttributes());
-        attr.addAll(getPrivateAttributes());
+        if (getApplication().getAttributes() != null) {
+            attr.addAll(getApplication().getAttributes());
+        }
+        if (getPrivateAttributes() != null) {
+            attr.addAll(getPrivateAttributes());
+        }
         return attr;
     }
 

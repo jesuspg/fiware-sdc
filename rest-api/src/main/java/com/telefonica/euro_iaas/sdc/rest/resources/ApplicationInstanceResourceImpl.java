@@ -233,12 +233,20 @@ public class ApplicationInstanceResourceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<ApplicationInstance> findAll(
-            Integer page, Integer pageSize, String orderBy,
+    public List<ApplicationInstance> findAll(String hostname, String domain,
+            String ip, Integer page, Integer pageSize, String orderBy,
             String orderType, List<Status> status, String vdc,
             String applicationName) {
         ApplicationInstanceSearchCriteria criteria =
             new ApplicationInstanceSearchCriteria();
+        Boolean validHost = !StringUtils.isEmpty(ip)
+                || (!StringUtils.isEmpty(domain) && !StringUtils
+                        .isEmpty(hostname));
+        if (validHost) {
+            VM host = new VM(ip != null ? ip : "", hostname != null ? hostname
+                    : "", domain != null ? domain : "");
+            criteria.setVm(host);
+        }
         criteria.setVdc(vdc);
         criteria.setStatus(status);
         criteria.setApplicationName(applicationName);

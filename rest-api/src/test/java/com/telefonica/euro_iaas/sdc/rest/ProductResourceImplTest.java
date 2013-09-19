@@ -15,50 +15,50 @@ public class ProductResourceImplTest {
     @Test
     public void testInsert() throws Exception {
 
-//         Client c = Client.create();
-//         WebResource service = c.resource(BASE_URI);
-//
-//         ProductReleaseDto productReleaseDto = new ProductReleaseDto();
-//         productReleaseDto.setProductName("yum");
-//         productReleaseDto.setProductDescription("yum 0.1.1 description");
-//         productReleaseDto.setVersion("0.1.1");
-//         productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
-//
-//         OS os = new OS("Debian def 5.2", "Debian def 5.2","5.2");
-//         List<OS> supportedOS =  Arrays.asList(os);
-//         productReleaseDto.setSupportedOS(supportedOS);
-//
-//
-//         Attribute privateAttribute = new Attribute("ssl_port",
-//            "8443", "The ssl listen port");
-//         Attribute privateAttributeII = new Attribute("port",
-//             "8080", "The listen port");
-//
-//         List<Attribute> privateAttributes =
-//             Arrays.asList(privateAttribute, privateAttributeII);
-//         productReleaseDto.setPrivateAttributes(privateAttributes);
-//
-//         //Second and third Multipart
-//         File recipes =
-//                 new File ("E:\\TID\\desarrollo\\doc\\files\\yum-0.1.1.tar");
-//         File installable =
-//                 //new File ("E:\\TID\\desarrollo\\doc\\files\\install_chef_client_package.sh");
-//                 new File ("E:\\TID\\desarrollo\\doc\\files\\installable-yum-0.1.1.tar");
-//
-//         byte[] bytesRecipes = getByteFromFile(recipes);
-//         byte[] bytesInstallable = getByteFromFile (installable);
-//
-//         // Construct a MultiPart with three body parts
-//         MultiPart multiPart = new MultiPart().
-//             bodyPart(new BodyPart(productReleaseDto, MediaType.APPLICATION_XML_TYPE)).
-//             bodyPart(new BodyPart(bytesRecipes, MediaType.APPLICATION_OCTET_STREAM_TYPE)).
-//            bodyPart(new BodyPart(bytesInstallable, MediaType.APPLICATION_OCTET_STREAM_TYPE));
-//
-//         // POST the request
-//         ClientResponse response = service.path("/").
-//             type("multipart/mixed").post(ClientResponse.class, multiPart);
-//         System.out.println("Response Status : " + response.getEntity(String.class));
-     }
+/*         Client c = Client.create();
+         WebResource service = c.resource(BASE_URI);
+
+         ProductReleaseDto productReleaseDto = new ProductReleaseDto();
+         productReleaseDto.setProductName("yum");
+         productReleaseDto.setProductDescription("yum 0.1.1 description");
+         productReleaseDto.setVersion("0.1.1");
+         productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
+
+         OS os = new OS("Debian def 5.2", "Debian def 5.2","5.2");
+         List<OS> supportedOS =  Arrays.asList(os);
+         productReleaseDto.setSupportedOS(supportedOS);
+
+
+         Attribute privateAttribute = new Attribute("ssl_port",
+            "8443", "The ssl listen port");
+         Attribute privateAttributeII = new Attribute("port",
+             "8080", "The listen port");
+
+         List<Attribute> privateAttributes =
+             Arrays.asList(privateAttribute, privateAttributeII);
+         productReleaseDto.setPrivateAttributes(privateAttributes);
+*/
+         //Second and third Multipart
+/*         File recipes =
+                 new File ("E:\\TID\\desarrollo\\doc\\files\\yum-0.1.1.tar");
+         File installable =
+                 new File ("E:\\TID\\desarrollo\\doc\\files\\install_chef_client_package.sh");
+                 new File ("E:\\TID\\desarrollo\\doc\\files\\installable-yum-0.1.1.tar");
+
+         byte[] bytesRecipes = getByteFromFile(recipes);
+         byte[] bytesInstallable = getByteFromFile (installable);
+*/
+         // Construct a MultiPart with three body parts
+/*         MultiPart multiPart = new MultiPart().
+             bodyPart(new BodyPart(productReleaseDto, MediaType.APPLICATION_XML_TYPE)).
+             bodyPart(new BodyPart(bytesRecipes, MediaType.APPLICATION_OCTET_STREAM_TYPE)).
+            bodyPart(new BodyPart(bytesInstallable, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+*/
+         // POST the request
+/*         ClientResponse response = service.path("/").
+             type("multipart/mixed").post(ClientResponse.class, multiPart);
+         System.out.println("Response Status : " + response.getEntity(String.class));
+*/     }
 
     public void testUpdate() throws Exception {
 

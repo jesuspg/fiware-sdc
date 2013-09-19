@@ -81,7 +81,9 @@ public class BaseInstallableManager {
 				releaseDto.getType(),
 				releaseDto.getName(),
 				releaseDto.getVersion());
-		        				
+		
+		System.out.println(webdavFileUrl);        
+		
 	    createWebDavDirectoryStructure(releaseDto);
 	    try {
 	       	fileDao.insertFile(webdavFileUrl, installable);
@@ -99,19 +101,19 @@ public class BaseInstallableManager {
 	   			"/" + releaseDto.getType() + "/" + releaseDto.getName() + "/");
 	    try {
 	    	if (!fileDao.directoryExists(
-	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    		"/" + releaseDto.getType() + "/",
 	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    		"/" + releaseDto.getType() + "/"
 	    		+ releaseDto.getName() + "/"))	    		
 	    			
 	        		fileDao.createDirectory(
-	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	        				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    				"/" + releaseDto.getType() + "/"
 	    				+ releaseDto.getName());
 	        else
 	        	LOGGER.log(Level.INFO,"Directory " + 
-	        		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	        			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	        		"/" + releaseDto.getType() + "/"
 	    			+ releaseDto.getName()	+ "/" + 
 	    			" already CREATED");	
@@ -121,7 +123,7 @@ public class BaseInstallableManager {
 	        	
 	    try {
 	      	if (!fileDao.directoryExists(
-	       		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	      			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	       		"/" + releaseDto.getType() + "/"
 	    		+ releaseDto.getName() + "/",
 	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
@@ -129,13 +131,13 @@ public class BaseInstallableManager {
 	       		+ releaseDto.getName() + "/"
 	       		+ releaseDto.getVersion() + "/"))
 	       			fileDao.createDirectory(
-	       				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	       					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	       				"/" + releaseDto.getType() + "/"
 	       				+ releaseDto.getName() + "/"
 	       				+ releaseDto.getVersion());	
 	       	else
 	       		LOGGER.log(Level.INFO,"Directory " + 
-	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	       				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    			"/" + releaseDto.getType() + "/"
 	        		+ releaseDto.getName() + "/"
 	        		+ releaseDto.getVersion()	+ 
@@ -155,7 +157,7 @@ public class BaseInstallableManager {
     	
     	try {
 	    	if (fileDao.directoryExists(
-	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    			"/" + releaseDto.getType() + "/"
 	    			+ releaseDto.getName() + "/"
 	    			+ releaseDto.getVersion() + "/", webdavFileUrl))	    		
@@ -163,7 +165,7 @@ public class BaseInstallableManager {
 	    		fileDao.delete(webdavFileUrl);
 	    	else
 	    		LOGGER.log(Level.INFO,"File " + 
-	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    			"/" + releaseDto.getType() + "/"
 					+ releaseDto.getName()	+ "/" + 
 					" does NOT exist");	
@@ -183,7 +185,7 @@ public class BaseInstallableManager {
 	    		
 	    try {	
 	    	if (fileDao.directoryExists(
-	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    			"/" + releaseDto.getType() + "/"
 					+ releaseDto.getName() + "/",
 					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
@@ -197,7 +199,7 @@ public class BaseInstallableManager {
 					+ releaseDto.getVersion() + "/");
 			else
 				LOGGER.log(Level.INFO,"Directory " + 
-					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+						propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 						"/" + releaseDto.getType() + "/"
 		    			+ releaseDto.getName() + "/"
 		    			+ releaseDto.getVersion() + "/" + 
@@ -205,7 +207,7 @@ public class BaseInstallableManager {
 	    } catch (SardineException e) {
 	    	if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)){
 	    		LOGGER.log(Level.INFO,
-					propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    				propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 						"/" + releaseDto.getType() + "/"
 						+ releaseDto.getName() + "/"
 						+ " does not EXIST");
@@ -216,9 +218,9 @@ public class BaseInstallableManager {
 	    	
 	    try {
 	    	if (fileDao.directoryExists(
-	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    			propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    		"/" + releaseDto.getType() + "/",
-	    	   		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
+	    		propertiesProvider.getProperty(WEBDAV_BASE_URL) +
 	    	   		"/" + releaseDto.getType() + "/"
 	    			+ releaseDto.getName() + "/"))
 					
@@ -227,7 +229,7 @@ public class BaseInstallableManager {
 					+ releaseDto.getName()+ "/");
 			else
 				LOGGER.log(Level.INFO,"Directory " + 
-					propertiesProvider.getProperty(WEBDAV_BASE_URL)
+						propertiesProvider.getProperty(WEBDAV_BASE_URL)
 	    				+ 	"/" + releaseDto.getType() + "/"
 	    				+ releaseDto.getName()	+ "/"
 	    				+ "  does NOT exist");

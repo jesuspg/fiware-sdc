@@ -1,5 +1,8 @@
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
+import static com.telefonica.euro_iaas.sdc.client.ClientConstants.APPLICATION_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -81,23 +84,24 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
             String orderType, List<TaskStates> states, String resource,
             String owner, Date fromDate, Date toDate, String vdc) {
         String url = getBaseHost()
-                + MessageFormat.format(ClientConstants.TASK_PATH, vdc);
+                + MessageFormat.format(ClientConstants.BASE_TASK_PATH, vdc);
         WebResource wr = getClient().resource(url);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams.add("page", page.toString());
-        searchParams.add("pageSize", pageSize.toString());
-        searchParams.add("orderBy", orderBy);
-        searchParams.add("orderType", orderType);
-        searchParams.add("status", resource);
-        searchParams.add("vdc", vdc);
-        searchParams.add("fromDate", fromDate.toString());
-        searchParams.add("toDate", toDate.toString());
-        searchParams.add("owner", owner);
-        searchParams.add("resource", resource);
-        for (TaskStates state : states) {
-            searchParams.add("states", state.toString());
+        searchParams = addParam(searchParams, "page", page);
+        searchParams = addParam(searchParams, "pageSize", pageSize);
+        searchParams = addParam(searchParams, "orderBy", orderBy);
+        searchParams = addParam(searchParams, "orderType", orderType);
+        searchParams = addParam(searchParams, "fromDate", fromDate);
+        searchParams = addParam(searchParams, "toDate", toDate);
+        searchParams = addParam(searchParams, "owner", owner);
+        searchParams = addParam(searchParams, "result", resource);
+        if (states != null) {
+            for (TaskStates state : states) {
+                searchParams = addParam(searchParams, "states", state);
+            }
         }
-        return wr.queryParams(searchParams).accept(getType()).get(Tasks.class);
+        return wr.queryParams(searchParams)
+                .accept(getType()).get(Tasks.class);
     }
 
     /**
@@ -128,6 +132,22 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      */
     private Boolean isTimeExceed(Date startedDate) {
         return (new Date().getTime() - startedDate.getTime()) > maxWaiting;
+    }
+
+    @Override
+    public List<Task> findAllByProduct(String vdc, Long productId) {
+        String resource = MessageFormat.format(getBaseHost()
+                + PRODUCT_INSTANCE_PATH, vdc, productId);
+        return findAll(null, null, null, null, null, resource, null, null,
+                null, vdc);
+    }
+
+    @Override
+    public List<Task> findAllByApplication(String vdc, Long applicationId) {
+        String resource = MessageFormat.format(getBaseHost()
+                + APPLICATION_INSTANCE_PATH, vdc, applicationId);
+        return findAll(null, null, null, null, null, resource, null, null,
+                null, vdc);
     }
 
 }

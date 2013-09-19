@@ -59,7 +59,7 @@ public interface ApplicationInstanceResource
      * @param hostname
      *            the host name where the product is installed (<i>nullable</i>)
      * @param domain
-     *            the domain where the machine is (<i>nullable</i>)
+     *            the domain where the machine is (<i>nullable if hostaname is null</i>)
      * @param ip
      *            the ip of the host (<i>nullable</i>)
      * @param page
@@ -78,7 +78,10 @@ public interface ApplicationInstanceResource
     @GET
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ApplicationInstance> findAll(@QueryParam("page") Integer page,
+    List<ApplicationInstance> findAll(@QueryParam("hostname") String hostname,
+            @QueryParam("domain") String domain,
+            @QueryParam("ip") String ip,
+            @QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("orderType") String orderType,

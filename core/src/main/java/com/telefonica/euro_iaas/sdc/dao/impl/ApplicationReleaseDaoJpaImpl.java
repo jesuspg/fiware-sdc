@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -10,7 +11,10 @@ import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Application;
+import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationReleaseSearchCriteria;
 /**
  * JPA based  implementation for ApplicationReleaseDao.
@@ -52,7 +56,14 @@ public class ApplicationReleaseDaoJpaImpl
             baseCriteria.add(Restrictions.eq(
                     "application", criteria.getApplication()));
         }
-        return setOptionalPagination(criteria, baseCriteria).list();
+        
+        List<ApplicationRelease> applications = setOptionalPagination(
+                criteria, baseCriteria).list();
+        
+        if (criteria.getProductRelease() != null) {
+        	applications = filterByProduct(applications, criteria.getProductRelease());
+        }
+        return applications;
     }
 
     /**
@@ -75,6 +86,24 @@ public class ApplicationReleaseDaoJpaImpl
                     keys, values);
         }
         return release;
+    }
+    
+    /**
+     * Filter the result by product release
+     *
+     * @param applications
+     * @param product Release
+     * @return
+     */
+    private List<ApplicationRelease> filterByProduct(
+            List<ApplicationRelease> applications, ProductRelease product) {
+        List<ApplicationRelease> result = new ArrayList<ApplicationRelease>();
+        for (ApplicationRelease application : applications) {
+            if (application.getSupportedProducts().contains(product)) {
+                result.add(application);
+            }
+        }
+        return result;
     }
 
 }

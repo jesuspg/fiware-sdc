@@ -78,7 +78,8 @@ public interface ApplicationManager {
      */
     ApplicationRelease insert(ApplicationRelease appRelase, File recipes, 
     	File installable) throws AlreadyExistsApplicationReleaseException, 
-    	InvalidApplicationReleaseException, ProductReleaseNotFoundException;
+    	InvalidApplicationReleaseException, ProductReleaseNotFoundException,
+    	InvalidProductReleaseException;
 
     /**
      * Delete the Application Release consisting on.
