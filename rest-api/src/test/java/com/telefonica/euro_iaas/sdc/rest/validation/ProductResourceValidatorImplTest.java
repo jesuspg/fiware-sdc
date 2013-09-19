@@ -41,7 +41,7 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
 		productReleaseDto.setVersion(releaseDto.getVersion());
 		productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
 		
-		OS so = new OS("Debiand", "5.5", "Description");
+		OS so = new OS("Debian", "95", "5.5", "Description");
 		List<OS> supportedOS = Arrays.asList(so);
 		productReleaseDto.setSupportedOS(supportedOS);
 		

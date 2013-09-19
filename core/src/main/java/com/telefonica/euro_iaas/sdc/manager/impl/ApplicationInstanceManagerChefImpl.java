@@ -5,6 +5,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.dao.ApplicationDao;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
@@ -16,6 +17,7 @@ import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
+import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -40,6 +42,7 @@ public class ApplicationInstanceManagerChefImpl extends
 
     private ApplicationInstanceValidator validator;
     private ApplicationInstanceDao applicationInstanceDao;
+    private ApplicationDao applicationDao;
 
     /**
      * {@inheritDoc}
@@ -52,7 +55,7 @@ public class ApplicationInstanceManagerChefImpl extends
     throws NodeExecutionException, IncompatibleProductsException,
     AlreadyInstalledException, NotInstalledProductsException {
         ApplicationInstance instance = getApplicationToInstall(application,
-                vm, vdc, products);
+                vm, vdc, products, configuration);
         Status previousStatus = instance.getStatus();
         try {
             validator.validateInstall(instance);
@@ -138,11 +141,37 @@ public class ApplicationInstanceManagerChefImpl extends
             applicationInstance.setStatus(Status.CONFIGURING);
             applicationInstance = applicationInstanceDao.update(applicationInstance);
 
+            VM vm = applicationInstance.getVm();
+
+            String backupRecipe = recipeNamingGenerator
+                    .getBackupRecipe(applicationInstance);
+            callChef(backupRecipe, vm);
+
+            String uninstallRecipe = recipeNamingGenerator
+                    .getUninstallRecipe(applicationInstance);
+            callChef(uninstallRecipe, vm);
+            
+            Application application = 
+            		applicationDao.load(applicationInstance.getApplication()
+            				.getApplication().getName());
+            application.setAttributes(configuration);
+            
+            applicationDao.update(application);
+            
+            ApplicationRelease applicationRelease = applicationInstance.getApplication();
+            applicationRelease.setApplication(application);
+            
             String recipe = recipeNamingGenerator
                     .getInstallRecipe(applicationInstance);
             // the application shall be installed over, at least, one product
             callChef(applicationInstance.getApplication().getApplication()
                     .getName(), recipe, applicationInstance.getVm(), configuration);
+
+            String restoreRecipe = recipeNamingGenerator
+                    .getRestoreRecipe(applicationInstance);
+            callChef(restoreRecipe, vm);
+            
+            applicationInstance.setApplication(applicationRelease);
             applicationInstance.setStatus(Status.INSTALLED);
             return applicationInstanceDao.update(applicationInstance);
         } catch (CanNotCallChefException e) {
@@ -156,6 +185,8 @@ public class ApplicationInstanceManagerChefImpl extends
             restoreInstance(Status.ERROR, applicationInstance);
             throw e;
         } catch (InvalidEntityException e) {
+            throw new SdcRuntimeException(e);
+        }catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
     }
@@ -250,20 +281,34 @@ public class ApplicationInstanceManagerChefImpl extends
      * @return
      */
     private ApplicationInstance getApplicationToInstall(
-            ApplicationRelease application, VM vm, String vdc,
-            List<ProductInstance> products) {
+            ApplicationRelease applicationRelease, VM vm, String vdc,
+            List<ProductInstance> products, List<Attribute> configuration) {
         ApplicationInstance instance;
         try {
             ApplicationInstanceSearchCriteria criteria =
                     new ApplicationInstanceSearchCriteria();
             criteria.setVm(vm);
-            criteria.setApplicationName(application.getApplication().getName());
+            criteria.setApplicationName(applicationRelease.getApplication().getName());
             instance = applicationInstanceDao.findUniqueByCriteria(criteria);
             instance.setProducts(products);
-            instance.setApplication(application);
+            
+            Application application;
+			try {
+				application = applicationDao.load(applicationRelease
+						.getApplication().getName());
+			} catch (EntityNotFoundException e) {
+				application = new Application (
+						applicationRelease.getApplication().getName(),
+						applicationRelease.getApplication().getDescription(),
+						applicationRelease.getApplication().getType());
+			}
+            application.setAttributes(configuration);
+            
+            applicationRelease.setApplication(application);
+            instance.setApplication(applicationRelease);
         } catch (NotUniqueResultException e) {
             instance = new ApplicationInstance(
-                    application, products, Status.UNINSTALLED, vm, vdc);
+                    applicationRelease, products, Status.UNINSTALLED, vm, vdc);
         }
         return instance;
     }
@@ -313,6 +358,15 @@ public class ApplicationInstanceManagerChefImpl extends
         this.applicationInstanceDao = applicationInstanceDao;
     }
 
+    /**
+     * @param applicationInstanceDao
+     *            the applicationDao to set
+     */
+    public void setApplicationDao(
+            ApplicationDao applicationDao) {
+        this.applicationDao = applicationDao;
+    }
+    
     /**
      * @param validator the validator to set
      */

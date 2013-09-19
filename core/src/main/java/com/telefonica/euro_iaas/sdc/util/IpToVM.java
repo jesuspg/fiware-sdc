@@ -14,7 +14,8 @@ public interface IpToVM {
      * Retrieve some information about the virtual machine located in a concrete
      *  IP address.
      * @param ip the ip of the associated VM.
+     * @param fqn the fqn of the associated VM.
      * @return the VM with the whole information available (ip, host and domain)
      */
-    VM getVm(String ip);
+    VM getVm(String ip, String fqn);
 }

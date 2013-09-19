@@ -36,7 +36,7 @@ public class ProductReleaseImplTest extends AbstractJpaDaoTest {
         productRelease.setVersion("0.1.1");
         productRelease.setReleaseNotes("prueba ReelaseNotes");
 
-        OS os = new OS("Debian def 5.2", "Debian def 5.2","5.2");
+        OS os = new OS("Debian", "95", "Debian def 5.2","5.2");
         List<OS> supportedOOSS =  Arrays.asList(os);
         productRelease.setSupportedOOSS(supportedOOSS);
 

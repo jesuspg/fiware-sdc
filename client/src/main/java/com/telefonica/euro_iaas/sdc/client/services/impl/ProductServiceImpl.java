@@ -132,7 +132,7 @@ public class ProductServiceImpl extends AbstractBaseService implements
      */
     @Override
     public List<ProductRelease> findAll(Integer page, Integer pageSize,
-            String orderBy, String orderType, String productName) {
+            String orderBy, String orderType, String productName, String osType) {
         String url;
         if (StringUtils.isEmpty(productName)) {
             url = getBaseHost() +
@@ -143,10 +143,12 @@ public class ProductServiceImpl extends AbstractBaseService implements
         }
         WebResource wr = getClient().resource(url);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
+        searchParams = addParam(searchParams, "osType", osType);
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
         searchParams = addParam(searchParams, "orderBy", orderBy);
         searchParams = addParam(searchParams, "orderType", orderType);
+        
 
         return wr.queryParams(searchParams)
                 .accept(getType()).get(ProductReleases.class);

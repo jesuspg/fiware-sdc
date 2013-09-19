@@ -82,7 +82,7 @@ public class ProductInstanceManagerChefImplTest {
         .thenReturn(new ChefNode());
 
 
-        os = new OS("os1", "os1 description", "v1");
+        os = new OS("os1", "1", "os1 description", "v1");
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease(
                 "version", "releaseNotes", null, product, Arrays.asList(os), null);

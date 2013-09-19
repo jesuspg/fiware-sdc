@@ -14,6 +14,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
     private OSDao soDao;
 
     public final static String SO_NAME = "TestSO";
+    public final static String SO_OSTYPE = "OSTypeSO";
     public final static String SO_DESCRIPTION = "TestDescription";
     public final static String SO_VERSION = "TestVersion";
 
@@ -21,7 +22,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the create and load method
      */
     public void testCreate() throws Exception {
-        OS so = new OS(SO_NAME, SO_DESCRIPTION, SO_VERSION);
+        OS so = new OS(SO_NAME, SO_OSTYPE, SO_DESCRIPTION, SO_VERSION);
         assertNull(so.getId());
 
         OS createdSO = soDao.create(so);

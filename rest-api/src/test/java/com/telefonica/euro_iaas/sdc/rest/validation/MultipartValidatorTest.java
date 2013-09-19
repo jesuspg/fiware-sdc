@@ -38,7 +38,7 @@ public class MultipartValidatorTest extends ValidatorUtils{
 		productReleaseDto.setVersion("0.1.1");
 		productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
 		 
-		OS os = new OS("Debian def 5.2", "Debian def 5.2","5.2");
+		OS os = new OS("Debian", "95", "Debian def 5.2","5.2");
 		List<OS> supportedOS =  Arrays.asList(os);
 		productReleaseDto.setSupportedOS(supportedOS);
 		 

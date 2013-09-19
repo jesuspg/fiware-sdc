@@ -23,6 +23,8 @@ public class OS {
     @Version
     private Long v;
 
+    @Column(unique=true, nullable=false, length=3)
+    private String OSType;
     @Column(unique=true, nullable=false, length=256)
     private String name;
     @Column(length=2048)
@@ -40,11 +42,13 @@ public class OS {
      * <p>Constructor for SO.</p>
      *
      * @param name a {@link java.lang.String} object.
+     * @param OSType a {@link java.lang.String} object.
      * @param description a {@link java.lang.String} object.
      * @param version a {@link java.lang.String} object.
      */
-    public OS(String name, String description, String version) {
+    public OS(String name, String OSType, String description, String version) {
         this.name = name;
+        this.OSType = OSType;
         this.description = description;
         this.version = version;
     }
@@ -66,6 +70,22 @@ public class OS {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>OSType</code>.</p>
+     *
+     * @return the OSType
+     */
+    public String getOSType() {
+        return OSType;
+    }
+    /**
+     * <p>Setter for the field <code>OSType</code>.</p>
+     *
+     * @param name the OSType to set
+     */
+    public void setOSType(String OSType) {
+        this.OSType = OSType;
+    }
     /**
      * <p>Getter for the field <code>description</code>.</p>
      *

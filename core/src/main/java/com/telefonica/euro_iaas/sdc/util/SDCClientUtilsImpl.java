@@ -28,13 +28,14 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      * {@inheritDoc}
      */
     @Override
-    public VM getVM(String ip) {
+    public VM getVM(String ip, String fqn) {
         String url = MessageFormat.format(
                 propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE), ip)
                 + VM_PATH;
         WebResource webResource = client.resource(url);
         VM vm = webResource.accept(MediaType.APPLICATION_XML).get(VM.class);
-
+        vm.setFqn(fqn);
+        
         return vm;
     }
 

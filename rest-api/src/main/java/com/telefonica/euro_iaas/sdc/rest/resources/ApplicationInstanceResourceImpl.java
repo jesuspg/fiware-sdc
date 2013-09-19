@@ -75,7 +75,7 @@ public class ApplicationInstanceResourceImpl implements
         try {
             VM vm = application.getVm();
             if (!vm.canWorkWithChef()) {
-                vm = ip2vm.getVm(vm.getIp());
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn());
             }
 
             Task task = createTask(MessageFormat.format(

@@ -39,7 +39,7 @@ public class ProductSteps {
     public void getOOSS(Table table) {
         supportedOS = new ArrayList<OS>();
         for (List<String> row: table.rows()) {
-            supportedOS.add(new OS(row.get(0), "description", row.get(1)));
+            supportedOS.add(new OS(row.get(0), row.get(1), row.get(2), "description"));
         }
     }
 

@@ -2,9 +2,9 @@ Feature: Add Product To Catalog
 
     Scenario: Add Postgresql 8
     Given OS:
-    |OS Name| Version |
-    | windows | 7 |
-    | debian | 9 |
+    |OS Name| OSType | Version |
+    | Windows XP | 67 | 7 |
+    | Debian | 95 | 9 |
     And default attributes:
     | Key | Value | Description |
     | key1 | value1 | description1 |

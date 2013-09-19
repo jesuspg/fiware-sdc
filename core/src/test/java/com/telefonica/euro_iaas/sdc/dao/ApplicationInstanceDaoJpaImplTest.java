@@ -37,7 +37,7 @@ public class ApplicationInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
 
     public void createElements() throws Exception {
-        OS so = new OS("debian5", "Debian 5", "5");
+        OS so = new OS("Debian", "95", "Debian 5", "5");
         so = osDao.create(so);
         List<OS> supportedSSOO = Arrays.asList(so);
         Product tomcat = new Product("tomcat", "tomcat J2EE container");

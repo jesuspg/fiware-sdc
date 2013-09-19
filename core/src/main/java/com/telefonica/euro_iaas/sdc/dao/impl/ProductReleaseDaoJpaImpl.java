@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -9,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -52,7 +54,15 @@ public class ProductReleaseDaoJpaImpl
             baseCriteria.add(Restrictions.eq(
                     "product", criteria.getProduct()));
         }
-        return setOptionalPagination(criteria, baseCriteria).list();
+        
+        List<ProductRelease> productReleases = setOptionalPagination(criteria, 
+        		baseCriteria).list();
+        
+        if (criteria.getOSType() != null) {
+        	productReleases = filterByOSType(productReleases, criteria.getOSType());
+        }
+        return productReleases;
+
     }
 
     /**
@@ -75,6 +85,27 @@ public class ProductReleaseDaoJpaImpl
                     keys, values);
         }
         return release;
+    }
+    
+    /**
+     * Filter the result by product release
+     *
+     * @param applications
+     * @param product Release
+     * @return
+     */
+    private List<ProductRelease> filterByOSType(
+            List<ProductRelease> productReleases, String osType) {
+        List<ProductRelease> result = new ArrayList<ProductRelease>();
+        for (ProductRelease productRelease : productReleases) {
+            for (OS os : productRelease.getSupportedOOSS()) {
+            	if (os.getOSType().equals(osType)) {
+                    result.add(productRelease);
+                }
+            }
+        	
+        }
+        return result;
     }
 
 }

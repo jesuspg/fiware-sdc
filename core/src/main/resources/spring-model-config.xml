@@ -21,6 +21,7 @@
     <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="productDao" ref="productDao"/>
         <property name="validator" ref="productInstanceValidator"/>
         <property name="ip2vm" ref="ip2vm"/>
     </bean>
@@ -28,6 +29,7 @@
     <bean id="applicationInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl">
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+        <property name="applicationDao" ref="applicationDao"/>
         <property name="validator" ref="applicationInstanceValidator"/>
     </bean>
 

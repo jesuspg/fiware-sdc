@@ -6,6 +6,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
 import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
@@ -18,8 +19,11 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Application;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
@@ -39,6 +43,7 @@ public class ProductInstanceManagerChefImpl extends
         BaseInstallableInstanceManager implements ProductInstanceManager {
 
     private ProductInstanceDao productInstanceDao;
+    private ProductDao productDao;
     private IpToVM ip2vm;
     private ProductInstanceValidator validator;
 
@@ -59,10 +64,10 @@ public class ProductInstanceManagerChefImpl extends
             // we need the hostname + domain so if we haven't that information,
             // shall to get it.
             if (!vm.canWorkWithChef()) {
-                vm = ip2vm.getVm(vm.getIp());
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn());
             }
             //makes the validations
-            instance = getProductToInstall(product, vm, vdc);
+            instance = getProductToInstall(product, vm, vdc, attributes);
             previousStatus = instance.getStatus();
             //now we have the productInstance so can validate the operation
             validator.validateInstall(instance);
@@ -149,10 +154,39 @@ public class ProductInstanceManagerChefImpl extends
             productInstance.setStatus(Status.CONFIGURING);
             productInstance = productInstanceDao.update(productInstance);
 
+
+            VM vm = productInstance.getVm();
+
+            String backupRecipe = recipeNamingGenerator
+                    .getBackupRecipe(productInstance);
+            callChef(backupRecipe, vm);
+
+            String uninstallRecipe = recipeNamingGenerator
+                    .getUninstallRecipe(productInstance);
+            callChef(uninstallRecipe, vm);
+
+
+            Product product = 
+            		productDao.load(productInstance.getProduct().getProduct().getName());
+            
+            product.setAttributes(configuration);
+            
+            productDao.update(product);
+            
+            ProductRelease productRelease = productInstance.getProduct();
+            productRelease.setProduct(product);
+            
+            
             String recipe = recipeNamingGenerator.getInstallRecipe(
                     productInstance);
                 callChef(productInstance.getProduct().getProduct().getName(),
                         recipe, productInstance.getVm(), configuration);
+
+            String restoreRecipe = recipeNamingGenerator
+                    .getRestoreRecipe(productInstance);
+            callChef(restoreRecipe, vm);
+
+            productInstance.setProduct(productRelease);
             productInstance.setStatus(Status.INSTALLED);
             return productInstanceDao.update(productInstance);
 
@@ -167,6 +201,8 @@ public class ProductInstanceManagerChefImpl extends
             restoreInstance(Status.ERROR, productInstance);
             throw e;
         } catch (InvalidEntityException e) {
+            throw new SdcRuntimeException(e);
+        } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
 
@@ -306,18 +342,30 @@ public class ProductInstanceManagerChefImpl extends
      * @param vm
      * @return
      */
-    private ProductInstance getProductToInstall(ProductRelease product, VM vm,
-            String vdc) {
+    private ProductInstance getProductToInstall(ProductRelease productRelease, VM vm,
+            String vdc, List<Attribute> attributes) {
         ProductInstance instance;
         try {
             ProductInstanceSearchCriteria criteria =
                     new ProductInstanceSearchCriteria();
             criteria.setVm(vm);
-            criteria.setProductName(product.getProduct().getName());
+            criteria.setProductName(productRelease.getProduct().getName());
             instance = productInstanceDao.findUniqueByCriteria(criteria);
-            instance.setProduct(product);
+            
+            Product product;
+			try {
+				product = productDao.load(productRelease.getProduct().getName());
+			} catch (EntityNotFoundException e) {
+				product = new Product (
+						productRelease.getProduct().getName(),
+						productRelease.getProduct().getDescription());
+			}
+            product.setAttributes(attributes);
+            
+            productRelease.setProduct(product);
+            instance.setProduct(productRelease);
         } catch (NotUniqueResultException e) {
-            instance = new ProductInstance(product,
+            instance = new ProductInstance(productRelease,
                     Status.UNINSTALLED, vm, vdc);
         }
         return instance;
@@ -332,6 +380,13 @@ public class ProductInstanceManagerChefImpl extends
         this.productInstanceDao = productInstanceDao;
     }
 
+    /**
+     * @param productDao
+     *            the productDao to set
+     */
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
     /**
      * @param ip2vm
      *            the ip2vm to set

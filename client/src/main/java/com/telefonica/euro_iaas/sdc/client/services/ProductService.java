@@ -68,8 +68,10 @@ public interface ProductService {
      *            default <i>nullable</i>)
      * @param productName the different releases for the given product
      *            (<i>not nullable</i>).
+     * @param osType the different supported operating system 
+     *            (<i>not nullable</i>).
      * @return the product instances that match with the criteria.
      */
     List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy,
-            String orderType, String productName);
+            String orderType, String productName, String osType);
 }

@@ -16,9 +16,10 @@ public interface SDCClientUtils {
     /**
      * Retrieve the VM where the node is
      * @param ip the ip
+     * @param fqn the fqn
      * @return the VM containing the hostname and domain.
      */
-    VM getVM(String ip);
+    VM getVM(String ip, String fqn);
 
     /**
      * Make the target node call Chef to execute the enqueued tasks

@@ -95,9 +95,13 @@ public class ProductInstanceAsyncManagerImpl implements
         try {
             productInstanceManager.configure(productInstance, configuration);
             updateSuccessTask(task, productInstance);
+            LOGGER.info("Product " + productInstance.getProduct().getProduct().getName() + '-'
+                    + productInstance.getProduct().getVersion() + " configured successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task,
-                    "The product " + productInstance.getId()
+                    "The product " 
+                    + productInstance.getProduct().getProduct().getName() +
+                    "-" + productInstance.getProduct().getVersion()
                     + " can not be configured due to previous status", e);
         } catch (NodeExecutionException e) {
             updateErrorTask(productInstance, task,
@@ -122,8 +126,10 @@ public class ProductInstanceAsyncManagerImpl implements
         try {
             productInstanceManager.upgrade(productInstance, productRelease);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getId()
-                    + " upgrade successfully");
+            LOGGER.info("Product " 
+                    + productInstance.getProduct().getProduct().getName() +
+                    "-" + productInstance.getProduct().getVersion()
+                    + " upgraded successfully");
         } catch (NotTransitableException e) {
             updateErrorTask(productInstance, task,
                     "The product " + productInstance
@@ -170,7 +176,9 @@ public class ProductInstanceAsyncManagerImpl implements
         try {
             productInstanceManager.uninstall(productInstance);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getId()
+            LOGGER.info("Product " 
+                    + productInstance.getProduct().getProduct().getName() +
+                    "-" + productInstance.getProduct().getVersion()
                     + " uninstalled successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task,

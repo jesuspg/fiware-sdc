@@ -134,5 +134,24 @@
                 Afecta a los objetos "Instances"
             </action>
         </release>
+        <release version="1.8.0" date="2011-11-11"
+        description="Introduce fqn as the identifier of the VM">
+            <action dev="jmms392" type="update">
+                Misma version que 1.7.0
+            </action>
+        </release>
+        <release version="1.9.0" date="2011-11-15"
+        description="Introduce OSTYope in the SO object">
+            <action dev="jmms392" type="update">
+                Introducir el OSType dentro del objeto Sistema Operativo SO. Claudia
+                usa ese identificador para los SOs 
+                (http://konkretcmpi.org/cimmodel/cim222final/CIM_OperatingSystem.html
+                Campo OSType)
+            </action>
+            <action dev="jmms392" type="update">
+                The Uninstall Application operation does not work after Configuring application (https://jira.tid.es/browse/CLAUDIA-1441)
+                This bug hide a bad working in configuring applicatins and products
+            </action>
+        </release>
     </body>
 </document>

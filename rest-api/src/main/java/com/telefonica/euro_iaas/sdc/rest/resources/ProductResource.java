@@ -124,6 +124,8 @@ public interface ProductResource {
     /**
      * Retrieve all available versions of the given product.
      *
+     * @param osType
+     *            the operating system (<i>nullable</i>)
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)
      * @param pageSize
@@ -134,12 +136,13 @@ public interface ProductResource {
      * @param orderType
      *            defines if the order is ascending or descending
      *            (asc by default <i>nullable</i>)
-     * @return the created OS instances.
+     * @return the ProductReleases.
      */
     @GET
     @Path("/{pName}/release/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findAll(@PathParam("pName") String name,
+    		@QueryParam("osType") String osType,
             @QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,
@@ -250,15 +253,26 @@ public interface ProductResource {
      * Find all possible transitions for a concrete release.
      * It means, the different version of a product which are compatible with
      * the given release.
-     * @param name the product Name
-     * @param version the product version
-     * @return the transitable releases.
-     * @throws EntityNotFoundException if the given release does not exists.
+     * @param osType 
+    * @param osType
+     *            the operating system (<i>nullable</i>)
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query
+     *            (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending
+     *            (asc by default <i>nullable</i>)
+     * @return ProductReleases
      */
     @GET
     @Path("/release")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAllReleases(@QueryParam("page") Integer page,
+    List<ProductRelease> findAllReleases(@QueryParam("osType") String osType,
+    		@QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("orderType") String orderType);

@@ -61,7 +61,7 @@ public class VM {
      * @param hostname
      * @param domain
      */
-    public VM(String ip, String fqn, String hostname, String domain) {
+    public VM(String fqn, String ip, String hostname, String domain) {
         if (ip == null) {
             this.ip = "";
         } else {

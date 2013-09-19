@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
+import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
@@ -15,6 +16,12 @@ public class ProductReleaseSearchCriteria extends AbstractSearchCriteria {
      * The product.
      */
     private Product product;
+    
+    /**
+     * The osType.
+     */
+    private String osType;
+    
     /**
      * Default constructor
      */
@@ -79,5 +86,18 @@ public class ProductReleaseSearchCriteria extends AbstractSearchCriteria {
     public void setProduct(Product product) {
         this.product = product;
     }
-
+   
+    /**
+     * @return the osType
+     */
+    public String getOSType() {
+        return osType;
+    }
+    
+    /**
+     * @param osType the osTypeto set
+     */
+    public void setOSType(String osType) {
+        this.osType = osType;
+    }
 }

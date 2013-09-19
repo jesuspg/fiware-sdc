@@ -49,12 +49,18 @@ public class InitDbBootstrap implements ServletContextListener {
         ApplicationDao applicationDao =
             (ApplicationDao) ctx.getBean("applicationDao");
         try {
-            soDao.load("debian5");
+            soDao.load("Debian");
+            soDao.load("Ubuntu");
         } catch (EntityNotFoundException e) {
             try {
-                OS so = new OS("debian5", "Debian 5", "5");
-                so = soDao.create(so);
-                List<OS> supportedSSOO = Arrays.asList(so);
+                OS so1 = new OS("Debian", "95", "Debian 5", "5");
+                OS so2 = new OS("Ubuntu", "93", "Ubuntu 10.04", "10.04");
+                so1 = soDao.create(so1);
+                so2 = soDao.create(so2);
+                List<OS> supportedSSOO1 = Arrays.asList(so1);
+                List<OS> supportedSSOO2 = Arrays.asList(so2);
+                List<OS> supportedSSOO12 = Arrays.asList(so1,so2);
+                
                 Product tomcat = new Product("tomcat", "tomcat J2EE container");
                 tomcat.addAttribute(new Attribute("port", "8080",
                 "The listen port"));
@@ -64,17 +70,17 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 ProductRelease tomcat7 = new ProductRelease(
                         "7", "Tomcat server 7", null, tomcat,
-                        supportedSSOO, null);
+                        supportedSSOO2, null);
                 tomcat7 = productReleaseDao.create(tomcat7);
 
                 ProductRelease tomcat6 = new ProductRelease(
                         "6", "Tomcat server 6", null, tomcat,
-                        supportedSSOO, null);
+                        supportedSSOO12, null);
                 tomcat6 = productReleaseDao.create(tomcat6);
 
                 ProductRelease tomcat5 = new ProductRelease(
                         "5.5", "Tomcat server 5.5", null, tomcat,
-                        supportedSSOO, Arrays.asList(tomcat6));
+                        supportedSSOO1, Arrays.asList(tomcat6));
                 tomcat5 = productReleaseDao.create(tomcat5);
 
                 tomcat5.setTransitableReleases(Arrays.asList(tomcat6));
@@ -95,12 +101,12 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 ProductRelease postgres84 = new ProductRelease(
                         "8.4", "blah blah blah", null, postgresql,
-                        supportedSSOO, null);
+                        supportedSSOO12, null);
                 postgres84 = productReleaseDao.create(postgres84);
 
                 ProductRelease postgres83 = new ProductRelease(
                         "8.3", "blah blah blah", null, postgresql,
-                        supportedSSOO, Arrays.asList(postgres84));
+                        supportedSSOO1, Arrays.asList(postgres84));
                 postgres83 = productReleaseDao.create(postgres83);
 
                 Application sdc = new Application(

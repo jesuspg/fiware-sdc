@@ -32,7 +32,7 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         productRelease.setVersion("0.1.1");
         productRelease.setReleaseNotes("prueba ReelaseNotes");
 
-        OS so = new OS("Prueba I", "Prueba I Description","Prueba I Version");
+        OS so = new OS("Prueba I", "1", "Prueba I Description","Prueba I Version");
         try{
             so = soDao.load(so.getName());
             System.out.println("The OS " + so.getName()

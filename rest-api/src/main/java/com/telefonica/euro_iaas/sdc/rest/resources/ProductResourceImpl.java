@@ -157,7 +157,7 @@ public class ProductResourceImpl implements ProductResource {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductRelease> findAll(String name, Integer page,
+    public List<ProductRelease> findAll(String name, String osType, Integer page,
             Integer pageSize, String orderBy, String orderType) {
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
@@ -170,7 +170,10 @@ public class ProductResourceImpl implements ProductResource {
                         + name, e);
             }
         }
-
+        
+        if (!StringUtils.isEmpty(osType))
+                criteria.setOSType(osType);
+        
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);
@@ -344,10 +347,13 @@ public class ProductResourceImpl implements ProductResource {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductRelease> findAllReleases(Integer page, Integer pageSize,
-            String orderBy, String orderType) {
+    public List<ProductRelease> findAllReleases(String osType, Integer page, 
+    		Integer pageSize, String orderBy, String orderType) {
         ProductReleaseSearchCriteria criteria =
                 new ProductReleaseSearchCriteria();
+        if (!StringUtils.isEmpty(osType)) {
+            criteria.setOSType(osType);
+        }
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);

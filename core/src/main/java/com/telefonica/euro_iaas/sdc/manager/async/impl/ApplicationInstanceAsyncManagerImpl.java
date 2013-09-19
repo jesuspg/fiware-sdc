@@ -114,7 +114,9 @@ public class ApplicationInstanceAsyncManagerImpl
             List<Attribute> configuration, Task task, String callback) {
         try {
             applicationInstanceManager.configure(applicationInstance, configuration);
-            LOGGER.info("Application " + applicationInstance.getId()
+            LOGGER.info("Application "
+                    + applicationInstance.getApplication().getApplication().getName()
+                    + "-" + applicationInstance.getApplication().getVersion()
                     + "  configured successfully");
             updateSuccessTask(task, applicationInstance);
         } catch (NodeExecutionException e) {
@@ -144,7 +146,9 @@ public class ApplicationInstanceAsyncManagerImpl
         try {
             applicationInstanceManager.upgrade(applicationInstance, newRelease);
             updateSuccessTask(task, applicationInstance);
-            LOGGER.info("Application " + applicationInstance.getId()
+            LOGGER.info("Application " 
+            		+ applicationInstance.getApplication().getApplication().getName()
+                    + "-" + applicationInstance.getApplication().getVersion()
                     + " upgraded successfully");
         } catch (NodeExecutionException e) {
             updateErrorTask(applicationInstance, task,
@@ -184,7 +188,9 @@ public class ApplicationInstanceAsyncManagerImpl
         try {
             applicationInstanceManager.uninstall(applicationInstance);
             updateSuccessTask(task, applicationInstance);
-            LOGGER.info("Product " + applicationInstance.getId()
+            LOGGER.info("Application " 
+            		+ applicationInstance.getApplication().getApplication().getName()
+                    + "-" + applicationInstance.getApplication().getVersion()
                     + " uninstalled successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(applicationInstance, task,
