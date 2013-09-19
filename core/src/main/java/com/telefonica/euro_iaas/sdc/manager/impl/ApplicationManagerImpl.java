@@ -630,4 +630,11 @@ implements ApplicationManager {
     public void setValidator(ApplicationReleaseValidator validator) {
         this.validator = validator;
     }
+    
+    /**
+     * @param environmentDao the environmentDao to set
+     */
+    public void setEnvironmentDao(EnvironmentDao environmentDao) {
+        this.environmentDao = environmentDao;
+    }
 }

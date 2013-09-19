@@ -77,7 +77,7 @@ public class ProductInstanceDaoJpaImpl
         List<ProductInstance> instances = findByCriteria(criteria);
         if (instances.size() != 1) {
             throw new NotUniqueResultException();
-        }
+        }         
         return instances.iterator().next();
     }
 

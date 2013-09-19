@@ -359,6 +359,23 @@ cookbook_path            ["/root/chef-repo/cookbooks"]
 /etc/init.d/chef-server-webui start
 +----------
 
+    After finishing the installation, check that rabbit is well configured. You should 
+    allow chef username to be allowed to access rabbitserver. Check the following url for that
+
++----------
+http://jonathanpolansky.com/2010/10/chef-server-connection-failed-to-rabbitmq-using-bunny-protocol-as-user-chef/
++----------
+
+    Basically, you have to execute the follosing commands
+ 
++----------
+# rabbitmqctl add_vhost /chef
+# rabbitmqctl add_user chef <password>
+# rabbitmqctl set_permissions -p /chef chef ".*" ".*" ".*"
++----------   
+    
+    where <password> appears in file /etc/chef/server.rb  in amqp_pass line
+
 * SDC-Server installation
 
   Once the prerequisites are satisfied, you shall create the context file. To do
