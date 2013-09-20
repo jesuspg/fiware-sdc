@@ -49,21 +49,7 @@
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.telefonica.claudia</groupId>
-            <artifactId>tcloud-schemas</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.telefonica.claudia</groupId>
-            <artifactId>tcloud-cat-priv</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.telefonica.claudia</groupId>
-            <artifactId>tcloud-org</artifactId>
-            <version>0.1</version>
-        </dependency>
+
         <!--  CORS FILTER -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
@@ -205,7 +191,7 @@
                 <version>1.23</version>
                 <configuration>
                     <configFile>src/build/enunciate.xml</configFile>
-		    <docsDir>${project.build.directory}/docs</docsDir>
+            <docsDir>${project.build.directory}/docs</docsDir>
                     <exports>
                         <jaxws.client.library.binaries>client.jar</jaxws.client.library.binaries>
                     </exports>
@@ -213,7 +199,7 @@
                 <executions>
                     <execution>
                         <goals>
-			<goal>docs</goal>
+            <goal>docs</goal>
                             <goal>assemble</goal>
                         </goals>
                     </execution>

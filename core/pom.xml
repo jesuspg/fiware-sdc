@@ -206,9 +206,9 @@
             <artifactId>jersey-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>bouncycastle</groupId>
+            <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
-            <version>140</version>
+            <version>1.40</version>
         </dependency>
 
         <dependency>
@@ -392,6 +392,14 @@
             <name>Sardine maven repo at Google Code</name>
             <url>http://sardine.googlecode.com/svn/maven/</url>
         </repository>
+
+
+        <repository>
+            <id>bouncycastle</id>
+            <name>bouncycastle</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+
 
         <!--  <repository>
               <id>thirdparty</id>
