@@ -2,8 +2,9 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CLONE_IMAGE_SCRIPT;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.FREEZE_IMAGE_SCRIPT;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.TIME_WAITING_FOR_RUNNING;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WAIT_FOR_RUNNING_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.*;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_BASE_URL;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -23,7 +24,7 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.OSInstance;
 import com.telefonica.euro_iaas.sdc.model.OSInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.util.AbstractShellCommand;
+import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -33,11 +34,11 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
  * @author Sergio Arroyo
  *
  */
-public class OSInstanceManagerCristianToolsImpl extends AbstractShellCommand implements
-        OSInstanceManager {
+public class OSInstanceManagerCristianToolsImpl implements OSInstanceManager {
 
     private SystemPropertiesProvider propertiesProvider;
     private OSInstanceDao osInstanceDao;
+    private CommandExecutor commandExecutor;
 
     private static final Logger LOGGER = Logger
             .getLogger("SODeployerCrisitanToolsImpl");
@@ -56,7 +57,7 @@ public class OSInstanceManagerCristianToolsImpl extends AbstractShellCommand imp
                     instance.getSo().getName(), instance.getVM()
                     .getHostname());
             LOGGER.info("starting OS in vm: " + vm);
-            executeCommand(command);
+            commandExecutor.executeCommand(command);
             waitOK(instance);
             instance.setStatus(Status.RUNNING);
             return osInstanceDao.create(instance);
@@ -95,7 +96,7 @@ public class OSInstanceManagerCristianToolsImpl extends AbstractShellCommand imp
                     .getProperty(WAIT_FOR_RUNNING_SCRIPT), soInstance.getVM()
                     .getHostname());
             try {
-                executeCommand(command);
+                commandExecutor.executeCommand(command);
                 running = true;
             } catch (ShellCommandException e) {
                 // still waiting
@@ -112,7 +113,7 @@ public class OSInstanceManagerCristianToolsImpl extends AbstractShellCommand imp
             String command = MessageFormat.format(
                     propertiesProvider.getProperty(FREEZE_IMAGE_SCRIPT),
                     instance.getVM().getHostname());
-            executeCommand(command);
+            commandExecutor.executeCommand(command);
             instance.setStatus(Status.STOPPED);
             instance.setImageFileLocation(MessageFormat.format(
                     propertiesProvider.getProperty(
@@ -162,5 +163,13 @@ public class OSInstanceManagerCristianToolsImpl extends AbstractShellCommand imp
     public void setOsInstanceDao(OSInstanceDao osInstanceDao) {
         this.osInstanceDao = osInstanceDao;
     }
+
+    /**
+     * @param commandExecutor the commandExecutor to set
+     */
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
+
 
 }

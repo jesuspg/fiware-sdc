@@ -1,5 +1,9 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.COPY_APP_FILES_FROM_SERVER_TO_NODE;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DEFAULT_APP_FILES_DESTINATION_FOLDER;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DEFAULT_APP_FILES_SOURCE_FOLDER;
+
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -9,11 +13,12 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.AbstractShellCommand;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.*;
+import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * Decorator for ApplicationInstanceManager in charge to do the concrete actions
@@ -23,9 +28,12 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.*;
  *
  */
 public class ApplicationInstanceManagerWarDecoratorImpl
-    extends AbstractShellCommand implements ApplicationInstanceManager{
+    implements ApplicationInstanceManager{
 
     private ApplicationInstanceManager applicationInstanceManager;
+    private SystemPropertiesProvider propertiesProvider;
+    private CommandExecutor commandExecutor;
+
     /**
      * {@inheritDoc}
      */
@@ -62,7 +70,7 @@ public class ApplicationInstanceManagerWarDecoratorImpl
                 COPY_APP_FILES_FROM_SERVER_TO_NODE),
                 vm.getExecuteChefConectionUrl(), toFolder, fromFolder);
         try {
-            executeCommand(copyFilesCommand);
+            commandExecutor.executeCommand(copyFilesCommand);
         } catch (ShellCommandException e) {
             throw new SdcRuntimeException("Can not copy the files from server"
                     + " to node to install the application", e);
@@ -87,6 +95,17 @@ public class ApplicationInstanceManagerWarDecoratorImpl
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationInstance configure(
+            ApplicationInstance applicationInstance,
+            List<Attribute> configuration) {
+        return applicationInstanceManager.configure(
+                applicationInstance, configuration);
+    }
+
     ////////////I.O.C. /////////////
 
     /**
@@ -95,6 +114,20 @@ public class ApplicationInstanceManagerWarDecoratorImpl
     public void setApplicationInstanceManager(
             ApplicationInstanceManager applicationInstanceManager) {
         this.applicationInstanceManager = applicationInstanceManager;
+    }
+
+    /**
+     * @param propertiesProvider the propertiesProvider to set
+     */
+    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
+        this.propertiesProvider = propertiesProvider;
+    }
+
+    /**
+     * @param commandExecutor the commandExecutor to set
+     */
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
     }
 
 }

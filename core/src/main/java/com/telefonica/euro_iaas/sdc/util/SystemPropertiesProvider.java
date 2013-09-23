@@ -34,7 +34,13 @@ public interface SystemPropertiesProvider {
 
     public final static String DEFAULT_HOST_DOMAIN = "defaultHostDomain";
 
+    public final static String CHEF_ROLE_TEMPLATE = "chefRoleTemplate";
+    public final static String CHEF_ATTRIBUTES_TEMPLATE = "chefAttributesTemplate";
+    public final static String CHEF_ATTRIBUTES_LEFT_LIMITER = "chefAttributesLeftLimiter";
+    public final static String CHEF_ATTRIBUTES_RIGHT_LIMITER = "chefAttributesRightLimiter";
+    public final static String CHEF_ATTRIBUTES_SEPARATOR = "chefAttributesSeparator";
 
+    public final static String UPDATE_ATTRIBUTES_SCRIPT = "updateAttributesScript";
     /**
      * Get the property for a given key.
      *

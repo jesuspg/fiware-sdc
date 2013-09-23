@@ -5,7 +5,7 @@
     <artifactId>sdc-server-core</artifactId>
     <packaging>jar</packaging>
     <name>sdc-server-core</name>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>

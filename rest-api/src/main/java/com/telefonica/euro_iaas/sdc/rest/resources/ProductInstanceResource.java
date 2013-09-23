@@ -7,6 +7,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 
 /**
  * Provides a rest api to works with ProductInstances
@@ -26,7 +28,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
 public interface ProductInstanceResource {
 
     /**
-     * Install a list of products in a given host.
+     * Install a product in a given host.
      *
      * @param hostname
      *            the host where the product will be installed
@@ -34,18 +36,35 @@ public interface ProductInstanceResource {
      *            the domain where the host is
      * @param ip
      *            the ip where the machine is located
-     * @param products
-     *            the list of products to install
+     * @param product
+     *            the product to install
      *
-     * @return the list of installed products.
+     * @return the installed product.
      */
     @POST
-    @Path("/action/install")
+    @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    List<ProductInstance> install(@FormParam("hostname") String hostname,
+    ProductInstance install(@FormParam("hostname") String hostname,
             @FormParam("domain") String domain, @FormParam("ip") String ip,
-            @FormParam("products") List<String> products);
+            @FormParam("product") String product);
+
+    /**
+     * Configure the selected product.
+     *
+     * @param id
+     *            the product instance id
+     * @param arguments
+     *            the configuration properties
+     *
+     * @return the configured product.
+     */
+    @PUT
+    @Path("/{pId}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes(MediaType.APPLICATION_XML)
+    ProductInstance configure(@PathParam("pId") Long id,
+            Attributes arguments);
 
     /**
      * Uninstall a previously installed product.
@@ -54,7 +73,7 @@ public interface ProductInstanceResource {
      *            the candidate to uninstall
      */
     @DELETE
-    @Path("/{pId}/action/uninstall")
+    @Path("/{pId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void uninstall(@PathParam("pId") Long productId);
 

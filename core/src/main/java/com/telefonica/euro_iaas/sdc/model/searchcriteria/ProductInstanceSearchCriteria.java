@@ -147,4 +147,11 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
         this.product = product;
     }
 
+    @Override
+    public String toString() {
+        return "ProductInstanceSearchCriteria [vm=" + vm + ", status=" + status
+                + ", product=" + product + "]";
+    }
+
+
 }

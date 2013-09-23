@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -23,6 +22,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -35,31 +35,53 @@ public class ProductManagerChefImplTest extends TestCase {
 
     private SystemPropertiesProvider propertiesProvider;
     private ProductInstanceDao productInstanceDao;
+    private CommandExecutor commandExecutor;
+
 
     private Product product;
-    private Product invalidProduct;
     private ProductInstance expectedProduct;
     private OS os;
-    private VM host = new VM("hostname", "description");
+    private VM host = new VM("hostname", "domain");
+
+    public final static String EXECUTE_COMMAND =
+        "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";
+    public final static String ASSIGN_COMMAND =
+        "/opt/sdc/scripts/assignRecipes.sh hostnamedomain Product::server";
+    public final static String UNASSIGN_COMMAND =
+        "/opt/sdc/scripts/unassignRecipes.sh hostnamedomain Product::server";
+
+    public final static String ASSIGN_UNINSTALL_COMMAND =
+        "/opt/sdc/scripts/assignRecipes.sh hostnamedomain Product::uninstall-server";
+    public final static String UNASSIGN_UNINSTALL_COMMAND =
+        "/opt/sdc/scripts/unassignRecipes.sh hostnamedomain Product::uninstall-server";
 
     @Override
     public void setUp() throws Exception {
         propertiesProvider = mock(SystemPropertiesProvider.class);
         when(propertiesProvider.getProperty(INSTALL_RECIPE_TEMPLATE))
-                .thenReturn("install-template");
+                .thenReturn("{0}");
         when(propertiesProvider.getProperty(UNINSTALL_RECIPE_TEMPLATE))
-                .thenReturn("uninstall-template");
+                .thenReturn("{0}::uninstall");
         when(propertiesProvider.getProperty(ASSING_RECIPES_SCRIPT)).thenReturn(
-                "ls");
+                "/opt/sdc/scripts/assignRecipes.sh {0} {1}");
         when(propertiesProvider.getProperty(UNASSING_RECIPES_SCRIPT))
-                .thenReturn("ls");
+                .thenReturn("/opt/sdc/scripts/unassignRecipes.sh {0} {1}");
         when(propertiesProvider.getProperty(EXECUTE_RECIPES_SCRIPT))
-                .thenReturn("ls");
+                .thenReturn("/opt/sdc/scripts/executeRecipes.sh root@{0}");
+
+        commandExecutor = mock(CommandExecutor.class);
+        when(commandExecutor.executeCommand(ASSIGN_COMMAND))
+                .thenReturn(new String[2]);
+        when(commandExecutor.executeCommand(
+                EXECUTE_COMMAND))
+                .thenReturn(new String[2]);
+        when(commandExecutor.executeCommand(UNASSIGN_COMMAND))
+                .thenReturn(new String[2]);
+
 
         os = new OS("os1", "os1 description", "v1");
-        product = new Product("Product", "Version", Arrays.asList(os));
-        invalidProduct = new Product("Product2", "Version2", Arrays
-                .asList(new OS("os2", "os2Desc", "v2")));
+        product = new Product("Product::server", "Version", Arrays.asList(os));
+
         expectedProduct = new ProductInstance(product, Status.INSTALLED, host);
 
         productInstanceDao = mock(ProductInstanceDao.class);
@@ -73,18 +95,17 @@ public class ProductManagerChefImplTest extends TestCase {
         ProductInstanceManagerChefImpl manager = new ProductInstanceManagerChefImpl();
         manager.setProductInstanceDao(productInstanceDao);
         manager.setPropertiesProvider(propertiesProvider);
+        manager.setCommandExecutor(commandExecutor);
 
-        List<ProductInstance> installedProducts = manager.install(host, Arrays
-                .asList(product, invalidProduct));
+        ProductInstance installedProduct = manager.install(host, product);
         // make verifications
-        assertEquals(2, installedProducts.size());
-        assertEquals(expectedProduct, installedProducts.get(0));
+        assertEquals(expectedProduct, installedProduct);
 
         verify(propertiesProvider, times(1)).getProperty(
                 INSTALL_RECIPE_TEMPLATE);
-        verify(propertiesProvider, times(installedProducts.size()))
+        verify(propertiesProvider, times(1))
                 .getProperty(ASSING_RECIPES_SCRIPT);
-        verify(propertiesProvider, times(installedProducts.size()))
+        verify(propertiesProvider, times(1))
                 .getProperty(UNASSING_RECIPES_SCRIPT);
         // only one prodcut will be installed, the other one causes error.
 
@@ -93,15 +114,21 @@ public class ProductManagerChefImplTest extends TestCase {
         verify(propertiesProvider, times(0)).getProperty(
                 UNINSTALL_RECIPE_TEMPLATE);
 
-        verify(productInstanceDao, times(installedProducts.size())).create(
+        verify(productInstanceDao, times(1)).create(
                 any(ProductInstance.class));
         verify(productInstanceDao, times(0)).update(any(ProductInstance.class));
+
+        verify(commandExecutor, times(1)).executeCommand(ASSIGN_COMMAND);
+        verify(commandExecutor, times(1)).executeCommand(EXECUTE_COMMAND);
+        verify(commandExecutor, times(1)).executeCommand(UNASSIGN_COMMAND);
+
     }
 
     public void testUninstallWhenEverithingIsOk() throws Exception {
         ProductInstanceManagerChefImpl manager = new ProductInstanceManagerChefImpl();
         manager.setProductInstanceDao(productInstanceDao);
         manager.setPropertiesProvider(propertiesProvider);
+        manager.setCommandExecutor(commandExecutor);
 
         manager.uninstall(expectedProduct);
 
@@ -119,5 +146,9 @@ public class ProductManagerChefImplTest extends TestCase {
 
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
+
+        verify(commandExecutor, times(1)).executeCommand(ASSIGN_UNINSTALL_COMMAND);
+        verify(commandExecutor, times(1)).executeCommand(EXECUTE_COMMAND);
+        verify(commandExecutor, times(1)).executeCommand(UNASSIGN_UNINSTALL_COMMAND);
     }
 }

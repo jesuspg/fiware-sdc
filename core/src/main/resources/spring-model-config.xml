@@ -18,22 +18,28 @@
         class="com.telefonica.euro_iaas.sdc.manager.impl.OSInstanceManagerCristianToolsImpl">
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="osInstanceDao" ref="osInstanceDao"/>
-    </bean>
-
-    <bean id="abstractCommandShell" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.util.AbstractShellCommand">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-    </bean>
-
-
-    <bean id="productInstanceManager" lazy-init="true" parent="abstractCommandShell"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-        <property name="ip2vm" ref="ip2vm"/>
+        <property name="commandExecutor" ref="commandExecutor"/>
     </bean>
 
     <bean id="ip2vm" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
+    </bean>
+
+    <bean id="commandExecutor" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
+    </bean>
+
+
+    <bean id="baseInstallableInstanceManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableInstanceManager">
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="commandExecutor" ref="commandExecutor"/>
+    </bean>
+
+    <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="ip2vm" ref="ip2vm"/>
     </bean>
 
     <!-- APPLICATION MANAGER DECORATORS -->
@@ -44,14 +50,28 @@
     </bean>
 
 
-    <bean id="applicationInstanceManager" lazy-init="true" parent="abstractCommandShell"
+    <bean id="applicationInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl">
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
     </bean>
 
-    <bean id="applicationInstanceManagerWar" lazy-init="true" parent="abstractCommandShell"
+    <bean id="applicationInstanceManagerWar" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerWarDecoratorImpl">
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="commandExecutor" ref="commandExecutor"/>
+    </bean>
+
+    <!-- CATALOG MANAGER -->
+
+    <bean id="productManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
+        <property name="productDao" ref="productDao"/>
+    </bean>
+
+    <bean id="applicationManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationManagerImpl">
+        <property name="applicationDao" ref="applicationDao"/>
     </bean>
 
 

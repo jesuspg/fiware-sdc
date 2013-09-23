@@ -7,30 +7,93 @@
 # All rights reserved - Do Not Redistribute
 #
 
-script "install_ApplTomcat" do
+#Execution of the preuninstallation script
+#execute "uninstall-sdc-pre" do
+#  command "#node[:war][:sdc_uninstall_home]/uninstall-sdc-pre.sh"
+#  action :run
+#end
+
+script "uninstall-sdc-pre" do
   interpreter "bash"
   user "root"
-  cwd "/tmp/app/war/sdc/uninstall"
+  cwd "/tmp"
   code <<-EOH
-  echo "  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.22 "
-  export JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.22 
-  
-  echo " /tmp/app/war/sdc/uninstall/uninstall-sdc-pre.sh "
-  /tmp/app/war/sdc/uninstall/sdc-pre.sh
- 
-  echo " /opt/apache-tomcat-7.0.14/bin/catalina.sh stop "
-  /opt/apache-tomcat-7.0.14/bin/catalina.sh stop
- 
-  echo " rm /opt/apache-tomcat-7.0.14/conf/Catalina/localhost/sdc.xml"
-  rm /opt/apache-tomcat-7.0.14/conf/Catalina/localhost/sdc.xml
+  /opt/sdc/app/war/sdc/uninstall/uninstall-sdc-pre.sh
+  EOH
+end
 
-  echo "  /tmp/app/war/sdc/uninstall/uninstall-sdc-postgres.sh "
-  /tmp/app/war/sdc/uninstall/uninstall-sdc-postgres.sh
 
-  echo " /tmp/app/war/sdc/uninstall/uninstall-sdc-post.sh "
-  /tmp/app/war/sdc/uninstall/uninstall-sdc-post.sh
-  
-  echo " /opt/apache-tomcat-7.0.14/bin/catalina.sh start "
-  /opt/apache-tomcat-7.0.14/bin/catalina.sh start
+#Tomcat stop
+#execute "#node[:war][:tomcat_home]/bin/shutdown.sh" do
+#  command #node[:war][:tomcat_home]/bin/shutdown.sh"
+#  action :run
+#end
+
+#Tomcat stop
+script "Tomcat stop" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  /opt/apache-tomcat-7.0.14/bin/shutdown.sh
+  EOH
+end
+
+
+#Delete the deployment tomcat descriptor
+#directory "{#node[:war][:tomcat_home]}/conf/Catalina/localhost/{#node[:war][:application_context]}.xml" do
+file "/opt/apache-tomcat-7.0.14/conf/Catalina/localhost/sdc.xml" do
+  action :delete
+  mode 0755
+  owner "root"
+  group "root"
+end
+
+#Execution of the script to delete the sdc database
+#execute "uninstall-sdc-postgres" do
+#  command "#node[:war][:sdc_uninstall_home]/uninstall-sdc-postgres.sh"
+#  action :run
+#end
+
+#Execution of the script to delete the sdc database
+script "uninstall-sdc-postgres" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  /opt/sdc/app/war/sdc/uninstall/uninstall-sdc-postgres.sh
+  EOH
+end
+
+
+#Execution of the postuninstallation script
+#execute "uninstall-sdc-post" do
+#  command "#node[:war][:sdc_uninstall_home]/uninstall-sdc-post.sh"
+#  action :run
+#end
+
+#Execution of the postuninstallation script
+script "uninstall-sdc-post" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  /opt/sdc/app/war/sdc/uninstall/uninstall-sdc-post.sh
+  EOH
+end
+
+
+#Tomcat startup
+#execute "#node[:war][:tomcat_home]/bin/startup.sh" do
+#  command #node[:war][:tomcat_home]/bin/startup.sh"
+#  action :run
+#end
+
+script "Tomcat startup" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+  /opt/apache-tomcat-7.0.14/bin/startup.sh
   EOH
 end

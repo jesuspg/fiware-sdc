@@ -33,7 +33,7 @@ public interface OSInstanceResource {
      * @return the created osInstance
      */
     @POST
-    @Path("/action/boot")
+    @Path("/")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     OSInstance bootOS(@FormParam("os")String os, @FormParam("vm")VM vm);
@@ -46,7 +46,7 @@ public interface OSInstanceResource {
      * @return the updated os instance
      */
     @PUT
-    @Path("/{osId}/action/freeze")
+    @Path("/{osId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     OSInstance freezeOS(@PathParam("osId")Long osId);
 

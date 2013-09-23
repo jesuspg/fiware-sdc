@@ -11,7 +11,7 @@ import junit.framework.TestCase;
  * @author Sergio Arroyo
  *
  */
-public class AbstractShellCommandTest extends TestCase {
+public class CommandExecutorShellImplTest extends TestCase {
 
     /**
      * Test the correct behavior when the executed command exists and is valid.
@@ -19,9 +19,9 @@ public class AbstractShellCommandTest extends TestCase {
      * @throws Exception
      */
     public void testScriptExecutedOk() throws Exception {
-        AbstractShellCommand shellCommand = new AbstractShellCommand();
-        String[] result = shellCommand.executeCommand("env");
-        assertTrue(result[0].contains("PATH"));
+        CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
+        String[] result = shellCommand.executeCommand("echo Hola");
+        assertTrue(result[0].contains("Hola"));
 
     }
 
@@ -32,9 +32,9 @@ public class AbstractShellCommandTest extends TestCase {
      * @throws Exception
      */
     public void testScriptExecutedFails() throws Exception {
-        AbstractShellCommand shellCommand = new AbstractShellCommand();
+        CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
         try {
-            shellCommand.executeCommand("ls -ñ");
+            shellCommand.executeCommand("cd -ñ");
             fail("ShellCommanException expected");
         } catch (ShellCommandException e) {
             // it's ok
@@ -47,7 +47,7 @@ public class AbstractShellCommandTest extends TestCase {
      * @throws Exception
      */
     public void testScriptExecutedFailsBecauseDoesNotExists() throws Exception {
-        AbstractShellCommand shellCommand = new AbstractShellCommand();
+        CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
         try {
             shellCommand.executeCommand("asdag");
             fail("ShellCommanException expected");

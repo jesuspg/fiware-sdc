@@ -25,5 +25,17 @@
             (see https://jira.tid.es/browse/CLAUDIA-484 for more information)
             </action>
         </release>
+        <release version="0.1.2" date="2011-06-21"
+            description="Added configuration features
+             (both for application and products)">
+            <action dev="jmovilla" type="add">
+            Added configure product feature (
+            (see https://jira.tid.es/browse/CLAUDIA-486 for more information)
+            </action>
+            <action dev="sarroyo" type="add">
+            Added configure application feature (
+            (see https://jira.tid.es/browse/CLAUDIA-504 for more information)
+            </action>
+        </release>
     </body>
 </document>
