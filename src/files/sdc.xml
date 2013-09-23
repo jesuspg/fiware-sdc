@@ -1,0 +1,11 @@
+<Context path="/sdc" reloadable="true" debug="5"
+    docBase="$PATH_TO_WAR">
+
+    <Resource name="jdbc/sdc" auth="Container" type="javax.sql.DataSource"
+        driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sdc"
+        username="postgres" password="postgres" maxActive="20" maxIdle="10"
+        maxWait="-1" />
+</Context>
+
+
+

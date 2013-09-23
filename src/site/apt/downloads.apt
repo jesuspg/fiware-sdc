@@ -1,8 +1,8 @@
 Downloads
 
-  * The frontend web page can be found {{{appconf.html}here}}
+   Download the {{{./downloads/sdc-server-dist-bin.zip} dist file}} and uncompress it to
+   get the necessary files to run the application.
 
-  * The {{{scripts}scripts}}
+   Also the frontend web page can be found {{{appconf.html}here}}.
 
-  * The web application is available {{{downloads/}here}}.
 

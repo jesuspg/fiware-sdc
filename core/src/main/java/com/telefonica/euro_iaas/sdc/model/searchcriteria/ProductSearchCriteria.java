@@ -1,7 +1,7 @@
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
 import com.telefonica.euro_iaas.sdc.model.Customer;
-import com.telefonica.euro_iaas.sdc.model.SO;
+import com.telefonica.euro_iaas.sdc.model.OS;
 /**
  * Search criteria for application entities.
  *
@@ -13,7 +13,7 @@ public class ProductSearchCriteria {
     /** */
     private Customer customer;
     /** */
-    private SO so;
+    private OS so;
 
 
     /**
@@ -37,7 +37,7 @@ public class ProductSearchCriteria {
      *
      * @return the so
      */
-    public SO getSo() {
+    public OS getSo() {
         return so;
     }
     /**
@@ -45,7 +45,7 @@ public class ProductSearchCriteria {
      *
      * @param so the so to set
      */
-    public void setSo(SO so) {
+    public void setSo(OS so) {
         this.so = so;
     }
 }

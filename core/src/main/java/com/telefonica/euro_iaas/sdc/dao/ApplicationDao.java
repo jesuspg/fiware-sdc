@@ -8,6 +8,6 @@ import com.telefonica.euro_iaas.commons.dao.BaseDAO;
  * @author Sergio Arroyo.
  * @version $Id: $
  */
-public interface ApplicationDao extends BaseDAO<Application, Long> {
+public interface ApplicationDao extends BaseDAO<Application, String> {
 
 }

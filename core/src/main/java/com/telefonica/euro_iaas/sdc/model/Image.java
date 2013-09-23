@@ -33,7 +33,7 @@ public class Image {
     private String url;
 
     @OneToOne(optional=false)
-    private SOInstance so;
+    private OSInstance so;
     @OneToMany(cascade=CascadeType.ALL)
     private List<ProductInstance> apps;
     @ManyToOne
@@ -62,7 +62,7 @@ public class Image {
      *
      * @return the so
      */
-    public SOInstance getSo() {
+    public OSInstance getSo() {
         return so;
     }
 
@@ -71,7 +71,7 @@ public class Image {
      *
      * @param so the so to set
      */
-    public void setSo(SOInstance so) {
+    public void setSo(OSInstance so) {
         this.so = so;
     }
 

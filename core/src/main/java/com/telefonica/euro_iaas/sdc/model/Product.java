@@ -33,7 +33,7 @@ public class Product {
     @Column(length=128)
     private String version;
     @ManyToMany(fetch=FetchType.EAGER)
-    private List<SO> suportedSSOO;
+    private List<OS> suportedSSOO;
 
     /**
      * <p>Constructor for Product.</p>
@@ -48,7 +48,7 @@ public class Product {
      * @param version a {@link java.lang.String} object.
      * @param suportedSSOO a {@link java.util.List} object.
      */
-    public Product(String name, String version, List<SO> suportedSSOO) {
+    public Product(String name, String version, List<OS> suportedSSOO) {
         this.name = name;
         this.version = version;
         this.suportedSSOO = suportedSSOO;
@@ -90,7 +90,7 @@ public class Product {
      *
      * @return the suportedSSOO
      */
-    public List<SO> getSuportedSSOO() {
+    public List<OS> getSuportedSSOO() {
         return suportedSSOO;
     }
     /**
@@ -98,7 +98,7 @@ public class Product {
      *
      * @param suportedSSOO the suportedSSOO to set
      */
-    public void setSuportedSSOO(List<SO> suportedSSOO) {
+    public void setSuportedSSOO(List<OS> suportedSSOO) {
         this.suportedSSOO = suportedSSOO;
     }
     /**

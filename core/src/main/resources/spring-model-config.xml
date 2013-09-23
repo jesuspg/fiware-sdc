@@ -2,31 +2,57 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
     default-autowire="no">
 
     <bean id="imageManager" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.ImageManagerImpl">
-        <property name="soInstanceDao" ref="soInstanceDao"/>
-        <property name="soDao" ref="soDao"/>
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ImageManagerImpl">
+        <property name="osDao" ref="osDao"/>
         <property name="productDao" ref="productDao"/>
         <property name="imageDao" ref="imageDao"></property>
-        <property name="appDeployer" ref="appDeployer"/>
-        <property name="soDeployer" ref="soDeployer"/>
-        <property name="soStatusChecker" ref="soStatusChecker"/>
+        <property name="productInstanceManager" ref="productInstanceManager"/>
+        <property name="osInstanceManager" ref="osInstanceManager"/>
+    </bean>
+
+    <bean id="osInstanceManager" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.OSInstanceManagerCristianToolsImpl">
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="osInstanceDao" ref="osInstanceDao"/>
+    </bean>
+
+    <bean id="abstractCommandShell" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.AbstractShellCommand">
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
     </bean>
 
 
-    <bean id="appDeployer" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.util.AppDeployerChefImpl">
+    <bean id="productInstanceManager" lazy-init="true" parent="abstractCommandShell"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="ip2vm" ref="ip2vm"/>
     </bean>
 
-    <bean id="soDeployer" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.util.SODeployerCristianToolsImpl">
+    <bean id="ip2vm" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
     </bean>
 
-    <bean id="soStatusChecker" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.util.SOStatusCheckerImpl">
+    <!-- APPLICATION MANAGER DECORATORS -->
+    <bean id="applicationInstanceManagerFactory" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerFactoryImpl">
+        <property name="defaultManager" ref="applicationInstanceManager"/>
+        <property name="warManager" ref="applicationInstanceManagerWar"/>
     </bean>
+
+
+    <bean id="applicationInstanceManager" lazy-init="true" parent="abstractCommandShell"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerChefImpl">
+        <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+    </bean>
+
+    <bean id="applicationInstanceManagerWar" lazy-init="true" parent="abstractCommandShell"
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationInstanceManagerWarDecoratorImpl">
+        <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
+    </bean>
+
 
 </beans>

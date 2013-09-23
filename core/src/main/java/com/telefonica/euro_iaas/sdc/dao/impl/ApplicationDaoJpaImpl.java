@@ -12,7 +12,7 @@ import com.telefonica.euro_iaas.sdc.model.Application;
  * @author Sergio Arroyo
  * @version $Id: $
  */
-public class ApplicationDaoJpaImpl extends AbstractBaseDao<Application, Long>
+public class ApplicationDaoJpaImpl extends AbstractBaseDao<Application, String>
         implements ApplicationDao {
 
     /** {@inheritDoc} */
@@ -23,8 +23,8 @@ public class ApplicationDaoJpaImpl extends AbstractBaseDao<Application, Long>
 
     /** {@inheritDoc} */
     @Override
-    public Application load(Long id) throws EntityNotFoundException {
-        return super.loadByField(Application.class, "id", id);
+    public Application load(String id) throws EntityNotFoundException {
+        return super.loadByField(Application.class, "name", id);
     }
 
 }

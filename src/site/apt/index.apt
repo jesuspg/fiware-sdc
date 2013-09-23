@@ -4,5 +4,10 @@ SDC Server
   and configure products in a running SO, some applications in an installed product.
   Finally the system shall be able to clone a image of a running SO.
 
-  In this first version, SDC-Server will only be able to get a base image running,
+  In the first version, SDC-Server will only be able to get a base image running,
   install some products, and clone the image.
+
+  However the actual version has changed the point of view offering only the
+  primitive calls. This way SDC-Server provides some rest resources that are able
+  to perform the basic required functionallity delegating the responsibility of
+  orchestration to another system like Claudia.

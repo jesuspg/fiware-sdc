@@ -2,7 +2,7 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.model.SO;
+import com.telefonica.euro_iaas.sdc.model.OS;
 
 /**
  * Unit test for SODaoJpaImpl
@@ -11,7 +11,7 @@ import com.telefonica.euro_iaas.sdc.model.SO;
  */
 public class SODaoJpaImplTest extends AbstractJpaDaoTest {
 
-    private SODao soDao;
+    private OSDao soDao;
 
     public final static String SO_NAME = "TestSO";
     public final static String SO_DESCRIPTION = "TestDescription";
@@ -21,16 +21,16 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the create and load method
      */
     public void testCreate() throws Exception {
-        SO so = new SO(SO_NAME, SO_DESCRIPTION, SO_VERSION);
+        OS so = new OS(SO_NAME, SO_DESCRIPTION, SO_VERSION);
         assertNull(so.getId());
 
-        SO createdSO = soDao.create(so);
+        OS createdSO = soDao.create(so);
         assertNotNull(createdSO.getId());
         assertEquals(so.getName(), createdSO.getName());
         assertEquals(so.getDescription(), createdSO.getDescription());
         assertEquals(so.getVersion(), createdSO.getVersion());
 
-        SO findSo = soDao.load(createdSO.getName());
+        OS findSo = soDao.load(createdSO.getName());
         assertEquals(createdSO, findSo);
     }
 
@@ -40,9 +40,9 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
     public void testFindAllAndUpdate() throws Exception {
         assertEquals(0, soDao.findAll().size());
         testCreate();
-        List<SO> ssoo = soDao.findAll();
+        List<OS> ssoo = soDao.findAll();
         assertEquals(1, ssoo.size());
-        SO so = ssoo.get(0);
+        OS so = ssoo.get(0);
         so.setName("newName");
         soDao.update(so);
         assertEquals("newName", soDao.load(so.getName()).getName());
@@ -55,7 +55,7 @@ public class SODaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * @param soDao the soDao to set
      */
-    public void setSoDao(SODao soDao) {
+    public void setSoDao(OSDao soDao) {
         this.soDao = soDao;
     }
 

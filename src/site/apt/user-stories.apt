@@ -1,13 +1,59 @@
 User Stories
 
-* Create an Image with installed products
+* 0.1.0 Version
+
+** Create an Image with installed products
 
 [img/us/CreateImageWithProducts.png] Activity diagram
 
-** Test Criteria
+*** Test Criteria
 
   The user shall be able to select some products from a web form (for a given OS)
   and the app-conf shall generate an image file accessible through webdav.
 
   <<<Note:for this version is only needed getting the image file but is not important,
    get the execution trace, etc.  >>>
+
+
+* 0.1.1 Version
+
+** Uninstall Products
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-275}jira entry}}
+
+*** Test Criteria
+
+  *  Check the product was previously installed (i.e accessing via HTTP for Apache2).
+
+  *  After the installation the product shall not response.
+
+  *  Try to install the product again to check the uninstall does not creates any
+     conflict
+
+** Install Application over some Products
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-197}jira entry}}
+
+*** Test Criteria
+
+  *  Check the products was previously installed (i.e accessing via HTTP for Apache2).
+
+  *  Install the application and check you can use it.
+
+** Uninstall application
+
+    See {{{https://jira.tid.es/browse/CLAUDIA-484}jira entry}}
+
+*** Test Criteria
+
+  *  Check the application was previously installed (i.e rest request for SDC).
+
+  *  Uninstall the application and check you can not use it.
+
+  * Check the products are already installed (i.e. HTTP request for tomcat)
+
+  *  Try to install the application again to check the uninstall does not creates any
+     conflict.
+
+
+

@@ -17,8 +17,10 @@
     <body>
         <menu name="Documentation">
             <item name="Index" href="index.html" />
+            <item name="Scope" href="scope.html"/>
             <item name="Installation" href="installation.html"/>
-            <item name="Troubleshooting" ref="troubleshooting.apt"/>
+            <item name="Configuration" href="configuration.html"/>
+            <item name="Troubleshooting" href="troubleshooting.html"/>
         </menu>
 
         <menu name="Downloads">
@@ -26,6 +28,7 @@
         </menu>
 
         <menu name="Development">
+            <item name="Roadmap" href="roadmap.html"/>
             <item name="Views" href="views.html" />
             <item name="User Stories" href="user-stories.html" />
         </menu>

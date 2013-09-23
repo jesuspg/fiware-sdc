@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Version;
@@ -13,12 +15,11 @@ import javax.persistence.Version;
  * is a deployable unit that will be run over a product.
  *
  * @author Sergio Arroyo
- * @version $Id: $
  */
 @Entity
 public class Application {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @SuppressWarnings("unused")
@@ -31,6 +32,8 @@ public class Application {
     private String description;
     @ManyToMany
     private List<Product> supportedProducts;
+
+    private String type;
 
     /**
      * Default constructor.
@@ -45,10 +48,11 @@ public class Application {
      * @param supportedProducts a {@link java.util.List} object.
      */
     public Application(String name, String description,
-            List<Product> supportedProducts) {
+            List<Product> supportedProducts, String type) {
         this.name = name;
         this.description = description;
         this.supportedProducts = supportedProducts;
+        this.type = type;
     }
     /**
      * <p>Getter for the field <code>name</code>.</p>
@@ -98,6 +102,22 @@ public class Application {
     public void setSupportedProducts(List<Product> supportedProducts) {
         this.supportedProducts = supportedProducts;
     }
+
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *

@@ -1,0 +1,35 @@
+Scope
+
+* Limitaions
+
+  * This version is only a <<prototipe>>.
+
+  * No assynchrony mechanism are implemented (note that operations could take many time).
+
+  * We provides basic calls (install, uninstall, configure, etc.) but no combinations of them.
+
+  * There is no mechanism to manage the catalog (OS's, products or applications).
+
+  * AppConf implements its own  API, and isn't able to proccess standard formats like OVF or TCloud.
+
+  * Although it was though as a modular architecture based on four components,
+    this implementation is based in a single monolitic application.
+
+  * There is no mechanism to ensure the referential integrity.
+   (i.e a validate a product is installed in a running VM, or not uninstall a product
+   that is not installed, etc.). So the application could be in a unstable state
+   after a call.
+
+  * SDC-Server only provides a Rest-API (but no web view, etc.).
+
+  * The server where SDC is installed shall be able to access throgh ssh as root
+  whith no password to every node where we want to install a product or application.
+
+
+* Risks
+
+  * The requirements are captured form a limited number of examples so we can fail
+  the rule making this implementation useless for another examples.
+
+  * Due to inexperience in systems like Chef and the brief time in estimations, the
+  plan could change a few.

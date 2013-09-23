@@ -4,16 +4,16 @@
     xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="
          http://www.springframework.org/schema/beans
-         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
          http://www.springframework.org/schema/tx
-         http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
          http://www.springframework.org/schema/aop
-         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
     default-autowire="no">
 
     <!--
-        The transactional advice (i.e. what 'happens'; see the
-        <aop:advisor/> bean below).
+        The transactional advice (i.e. what 'happens'; see the <aop:advisor/>
+        bean below).
     -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
@@ -27,8 +27,8 @@
     </tx:advice>
 
     <!--
-        Ensure that the above transactional advice runs for any
-        execution of an operation defined by the *Manager interface.
+        Ensure that the above transactional advice runs for any execution of
+        an operation defined by the *Manager interface.
     -->
     <aop:config>
         <aop:pointcut id="daoOperation"

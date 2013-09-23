@@ -1,6 +1,10 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DEFAULT_HOST_DOMAIN;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -19,12 +23,14 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.CustomerDao;
 import com.telefonica.euro_iaas.sdc.dao.ImageDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
-import com.telefonica.euro_iaas.sdc.dao.SODao;
+import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.manager.ImageManager;
 import com.telefonica.euro_iaas.sdc.model.Customer;
 import com.telefonica.euro_iaas.sdc.model.Image;
+import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.SO;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * Resource that implements the customer operations
@@ -35,13 +41,12 @@ import com.telefonica.euro_iaas.sdc.model.SO;
 @Path("/customer/{customer}")
 @Component
 @Scope("request")
-
 public class CustomerResource implements GetResource, PostResource {
     @InjectParam("customerDao")
     CustomerDao customerDao;
 
-    @InjectParam("soDao")
-    SODao soDao;
+    @InjectParam("osDao")
+    OSDao osDao;
 
     @InjectParam("productDao")
     ProductDao productDao;
@@ -51,6 +56,9 @@ public class CustomerResource implements GetResource, PostResource {
 
     @InjectParam("imageManager")
     ImageManager manager;
+
+    @InjectParam("systemPropertiesProvider")
+    private SystemPropertiesProvider propertiesProvider;
 
     /**
      * This method returns the list of images that
@@ -93,7 +101,7 @@ public class CustomerResource implements GetResource, PostResource {
         }
 
         String soName = formParams.getFirst("so");
-        SO so = soDao.load(soName);
+        OS so = osDao.load(soName);
 
 
         List<Product> productList = new ArrayList<Product>();
@@ -112,6 +120,9 @@ public class CustomerResource implements GetResource, PostResource {
         for(Product p : productList)
             System.out.println("Product: "+p.getName());
 
-        manager.deploy(customer, so, productList);
+        String sufix = new SimpleDateFormat("-yyMMddHHmmss").format(new Date());
+        manager.deploy(customer, so,
+                new VM(so.getName() + sufix, propertiesProvider.getProperty(
+                        DEFAULT_HOST_DOMAIN)), productList);
     }
 }
