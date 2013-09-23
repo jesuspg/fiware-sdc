@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.telefonica.euro_iass</groupId>
+    <artifactId>sdc-server-core</artifactId>
+    <packaging>jar</packaging>
+    <name>sdc-server-core</name>
+    <version>0.1.0</version>
+
+    <dependencies>
+        <!-- Persistence -->
+
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>commons-dao</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- FOR ENTITY-MANAGER -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+        <!-- concrete Log4J Implementation for SLF4J API-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+
+        <!-- SPRING DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>2.5.6</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-mock</artifactId>
+            <version>2.0.8</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- /SPRING DEPENDENCIES -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- To get test datasource -->
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.soebes.maven.plugins.dmg</groupId>
+                <artifactId>doxygen-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <quiet>false</quiet>
+                    <projectname>SDC Server Core</projectname>
+                    <projectnumber>1.0</projectnumber>
+                    <outputlanguage>spanish</outputlanguage>
+                    <optimizeoutputjava>true</optimizeoutputjava>
+                    <extractall>true</extractall>
+                    <extractprivate>true</extractprivate>
+                    <referencesrelation>true</referencesrelation>
+                    <input>src/main</input>
+                    <recursive>true</recursive>
+                    <configurationFile>doxyfile.conf</configurationFile>
+                    <haveDot>true</haveDot>
+                    <callGraph>true</callGraph>
+                    <callerGraph>true</callerGraph>
+                    <sourceBrowser>true</sourceBrowser>
+                    <generateHtml>true</generateHtml>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <scmCommentPrefix>[CLAUDIA-1]</scmCommentPrefix>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>debug</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.0.2</version>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <!--
+                                includes debug information in class files
+                            -->
+                            <debug>true</debug>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>gr.spinellis</groupId>
+                        <artifactId>UmlGraph</artifactId>
+                        <version>4.4</version>
+                    </docletArtifact>
+                    <additionalparam>
+                     <![CDATA[
+ -charset UTF-8
+ -docencoding UTF-8
+ -version
+ -author
+ -breakiterator
+ -windowtitle "${project.name} ${project.version} API Reference"
+ -doctitle "<img src='doc-files/logo.png'><br><b><font size='+2'>SDC Server</b></font><br>"
+ -bottom "Copyright &#169; ${project.inceptionYear}-Present ${project.organization.name} All Rights Reserved."
+ -use
+ -tag async:a:Asynchronous
+ -inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify
+ -postfixpackage -nodefontsize 9
+ -nodefontpackagesize 7
+                     ]]>
+                    </additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.soebes.maven.plugins.dmg</groupId>
+                <artifactId>doxygen-maven-plugin</artifactId>
+                <version>1.0.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>${repoMavenId}</id>
+            <name>${repoMavenName}</name>
+            <url>${repoMavenUrl}</url>
+        </repository>
+        <repository>
+            <id>java repository</id>
+            <name>Java Repository</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+    </repositories>
+
+    <!--
+        ===================================== Distribution Management ====
+    -->
+    <distributionManagement>
+        <!-- Repositorio para hacer el deploy de las releases -->
+        <repository>
+            <id>${repoMavenId}</id>
+            <name>${repoMavenName}</name>
+            <url>${repoMavenUrl}</url>
+        </repository>
+        <!--Don't want deploy snapshots -->
+        <!--
+            <snapshotRepository> <id>${repoMavenSnapshotId}</id>
+            <name>${repoMavenSnapshotName}</name>
+            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository>
+        -->
+        <!-- Maquina donde se publica el site del proyecto -->
+        <site>
+            <id>${repoSiteId}</id>
+            <name>${repoSiteName}</name>
+            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
+               </url>
+        </site>
+    </distributionManagement>
+
+</project>

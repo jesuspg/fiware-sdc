@@ -1,0 +1,8 @@
+SDC Server
+
+  Welcome to SDC Server project. It offers some mechanisms to install, uninstall,
+  and configure products in a running SO, some applications in an installed product.
+  Finally the system shall be able to clone a image of a running SO.
+
+  In this first version, SDC-Server will only be able to get a base image running,
+  install some products, and clone the image.

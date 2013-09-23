@@ -1,0 +1,143 @@
+Installation guide
+
+* Prerequisites
+
+  As SDC server is a web application, we need to install a J2EE container, and
+  a database manager. In development we will use <<<Tomcat>>> as J2EE server and <<<Postgresql>>>
+  as database management.
+
+** Tomcat installation
+
+  The choosen version during the development process will be 7.X.X
+  {{{http://apache.rediris.es/tomcat/tomcat-7/v7.0.12/bin/apache-tomcat-7.0.12.zip}
+  availbale on the website}}.
+  You only need to extract the files and run the startup and shutdown scripts.
+
++-------
+    $PROMT: $CATALINA_HOME/bin/catalina run (run tomcat)
+
+    $PROMT: $CATALINA_HOME/bin/catalina stop (stop tomcat)
+
+    $PROMT: $CATALINA_HOME/bin/catalina jpda run (run tomcat in debug mode)
++-------
+
+
+** Instalación de MySQL
+
+  See {{{http://www.postgresql.org/}postgresql website}} to install it.
+
+  We also shall create a new database to store the persistence data. The system
+  is in charge to create the tables on first deploy so only is needed the empty
+  database.
+
+  Finally we need to add the jdbc connector in Tomcat library. To do that,
+  {{{http://jdbc.postgresql.org/}download}} the connector from and store in
+   <<$CATALINA_HOME/lib>>.
+
+
+** Chef installation
+
+*** Using the script
+
+  Simply {{{./install_chef_knife.sh}download}} the script and execute it .
+
+*** Step by step installation (if the script does not works for you)
+
+  [[1]] Ruby
+
+  Install Ruby and development tools:
+
++-------
+sudo apt-get install ruby ruby-dev libopenssl-ruby rdoc ri irb build-essential wget ssl-cert git-core
++-------
+
+  [[2]] RubyGems 1.3.5+ installation
+
+  Checking if it is already installed by typing   <<<gem -v>>>
+
+  If you have an older version then type: <<<sudo gem update -system>>>
+
+  If Rubygems is not installed or you are using Ubuntu, install it from source
+
++-------
+cd /tmp
+wget http://production.cf.rubygems.org/rubygems/rubygems-1.3.7.tgz
+tar zxf rubygems-1.3.7.tgz
+cd rubygems-1.3.7
+sudo ruby setup.rb --no-format-executable
++----------
+
+ [[3]] Install Chef
+
++----------
+sudo gem install chef
++---------
+
+  [[4]] Install Git on a local workstation
+
+    Check if git is installed on your system: <<<git -version>>>
+
+  [[5]] Create Chef repository
+
++---------
+cd ~
+git clone git://github.com/opscode/chef-repo.git
++-----------
+
+  [[6]] Create .chef directory to store credentials and knife configuration file
+
++-------------
+mkdir -p ~/chef-repo/.chef
++--------------
+
+ [[7]]Copy the chef server credentials and knife configuration file
+
++----------
+cp USERNAME.pem ~/chef-repo/.chef
+cp ORGANIZATION-validator.pem ~/chef-repo/.chef
+cp knife.rb ~/chef-repo/.chef
++----------
+
+  [[8]]Testing the connection to the Chef server
+
++----------
+cd ~/chef-repo
+knife client list
+[
+    "ORGANIZATION-validator"
+]
++----------
+
+* SDC-Server installation
+
+  Once the prerequisites are satisfied, you shall create the context file. To do
+  that, creates an xml file (i.e sdc.xml) and store it in folder
+  <<$CATALINA_HOME/conf/Catalina/localhost>> with the code bellow:
+
++----
+<Context path="/sdc" docBase="path dond está el fichero war" reloadable="true" debug="5">
+        <Resource name="jdbc/sdc" auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="org.postgresql.Driver"  <!-- select the driver-->
+        url="jdbc:postgresql://localhost:5432/sdc" <!-- select the connection url-->
+         username="postgres" password="postgres" <!-- select the user/password-->
+         maxActive="20" maxIdle="10" maxWait="-1"/>
+</Context>
++----
+
+  You also have to add the next scripts:
+
+       * {{{scripts/assignRecipes.sh}assignRecipes.sh}} to assign the list of products
+     that a client shall install. Shall be stored located in
+     <<</root/chef-repo/scripts/>>> to run.
+
+     * {{{scripts/executeRecipes.sh}executeRecipes.sh}} to perform the installation.
+     Shall be stored located in <<</root/chef-repo/scripts/>>> to run.
+
+     * {{{scripts/newVm.py}newVm.py}} necessary to clone the image and get
+     the OS running. Shall be stored located in <<</home/images/kvm/>>> to run.
+
+     * {{{scripts/haltVM.py}haltVM.py}} used to create the image file of the
+     running OS. Shall be stored located in <<</home/images/kvm/>>> to run.
+
+  Finally, run Tomcat and enjoy!!!

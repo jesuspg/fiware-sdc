@@ -1,0 +1,19 @@
+Views
+
+  The diagrams bellow show the diferent views to define the system.
+
+* Uses case diagram
+
+[img/UseCaseDiagram.png] Uses case diagram
+
+* Class diagram
+
+  In this diagram are only shown the classes that define data model due to addingt
+  he rest of classes only would be a misunderstanding.
+
+[img/ClassDiagram.png] Class diagram
+
+
+* Deployment diagram
+
+[img/DeploymentDiagram.png] Deployment diagram

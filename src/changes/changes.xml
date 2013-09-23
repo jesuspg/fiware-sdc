@@ -1,0 +1,16 @@
+<document>
+    <properties>
+        <title>AFC Properties</title>
+    </properties>
+    <body>
+        <release version="0.1.0" date="2011-05-11"
+            description="Versión inicial del proyecto">
+            <action dev="sarroyo" type="add">
+                Versión inicial del proyecto en la que se añade la funcionalidad
+                básica para desplegar un instalable en un host.
+                Ver el roadmap de Jira para más información.
+            </action>
+        </release>
+
+    </body>
+</document>
