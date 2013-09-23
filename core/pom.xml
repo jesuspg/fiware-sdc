@@ -377,32 +377,6 @@
         </reporting> -->
 
 
-    <repositories>
-        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-        </repository>
-        <!-- WEBDAV JAVA CLIENT SARDINE -->
-        <repository>
-            <id>sardine-google-svn-repo</id>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <name>Sardine maven repo at Google Code</name>
-            <url>http://sardine.googlecode.com/svn/maven/</url>
-        </repository>
-
-
-        <!--  <repository>
-              <id>thirdparty</id>
-              <name>3rd party</name>
-              <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
-
-          </repository> -->
-
-    </repositories>
-
     <pluginRepositories>
         <!--  <pluginRepository>
               <id>thirdparty</id>
