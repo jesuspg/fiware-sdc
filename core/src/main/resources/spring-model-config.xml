@@ -5,22 +5,6 @@
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
     default-autowire="no">
 
-    <bean id="imageManager" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.ImageManagerImpl">
-        <property name="osDao" ref="osDao"/>
-        <property name="productDao" ref="productDao"/>
-        <property name="imageDao" ref="imageDao"></property>
-        <property name="productInstanceManager" ref="productInstanceManager"/>
-        <property name="osInstanceManager" ref="osInstanceManager"/>
-    </bean>
-
-    <bean id="osInstanceManager" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.OSInstanceManagerCristianToolsImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="osInstanceDao" ref="osInstanceDao"/>
-        <property name="commandExecutor" ref="commandExecutor"/>
-    </bean>
-
     <bean id="ip2vm" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
     </bean>
@@ -34,6 +18,7 @@
         class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableInstanceManager">
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="commandExecutor" ref="commandExecutor"/>
+        <property name="recipeNamingGenerator" ref="recipeNamingGenerator"/>
     </bean>
 
     <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
@@ -67,12 +52,19 @@
     <bean id="productManager" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
         <property name="productDao" ref="productDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
     </bean>
 
     <bean id="applicationManager" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationManagerImpl">
         <property name="applicationDao" ref="applicationDao"/>
+        <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
     </bean>
 
+    <!-- UTILS CLASSES -->
+    <bean id="recipeNamingGenerator" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.util.RecipeNamingGeneratorImpl">
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+    </bean>
 
 </beans>

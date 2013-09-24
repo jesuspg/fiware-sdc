@@ -2,8 +2,9 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 
@@ -17,25 +18,27 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     private ProductInstanceDao productInstanceDao;
     private ProductDao productDao;
     private OSDao soDao;
+    private ProductReleaseDao productReleaseDao;
 
     public final static String PRODUCT_NAME = "productName";
     public final static String PRODUCT_VERSION = "productVersion";
 
-    protected void createProduct() throws Exception {
-        ProductDaoJpaImplTest productDaoTest = new ProductDaoJpaImplTest();
+    protected void createProductRelease() throws Exception {
+        ProductReleaseDaoJpaImlTest productDaoTest = new ProductReleaseDaoJpaImlTest();
         productDaoTest.setSoDao(soDao);
         productDaoTest.setProductDao(productDao);
-        productDaoTest.testCreate();
+        productDaoTest.setProductReleaseDao(productReleaseDao);
+        productDaoTest.testCreateAndFindByCriteria();
     }
 
     /**
      * Test the create and load method
      */
     public void testCreate() throws Exception {
-        createProduct();
+        createProductRelease();
 
-        ProductInstance instance = new ProductInstance(
-                productDao.load(ProductDaoJpaImplTest.PRODUCT_NAME),
+        ProductRelease release = productReleaseDao.findAll().get(0);
+        ProductInstance instance = new ProductInstance(release,
                 Status.INSTALLED, new VM("ip", "hostname", "domain"));
 
         assertEquals(0, productInstanceDao.findAll().size());
@@ -45,16 +48,16 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     }
 
     public void testFindByCriteria() throws Exception {
-        createProduct();
+        createProductRelease();
         VM host = new VM(null, "hostname", "domain");
         VM host2 = new VM("ip");
 
-        ProductInstance pi1 = new ProductInstance(
-                productDao.load(ProductDaoJpaImplTest.PRODUCT_NAME),
+        ProductRelease release = productReleaseDao.findAll().get(0);
+
+        ProductInstance pi1 = new ProductInstance(release,
                 Status.INSTALLED, host);
 
-        ProductInstance pi2 = new ProductInstance(
-                productDao.load(ProductDaoJpaImplTest.PRODUCT_NAME),
+        ProductInstance pi2 = new ProductInstance(release,
                 Status.UNINSTALLED, host2);
 
         pi1 = productInstanceDao.create(pi1);
@@ -87,8 +90,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(pi1, instances.get(0));
 
         criteria.setVm(host);
-        criteria.setProduct(
-                productDao.load(ProductDaoJpaImplTest.PRODUCT_NAME));
+        criteria.setProduct(release);
         instances = productInstanceDao.findByCriteria(criteria);
         assertEquals(1, instances.size());
         assertEquals(pi1, instances.get(0));
@@ -97,10 +99,6 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         instances = productInstanceDao.findByCriteria(criteria);
         assertEquals(1, instances.size());
         assertEquals(pi1, instances.get(0));
-    }
-
-    public void testFindByHost() {
-
     }
 
     /**
@@ -123,5 +121,13 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     public void setSoDao(OSDao soDao) {
         this.soDao = soDao;
     }
+
+    /**
+     * @param productReleaseDao the productReleaseDao to set
+     */
+    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
+        this.productReleaseDao = productReleaseDao;
+    }
+
 
 }

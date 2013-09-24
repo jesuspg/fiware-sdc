@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 
@@ -25,7 +26,7 @@ public interface ProductInstanceManager {
      *
      * @return the of installed product.
      */
-    ProductInstance install(VM vm, Product product);
+    ProductInstance install(VM vm, ProductRelease product);
 
     /**
      * Configure an installed product
@@ -35,6 +36,15 @@ public interface ProductInstanceManager {
      */
     ProductInstance configure(ProductInstance productInstance,
             List<Attribute> configuration);
+
+    /**
+     * Upgrade a ProductInstance
+     * @param productInstance the installed product to upgrade
+     * @param configuration the configuration parameters.
+     * @return the configured product.
+     */
+    ProductInstance upgrade(ProductInstance productInstance, 
+    		ProductRelease productRelease) throws NotTransitableException;
 
     /**
      * Uninstall a previously installed product.

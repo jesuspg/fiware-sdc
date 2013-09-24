@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -15,9 +14,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
-import com.telefonica.euro_iaas.sdc.model.ProductInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 /**
  * Provides a rest api to works with ProductInstances
@@ -30,25 +30,43 @@ public interface ProductInstanceResource {
     /**
      * Install a product in a given host.
      *
-     * @param hostname
-     *            the host where the product will be installed
-     * @param domain
-     *            the domain where the host is
-     * @param ip
-     *            the ip where the machine is located
      * @param product
-     *            the product to install
+     *            the concrete release of a product to install.
+     *            It also contains information about the
+     *            VM where the product is going to be installed
      *
      * @return the installed product.
      */
     @POST
     @Path("/")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    ProductInstance install(@FormParam("hostname") String hostname,
-            @FormParam("domain") String domain, @FormParam("ip") String ip,
-            @FormParam("product") String product);
-
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    ProductInstance install(ProductInstanceDto product);
+    
+    /**
+     * Upgrade the selected product version.
+     *
+     * @param id
+     *            the product instance id
+     * @param new version
+     *            the new version to upgrade to
+     *
+     * @return the configured product Instance.
+     */
+    /*@PUT
+    @Path("/{pId}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    ProductInstance upgrade(@PathParam("pId") Long id,
+    		ReleaseDto releaseDto);
+	*/
+    @PUT
+    @Path("/{pId}/{newVersion}")
+    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    ProductInstance upgrade(@PathParam("pId") Long id,
+      @PathParam("newVersion") String version);
+    
     /**
      * Configure the selected product.
      *
@@ -62,10 +80,9 @@ public interface ProductInstanceResource {
     @PUT
     @Path("/{pId}")
     @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductInstance configure(@PathParam("pId") Long id,
             Attributes arguments);
-
     /**
      * Uninstall a previously installed product.
      *

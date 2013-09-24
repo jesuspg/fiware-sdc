@@ -1,7 +1,7 @@
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 
 /**
  * Provides some criteria to search ProductInstance entities.
