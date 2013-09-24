@@ -377,14 +377,6 @@
         </reporting> -->
 
 
-    <pluginRepositories>
-        <!--  <pluginRepository>
-              <id>thirdparty</id>
-              <name>3rd party</name>
-              <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
-          </pluginRepository>-->
-    </pluginRepositories>
-
     <!-- ===================================== Distribution Management ==== -->
     <distributionManagement>
         <!-- Repositorio para hacer el deploy de las releases -->
