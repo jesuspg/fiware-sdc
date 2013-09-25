@@ -57,7 +57,7 @@
         <cuke4duke.version>0.4.3</cuke4duke.version>
 
         <!-- Release generation -->
-        <maven-jgitflow-plugin.version>1.0-alpha8</maven-jgitflow-plugin.version>
+        <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
 
     </properties>
 
@@ -181,9 +181,9 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!-- to test a release set to true -->
-                    <noDeploy>false</noDeploy>
+                    <noDeploy>true</noDeploy>
                     <!-- rse: to avoid tag in master -->
-                    <noTag>true</noTag>
+                    <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
                     <pushChanges>false</pushChanges>
                     <!-- rse: To keep release branch -->
@@ -515,10 +515,11 @@
                                     <target>
                                         <taskdef resource="tasks.properties"/>
                                         <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-                                        <echo message="::PROCESS CLASSES: ${artifactId}"/>
+                                        <echo message="::PROCESS CLASSES: ${project.artifactId}"/>
 
                                         <if>
-                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage"/>
+                                            <equals arg1="${project.artifactId}"
+                                                    arg2="web-test-driver-for-code-coverage"/>
                                             <then>
                                                 <echo message="::SKIPPING PHASE for integration test"/>
                                             </then>
@@ -555,7 +556,8 @@
 
 
                                         <if>
-                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage"/>
+                                            <equals arg1="${project.artifactId}"
+                                                    arg2="web-test-driver-for-code-coverage"/>
                                             <then>
                                                 <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test"/>
                                                 <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser"/>
