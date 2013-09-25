@@ -23,6 +23,7 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -376,23 +377,4 @@
             </plugins>
         </reporting> -->
 
-
-    <!-- ===================================== Distribution Management ==== -->
-    <distributionManagement>
-        <!-- Repositorio para hacer el deploy de las releases -->
-        <repository>
-            <id>${repoMavenId}</id>
-            <name>${repoMavenName}</name>
-            <url>${repoMavenUrl}</url>
-        </repository>
-        <!--Don't want deploy snapshots -->
-        <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-            </url>
-        </site>
-    </distributionManagement>
 </project>
