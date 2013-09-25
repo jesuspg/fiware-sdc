@@ -130,7 +130,6 @@ public class InitDbBootstrap implements ServletContextListener {
 				tomcat.addAttribute(new Attribute("sdcgroupid", "id_web_server",
 				"sdcgroupid"));
 				
-				
 				tomcat = productDao.create(tomcat);
 
 				ProductRelease tomcat7 = new ProductRelease("6",
@@ -146,12 +145,13 @@ public class InitDbBootstrap implements ServletContextListener {
 				nodejsr = productReleaseDao.create(nodejsr);
 				
 				Product mysql = new Product("mysql", "mysql");
-				mysql = productDao.create(mysql);
 				mysql.addAttribute(new Attribute("aux", "aux",
 						"aux"));
+				mysql = productDao.create(mysql);
+				
 				ProductRelease mysql124 = new ProductRelease("1.2.4",
 						"mysql 1.2.4", null, mysql, supportedSSOO123, null);
-				nodejsr = productReleaseDao.create(mysql124); 
+				mysql124 = productReleaseDao.create(mysql124); 
 				
 				
 				
@@ -203,12 +203,12 @@ public class InitDbBootstrap implements ServletContextListener {
 
 				// Postgresql Product Releases
 				Product postgresql = new Product("postgresql", "db manager");
+				postgresql = productDao.create(postgresql);
 				postgresql.addAttribute(new Attribute("username", "postgres",
 						"The administrator usename"));
 				postgresql.addAttribute(new Attribute("password", "postgres",
 						"The administrator password"));
-				postgresql = productDao.create(postgresql);
-
+				
 				ProductRelease postgres84 = new ProductRelease("8.4",
 						"postgresql 8.4", null, postgresql, supportedSSOO123,
 						null);
@@ -220,7 +220,8 @@ public class InitDbBootstrap implements ServletContextListener {
 				postgres83 = productReleaseDao.create(postgres83);*/
 
 				// haproxy Product Releases
-				Product haproxy = new Product("haproxy", "balancer");
+				Product haproxy = new Product("haproxy", "balancer");		
+				haproxy = productDao.create(haproxy);
 				haproxy.addAttribute(new Attribute("key1", "value1",
 						"keyvaluedesc1"));
 				haproxy.addAttribute(new Attribute("key2", "value2",
@@ -228,9 +229,6 @@ public class InitDbBootstrap implements ServletContextListener {
 				haproxy.addAttribute(new Attribute("sdccoregroupid", "app_server_role",
 				"idcoregroup"));
 	
-		
-				haproxy = productDao.create(haproxy);
-
 				ProductRelease haproxy10 = new ProductRelease("1.0",
 						"haproxy 1.0", null, haproxy, supportedSSOO123, null);
 				haproxy10 = productReleaseDao.create(haproxy10);
