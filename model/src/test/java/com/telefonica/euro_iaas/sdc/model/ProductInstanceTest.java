@@ -16,11 +16,13 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 
 public class ProductInstanceTest extends TestCase{
-	
 	public void testProductInstance ()
 	{
 		Product product = new Product("Product::server", "description");
@@ -54,6 +56,7 @@ public class ProductInstanceTest extends TestCase{
 				Status.INSTALLED, vm, "vdc");
 		assertEquals(applicationInstance.getApplication().getApplication().getName(), "app");
 	}
+	
 	
 	
 
