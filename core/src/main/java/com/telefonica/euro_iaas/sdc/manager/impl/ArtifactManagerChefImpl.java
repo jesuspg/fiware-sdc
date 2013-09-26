@@ -70,7 +70,8 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 						productInstance.getVdc(), productInstance, artifact
 								.getAttributes()));
 			}
-			productInstance.setArtifact(artifact);
+			//productInstance.setArtifact(artifact);
+			productInstance.addArtifact(artifact);
 			productInstance = productInstanceDao.update(productInstance);
 
 			return productInstance;

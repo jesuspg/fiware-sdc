@@ -23,6 +23,7 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -248,10 +249,7 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
+
         </plugins>
     </build>
 
@@ -376,64 +374,4 @@
             </plugins>
         </reporting> -->
 
-
-    <repositories>
-        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-        </repository>
-        <!-- WEBDAV JAVA CLIENT SARDINE -->
-        <repository>
-            <id>sardine-google-svn-repo</id>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <name>Sardine maven repo at Google Code</name>
-            <url>http://sardine.googlecode.com/svn/maven/</url>
-        </repository>
-
-
-        <repository>
-            <id>bouncycastle</id>
-            <name>bouncycastle</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-
-
-        <!--  <repository>
-              <id>thirdparty</id>
-              <name>3rd party</name>
-              <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
-
-          </repository> -->
-
-    </repositories>
-
-    <pluginRepositories>
-        <!--  <pluginRepository>
-              <id>thirdparty</id>
-              <name>3rd party</name>
-              <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
-          </pluginRepository>-->
-    </pluginRepositories>
-
-    <!-- ===================================== Distribution Management ==== -->
-    <distributionManagement>
-        <!-- Repositorio para hacer el deploy de las releases -->
-        <repository>
-            <id>${repoMavenId}</id>
-            <name>${repoMavenName}</name>
-            <url>${repoMavenUrl}</url>
-        </repository>
-        <!--Don't want deploy snapshots -->
-        <!-- <snapshotRepository> <id>${repoMavenSnapshotId}</id> <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository> -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-            </url>
-        </site>
-    </distributionManagement>
 </project>

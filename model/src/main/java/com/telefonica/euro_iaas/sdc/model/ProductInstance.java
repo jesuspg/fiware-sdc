@@ -170,7 +170,7 @@ public class ProductInstance extends InstallableInstance implements
 	 * @param the
 	 *            list of artifact
 	 */
-	public void setArtifact(Artifact artifact) {
+	public void addArtifact(Artifact artifact) {
 		if (this.artifact == null) {
 			this.artifact = new ArrayList<Artifact>();
 		}

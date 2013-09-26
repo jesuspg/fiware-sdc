@@ -144,7 +144,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 		assertEquals(pi1, paux);
 
 		Artifact artifact = new Artifact("name", "vdc", pi1, null);
-		paux.setArtifact(artifact);
+		paux.addArtifact(artifact);
 		artifact = artifactDao.create(artifact);
 
 		paux = productInstanceDao.update(paux);
