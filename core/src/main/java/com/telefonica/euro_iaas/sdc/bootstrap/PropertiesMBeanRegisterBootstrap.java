@@ -29,7 +29,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
 	/**
 	 * Unregister the mbean.
 	 */
-	@Override
+	
 	public void contextDestroyed(ServletContextEvent event) {
 		WebApplicationContext ctx = WebApplicationContextUtils
 				.getWebApplicationContext(event.getServletContext());
@@ -52,7 +52,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
 	/**
 	 * Stores every system properties in BD and show them by JMX
 	 */
-	@Override
+	
 	public void contextInitialized(ServletContextEvent event) {
 
 		WebApplicationContext ctx = WebApplicationContextUtils

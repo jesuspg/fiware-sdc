@@ -58,7 +58,7 @@ public class ApplicationManagerImpl extends BaseInstallableManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<Application> findAll() {
 		return applicationDao.findAll();
 	}
@@ -66,7 +66,7 @@ public class ApplicationManagerImpl extends BaseInstallableManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<Application> findByCriteria(ApplicationSearchCriteria criteria) {
 		return applicationDao.findByCriteria(criteria);
 	}
@@ -74,7 +74,7 @@ public class ApplicationManagerImpl extends BaseInstallableManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public ApplicationRelease load(Application application, String version)
 			throws EntityNotFoundException {
 		return applicationReleaseDao.load(application, version);
@@ -83,7 +83,7 @@ public class ApplicationManagerImpl extends BaseInstallableManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<ApplicationRelease> findReleasesByCriteria(
 			ApplicationReleaseSearchCriteria criteria) {
 		return applicationReleaseDao.findByCriteria(criteria);
@@ -92,7 +92,7 @@ public class ApplicationManagerImpl extends BaseInstallableManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public Application load(String name) throws EntityNotFoundException {
 		return applicationDao.load(name);
 	}
