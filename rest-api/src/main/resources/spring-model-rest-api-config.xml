@@ -13,6 +13,7 @@
     <bean id="productResource" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
         <property name="validator" ref="productResourceValidator"/>
+        <property name="productManager" ref="productManager"/>
     </bean>
 
     <bean id="applicationResource" lazy-init="true" 
@@ -27,6 +28,9 @@
     <bean id="productInstanceResource" lazy-init="true" 
         class="com.telefonica.euro_iaas.sdc.rest.resources.ProductInstanceResourceImpl">
         <property name="validator" ref="productInstanceResourceValidator"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="productManager" ref="productManager"/>
+        <property name="productInstanceAsyncManager" ref="productInstanceAsyncManager"/>
     </bean>
 
     <!-- ===========

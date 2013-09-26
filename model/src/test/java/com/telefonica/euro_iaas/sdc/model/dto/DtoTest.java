@@ -16,11 +16,13 @@ public class DtoTest extends TestCase {
 	public static String VALUE1 = "value1";
 	public static String VALUE2 = "value2";
 	public static String VDC = "vdc";
-	
+
 	java.util.List<Attribute> atts = null;
+	EnvironmentDto env = null;
+	ProductInstanceDto productInstanceDto = null;
+
 	@Before
-	public void setUp ()
-	{
+	public void setUp() {
 		Attribute att = new Attribute(KEY1, VALUE1);
 		Attribute att2 = new Attribute();
 		att2.setKey(KEY2);
@@ -30,20 +32,20 @@ public class DtoTest extends TestCase {
 		atts.add(att);
 		atts.add(att2);
 	}
+
 	/**
 	 * Test Product Instance Dto class
 	 * 
 	 * @return
 	 */
-	
-	
+
 	public void testProductInstanceDto() {
 		ReleaseDto productReleaseDto = new ReleaseDto("productName",
 				"productDescription", "version");
 
 		VM vm = new VM();
 		vm.setIp("10.33.22.33");
-		ProductInstanceDto productInstanceDto = new ProductInstanceDto();
+		productInstanceDto = new ProductInstanceDto();
 		productInstanceDto.setVdc(VDC);
 		productInstanceDto.setVm(vm);
 		productInstanceDto.setProduct(productReleaseDto);
@@ -66,7 +68,7 @@ public class DtoTest extends TestCase {
 	 * 
 	 * @return
 	 */
-	
+
 	public void testReleaseDto() {
 		ReleaseDto productReleaseDto = new ReleaseDto();
 		productReleaseDto.setName("name");
@@ -114,14 +116,14 @@ public class DtoTest extends TestCase {
 	 * @return
 	 */
 	public void testArtifactDto() {
-		
+
 		ArtifactDto artifact2 = new ArtifactDto("artefacto", atts);
 		Attribute att2 = new Attribute(KEY1, VALUE1);
 		artifact2.addAttribute(att2);
 
 		assertEquals(artifact2.getAttributes().get(0).getKey(), KEY1);
-		assertEquals(artifact2.getAttributes().get(0).getValue(),VALUE1);
-		
+		assertEquals(artifact2.getAttributes().get(0).getValue(), VALUE1);
+
 		assertEquals(artifact2.getName(), "artefacto");
 
 		Map<String, String> attributes = artifact2.getMapAttributes();
@@ -134,9 +136,9 @@ public class DtoTest extends TestCase {
 	 * 
 	 * @return
 	 */
-	
+
 	public void testApplicationInstanceDto() {
-		
+
 		VM vm = new VM("ip", "hostname", "domain");
 		ApplicationInstanceDto applicationInstance = new ApplicationInstanceDto();
 		applicationInstance.setApplicationName("applicationName");
@@ -155,7 +157,7 @@ public class DtoTest extends TestCase {
 		assertEquals(applicationInstance.getVersion(), "1.0");
 		assertEquals(applicationInstance.getVm().getHostname(), "hostname");
 	}
-	
+
 	/**
 	 * Test Application Release Dto class
 	 * 
@@ -163,14 +165,14 @@ public class DtoTest extends TestCase {
 	 */
 
 	public void testApplicationReleaseDto() {
-	
+
 		ProductReleaseDto productReleaseDto = new ProductReleaseDto(
 				"productName", "productDescription", "version", "notas", atts,
 				null, null);
 		java.util.List<ProductReleaseDto> productsRelease = new ArrayList<ProductReleaseDto>();
 		productsRelease.add(productReleaseDto);
 
-		EnvironmentDto env = new EnvironmentDto();
+		env = new EnvironmentDto();
 		env.setDescription("description");
 		env.setName("env name");
 		env.setProducts(productsRelease);
@@ -196,5 +198,18 @@ public class DtoTest extends TestCase {
 
 	}
 
+	/**
+	 * Test EnvironmentInstanceDto class
+	 * 
+	 * @return
+	 */
+
+	public void testEnvironmentInstanceDto() {
+
+		EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
+		envInst.setEnvironment(env);
+		envInst.getProducts().add(productInstanceDto);
+
+	}
 
 }

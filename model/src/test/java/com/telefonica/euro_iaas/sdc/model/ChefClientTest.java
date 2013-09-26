@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 
 import junit.framework.TestCase;
 
@@ -20,6 +21,12 @@ public class ChefClientTest extends TestCase {
 	ChefClient chefClient;
 	String json;
 
+	public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+	public static String KEY = "key";
+	public static String VALUE = "value";
+	public static String KEY1 = "key1";
+	public static String VALUE1 = "value1";
+
 	@Before
 	public void setUp() throws Exception {
 
@@ -35,10 +42,25 @@ public class ChefClientTest extends TestCase {
 
 	@Test
 	public void testGetChefClientURL() throws Exception {
-		String name = chefClient.getChefClientName(json,
-				"henartmactmysqlInstance2-tomcat7postgres8Tier-1");
-		assertEquals(name,
-				"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal");
+		String name = chefClient.getChefClientName(json, NAME);
+		assertEquals(name, NAME);
+	}
+
+	@Test
+	public void testNodeCommand() throws Exception {
+		ChefNode node = new ChefNode();
+		node.setName(NAME);
+		node.addRecipe("coobook");
+		assertEquals(node.getRunlList().size(), 1);
+		node.removeRecipe("coobook");
+		assertEquals(node.getRunlList().size(), 0);
+		node.addDefault(KEY, VALUE);
+		node.addAttribute("att1", KEY1, VALUE1);
+		node.addOverride(KEY1, "VALUE2");
+		assertEquals(node.getAttributes().size(), 1);
+		node.removeAttritube(KEY1);
+		assertEquals(node.getAttributes().size(), 1);
+
 	}
 
 }
