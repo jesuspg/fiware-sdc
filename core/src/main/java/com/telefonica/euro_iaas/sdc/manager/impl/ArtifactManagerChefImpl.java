@@ -42,7 +42,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public ProductInstance deployArtifact(ProductInstance productInstance,
 			Artifact artifact) throws NodeExecutionException,
 			FSMViolationException {
@@ -70,7 +70,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 						productInstance.getVdc(), productInstance, artifact
 								.getAttributes()));
 			}
-			productInstance.setArtifact(artifact);
+			productInstance.addArtifact(artifact);
 			productInstance = productInstanceDao.update(productInstance);
 
 			return productInstance;
@@ -93,7 +93,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 
 	}
 
-	@Override
+	
 	public ProductInstance undeployArtifact(ProductInstance productInstance,
 			String artifactName) throws NodeExecutionException,
 			FSMViolationException {
@@ -147,12 +147,12 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<Artifact> findAll() {
 		return artifactDao.findAll();
 	}
 
-	@Override
+	
 	public Artifact load(String vdc, String productInstance, String name)
 			throws EntityNotFoundException {
 		Artifact instance = artifactDao.load(name);
@@ -162,12 +162,12 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager
 		return instance;
 	}
 
-	@Override
+	
 	public List<Artifact> findByCriteria(ArtifactSearchCriteria criteria) {
 		return artifactDao.findByCriteria(criteria);
 	}
 
-	@Override
+	
 	public Artifact loadByCriteria(ArtifactSearchCriteria criteria)
 			throws EntityNotFoundException, NotUniqueResultException {
 		List<Artifact> artifact = artifactDao.findByCriteria(criteria);

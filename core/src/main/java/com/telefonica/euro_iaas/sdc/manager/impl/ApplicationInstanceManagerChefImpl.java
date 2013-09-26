@@ -49,7 +49,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	 * {@inheritDoc}
 	 */
 	@UseCase(traceTo = "UC_002.1", status = "implemented")
-	@Override
+	
 	public ApplicationInstance install(VM vm, String vdc,
 			EnvironmentInstance environmentInstance,
 			ApplicationRelease application, List<Attribute> configuration)
@@ -94,7 +94,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void uninstall(ApplicationInstance applicationInstance)
 			throws NodeExecutionException, FSMViolationException {
 		Status previousStatus = applicationInstance.getStatus();
@@ -129,7 +129,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public ApplicationInstance configure(
 			ApplicationInstance applicationInstance,
 			List<Attribute> configuration) throws NodeExecutionException,
@@ -197,7 +197,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	 * {@inheritDoc}
 	 */
 	@UseCase(traceTo = "UC_002.4", status = "implemented")
-	@Override
+	
 	public ApplicationInstance upgrade(ApplicationInstance applicationInstance,
 			ApplicationRelease newRelease) throws NodeExecutionException,
 			NotTransitableException, IncompatibleProductsException,
@@ -252,7 +252,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public ApplicationInstance load(Long id) throws EntityNotFoundException {
 		return applicationInstanceDao.load(id);
 	}
@@ -260,7 +260,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public ApplicationInstance loadByCriteria(
 			ApplicationInstanceSearchCriteria criteria)
 			throws EntityNotFoundException, NotUniqueResultException {
@@ -339,7 +339,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<ApplicationInstance> findAll() {
 		return applicationInstanceDao.findAll();
 	}
@@ -347,7 +347,7 @@ public class ApplicationInstanceManagerChefImpl extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<ApplicationInstance> findByCriteria(
 			ApplicationInstanceSearchCriteria criteria) {
 		return applicationInstanceDao.findByCriteria(criteria);

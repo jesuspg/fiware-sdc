@@ -242,7 +242,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
 		artifact = new Artifact();
 		artifact.setName("artifact2");
-		expectedProduct.setArtifact(artifact);
+		expectedProduct.addArtifact(artifact);
 
 		manager.undeployArtifact(expectedProduct, "artifact2");
 
