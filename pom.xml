@@ -328,6 +328,8 @@
                     <instrumentation>
                         <excludes>
                             <exclude>**/main/Bootstrap.class</exclude>
+		        <exclude>client/**/*</exclude>
+			<exclude>model/**/*</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
