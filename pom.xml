@@ -328,8 +328,9 @@
                     <instrumentation>
                         <excludes>
                             <exclude>**/main/Bootstrap.class</exclude>
-		        <exclude>client/**/*</exclude>
-			<exclude>model/**/*</exclude>
+		        <exclude>**/client/**/*.class</exclude>
+		        <exclude>com.telefonica.euro_iaas.sdc.model.TaskError.class</exclude>
+		       <exclude>com.telefonica.euro_iaas.sdc.model.Task.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>

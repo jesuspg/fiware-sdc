@@ -78,8 +78,8 @@ public class ApplicationReleaseDto {
 		return appType;
 	}
 
-	public void setApplicationType(String appDescription) {
-		this.appDescription = appDescription;
+	public void setApplicationType(String appType) {
+		this.appType = appType;
 	}
 
 	public String getVersion() {
