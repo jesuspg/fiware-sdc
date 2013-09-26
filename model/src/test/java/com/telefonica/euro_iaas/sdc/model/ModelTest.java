@@ -3,7 +3,7 @@ package com.telefonica.euro_iaas.sdc.model;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import com.telefonica.euro_iaas.sdc.model.Attribute;
+
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 
@@ -28,8 +28,9 @@ public class ModelTest extends TestCase{
 		Attribute att = new Attribute ("key1","value1");
 		java.util.List<Attribute> atts = new ArrayList<Attribute>  ();
 		atts.add(att);
+		product.setAttributes(atts);
 		
-		productRelease.setPrivateAttributes(atts);
+
 
 		assertEquals(productRelease.getProduct().getName(), "productName");
 		assertEquals(productRelease.getProduct().getDescription(), "description");
