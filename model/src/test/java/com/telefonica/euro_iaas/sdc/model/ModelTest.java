@@ -4,19 +4,16 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import com.telefonica.euro_iaas.sdc.model.dto.VM;
-
-
 public class ModelTest extends TestCase{
 	
 	public void testProductRelease ()
 	{
 		ProductRelease productRelease = new ProductRelease (); 
-		Attribute metadata = new Attribute ("metadata1","value1");
-		Attribute metadata2 = new Attribute ();
+		Metadata metadata = new Metadata ("metadata1","value1");
+		Metadata metadata2 = new Metadata ();
 		metadata2.setKey("metadata2");
 		metadata2.setKey("value2");
-		java.util.List<Attribute> metadatas = new ArrayList<Attribute>  ();
+		java.util.List<Metadata> metadatas = new ArrayList<Metadata>  ();
 		metadatas.add(metadata);
 	
 		Product product = new Product ();
