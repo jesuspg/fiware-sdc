@@ -112,7 +112,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.8.1</version>
+                <version>1.8.4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -359,9 +359,9 @@
                     <instrumentation>
                         <excludes>
                             <exclude>**/main/Bootstrap.class</exclude>
-		        <exclude>**/client/**/*.class</exclude>
-		        <exclude>com.telefonica.euro_iaas.sdc.model.TaskError.class</exclude>
-		       <exclude>com.telefonica.euro_iaas.sdc.model.Task.class</exclude>
+                            <exclude>**/client/**/*.class</exclude>
+                            <exclude>com.telefonica.euro_iaas.sdc.model.TaskError.class</exclude>
+                            <exclude>com.telefonica.euro_iaas.sdc.model.Task.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
