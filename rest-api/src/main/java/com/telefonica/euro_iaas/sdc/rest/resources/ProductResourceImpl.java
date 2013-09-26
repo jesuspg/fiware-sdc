@@ -176,7 +176,7 @@ public class ProductResourceImpl implements ProductResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<ProductRelease> findAll(String name, String osType,
 			Integer page, Integer pageSize, String orderBy, String orderType) {
 		ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
@@ -401,7 +401,7 @@ public class ProductResourceImpl implements ProductResource {
 		this.productManager = productManager;
 	}
 
-	@Override
+	
 	public void delete(String name) throws ProductReleaseNotFoundException,
 			ProductReleaseStillInstalledException,
 			ProductReleaseInApplicationReleaseException {
