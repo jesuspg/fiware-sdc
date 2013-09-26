@@ -17,6 +17,7 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
+            <version>${project.version}</version>
 
         </dependency>
         <!--JERSEY DEPENDENCIES -->
