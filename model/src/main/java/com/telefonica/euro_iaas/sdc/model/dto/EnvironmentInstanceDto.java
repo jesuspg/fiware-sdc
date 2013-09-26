@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -54,6 +55,10 @@ public class EnvironmentInstanceDto {
 	 * @return the products
 	 */
 	public List<ProductInstanceDto> getProducts() {
+		if (products == null)
+		{
+			products = new ArrayList<ProductInstanceDto> ();
+		}
 		return products;
 	}
 

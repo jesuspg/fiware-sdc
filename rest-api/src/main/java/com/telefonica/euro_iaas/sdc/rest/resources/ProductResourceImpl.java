@@ -393,6 +393,13 @@ public class ProductResourceImpl implements ProductResource {
 	public void setValidator(ProductResourceValidator validator) {
 		this.validator = validator;
 	}
+	/**
+	 * @param validator
+	 *            the validator to set
+	 */
+	public void setProductManager(ProductManager productManager) {
+		this.productManager = productManager;
+	}
 
 	@Override
 	public void delete(String name) throws ProductReleaseNotFoundException,
