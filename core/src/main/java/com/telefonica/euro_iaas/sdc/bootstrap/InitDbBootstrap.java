@@ -20,10 +20,8 @@ import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.sdc.model.Application;
-import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Environment;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -126,9 +124,10 @@ public class InitDbBootstrap implements ServletContextListener {
 				"The ssl listen port"));
 				tomcat.addAttribute(new Attribute("id_web_server", "default",
 				"The id web server"));
-				
 				tomcat.addAttribute(new Attribute("sdcgroupid", "id_web_server",
 				"sdcgroupid"));
+				
+				tomcat.addMetadata(new Metadata("metadata0","metadata1","metadata description"));
 				
 				tomcat = productDao.create(tomcat);
 

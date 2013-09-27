@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
@@ -66,10 +67,16 @@ public class ProductResourceImpl implements ProductResource {
 
 		if (productReleaseDto.getPrivateAttributes() != null) {
 			LOGGER.info("Attributes " + productReleaseDto.getPrivateAttributes().size());
-		for (Attribute att: productReleaseDto.getPrivateAttributes())
-			product.addAttribute(att);
+			for (Attribute att: productReleaseDto.getPrivateAttributes())
+				product.addAttribute(att);
 		}
-
+		
+		if (productReleaseDto.getMetadatas() != null) {
+			for (Metadata metadata: productReleaseDto.getMetadatas()){
+				product.addMetadata(metadata);
+			}
+		}
+		
 		ProductRelease productRelease = new ProductRelease(productReleaseDto
 				.getVersion(), productReleaseDto.getReleaseNotes(),
 				productReleaseDto.getPrivateAttributes(), product,
@@ -103,11 +110,17 @@ public class ProductResourceImpl implements ProductResource {
 
 		Product product = new Product(productReleaseDto.getProductName(),
 				productReleaseDto.getProductDescription());
-
-		for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++)
-			product.addAttribute(productReleaseDto.getPrivateAttributes()
-					.get(i));
-
+	
+		if ( productReleaseDto.getMetadatas() != null){
+			for (Metadata metadata: productReleaseDto.getMetadatas()){
+				product.addMetadata(metadata);
+			}
+		}
+	
+		for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
+			product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
+		}
+		
 		ProductRelease productRelease = new ProductRelease(productReleaseDto
 				.getVersion(), productReleaseDto.getReleaseNotes(),
 				productReleaseDto.getPrivateAttributes(), product,
@@ -271,6 +284,12 @@ public class ProductResourceImpl implements ProductResource {
 		for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++)
 			product.addAttribute(productReleaseDto.getPrivateAttributes()
 					.get(i));
+		}
+		
+		if (productReleaseDto.getMetadatas()!=null){
+			for (int i = 0; i  < productReleaseDto.getMetadatas().size(); i++){
+				product.addMetadata(productReleaseDto.getMetadatas().get(i));
+			}
 		}
 
 		productRelease.setProduct(product);

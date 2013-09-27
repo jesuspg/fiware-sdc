@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -53,10 +54,15 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 		List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
 				privateAttributeII);
 		
+		List<Metadata> metadatas = Arrays.asList(
+				new Metadata ("key1", "value1", "desc1"),
+				new Metadata ("key2", "value2", "desc2"));
+		
 		Product product = new Product();
 		product.setName("yum");
 		product.setDescription("yum description");
 		product.setAttributes(privateAttributes);
+		product.setMetadatas(metadatas);
 		
 		try {
 			product = productDao.load(product.getName());
@@ -69,13 +75,6 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 		}
 		productRelease.setProduct(product);
 
-		/*Attribute privateAttribute = new Attribute("ssl_port", "8443",
-				"The ssl listen port");
-		Attribute privateAttributeII = new Attribute("port", "8080",
-				"The listen port");
-
-		List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
-				privateAttributeII);*/
 		productRelease.setPrivateAttributes(privateAttributes);
 
 		ProductRelease createdRelease = productReleaseDao
@@ -107,16 +106,6 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 			// it's ok, this exception was expected
 		}
 	}
-
-	// public void testDuplicateProductRelease() throws Exception{
-	// createProductRelease();
-	// try {
-	// createProductRelease();
-	// fail("AlreadyExistsEntityException expected");
-	// } catch (AlreadyExistsEntityException e) {
-	// //it's ok, this exception was expected
-	// }
-	// }
 
 	/**
 	 * @param productDao

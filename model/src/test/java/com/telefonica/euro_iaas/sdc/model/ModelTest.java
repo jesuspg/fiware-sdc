@@ -40,7 +40,7 @@ public class ModelTest extends TestCase {
 		Product product = new Product();
 		product.setName("productName");
 		product.setDescription("description");
-		product.setMetadata(metadatas);
+		product.setMetadatas(metadatas);
 		productRelease.setProduct(product);
 		productRelease.setVersion("1.0");
 
@@ -66,10 +66,10 @@ public class ModelTest extends TestCase {
 					.getDescription(), "description" + (i + 1));
 		}
 
-		for (int i = 0; i < productRelease.getProduct().getMetadata().size(); i++) {
-			assertEquals(productRelease.getProduct().getMetadata().get(i)
+		for (int i = 0; i < productRelease.getProduct().getMetadatas().size(); i++) {
+			assertEquals(productRelease.getProduct().getMetadatas().get(i)
 					.getKey(), "key" + (i + 1));
-			assertEquals(productRelease.getProduct().getMetadata().get(i)
+			assertEquals(productRelease.getProduct().getMetadatas().get(i)
 					.getValue(), "value" + (i + 1));
 		}
 	}
@@ -89,7 +89,7 @@ public class ModelTest extends TestCase {
 		Product product = new Product();
 		product.setName("productName");
 		product.setDescription("description");
-		product.setMetadata(metadatas);
+		product.setMetadatas(metadatas);
 		productRelease.setProduct(product);
 		productRelease.setVersion("1.0");
 
@@ -115,10 +115,10 @@ public class ModelTest extends TestCase {
 					.getDescription(), "description" + (i + 1));
 		}
 
-		for (int i = 0; i < productRelease.getProduct().getMetadata().size(); i++) {
-			assertEquals(productRelease.getProduct().getMetadata().get(i)
+		for (int i = 0; i < productRelease.getProduct().getMetadatas().size(); i++) {
+			assertEquals(productRelease.getProduct().getMetadatas().get(i)
 					.getKey(), "metadata" + (i + 1));
-			assertEquals(productRelease.getProduct().getMetadata().get(i)
+			assertEquals(productRelease.getProduct().getMetadatas().get(i)
 					.getValue(), "value" + (i + 1));
 		}
 	}
