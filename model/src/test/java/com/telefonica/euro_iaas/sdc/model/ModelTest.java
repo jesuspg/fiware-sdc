@@ -1,7 +1,6 @@
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -139,4 +138,18 @@ public class ModelTest extends TestCase {
 
 	}
 
+	/**
+	 * Test Metadatas class. IT is required for the client API
+	 * 
+	 * @return
+	 */
+	public void testMetadatas() {
+
+		Metadata metadata = new Metadata("key1", "value1", "description1");
+
+		List<Metadata> metadatas = new ArrayList<Metadata>();
+		metadatas.add(metadata);
+		assertEquals(metadatas.size(), 1);
+
+	}
 }
