@@ -1,7 +1,6 @@
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -20,7 +19,7 @@ public class ModelTest extends TestCase {
 	public static String APPLICATION_NAME = "app";
 	public static String APPLICATION_TYPE = "app";
 
-	List<Attribute> metadatas = null;
+	List<Metadata> metadatas = null;
 	java.util.List<Attribute> atts = null;
 
 	/**
@@ -31,11 +30,11 @@ public class ModelTest extends TestCase {
 
 	public void testProductRelease() {
 		ProductRelease productRelease = new ProductRelease();
-		Attribute metadata = new Attribute(METADATA1, VALUE1);
-		Attribute metadata2 = new Attribute();
+		Metadata metadata = new Metadata(METADATA1, VALUE1);
+		Metadata metadata2 = new Metadata();
 		metadata2.setKey(METADATA2);
 		metadata2.setKey(VALUE2);
-		metadatas = new ArrayList<Attribute>();
+		metadatas = new ArrayList<Metadata>();
 		metadatas.add(metadata);
 
 		Product product = new Product();
@@ -74,38 +73,15 @@ public class ModelTest extends TestCase {
 					.getValue(), "value" + (i + 1));
 		}
 	}
-
-	public void testApplicationRelease() {
-		ApplicationRelease applicationRelease = new ApplicationRelease();
-
-		Application application = new Application();
-
-		application.setDescription("description");
-		application.setMetadata(metadatas);
-		application.setName(APPLICATION_NAME);
-		application.setType(APPLICATION_TYPE);
-		application.setAttributes(atts);
-
-		applicationRelease.setApplication(application);
-		applicationRelease.setVersion("1.0");
-
-		assertEquals(applicationRelease.getApplication().getName(),
-				APPLICATION_NAME);
-
-	}
-
-	/**
-	 * /** Test Artifact class
-	 * 
-	 * @return
-	 */
-	public void testArtifact() {
-
-		Attribute metadata = new Attribute("metadata1", "value1");
-		Attribute metadata2 = new Attribute();
+	
+	public void testArtifact ()
+	{
+		
+		Metadata metadata = new Metadata ("metadata1","value1");
+		Metadata metadata2 = new Metadata ();
 		metadata2.setKey("metadata2");
 		metadata2.setKey("value2");
-		java.util.List<Attribute> metadatas = new ArrayList<Attribute>();
+		java.util.List<Metadata> metadatas = new ArrayList<Metadata>  ();
 		metadatas.add(metadata);
 
 		ProductRelease productRelease = new ProductRelease();
@@ -162,4 +138,18 @@ public class ModelTest extends TestCase {
 
 	}
 
+	/**
+	 * Test Metadatas class. IT is required for the client API
+	 * 
+	 * @return
+	 */
+	public void testMetadatas() {
+
+		Metadata metadata = new Metadata("key1", "value1", "description1");
+
+		List<Metadata> metadatas = new ArrayList<Metadata>();
+		metadatas.add(metadata);
+		assertEquals(metadatas.size(), 1);
+
+	}
 }

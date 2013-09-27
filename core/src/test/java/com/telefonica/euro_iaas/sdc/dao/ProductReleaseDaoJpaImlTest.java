@@ -45,9 +45,19 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 		List<OS> supportedOOSS = Arrays.asList(so);
 		productRelease.setSupportedOOSS(supportedOOSS);
 
+		Attribute privateAttribute = new Attribute("ssl_port", "8443",
+				"The ssl listen port");
+		Attribute privateAttributeII = new Attribute("port", "8080",
+				"The listen port");
+
+		List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
+				privateAttributeII);
+		
 		Product product = new Product();
 		product.setName("yum");
 		product.setDescription("yum description");
+		product.setAttributes(privateAttributes);
+		
 		try {
 			product = productDao.load(product.getName());
 			System.out.println("The Product " + product.getName()
@@ -59,13 +69,13 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 		}
 		productRelease.setProduct(product);
 
-		Attribute privateAttribute = new Attribute("ssl_port", "8443",
+		/*Attribute privateAttribute = new Attribute("ssl_port", "8443",
 				"The ssl listen port");
 		Attribute privateAttributeII = new Attribute("port", "8080",
 				"The listen port");
 
 		List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
-				privateAttributeII);
+				privateAttributeII);*/
 		productRelease.setPrivateAttributes(privateAttributes);
 
 		ProductRelease createdRelease = productReleaseDao
