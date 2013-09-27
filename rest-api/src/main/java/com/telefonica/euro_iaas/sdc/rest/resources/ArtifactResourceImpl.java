@@ -49,7 +49,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
 	@InjectParam("taskManager")
 	private TaskManager taskManager;
 
-	@Override
+	
 	public Task install(String vdc, String productIntanceName,
 			ArtifactDto artifactDto, String callback) {
 		ProductInstance productInstance = getProductInstance(vdc,
@@ -70,7 +70,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public Task uninstall(String vdc, String productInstanceName,
 			String artifactName, String callback) {
 
@@ -87,7 +87,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
 		return task;
 	}
 
-	@Override
+	
 	public Artifact load(String vdc, String productInstance, String name) {
 		try {
 			return artifactAsyncManager.load(vdc, productInstance, name);
@@ -99,7 +99,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public List<ArtifactDto> findAll(Integer page, Integer pageSize,
 			String orderBy, String orderType, List<Status> status, String vdc,
 			String productInstance) {
@@ -160,5 +160,16 @@ public class ArtifactResourceImpl implements ArtifactResource {
 			throw new WebApplicationException(e, 404);
 		}
 	}
+	
+	public void setTaskManager (TaskManager taskManager ){
+		this.taskManager =taskManager ;
+	}
+	public void setProductInstanceAsyncManager (ProductInstanceAsyncManager productInstanceAsyncManager ){
+		this.productInstanceAsyncManager =productInstanceAsyncManager ;
+	}
+	public void setArtifactAsyncManager (ArtifactAsyncManager artifactAsyncManager) {
+		this.artifactAsyncManager=artifactAsyncManager;
+	}
+
 
 }

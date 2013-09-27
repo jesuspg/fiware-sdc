@@ -61,7 +61,6 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	public Task install(String vdc, ProductInstanceDto product, String callback) {
 		
 	//	validator.validateInsert(product);
-		
 		try {
 			Product p = productManager.load(product.getProduct().getName());
 			ProductRelease loadedProduct = productManager.load(p, product
@@ -87,7 +86,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public Task uninstall(String vdc, String name, String callback) {
 
 		ProductInstance product = load(vdc, name);
@@ -109,7 +108,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public Task upgrade(String vdc, String name, String version, String callback) {
 		ProductInstance productInstance = load(vdc, name);
 		Task task = upgrade(vdc, productInstance, version, callback);
@@ -148,7 +147,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	 * {@inheritDoc}
 	 */
 
-	@Override
+
 	public Task configure(String vdc, String name, String callback,
 			Attributes arguments) {
 		ProductInstance productInstance = load(vdc, name);
@@ -172,7 +171,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public ProductInstance load(String vdc, String name) {
 		try {
 			ProductInstance pro = productInstanceAsyncManager.load(vdc, name);
@@ -187,7 +186,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public List<ProductInstance> findAll(String hostname, String domain,
 			String ip, String fqn, Integer page, Integer pageSize,
 			String orderBy, String orderType, Status status, String vdc,
@@ -237,5 +236,22 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 	public void setValidator(ProductInstanceResourceValidator validator) {
 		this.validator = validator;
 	}
+	
+	/**
+	 * @param validator
+	 *            the validator to set
+	 */
+	public void setProductManager(ProductManager productManager) {
+		this.productManager = productManager;
+	}
+	
+	public void setProductInstanceAsyncManager(ProductInstanceAsyncManager productInstanceAsyncManager) {
+		this.productInstanceAsyncManager = productInstanceAsyncManager;
+	}
+	
+	public void setTaskManager(TaskManager taskManager) {
+		this.taskManager = taskManager;
+	}
+	
 
 }

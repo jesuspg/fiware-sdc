@@ -28,7 +28,7 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void contextDestroyed(ServletContextEvent arg0) {
 		// Do nothing
 	}
@@ -36,7 +36,7 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void contextInitialized(ServletContextEvent event) {
 		WebApplicationContext ctx = WebApplicationContextUtils
 				.getWebApplicationContext(event.getServletContext());
