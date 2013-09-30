@@ -23,6 +23,8 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -321,6 +323,18 @@ public class ProductManagerImpl extends BaseInstallableManager implements
 		try {
 			product = productDao.load(productRelease.getProduct().getName());
 			LOGGER.log(Level.INFO, "Product " + product.getName() + " LOADED");
+			
+			if (productRelease.getProduct().getAttributes() != null) {
+				LOGGER.info("Attributes " + productRelease.getProduct().getAttributes().size());
+				for (Attribute att: productRelease.getPrivateAttributes())
+					product.addAttribute(att);
+			}
+			
+			if (productRelease.getProduct().getMetadatas() != null) {
+				for (Metadata metadata: productRelease.getProduct().getMetadatas()){
+					product.addMetadata(metadata);
+				}
+			}
 		} catch (EntityNotFoundException e) {
 			try {
 				product = productDao.create(productRelease.getProduct());

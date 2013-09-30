@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.HashMap;
 import java.util.List;
@@ -58,11 +57,8 @@ public class Product {
 	private List<Attribute> attributes;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<Attribute> metadata;
+	private List<Metadata> metadatas;
 	
-	//@OneToMany(cascade = CascadeType.ALL)
-	//private List<Attribute> attributesPorts;
-
 	/**
 	 * @return the attributes
 	 */
@@ -79,35 +75,21 @@ public class Product {
 	}
 	
 	/**
-	 * @return the attributes
+	 * @return the metadatas
 	 */
-	public List<Attribute> getMetadata() {
-		return metadata;
+	public List<Metadata> getMetadatas() {
+		return metadatas;
 	}
 
 	/**
-	 * @param attributes
-	 *            the attributes to set
+	 * @param metadatas
+	 *            the metadatas to set
 	 */
-	public void setMetadata(List<Attribute> metadata) {
-		this.metadata = metadata;
+	public void setMetadatas(List<Metadata> metadatas) {
+		this.metadatas = metadatas;
 	}
 	
-	/**
-	 * @return the attributes
-	 */
-	/*public List<Attribute> getAttributesPorts() {
-		return attributesPorts;
-	}
-
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	/*public void setAttributesPorts(List<Attribute> attributesPorts) {
-		this.attributesPorts = attributesPorts;
-	}*/
-
+	
 	/**
 	 * Add a new attribute.
 	 * 
@@ -121,19 +103,13 @@ public class Product {
 		attributes.add(attribute);
 	}
 	
-	public void addMetadata(Attribute meta) {
-		if (metadata == null) {
-			metadata = new ArrayList<Attribute>();
+	public void addMetadata(Metadata meta) {
+		if (metadatas == null) {
+			metadatas = new ArrayList<Metadata>();
 		}
-		metadata.add(meta);
+		metadatas.add(meta);
 	}
 	
-	/*public void addAttributePort(Attribute attribute) {
-		if (attributesPorts == null) {
-			attributesPorts = new ArrayList<Attribute>();
-		}
-		attributesPorts.add(attribute);
-	}*/
 
 	/**
 	 * @return the attributes as a Map
@@ -147,14 +123,14 @@ public class Product {
 	}
 	
 	/**
-	 * @return the attributes as a Map
+	 * @return the metadatas as a Map
 	 */
 	public Map<String, String> getMapMetadata() {
-		Map<String, String> atts = new HashMap<String, String>();
-		for (Attribute att : metadata) {
-			atts.put(att.getKey(), att.getValue());
+		Map<String, String> mets = new HashMap<String, String>();
+		for (Metadata metadata : metadatas) {
+			mets.put(metadata.getKey(), metadata.getValue());
 		}
-		return atts;
+		return mets;
 	}
 
 	/**

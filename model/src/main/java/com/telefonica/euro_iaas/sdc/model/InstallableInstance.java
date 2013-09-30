@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 
 
 /**
@@ -40,8 +43,7 @@ public class InstallableInstance {
 	 * Defines the value of the different status the Application could be. See
 	 * the diagram bellow to know the relations between the different states.
 	 * <img src="http://plantuml.com:80/plantuml/img/YzQALT3LjLFmp2ikISp9oSnBv-L2i96bKbFWCgafO8dGl4nCNJ2vWlIYn1Gi4ixvUMcPwQL5O2cuAdIBa5IXIo7RYkeC55ceTT5QiRnS65voBIhABq9t6LGGrKrGGNJtmDIYkmLT7DLeC0Lp5W00"
-	 * >
-	 * 
+	 * > 
 	 */
 	public enum Status {
 		INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED, CONFIGURING, UPGRADING, DEPLOYING_ARTEFACT, ARTIFACT_DEPLOYED, UNDEPLOYING_ARTIFACT, ARTIFACT_UNDEPLOYED
@@ -63,6 +65,9 @@ public class InstallableInstance {
 
 	private String vdc;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Attribute> attributes;
+	
 	/**
 	 * Constructor
 	 * 
@@ -175,6 +180,22 @@ public class InstallableInstance {
 		this.name = name;
 	}
 
+	/**
+	 * @return the attributes
+	 */
+	public List<Attribute> getAttributes() {
+		return attributes;
+	}
+
+	/**
+	 * @param attributes
+	 *            the attributes to set
+	 */
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
+	}
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 

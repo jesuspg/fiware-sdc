@@ -446,14 +446,14 @@ public class ProductInstanceManagerChefImpl extends
 			product = new Product(productRelease.getProduct().getName(),
 					productRelease.getProduct().getDescription());
 		}
-		product.setAttributes(attributes);
-
+		
 		productRelease.setProduct(product);
 		
 		instance.setProductRelease(productRelease);
 		instance.setVm(vm);
 		instance.setVdc(vdc);
 		instance.setStatus(Status.UNINSTALLED);
+		instance.setAttributes(attributes);
 		instance.setName(vm.getFqn() + "_" + productRelease.getProduct().getName()
 				+ "_" + productRelease.getVersion());
 		
