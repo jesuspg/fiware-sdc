@@ -77,7 +77,7 @@ public class Product {
 	/**
 	 * @return the metadatas
 	 */
-	public List<Metadata> getMetadata() {
+	public List<Metadata> getMetadatas() {
 		return metadatas;
 	}
 
@@ -85,7 +85,7 @@ public class Product {
 	 * @param metadatas
 	 *            the metadatas to set
 	 */
-	public void setMetadata(List<Metadata> metadatas) {
+	public void setMetadatas(List<Metadata> metadatas) {
 		this.metadatas = metadatas;
 	}
 	

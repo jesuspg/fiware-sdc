@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
@@ -25,6 +26,7 @@ public class ProductReleaseDto {
 	private String version;
 	private String releaseNotes;
 	private List<Attribute> privateAttributes;
+	private List<Metadata> metadatas;
 	private List<OS> supportedOS;
 	private List<ProductRelease> transitableReleases;
 
@@ -36,18 +38,20 @@ public class ProductReleaseDto {
 	 * @param version
 	 * @param releaseNotes
 	 * @param privateAttributes
+	 * @param metadatas
 	 * @param supportedOS
 	 * @param transitableReleases
 	 */
 	public ProductReleaseDto(String productName, String productDescription,
 			String version, String releaseNotes,
-			List<Attribute> privateAttributes, List<OS> supportedOS,
+			List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
 			List<ProductRelease> transitableReleases) {
 		this.productName = productName;
 		this.productDescription = productDescription;
 		this.version = version;
 		this.releaseNotes = releaseNotes;
 		this.privateAttributes = privateAttributes;
+		this.metadatas = metadatas;
 		this.supportedOS = supportedOS;
 		this.transitableReleases = transitableReleases;
 	}
@@ -98,6 +102,14 @@ public class ProductReleaseDto {
 		this.privateAttributes = privateAttributes;
 	}
 
+	public List<Metadata> getMetadatas() {
+		return metadatas;
+	}
+
+	public void setMetadatas(List<Metadata> metadatas) {
+		this.metadatas = metadatas;
+	}
+	
 	public List<OS> getSupportedOS() {
 		return supportedOS;
 	}

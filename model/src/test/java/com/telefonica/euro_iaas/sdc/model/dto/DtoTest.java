@@ -1,12 +1,14 @@
 package com.telefonica.euro_iaas.sdc.model.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 
 import junit.framework.TestCase;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class DtoTest extends TestCase {
@@ -17,7 +19,8 @@ public class DtoTest extends TestCase {
 	public static String VALUE2 = "value2";
 	public static String VDC = "vdc";
 
-	java.util.List<Attribute> atts = null;
+	List<Attribute> atts = null;
+	List<Metadata> metadatas = null;
 	EnvironmentDto env = null;
 	ProductInstanceDto productInstanceDto = null;
 
@@ -31,6 +34,10 @@ public class DtoTest extends TestCase {
 		atts = new ArrayList<Attribute>();
 		atts.add(att);
 		atts.add(att2);
+		
+		metadatas = new ArrayList<Metadata>();
+		metadatas.add(new Metadata("key", "value", "desc"));
+		metadatas.add(new Metadata("key2", "valu2e", "desc2"));		
 	}
 
 	/**
@@ -91,7 +98,7 @@ public class DtoTest extends TestCase {
 		VM vm = new VM();
 		vm.setIp("10.33.22.33");
 		ProductReleaseDto productReleaseDto = new ProductReleaseDto(
-				"productName", "productDescription", "version", "notas", atts,
+				"productName", "productDescription", "version", "notas", atts, metadatas,
 				null, null);
 
 		assertEquals(productReleaseDto.getProductName(), "productName");
