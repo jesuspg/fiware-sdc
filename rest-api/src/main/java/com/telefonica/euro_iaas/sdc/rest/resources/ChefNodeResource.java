@@ -12,16 +12,17 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 
 public interface ChefNodeResource {
 
-	/**
-	 * Delete a ChefNode from Chef Server
-	 * @param chefNodename the vmname to be deleted from Chef server
-	 * @return the state of last Node
-	 * @throws NodeExecutionException
-	 */
-	@DELETE
-	@Path("/{chefNodeName}")
-	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	Task delete(@PathParam("vdc") String vdc, 
-			@PathParam("chefNodeName") String chefNodeName,
-			@HeaderParam("callback") String callback) throws NodeExecutionException;
+    /**
+     * Delete a ChefNode from Chef Server
+     * 
+     * @param chefNodename
+     *            the vmname to be deleted from Chef server
+     * @return the state of last Node
+     * @throws NodeExecutionException
+     */
+    @DELETE
+    @Path("/{chefNodeName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    Task delete(@PathParam("vdc") String vdc, @PathParam("chefNodeName") String chefNodeName,
+            @HeaderParam("callback") String callback) throws NodeExecutionException;
 }

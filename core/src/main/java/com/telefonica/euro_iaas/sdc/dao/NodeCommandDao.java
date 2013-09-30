@@ -14,14 +14,13 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriter
  */
 public interface NodeCommandDao extends BaseDAO<NodeCommand, Long> {
 
-	/**
-	 * Find by criteria
-	 * 
-	 * @param criteria
-	 *            the search criteria (containing pagination info, and some
-	 *            fields criteria).
-	 * @return the elements that match with the search criteria
-	 */
-	List<NodeCommand> findByCriteria(NodeCommandSearchCriteria criteria);
+    /**
+     * Find by criteria
+     * 
+     * @param criteria
+     *            the search criteria (containing pagination info, and some fields criteria).
+     * @return the elements that match with the search criteria
+     */
+    List<NodeCommand> findByCriteria(NodeCommandSearchCriteria criteria);
 
 }

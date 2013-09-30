@@ -10,40 +10,40 @@ import com.telefonica.euro_iaas.sdc.model.Environment;
 @SuppressWarnings("serial")
 public class AlreadyExistsEnvironmentException extends Exception {
 
-	private Environment environment;
+    private Environment environment;
 
-	public AlreadyExistsEnvironmentException() {
-		super();
-	}
+    public AlreadyExistsEnvironmentException() {
+        super();
+    }
 
-	public AlreadyExistsEnvironmentException(Environment environment) {
-		this.environment = environment;
-	}
+    public AlreadyExistsEnvironmentException(Environment environment) {
+        this.environment = environment;
+    }
 
-	public AlreadyExistsEnvironmentException(String msg) {
-		super(msg);
-	}
+    public AlreadyExistsEnvironmentException(String msg) {
+        super(msg);
+    }
 
-	public AlreadyExistsEnvironmentException(Throwable e) {
-		super(e);
-	}
+    public AlreadyExistsEnvironmentException(Throwable e) {
+        super(e);
+    }
 
-	public AlreadyExistsEnvironmentException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public AlreadyExistsEnvironmentException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-	/**
-	 * @return the environment
-	 */
-	public Environment getEnvironment() {
-		return environment;
-	}
+    /**
+     * @return the environment
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
 
-	/**
-	 * @param environment
-	 *            the environment to set
-	 */
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
+    /**
+     * @param environment
+     *            the environment to set
+     */
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 }

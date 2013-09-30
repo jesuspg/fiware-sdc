@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xuse:actors xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/actors.xsd"
-    model-version="1.0">
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/actors.xsd"
+             model-version="1.0">
 
     <xuse:actor id="client">
         <xuse:title>Client</xuse:title>
         <xuse:description>Usually will be a system wich use the provided API
-        to perform some task related to product or application instances.</xuse:description>
+            to perform some task related to product or application instances.
+        </xuse:description>
         <xuse:stereotype>system</xuse:stereotype>
     </xuse:actor>
 
     <xuse:actor id="crm">
         <xuse:title>CRM</xuse:title>
         <xuse:description>Is in charge to manage the catalog of products and
-        applications.</xuse:description>
+            applications.
+        </xuse:description>
         <xuse:stereotype>person</xuse:stereotype>
     </xuse:actor>
 

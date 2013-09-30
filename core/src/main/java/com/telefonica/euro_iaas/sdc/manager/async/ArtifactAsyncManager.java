@@ -12,32 +12,27 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
  * Defines the interface to work with async requests.
  * 
  * @author Sergio Arroyo
- * 
  */
 public interface ArtifactAsyncManager {
 
-	void deployArtifact(ProductInstance product, Artifact artifact, Task task,
-			String callback);
+    void deployArtifact(ProductInstance product, Artifact artifact, Task task, String callback);
 
-	/**
-	 * Undeploy an artefact in the product
-	 * 
-	 * @param productInstance
-	 *            the installed product to configure
-	 * @param artifact
-	 *            the artefact to be undeploy.
-	 * @param task
-	 *            the task which contains the information about the async
-	 *            execution
-	 * @param callback
-	 *            if not empty, contains the url where the result of the
-	 */
-	void undeployArtifact(ProductInstance product, String artifactName,
-			Task task, String callback);
+    /**
+     * Undeploy an artefact in the product
+     * 
+     * @param productInstance
+     *            the installed product to configure
+     * @param artifact
+     *            the artefact to be undeploy.
+     * @param task
+     *            the task which contains the information about the async execution
+     * @param callback
+     *            if not empty, contains the url where the result of the
+     */
+    void undeployArtifact(ProductInstance product, String artifactName, Task task, String callback);
 
-	Artifact load(String vdc, String productInstance, String name)
-			throws EntityNotFoundException;
+    Artifact load(String vdc, String productInstance, String name) throws EntityNotFoundException;
 
-	List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
+    List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
 
 }

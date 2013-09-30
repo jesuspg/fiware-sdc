@@ -1,8 +1,9 @@
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.model.Task;
-import org.apache.commons.lang.StringUtils;
 
 public class SDCWebResource {
 

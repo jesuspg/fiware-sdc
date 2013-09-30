@@ -13,114 +13,107 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
  * Defines a concrete application running over a concrete product instance.
  * 
  * @author Sergio Arroyo, Jesus M. Movilla
- * 
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance extends InstallableInstance {
 
-	public final static String APPLICATION_FIELD = "application";
+    public final static String APPLICATION_FIELD = "application";
 
-	@ManyToOne(optional = false)
-	private ApplicationRelease application;
+    @ManyToOne(optional = false)
+    private ApplicationRelease application;
 
-	@OneToOne
-	// private List<ProductInstance> products;
-	private EnvironmentInstance environmentInstance;
+    @OneToOne
+    // private List<ProductInstance> products;
+    private EnvironmentInstance environmentInstance;
 
-	/**
-	 * Default constructor.
-	 */
-	public ApplicationInstance() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ApplicationInstance() {
+        super();
+    }
 
-	/**
-	 * <p>
-	 * Constructor for ApplicationInstance.
-	 * </p>
-	 * 
-	 * @param application
-	 *            a {@link com.telefonica.euro_iaas.sdc.model.Application}
-	 *            object.
-	 * @param environmentInstance
-	 *            a
-	 *            {@link com.telefonica.euro_iaas.sdc.model.EnvironmentInstance}
-	 *            object.
-	 * @param status
-	 *            a
-	 *            {@link com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status}
-	 *            object.
-	 * @param vm
-	 *            the vm where the application is (or will be) installed
-	 */
-	public ApplicationInstance(ApplicationRelease application,
-			EnvironmentInstance environmentInstance, Status status, VM vm,
-			String vdc) {
-		super(status);
-		this.application = application;
-		this.environmentInstance = environmentInstance;
-		setVm(vm);
-		setVdc(vdc);
-	}
+    /**
+     * <p>
+     * Constructor for ApplicationInstance.
+     * </p>
+     * 
+     * @param application
+     *            a {@link com.telefonica.euro_iaas.sdc.model.Application} object.
+     * @param environmentInstance
+     *            a {@link com.telefonica.euro_iaas.sdc.model.EnvironmentInstance} object.
+     * @param status
+     *            a {@link com.telefonica.euro_iaas.sdc.model.ApplicationInstance.Status} object.
+     * @param vm
+     *            the vm where the application is (or will be) installed
+     */
+    public ApplicationInstance(ApplicationRelease application, EnvironmentInstance environmentInstance, Status status,
+            VM vm, String vdc) {
+        super(status);
+        this.application = application;
+        this.environmentInstance = environmentInstance;
+        setVm(vm);
+        setVdc(vdc);
+    }
 
-	/**
-	 * <p>
-	 * Constructor for ApplicationInstance.
-	 * </p>
-	 * 
-	 * @param id
-	 *            a {@link java.lang.Long} object.
-	 */
-	public ApplicationInstance(Long id) {
-		super(id);
-	}
+    /**
+     * <p>
+     * Constructor for ApplicationInstance.
+     * </p>
+     * 
+     * @param id
+     *            a {@link java.lang.Long} object.
+     */
+    public ApplicationInstance(Long id) {
+        super(id);
+    }
 
-	/**
-	 * <p>
-	 * Getter for the field <code>application</code>.
-	 * </p>
-	 * 
-	 * @return the application
-	 */
-	public ApplicationRelease getApplication() {
-		return application;
-	}
+    /**
+     * <p>
+     * Getter for the field <code>application</code>.
+     * </p>
+     * 
+     * @return the application
+     */
+    public ApplicationRelease getApplication() {
+        return application;
+    }
 
-	/**
-	 * <p>
-	 * Setter for the field <code>application</code>.
-	 * </p>
-	 * 
-	 * @param application
-	 *            the application to set
-	 */
-	public void setApplication(ApplicationRelease application) {
-		this.application = application;
-	}
+    /**
+     * <p>
+     * Setter for the field <code>application</code>.
+     * </p>
+     * 
+     * @param application
+     *            the application to set
+     */
+    public void setApplication(ApplicationRelease application) {
+        this.application = application;
+    }
 
-	/**
-	 * <p>
-	 * Getter for the field <code>environmentInstance</code>.
-	 * </p>
-	 * 
-	 * @return the environmentInstance
-	 */
-	public EnvironmentInstance getEnvironmentInstance() {
-		return environmentInstance;
-	}
+    /**
+     * <p>
+     * Getter for the field <code>environmentInstance</code>.
+     * </p>
+     * 
+     * @return the environmentInstance
+     */
+    public EnvironmentInstance getEnvironmentInstance() {
+        return environmentInstance;
+    }
 
-	/**
-	 * <p>
-	 * Setter for the field <code>environmentInstance</code>.
-	 * </p>
-	 * 
-	 * @param environmentInstance
-	 *            the environmentInstance to set
-	 */
-	public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
-		this.environmentInstance = environmentInstance;
-	}
+    /**
+     * <p>
+     * Setter for the field <code>environmentInstance</code>.
+     * </p>
+     * 
+     * @param environmentInstance
+     *            the environmentInstance to set
+     */
+    public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
+        this.environmentInstance = environmentInstance;
+    }
 
 }

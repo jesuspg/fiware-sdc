@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -20,8 +24,6 @@ import com.telefonica.euro_iaas.sdc.client.model.ApplicationReleases;
 import com.telefonica.euro_iaas.sdc.client.services.ApplicationService;
 import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationReleaseDto;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 public class ApplicationServiceImpl extends AbstractBaseService implements ApplicationService {
 

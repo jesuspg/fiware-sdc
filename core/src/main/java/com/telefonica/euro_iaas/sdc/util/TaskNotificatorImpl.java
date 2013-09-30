@@ -1,7 +1,5 @@
 package com.telefonica.euro_iaas.sdc.util;
 
-
-
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.client.Client;
@@ -12,26 +10,25 @@ import com.telefonica.euro_iaas.sdc.model.Task;
  * TaskNotificator rest implementation.
  * 
  * @author Sergio Arroyo
- * 
  */
 public class TaskNotificatorImpl implements TaskNotificator {
 
-	private Client client;
+    private Client client;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void notify(String url, Task task) {
-		WebResource webResource = client.resource(url);
-		webResource.type(MediaType.APPLICATION_XML).entity(task).post();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notify(String url, Task task) {
+        WebResource webResource = client.resource(url);
+        webResource.type(MediaType.APPLICATION_XML).entity(task).post();
+    }
 
-	/**
-	 * @param client
-	 *            the client to set
-	 */
-	public void setClient(Client client) {
-		this.client = client;
-	}
+    /**
+     * @param client
+     *            the client to set
+     */
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }

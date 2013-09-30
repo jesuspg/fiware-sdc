@@ -10,46 +10,45 @@ import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 @SuppressWarnings("serial")
 public class AlreadyInstalledException extends Exception {
 
-	private InstallableInstance instace;
+    private InstallableInstance instace;
 
-	public AlreadyInstalledException() {
-		super();
-	}
+    public AlreadyInstalledException() {
+        super();
+    }
 
-	public AlreadyInstalledException(InstallableInstance instace) {
-		this.instace = instace;
-	}
+    public AlreadyInstalledException(InstallableInstance instace) {
+        this.instace = instace;
+    }
 
-	public AlreadyInstalledException(String msg) {
-		super(msg);
-	}
+    public AlreadyInstalledException(String msg) {
+        super(msg);
+    }
 
-	public AlreadyInstalledException(Throwable e) {
-		super(e);
-	}
+    public AlreadyInstalledException(Throwable e) {
+        super(e);
+    }
 
-	public AlreadyInstalledException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public AlreadyInstalledException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-	/**
-	 * @return the instace
-	 */
-	public InstallableInstance getInstace() {
-		return instace;
-	}
+    /**
+     * @return the instace
+     */
+    public InstallableInstance getInstace() {
+        return instace;
+    }
 
-	/**
-	 * @param instace
-	 *            the instace to set
-	 */
-	public void setInstace(InstallableInstance instace) {
-		this.instace = instace;
-	}
+    /**
+     * @param instace
+     *            the instace to set
+     */
+    public void setInstace(InstallableInstance instace) {
+        this.instace = instace;
+    }
 
-	@Override
-	public String getMessage() {
-		return "The " + instace.getClass().getSimpleName() + " "
-				+ instace.getId() + " is already installed.";
-	}
+    @Override
+    public String getMessage() {
+        return "The " + instace.getClass().getSimpleName() + " " + instace.getId() + " is already installed.";
+    }
 }

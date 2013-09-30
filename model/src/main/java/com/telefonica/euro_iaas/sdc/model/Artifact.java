@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,171 +32,170 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Artifact {
 
-	public static final String VDC_FIELD = "vdc";
+    public static final String VDC_FIELD = "vdc";
 
-	public static final String PRODUCT_FIELD = "productInstance";
+    public static final String PRODUCT_FIELD = "productInstance";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", unique = true, nullable = false)
-	@XmlTransient
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", unique = true, nullable = false)
+    @XmlTransient
+    private Long id;
 
-	@Column(unique = true, nullable = false, length = 256)
-	private String name;
+    @Column(unique = true, nullable = false, length = 256)
+    private String name;
 
-	@Column(nullable = false, length = 256)
-	private String vdc;
+    @Column(nullable = false, length = 256)
+    private String vdc;
 
-	// @ManyToOne(optional=false)
-	// private ProductInstance productInstance;
+    // @ManyToOne(optional=false)
+    // private ProductInstance productInstance;
 
-	// @ManyToOne
-	// @JoinColumn(name = "productinstance_id")
-	// private ProductInstance productInstance;
+    // @ManyToOne
+    // @JoinColumn(name = "productinstance_id")
+    // private ProductInstance productInstance;
 
-	// @ManyToOne(optional=false)
-	// @JoinColumn(name="productinstance_id")
-	// @JoinColumn(name = "id")
-	// @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "productinstance_id", referencedColumnName = "id")
-	@ManyToOne(targetEntity = ProductInstance.class, optional = false, fetch = FetchType.LAZY)
-	@XmlTransient
-	private ProductInstance productInstance;
+    // @ManyToOne(optional=false)
+    // @JoinColumn(name="productinstance_id")
+    // @JoinColumn(name = "id")
+    // @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "productinstance_id", referencedColumnName = "id")
+    @ManyToOne(targetEntity = ProductInstance.class, optional = false, fetch = FetchType.LAZY)
+    @XmlTransient
+    private ProductInstance productInstance;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Attribute> attributes;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Attribute> attributes;
 
-	/**
-	 * Default Constructor
-	 */
-	public Artifact() {
+    /**
+     * Default Constructor
+     */
+    public Artifact() {
 
-	}
+    }
 
-	/**
-	 * @param name
-	 * @param path
-	 * @param artifactType
-	 * @param productRelease
-	 */
-	public Artifact(String name, List<Attribute> attributes) {
-		this.name = name;
-		this.attributes = attributes;
-	}
+    /**
+     * @param name
+     * @param path
+     * @param artifactType
+     * @param productRelease
+     */
+    public Artifact(String name, List<Attribute> attributes) {
+        this.name = name;
+        this.attributes = attributes;
+    }
 
-	/**
-	 * @param name
-	 * @param path
-	 * @param artifactType
-	 * @param productRelease
-	 */
-	public Artifact(String name, String vdc, ProductInstance productInstance,
-			List<Attribute> attributes) {
-		this.name = name;
-		this.vdc = vdc;
-		this.productInstance = productInstance;
-		this.attributes = attributes;
-	}
+    /**
+     * @param name
+     * @param path
+     * @param artifactType
+     * @param productRelease
+     */
+    public Artifact(String name, String vdc, ProductInstance productInstance, List<Attribute> attributes) {
+        this.name = name;
+        this.vdc = vdc;
+        this.productInstance = productInstance;
+        this.attributes = attributes;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the vdc
-	 */
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 
-	/**
-	 * @return the attributes
-	 */
+    /**
+     * @return the attributes
+     */
 
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	/**
-	 * @return the attributes
-	 */
+    /**
+     * @return the attributes
+     */
 
-	public ProductInstance getProductInstance() {
-		return this.productInstance;
-	}
+    public ProductInstance getProductInstance() {
+        return this.productInstance;
+    }
 
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setProductInstance(ProductInstance productInstance) {
-		this.productInstance = productInstance;
-	}
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    public void setProductInstance(ProductInstance productInstance) {
+        this.productInstance = productInstance;
+    }
 
-	/**
-	 * Add a new attribute.
-	 * 
-	 * @param attribute
-	 *            the attribute
-	 */
-	public void addAttribute(Attribute attribute) {
-		if (attributes == null) {
-			attributes = new ArrayList<Attribute>();
-		}
-		attributes.add(attribute);
-	}
+    /**
+     * Add a new attribute.
+     * 
+     * @param attribute
+     *            the attribute
+     */
+    public void addAttribute(Attribute attribute) {
+        if (attributes == null) {
+            attributes = new ArrayList<Attribute>();
+        }
+        attributes.add(attribute);
+    }
 
-	/**
-	 * @return the attributes as a Map
-	 */
-	public Map<String, String> getMapAttributes() {
-		Map<String, String> atts = new HashMap<String, String>();
-		for (Attribute att : attributes) {
-			atts.put(att.getKey(), att.getValue());
-		}
-		return atts;
-	}
+    /**
+     * @return the attributes as a Map
+     */
+    public Map<String, String> getMapAttributes() {
+        Map<String, String> atts = new HashMap<String, String>();
+        for (Attribute att : attributes) {
+            atts.put(att.getKey(), att.getValue());
+        }
+        return atts;
+    }
 
 }

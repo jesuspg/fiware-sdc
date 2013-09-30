@@ -12,40 +12,40 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 @SuppressWarnings("serial")
 public class ProductReleaseNotFoundException extends Exception {
 
-	private List<ProductRelease> productReleases;
+    private List<ProductRelease> productReleases;
 
-	public ProductReleaseNotFoundException() {
-		super();
-	}
+    public ProductReleaseNotFoundException() {
+        super();
+    }
 
-	public ProductReleaseNotFoundException(List<ProductRelease> productReleases) {
-		this.productReleases = productReleases;
-	}
+    public ProductReleaseNotFoundException(List<ProductRelease> productReleases) {
+        this.productReleases = productReleases;
+    }
 
-	public ProductReleaseNotFoundException(String msg) {
-		super(msg);
-	}
+    public ProductReleaseNotFoundException(String msg) {
+        super(msg);
+    }
 
-	public ProductReleaseNotFoundException(Throwable e) {
-		super(e);
-	}
+    public ProductReleaseNotFoundException(Throwable e) {
+        super(e);
+    }
 
-	public ProductReleaseNotFoundException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public ProductReleaseNotFoundException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-	/**
-	 * @return the productRelease
-	 */
-	public List<ProductRelease> getProductReleases() {
-		return productReleases;
-	}
+    /**
+     * @return the productRelease
+     */
+    public List<ProductRelease> getProductReleases() {
+        return productReleases;
+    }
 
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductReleases(List<ProductRelease> productReleases) {
-		this.productReleases = productReleases;
-	}
+    /**
+     * @param productRelease
+     *            the productRelease to set
+     */
+    public void setProductReleases(List<ProductRelease> productReleases) {
+        this.productReleases = productReleases;
+    }
 }

@@ -10,40 +10,40 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 @SuppressWarnings("serial")
 public class AlreadyExistsProductReleaseException extends Exception {
 
-	private ProductRelease productRelease;
+    private ProductRelease productRelease;
 
-	public AlreadyExistsProductReleaseException() {
-		super();
-	}
+    public AlreadyExistsProductReleaseException() {
+        super();
+    }
 
-	public AlreadyExistsProductReleaseException(ProductRelease productRelease) {
-		this.productRelease = productRelease;
-	}
+    public AlreadyExistsProductReleaseException(ProductRelease productRelease) {
+        this.productRelease = productRelease;
+    }
 
-	public AlreadyExistsProductReleaseException(String msg) {
-		super(msg);
-	}
+    public AlreadyExistsProductReleaseException(String msg) {
+        super(msg);
+    }
 
-	public AlreadyExistsProductReleaseException(Throwable e) {
-		super(e);
-	}
+    public AlreadyExistsProductReleaseException(Throwable e) {
+        super(e);
+    }
 
-	public AlreadyExistsProductReleaseException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public AlreadyExistsProductReleaseException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
-	}
+    /**
+     * @return the productRelease
+     */
+    public ProductRelease getProductRelease() {
+        return productRelease;
+    }
 
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductRelease(ProductRelease productRelease) {
-		this.productRelease = productRelease;
-	}
+    /**
+     * @param productRelease
+     *            the productRelease to set
+     */
+    public void setProductRelease(ProductRelease productRelease) {
+        this.productRelease = productRelease;
+    }
 }

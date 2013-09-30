@@ -12,14 +12,13 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationSearchCriter
  * @author Sergio Arroyo.
  */
 public interface ApplicationDao extends BaseDAO<Application, String> {
-	/**
-	 * Find by criteria
-	 * 
-	 * @param criteria
-	 *            the search criteria (containing pagination info, and some
-	 *            fields criteria).
-	 * @return the elements that match with the search criteria
-	 */
-	List<Application> findByCriteria(ApplicationSearchCriteria criteria);
+    /**
+     * Find by criteria
+     * 
+     * @param criteria
+     *            the search criteria (containing pagination info, and some fields criteria).
+     * @return the elements that match with the search criteria
+     */
+    List<Application> findByCriteria(ApplicationSearchCriteria criteria);
 
 }

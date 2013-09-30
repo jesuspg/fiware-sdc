@@ -7,20 +7,20 @@ package com.telefonica.euro_iaas.sdc.exception;
  */
 @SuppressWarnings("serial")
 public class CanNotCallChefException extends Exception {
-	public CanNotCallChefException() {
-		super();
-	}
+    public CanNotCallChefException() {
+        super();
+    }
 
-	public CanNotCallChefException(String msg) {
-		super(msg);
-	}
+    public CanNotCallChefException(String msg) {
+        super(msg);
+    }
 
-	public CanNotCallChefException(Throwable e) {
-		super(e);
-	}
+    public CanNotCallChefException(Throwable e) {
+        super(e);
+    }
 
-	public CanNotCallChefException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public CanNotCallChefException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
 }

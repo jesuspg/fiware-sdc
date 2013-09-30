@@ -10,40 +10,40 @@ import com.telefonica.euro_iaas.sdc.model.Environment;
 @SuppressWarnings("serial")
 public class EnvironmentNotFoundException extends Exception {
 
-	private Environment environment;
+    private Environment environment;
 
-	public EnvironmentNotFoundException() {
-		super();
-	}
+    public EnvironmentNotFoundException() {
+        super();
+    }
 
-	public EnvironmentNotFoundException(Environment environment) {
-		this.environment = environment;
-	}
+    public EnvironmentNotFoundException(Environment environment) {
+        this.environment = environment;
+    }
 
-	public EnvironmentNotFoundException(String msg) {
-		super(msg);
-	}
+    public EnvironmentNotFoundException(String msg) {
+        super(msg);
+    }
 
-	public EnvironmentNotFoundException(Throwable e) {
-		super(e);
-	}
+    public EnvironmentNotFoundException(Throwable e) {
+        super(e);
+    }
 
-	public EnvironmentNotFoundException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public EnvironmentNotFoundException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-	/**
-	 * @return the environment
-	 */
-	public Environment getEnvironment() {
-		return environment;
-	}
+    /**
+     * @return the environment
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
 
-	/**
-	 * @param environment
-	 *            the environment to set
-	 */
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
+    /**
+     * @param environment
+     *            the environment to set
+     */
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 }

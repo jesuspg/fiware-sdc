@@ -15,16 +15,15 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
  */
 public interface ArtifactDao extends BaseDAO<Artifact, String> {
 
-	Artifact load(String name) throws EntityNotFoundException;
+    Artifact load(String name) throws EntityNotFoundException;
 
-	/**
-	 * Find by criteria
-	 * 
-	 * @param criteria
-	 *            the search criteria (containing pagination info, and some
-	 *            fields criteria).
-	 * @return the elements that match with the search criteria
-	 */
-	List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
+    /**
+     * Find by criteria
+     * 
+     * @param criteria
+     *            the search criteria (containing pagination info, and some fields criteria).
+     * @return the elements that match with the search criteria
+     */
+    List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
 
 }

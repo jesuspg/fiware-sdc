@@ -14,16 +14,13 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
  */
 public interface ProductDao extends BaseDAO<Product, String> {
 
-	/**
-	 * Find by criteria
-	 * 
-	 * @param criteria
-	 *            the search criteria (containing pagination info, and some
-	 *            fields criteria).
-	 * @return the elements that match with the search criteria
-	 */
-	List<Product> findByCriteria(ProductSearchCriteria criteria);
-
-	
+    /**
+     * Find by criteria
+     * 
+     * @param criteria
+     *            the search criteria (containing pagination info, and some fields criteria).
+     * @return the elements that match with the search criteria
+     */
+    List<Product> findByCriteria(ProductSearchCriteria criteria);
 
 }
