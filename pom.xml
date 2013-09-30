@@ -145,6 +145,29 @@
             </resource>
         </resources>
         <plugins>
+            <!-- license plugin -->
+
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>src/license/fiware/header.txt</header>
+                    <includes>
+                        <include>
+                            **/*.java
+                        </include>
+                    </includes>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- integracion con SVN -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
