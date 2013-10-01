@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Represents an artifact to be installed on a ProductRelease
+ * Represents an artifact to be installed on a ProductRelease.
  * 
  * @author Jesus M. Movilla
  * @version $Id: $
