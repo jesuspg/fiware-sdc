@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import net.sf.json.JSONObject;
 
 /**
- * Models a Chef Client
+ * Models a Chef Client.
  * 
  * @author jesus.movilla
  */
