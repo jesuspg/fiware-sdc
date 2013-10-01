@@ -34,22 +34,13 @@ public class ProductInstanceTest extends TestCase {
 		ProductRelease pr2 = new ProductRelease("version2", "releaseNotes2",
 				null, p2, null, null);
 
-		Environment env1 = new Environment(Arrays.asList(pr1, pr2));
+		
 
 		java.util.List<ProductInstance> products = Arrays.asList(
 				new ProductInstance(pr1, ProductInstance.Status.INSTALLED, vm,
 						"vdc"), new ProductInstance(pr2,
 						ProductInstance.Status.INSTALLED, vm, "vdc"));
-		Application application = new Application("app", "desc", "war");
-		ApplicationRelease appRelease = new ApplicationRelease("version",
-				"releaseNotes", null, application, env1, null);
-
-		EnvironmentInstance envInstance = new EnvironmentInstance(env1,
-				products);
-		ApplicationInstance applicationInstance = new ApplicationInstance(
-				appRelease, envInstance, Status.INSTALLED, vm, "vdc");
-		assertEquals(applicationInstance.getApplication().getApplication()
-				.getName(), "app");
+	
 	}
 
 	/**

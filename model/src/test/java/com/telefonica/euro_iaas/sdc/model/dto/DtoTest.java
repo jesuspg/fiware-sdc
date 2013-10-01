@@ -18,7 +18,7 @@ public class DtoTest extends TestCase {
 	public static String VDC = "vdc";
 
 	java.util.List<Attribute> atts = null;
-	EnvironmentDto env = null;
+
 	ProductInstanceDto productInstanceDto = null;
 
 	@Before
@@ -131,85 +131,7 @@ public class DtoTest extends TestCase {
 
 	}
 
-	/**
-	 * Test Application Instance Dto class
-	 * 
-	 * @return
-	 */
 
-	public void testApplicationInstanceDto() {
-
-		VM vm = new VM("ip", "hostname", "domain");
-		ApplicationInstanceDto applicationInstance = new ApplicationInstanceDto();
-		applicationInstance.setApplicationName("applicationName");
-		applicationInstance.setVersion("1.0");
-		applicationInstance.setAttributes(atts);
-		applicationInstance.setVm(vm);
-
-		for (int i = 0; i < applicationInstance.getAttributes().size(); i++) {
-			assertEquals(applicationInstance.getAttributes().get(i).getKey(),
-					"key" + (i + 1));
-			assertEquals(applicationInstance.getAttributes().get(i).getValue(),
-					"value" + (i + 1));
-		}
-		assertEquals(applicationInstance.getApplicationName(),
-				"applicationName");
-		assertEquals(applicationInstance.getVersion(), "1.0");
-		assertEquals(applicationInstance.getVm().getHostname(), "hostname");
-	}
-
-	/**
-	 * Test Application Release Dto class
-	 * 
-	 * @return
-	 */
-
-	public void testApplicationReleaseDto() {
-
-		ProductReleaseDto productReleaseDto = new ProductReleaseDto(
-				"productName", "productDescription", "version", "notas", atts,
-				null, null);
-		java.util.List<ProductReleaseDto> productsRelease = new ArrayList<ProductReleaseDto>();
-		productsRelease.add(productReleaseDto);
-
-		env = new EnvironmentDto();
-		env.setDescription("description");
-		env.setName("env name");
-		env.setProducts(productsRelease);
-
-		ApplicationReleaseDto applicationRelease = new ApplicationReleaseDto();
-		applicationRelease.setApplicationName("applicationName");
-		applicationRelease.setApplicationType("type");
-		applicationRelease.setApplicationDescription("descrition");
-		applicationRelease.setEnvironmentDto(env);
-		applicationRelease.setReleaseNotes("notes");
-
-		applicationRelease.setVersion("1.0");
-		applicationRelease.setPrivateAttributes(atts);
-
-		for (int i = 0; i < applicationRelease.getPrivateAttributes().size(); i++) {
-			assertEquals(applicationRelease.getPrivateAttributes().get(i)
-					.getKey(), "key" + (i + 1));
-			assertEquals(applicationRelease.getPrivateAttributes().get(i)
-					.getValue(), "value" + (i + 1));
-		}
-		assertEquals(applicationRelease.getApplicationName(), "applicationName");
-		assertEquals(applicationRelease.getVersion(), "1.0");
-
-	}
-
-	/**
-	 * Test EnvironmentInstanceDto class
-	 * 
-	 * @return
-	 */
-
-	public void testEnvironmentInstanceDto() {
-
-		EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
-		envInst.setEnvironment(env);
-		envInst.getProducts().add(productInstanceDto);
-
-	}
+	
 
 }

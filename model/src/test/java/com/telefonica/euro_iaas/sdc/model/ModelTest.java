@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+
+import junit.framework.TestCase;
+
 
 public class ModelTest extends TestCase {
 
@@ -75,24 +76,7 @@ public class ModelTest extends TestCase {
 		}
 	}
 
-	public void testApplicationRelease() {
-		ApplicationRelease applicationRelease = new ApplicationRelease();
 
-		Application application = new Application();
-
-		application.setDescription("description");
-		application.setMetadata(metadatas);
-		application.setName(APPLICATION_NAME);
-		application.setType(APPLICATION_TYPE);
-		application.setAttributes(atts);
-
-		applicationRelease.setApplication(application);
-		applicationRelease.setVersion("1.0");
-
-		assertEquals(applicationRelease.getApplication().getName(),
-				APPLICATION_NAME);
-
-	}
 
 	/**
 	 * /** Test Artifact class
