@@ -47,7 +47,7 @@ public interface ProductInstanceService extends BaseInstallableService<ProductIn
      * @param ip
      *            the ip of the host (<i>nullable</i>)
      * @param fqn
-     *            the fqn of the host (<i>nullable</i>)
+     *            the full qualifier name of the host (<i>nullable</i>)
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)
      * @param pageSize

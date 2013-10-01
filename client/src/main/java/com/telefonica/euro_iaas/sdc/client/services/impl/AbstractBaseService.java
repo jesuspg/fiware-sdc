@@ -26,6 +26,16 @@ public class AbstractBaseService {
     private String baseHost;
     private String type;
 
+    private SDCWebResourceFactory sdcWebResourceFactory = new SDCWebResourceFactory();
+
+    public SDCWebResourceFactory getSdcWebResourceFactory() {
+        return sdcWebResourceFactory;
+    }
+
+    public void setSdcWebResourceFactory(SDCWebResourceFactory sdcWebResourceFactory) {
+        this.sdcWebResourceFactory = sdcWebResourceFactory;
+    }
+
     /**
      * @return the client
      */

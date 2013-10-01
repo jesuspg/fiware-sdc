@@ -25,7 +25,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 public interface ChefClientService {
 
     /**
-     * Delete the ChefClient from the Chef Server
+     * Delete the ChefClient from the Chef Server.
      * 
      * @param chefClientName
      *            to be deleted
@@ -34,7 +34,7 @@ public interface ChefClientService {
     Task delete(String vdc, String chefClientName) throws InvalidExecutionException;
 
     /**
-     * Load the ChefClient
+     * Load the ChefClient.
      * 
      * @param vdc
      * @return
@@ -42,7 +42,7 @@ public interface ChefClientService {
     ChefClient load(String vdc, String chefClientName) throws ResourceNotFoundException;
 
     /**
-     * Load by hostname the ChefClient
+     * Load by hostname the ChefClient.
      * 
      * @param vdc
      * @return

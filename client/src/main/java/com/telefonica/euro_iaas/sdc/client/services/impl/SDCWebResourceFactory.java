@@ -13,10 +13,10 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import com.sun.jersey.api.client.WebResource;
 
-public class SDCWebResourceFactory {
+public class SDCWebResourceFactory<T> {
 
-    public SDCWebResource getInstance(WebResource webResource) {
-        return new SDCWebResource(webResource);
+    public SDCWebResource<T> getInstance(WebResource webResource) {
+        return new SDCWebResource<T>(webResource);
 
     }
 }

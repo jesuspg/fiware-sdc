@@ -13,15 +13,14 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
-import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -81,9 +80,10 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
                 + MessageFormat.format(ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId,
                         artefact.getName());
         WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(getType()).type(getType());
-        builder = addCallback(builder, callback);
-        return builder.delete(Task.class);
+
+        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
+        return sdcWebResource.delete(getType(), callback);
+
     }
 
     /**
@@ -106,7 +106,9 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         searchParams = addParam(searchParams, "status", status);
         searchParams = addParam(searchParams, "product", productName);
 
-        return wr.queryParams(searchParams).accept(getType()).get(ProductInstances.class);
+        SDCWebResource<ProductInstance> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
+        return sdcWebResource.queryParams(searchParams, getType());
+
     }
 
     /**
@@ -122,10 +124,12 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      * {@inheritDoc}
      */
 
-    public ProductInstance load(String url) throws ResourceNotFoundException {
+    public ProductInstance  load(String url) throws ResourceNotFoundException {
         try {
             WebResource wr = getClient().resource(url);
-            return wr.accept(getType()).get(ProductInstance.class);
+
+            SDCWebResource<ProductInstance> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
+            return sdcWebResource.get(getType(), ProductInstance.class);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ProductInstance.class, url);
         }
