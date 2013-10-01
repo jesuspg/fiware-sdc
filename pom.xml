@@ -153,7 +153,8 @@
                 <configuration>
                     <header>src/license/fiware/header.txt</header>
                     <includes>
-                        <include>**/*.java</include>
+                        <include>src/main/**/*.java</include>
+                        <include>src/test/**/*.java</include>
                     </includes>
                 </configuration>
                 <executions>
