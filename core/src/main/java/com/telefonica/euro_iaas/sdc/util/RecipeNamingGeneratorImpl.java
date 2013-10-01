@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
 

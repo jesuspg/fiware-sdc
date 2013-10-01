@@ -16,9 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import com.telefonica.euro_iaas.sdc.model.Application;
-
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -49,7 +46,6 @@ public class ProductInstanceValidatorImplTest extends TestCase {
 
 	private ProductInstance pInstance = new ProductInstance(release1,
 			Status.INSTALLED, new VM("ip"), "vdc");
-	private Application app = new Application("app", "description", "type");
 
 
 	private FSMValidator fsmValidator;
