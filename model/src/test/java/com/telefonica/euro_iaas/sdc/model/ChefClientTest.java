@@ -11,11 +11,13 @@
 
 package com.telefonica.euro_iaas.sdc.model;
 
-import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 
 /**
  * 

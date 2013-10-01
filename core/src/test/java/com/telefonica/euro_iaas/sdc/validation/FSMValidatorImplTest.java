@@ -11,11 +11,13 @@
 
 package com.telefonica.euro_iaas.sdc.validation;
 
+import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
-import junit.framework.TestCase;
-import org.junit.Test;
 
 /**
  * Unit test for FSMValidatorImpl

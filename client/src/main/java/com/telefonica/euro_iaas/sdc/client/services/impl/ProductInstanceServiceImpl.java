@@ -13,7 +13,6 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
-
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;

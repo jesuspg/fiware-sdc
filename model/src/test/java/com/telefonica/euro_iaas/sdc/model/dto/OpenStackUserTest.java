@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+
 import org.springframework.security.core.GrantedAuthority;
 
 public class OpenStackUserTest extends TestCase {

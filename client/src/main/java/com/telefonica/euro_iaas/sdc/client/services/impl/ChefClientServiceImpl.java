@@ -15,7 +15,6 @@
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
-
 import javax.persistence.EntityNotFoundException;
 
 import com.sun.jersey.api.client.Client;

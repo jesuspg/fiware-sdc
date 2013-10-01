@@ -14,6 +14,8 @@ package com.telefonica.euro_iaas.sdc.dao;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -21,7 +23,6 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
-import junit.framework.Assert;
 
 public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 

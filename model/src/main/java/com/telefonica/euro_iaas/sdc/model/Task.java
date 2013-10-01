@@ -13,6 +13,7 @@ package com.telefonica.euro_iaas.sdc.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;

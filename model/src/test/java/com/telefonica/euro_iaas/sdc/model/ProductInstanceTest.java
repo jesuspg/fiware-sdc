@@ -14,7 +14,6 @@ package com.telefonica.euro_iaas.sdc.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import junit.framework.TestCase;
 
@@ -42,13 +41,11 @@ public class ProductInstanceTest extends TestCase {
         pr1 = new ProductRelease("version1", "releaseNotes1", null, p1, null, null);
         ProductRelease pr2 = new ProductRelease("version2", "releaseNotes2", null, p2, null, null);
 
-		java.util.List<ProductInstance> products = Arrays.asList(
-				new ProductInstance(pr1, ProductInstance.Status.INSTALLED, vm,
-						"vdc"), new ProductInstance(pr2,
-						ProductInstance.Status.INSTALLED, vm, "vdc"));
-	
-	}
+        java.util.List<ProductInstance> products = Arrays.asList(new ProductInstance(pr1,
+                ProductInstance.Status.INSTALLED, vm, "vdc"), new ProductInstance(pr2,
+                ProductInstance.Status.INSTALLED, vm, "vdc"));
 
+    }
 
     /**
      * Test Product Instance class

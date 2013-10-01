@@ -12,7 +12,6 @@
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import com.sun.jersey.multipart.MultiPart;
-
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;

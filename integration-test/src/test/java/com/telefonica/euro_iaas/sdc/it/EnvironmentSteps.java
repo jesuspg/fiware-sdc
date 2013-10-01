@@ -14,17 +14,19 @@ package com.telefonica.euro_iaas.sdc.it;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.it.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.sdc.it.util.ProductUtils;
 import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
+
 import cuke4duke.Table;
 import cuke4duke.annotation.I18n.EN.Given;
 import cuke4duke.annotation.I18n.EN.Then;
 import cuke4duke.annotation.I18n.EN.When;
-import junit.framework.Assert;
 
 public class EnvironmentSteps {
 

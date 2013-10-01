@@ -11,6 +11,10 @@
 
 package com.telefonica.euro_iaas.sdc.it.util;
 
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -23,11 +27,6 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-
-
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
 
 public class ProductUtils {
 
