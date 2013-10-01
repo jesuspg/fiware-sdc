@@ -1,17 +1,26 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
-import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Provides some commons methods to work with installable instances.

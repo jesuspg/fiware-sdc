@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:use-case xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
-    id="UC_002.4" name="Application Instance Upgrade" model-version="1.0">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
+               id="UC_002.4" name="Application Instance Upgrade" model-version="1.0">
     <xuse:description>
         Defines the basic and alternative flows for a product upgrade.
     </xuse:description>
@@ -20,9 +21,9 @@
             Actor request for upgrade a product using the API.
         </xuse:trigger>
         <xuse:goal>Install a Product</xuse:goal>
-        <xuse:primary-actor refId="client" />
+        <xuse:primary-actor refId="client"/>
         <xuse:pre-requisites>
-            The Product exists in the catalog (see <xuse:uc-ref refId="UC_101" />)
+            The Product exists in the catalog (see<xuse:uc-ref refId="UC_101"/>)
         </xuse:pre-requisites>
         <xuse:success-outcome>The System performs the action.
         </xuse:success-outcome>
@@ -37,25 +38,26 @@
     <xuse:main-flow>
         <xuse:step step-id="client-request-for-upgrade">
             <xuse:description>Actor request for change a version providing the
-            ApplicationInstance Id and the new version</xuse:description>
+                ApplicationInstance Id and the new version
+            </xuse:description>
         </xuse:step>
         <xuse:step step-id="system-upgrade-application">
             <xuse:description>System makes a backup of the installed ProductInstance,
-            uninstall it, install the new version and restore the state.
+                uninstall it, install the new version and restore the state.
             </xuse:description>
             <xuse:ref-exception-flow refId="af-no-transitable"
-                condition="no transition defined for the actual release to the
-                selected one" />
+                                     condition="no transition defined for the actual release to the
+                selected one"/>
             <xuse:ref-exception-flow refId="af-invalid-products"
-                condition="the products where the application is installed does
-                not support the new version" />
+                                     condition="the products where the application is installed does
+                not support the new version"/>
         </xuse:step>
-        <xuse:end />
+        <xuse:end/>
     </xuse:main-flow>
 
     <xuse:exception-flows>
         <xuse:exception-flow title="Undefined transition"
-            id="af-no-transitable">
+                             id="af-no-transitable">
             <xuse:step step-id="system-shows-undefined-transition-error">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -63,7 +65,7 @@
         </xuse:exception-flow>
 
         <xuse:exception-flow title="Invalid products"
-            id="af-invalid-products">
+                             id="af-invalid-products">
             <xuse:step step-id="system-shows-invalid-products-error">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>

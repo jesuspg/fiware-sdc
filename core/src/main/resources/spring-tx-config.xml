@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
          http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
          http://www.springframework.org/schema/tx
          http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
          http://www.springframework.org/schema/aop
          http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
-    default-autowire="no">
+       default-autowire="no">
 
     <!--
         The transactional advice (i.e. what 'happens'; see the <aop:advisor/>
@@ -18,10 +18,10 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <!-- All methods starting with 'load' are read-only -->
-            <tx:method name="load*" read-only="true" />
+            <tx:method name="load*" read-only="true"/>
             <!-- All methods starting with 'find' are read-only -->
-            <tx:method name="find*" read-only="true" />
-           <!-- <tx:method name="updateTask" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>-->
+            <tx:method name="find*" read-only="true"/>
+            <!-- <tx:method name="updateTask" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>-->
             <!-- Other methods use the default transaction settings (see below) -->
             <tx:method name="*" rollback-for="NodeExecutionException"/>
             <tx:method name="update" no-rollback-for="Throwable" propagation="REQUIRES_NEW"/>
@@ -37,28 +37,27 @@
 
     <aop:config>
         <aop:pointcut id="daoOperation"
-            expression="execution(* com.telefonica.euro_iaas..*Dao.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="daoOperation" />
+                      expression="execution(* com.telefonica.euro_iaas..*Dao.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="daoOperation"/>
     </aop:config>
 
     <aop:config>
         <aop:pointcut id="bootstrapOperation"
-            expression="execution(* com.telefonica.euro_iaas.sdc..*Bootstrap.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="bootstrapOperation" />
+                      expression="execution(* com.telefonica.euro_iaas.sdc..*Bootstrap.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bootstrapOperation"/>
     </aop:config>
 
     <aop:config>
         <aop:pointcut id="managerOperation"
-            expression="execution(* com.telefonica.euro_iaas.sdc..*Manager.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="managerOperation" />
+                      expression="execution(* com.telefonica.euro_iaas.sdc..*Manager.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="managerOperation"/>
     </aop:config>
 
     <aop:config>
         <aop:pointcut id="propertiesOperation"
-            expression="execution(* com.telefonica.euro_iaas.sdc..*SystemPropertiesProvider.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="propertiesOperation" />
+                      expression="execution(* com.telefonica.euro_iaas.sdc..*SystemPropertiesProvider.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="propertiesOperation"/>
     </aop:config>
-
 
 
 </beans>

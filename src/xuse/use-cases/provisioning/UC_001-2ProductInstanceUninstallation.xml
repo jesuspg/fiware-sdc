@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:use-case xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
-    id="UC_001.2" name="Product Instance Uninstallation" model-version="1.0">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
+               id="UC_001.2" name="Product Instance Uninstallation" model-version="1.0">
     <xuse:description>
         Defines the basic and alternative flows for a product uninstallation.
     </xuse:description>
@@ -20,9 +21,9 @@
             Actor request for uninstall a product using the API.
         </xuse:trigger>
         <xuse:goal>Install a Product</xuse:goal>
-        <xuse:primary-actor refId="client" />
+        <xuse:primary-actor refId="client"/>
         <xuse:pre-requisites>
-            The Product  is installed (see <xuse:uc-ref refId="UC_001.1" />)
+            The Product is installed (see<xuse:uc-ref refId="UC_001.1"/>)
 
         </xuse:pre-requisites>
         <xuse:success-outcome>The System performs the action.
@@ -41,16 +42,17 @@
         </xuse:step>
         <xuse:step step-id="system-uninstall-the-product">
             <xuse:description>System uninstall the selected ProductInsance form
-            the VM and change the status in the interal state.</xuse:description>
+                the VM and change the status in the interal state.
+            </xuse:description>
             <xuse:ref-exception-flow refId="af-dependency-installed"
-                condition="An application is installed on the selected product" />
+                                     condition="An application is installed on the selected product"/>
         </xuse:step>
-        <xuse:end />
+        <xuse:end/>
     </xuse:main-flow>
 
     <xuse:exception-flows>
         <xuse:exception-flow title="Application installed on selected product"
-            id="af-dependency-installed">
+                             id="af-dependency-installed">
             <xuse:step step-id="error-already-installed">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>

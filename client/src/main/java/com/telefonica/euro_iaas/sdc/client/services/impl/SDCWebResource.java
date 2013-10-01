@@ -1,9 +1,19 @@
-package com.telefonica.euro_iaas.sdc.client.services.impl;
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
 
-import org.apache.commons.lang.StringUtils;
+package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.model.Task;
+import org.apache.commons.lang.StringUtils;
 
 public class SDCWebResource {
 

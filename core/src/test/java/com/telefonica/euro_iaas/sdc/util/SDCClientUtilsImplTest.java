@@ -1,22 +1,29 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.util;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import junit.framework.TestCase;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -31,93 +38,84 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
 
 /**
- * 
  * @author Jesus M. Movilla
- * 
  */
 public class SDCClientUtilsImplTest extends TestCase {
 
-	private NodeCommandDao nodeCommandDao;
-	private OSDao osDao;
-	private SystemPropertiesProvider propertiesProvider;
-	private VM host = new VM("fqn", "ip", "hostname", "domain");
-	private OS os = new OS("os1", "1", "os1 description", "v1");
-	private Client client;
-	private WebResource webResource;
-	private ClientResponse clientResponse;
-	private SDCClientUtilsImpl sdcClientUtilsImpl;
+    private NodeCommandDao nodeCommandDao;
+    private OSDao osDao;
+    private SystemPropertiesProvider propertiesProvider;
+    private VM host = new VM("fqn", "ip", "hostname", "domain");
+    private OS os = new OS("os1", "1", "os1 description", "v1");
+    private Client client;
+    private WebResource webResource;
+    private ClientResponse clientResponse;
+    private SDCClientUtilsImpl sdcClientUtilsImpl;
 
-	@Before
-	public void setUp() throws Exception {
-		sdcClientUtilsImpl = new SDCClientUtilsImpl();
+    @Before
+    public void setUp() throws Exception {
+        sdcClientUtilsImpl = new SDCClientUtilsImpl();
 
-		osDao = mock(OSDao.class);
-		when(osDao.load(anyString())).thenReturn(os);
+        osDao = mock(OSDao.class);
+        when(osDao.load(anyString())).thenReturn(os);
 
-		ArrayList<NodeCommand> nodeCommands = new ArrayList<NodeCommand>();
-		nodeCommands.add(new NodeCommand(os, "key1", "value1"));
-		nodeCommands.add(new NodeCommand(os, "key2", "value2"));
+        ArrayList<NodeCommand> nodeCommands = new ArrayList<NodeCommand>();
+        nodeCommands.add(new NodeCommand(os, "key1", "value1"));
+        nodeCommands.add(new NodeCommand(os, "key2", "value2"));
 
-		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-		attributes.add(new Attribute("key1", "value1"));
-		attributes.add(new Attribute("key2", "value2"));
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute("key1", "value1"));
+        attributes.add(new Attribute("key2", "value2"));
 
-		nodeCommandDao = mock(NodeCommandDao.class);
-		when(
-				nodeCommandDao.findByCriteria(new NodeCommandSearchCriteria(
-						any(OS.class)))).thenReturn(nodeCommands);
+        nodeCommandDao = mock(NodeCommandDao.class);
+        when(nodeCommandDao.findByCriteria(new NodeCommandSearchCriteria(any(OS.class)))).thenReturn(nodeCommands);
 
-		propertiesProvider = mock(SystemPropertiesProvider.class);
-		when(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE))
-				.thenReturn("http://{0}:9990/sdc-client");
+        propertiesProvider = mock(SystemPropertiesProvider.class);
+        when(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE)).thenReturn("http://{0}:9990/sdc-client");
 
-		// webResource = mock(WebResource.class);
-		// clientResponse = mock(ClientResponse.class);
+        // webResource = mock(WebResource.class);
+        // clientResponse = mock(ClientResponse.class);
 
-		// client = mock(Client.class);
-		// when(client.resource(anyString())).thenReturn(webResource);
+        // client = mock(Client.class);
+        // when(client.resource(anyString())).thenReturn(webResource);
 
-		// doReturn(clientResponse).when(webResource).accept(MediaType.APPLICATION_XML).put(ClientResponse.class,
-		// anyList());;
+        // doReturn(clientResponse).when(webResource).accept(MediaType.APPLICATION_XML).put(ClientResponse.class,
+        // anyList());;
 
-		// doReturn().when(webResource).accept((MediaType)
-		// anyVararg()).type(anyString()).entity(anyList()).put(anyList());
-	}
+        // doReturn().when(webResource).accept((MediaType)
+        // anyVararg()).type(anyString()).entity(anyList()).put(anyList());
+    }
 
-	/**
-	 * Test the correct behavior when invoking setNodeCommands
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testSetNodeCommandOk() {
-		// Pending to find ut how to mock the put call to the sdc-client
-		/*
-		 * SDCClientUtilsImpl sdcClientUtilsImpl = new SDCClientUtilsImpl();
-		 * sdcClientUtilsImpl.setNodeCommandDao(nodeCommandDao);
-		 * sdcClientUtilsImpl.setOSDao(osDao);
-		 * sdcClientUtilsImpl.setClient(client);
-		 * sdcClientUtilsImpl.setPropertiesProvider(propertiesProvider);
-		 * 
-		 * try { sdcClientUtilsImpl.setNodeCommands(host);
-		 * fail("ShellCommanException expected"); } catch
-		 * (InvalidInstallProductRequestException e) { // it's ok }
-		 */
-	}
+    /**
+     * Test the correct behavior when invoking setNodeCommands
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSetNodeCommandOk() {
+        // Pending to find ut how to mock the put call to the sdc-client
+        /*
+         * SDCClientUtilsImpl sdcClientUtilsImpl = new SDCClientUtilsImpl();
+         * sdcClientUtilsImpl.setNodeCommandDao(nodeCommandDao); sdcClientUtilsImpl.setOSDao(osDao);
+         * sdcClientUtilsImpl.setClient(client); sdcClientUtilsImpl.setPropertiesProvider(propertiesProvider); try {
+         * sdcClientUtilsImpl.setNodeCommands(host); fail("ShellCommanException expected"); } catch
+         * (InvalidInstallProductRequestException e) { // it's ok }
+         */
+    }
 
-	/**
-	 * Test the correct behavior when the executed command does not exists.
-	 * 
-	 * @throws Exception
-	 */
-	public void testScriptExecutedFailsBecauseDoesNotExists() throws Exception {
-		CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
-		try {
-			shellCommand.executeCommand("asdag");
-			fail("ShellCommanException expected");
-		} catch (ShellCommandException e) {
-			// it's ok
-			assertTrue(e.getCause() instanceof IOException);
-		}
-	}
+    /**
+     * Test the correct behavior when the executed command does not exists.
+     * 
+     * @throws Exception
+     */
+    public void testScriptExecutedFailsBecauseDoesNotExists() throws Exception {
+        CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
+        try {
+            shellCommand.executeCommand("asdag");
+            fail("ShellCommanException expected");
+        } catch (ShellCommandException e) {
+            // it's ok
+            assertTrue(e.getCause() instanceof IOException);
+        }
+    }
 }

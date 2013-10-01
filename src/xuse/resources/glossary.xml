@@ -90,13 +90,12 @@
         <xuse:title>FSMValidationConvention</xuse:title>
         <xuse:description>
             In order to assure the State Finite Machine that represents the
-           instances (both product and application) life cycle System provides a
-           mechanism to validate whether possible actions on instances could be
-           performed. It means, every use case defined in provisioning package
-           shall be implicit exception flow to define this validation.
+            instances (both product and application) life cycle System provides a
+            mechanism to validate whether possible actions on instances could be
+            performed. It means, every use case defined in provisioning package
+            shall be implicit exception flow to define this validation.
         </xuse:description>
     </xuse:entry>
-
 
 
 </xuse:glossary>

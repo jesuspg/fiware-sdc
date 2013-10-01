@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PASSWD;
@@ -24,103 +35,92 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
  * Default implementation of FileDao.
  * 
  * @author Jesus M. Movilla
- * 
  */
 
 public class FileDaoWebDavImpl implements FileDao {
 
-	SystemPropertiesProvider propertiesProvider;
-	Client client;
-	Sardine sardine;
-	private static Logger LOGGER = Logger.getLogger("FileDaoWebDavImpl");
+    SystemPropertiesProvider propertiesProvider;
+    Client client;
+    Sardine sardine;
+    private static Logger LOGGER = Logger.getLogger("FileDaoWebDavImpl");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createDirectory(String webdavDirectoryUrl)
-			throws SardineException {
-		Sardine sardine;
-		sardine = SardineFactory.begin(propertiesProvider
-				.getProperty(WEBDAV_USERNAME), propertiesProvider
-				.getProperty(WEBDAV_PASSWD));
-		sardine.createDirectory(webdavDirectoryUrl);
-		LOGGER.log(Level.INFO, webdavDirectoryUrl + " CREATED ");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createDirectory(String webdavDirectoryUrl) throws SardineException {
+        Sardine sardine;
+        sardine = SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME),
+                propertiesProvider.getProperty(WEBDAV_PASSWD));
+        sardine.createDirectory(webdavDirectoryUrl);
+        LOGGER.log(Level.INFO, webdavDirectoryUrl + " CREATED ");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String insertFile(String webdavFileUrl, File installable)
-			throws SardineException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String insertFile(String webdavFileUrl, File installable) throws SardineException {
 
-		sardine = SardineFactory.begin(propertiesProvider
-				.getProperty(WEBDAV_USERNAME), propertiesProvider
-				.getProperty(WEBDAV_PASSWD));
-		byte[] data;
-		try {
-			data = FileUtils.readFileToByteArray(new File(installable
-					.getAbsolutePath()));
-			sardine.put(webdavFileUrl, data);
-			LOGGER.log(Level.INFO, webdavFileUrl + " INSERTED ");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw new SdcRuntimeException(e);
-		}
+        sardine = SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME),
+                propertiesProvider.getProperty(WEBDAV_PASSWD));
+        byte[] data;
+        try {
+            data = FileUtils.readFileToByteArray(new File(installable.getAbsolutePath()));
+            sardine.put(webdavFileUrl, data);
+            LOGGER.log(Level.INFO, webdavFileUrl + " INSERTED ");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new SdcRuntimeException(e);
+        }
 
-		return installable.getAbsolutePath();
-	}
+        return installable.getAbsolutePath();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(String webdavUrl) throws SardineException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(String webdavUrl) throws SardineException {
 
-		sardine = SardineFactory.begin(propertiesProvider
-				.getProperty(WEBDAV_USERNAME), propertiesProvider
-				.getProperty(WEBDAV_PASSWD));
-		sardine.delete(webdavUrl);
-		LOGGER.log(Level.INFO, webdavUrl + " DELETED ");
-	}
+        sardine = SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME),
+                propertiesProvider.getProperty(WEBDAV_PASSWD));
+        sardine.delete(webdavUrl);
+        LOGGER.log(Level.INFO, webdavUrl + " DELETED ");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean directoryExists(String directoryBase, String webdavUrl)
-			throws SardineException {
-		boolean exist = false;
-		sardine = SardineFactory.begin(propertiesProvider
-				.getProperty(WEBDAV_USERNAME), propertiesProvider
-				.getProperty(WEBDAV_PASSWD));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean directoryExists(String directoryBase, String webdavUrl) throws SardineException {
+        boolean exist = false;
+        sardine = SardineFactory.begin(propertiesProvider.getProperty(WEBDAV_USERNAME),
+                propertiesProvider.getProperty(WEBDAV_PASSWD));
 
-		List<DavResource> resources = sardine.getResources(directoryBase);
-		for (DavResource res : resources) {
-			if (res.getAbsoluteUrl().equals(webdavUrl)) {
-				LOGGER.log(Level.INFO, webdavUrl + " exists in "
-						+ directoryBase);
-				exist = true;
-			}
-		}
-		return exist;
-	}
+        List<DavResource> resources = sardine.getResources(directoryBase);
+        for (DavResource res : resources) {
+            if (res.getAbsoluteUrl().equals(webdavUrl)) {
+                LOGGER.log(Level.INFO, webdavUrl + " exists in " + directoryBase);
+                exist = true;
+            }
+        }
+        return exist;
+    }
 
-	/**
-	 * @param propertiesProvider
-	 *            the propertiesProvider to set
-	 */
-	public void setPropertiesProvider(
-			SystemPropertiesProvider propertiesProvider) {
-		this.propertiesProvider = propertiesProvider;
-	}
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
+        this.propertiesProvider = propertiesProvider;
+    }
 
-	/**
-	 * @param client
-	 *            the client to set
-	 */
-	public void setClient(Client client) {
-		this.client = client;
-	}
+    /**
+     * @param client
+     *            the client to set
+     */
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
