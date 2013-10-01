@@ -1,8 +1,7 @@
 package com.telefonica.euro_iaas.sdc.validation;
 
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -37,7 +36,7 @@ public interface ProductInstanceValidator {
 	 *             if it can not be uninstalled due to previous status
 	 */
 	void validateUninstall(ProductInstance product)
-			throws ApplicationInstalledException, FSMViolationException;
+			throws  FSMViolationException;
 
 	/**
 	 * Verify if the given product could be configured
@@ -73,6 +72,5 @@ public interface ProductInstanceValidator {
 	 * @throws ApplicationIncompatibleException
 	 */
 	void validateUpdate(ProductInstance product, ProductRelease newRelease)
-			throws FSMViolationException, NotTransitableException,
-			ApplicationIncompatibleException;
+			throws FSMViolationException, NotTransitableException;
 }

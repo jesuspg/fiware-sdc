@@ -1,6 +1,5 @@
 package com.telefonica.euro_iaas.sdc.validation;
 
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
@@ -26,6 +25,5 @@ public interface ProductReleaseValidator {
 	 *             in any ApplicationRelease object
 	 */
 	void validateDelete(ProductRelease productRelease)
-			throws ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException;
+			throws ProductReleaseStillInstalledException;
 }

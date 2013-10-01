@@ -12,8 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 
 
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -165,18 +164,7 @@ public class ProductInstanceAsyncManagerImpl implements
 					+ productInstance.getProductRelease().getVersion()
 					+ " can not be updated to version "
 					+ productRelease.getVersion(), e);
-		} catch (ApplicationIncompatibleException e) {
-			updateErrorTask(
-					productInstance,
-					task,
-					"There is some applications installed in the"
-							+ " system which are incompatible with the new product's"
-							+ " version (installed product: "
-							+ productInstance.getProductRelease().getProduct()
-									.getName() + "-"
-							+ productInstance.getProductRelease().getVersion()
-							+ ", target version: "
-							+ productRelease.getVersion() + ")", e);
+		
 		} catch (FSMViolationException e) {
 			updateErrorTask(productInstance, task, "The product "
 					+ productInstance.getId()
@@ -217,11 +205,6 @@ public class ProductInstanceAsyncManagerImpl implements
 			updateErrorTask(productInstance, task, "The product "
 					+ productInstance.getId()
 					+ " can not be uninstalled due to previous status", e);
-		} catch (ApplicationInstalledException e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be uninstalled due to some applications are"
-					+ " installed on it.", e);
 		} catch (NodeExecutionException e) {
 			updateErrorTask(
 					productInstance,

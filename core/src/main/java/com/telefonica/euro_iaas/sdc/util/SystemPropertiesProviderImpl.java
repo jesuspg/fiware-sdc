@@ -19,7 +19,6 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public String getProperty(String key) {
 		String value = System.getenv(key);
 		if (value == null) {
@@ -28,7 +27,6 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
 		return value;
 	}
 
-	@Override
 	public Integer getIntProperty(String key) {
 		return Integer.parseInt(getProperty(key));
 	}
@@ -36,7 +34,6 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
 	/**
 	 * @ø
 	 */
-	@Override
 	public void setProperties(Properties configuration) {
 		propertiesProvider.store(configuration, namespace);
 	}

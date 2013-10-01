@@ -14,16 +14,13 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ApplicationDao;
-import com.telefonica.euro_iaas.sdc.dao.ApplicationReleaseDao;
-import com.telefonica.euro_iaas.sdc.dao.EnvironmentDao;
+
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Application;
-import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -47,11 +44,7 @@ public class InitDbBootstrap implements ServletContextListener {
 		ProductDao productDao = (ProductDao) ctx.getBean("productDao");
 		ProductReleaseDao productReleaseDao = (ProductReleaseDao) ctx
 				.getBean("productReleaseDao");
-		EnvironmentDao environmentDao = (EnvironmentDao) ctx
-				.getBean("environmentDao");
-
-		ApplicationReleaseDao applicationReleaseDao = (ApplicationReleaseDao) ctx
-				.getBean("applicationReleaseDao");
+		
 
 		ApplicationDao applicationDao = (ApplicationDao) ctx
 				.getBean("applicationDao");

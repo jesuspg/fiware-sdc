@@ -16,7 +16,6 @@ public class IpToVMRestClientImpl implements IpToVM {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public VM getVm(String ip, String fqn, String osType) {
 
 		return sdcClientUtils.getVM(ip, fqn, osType);

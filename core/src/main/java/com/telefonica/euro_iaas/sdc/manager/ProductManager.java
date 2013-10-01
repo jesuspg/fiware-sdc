@@ -6,7 +6,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
+
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -102,8 +102,7 @@ public interface ProductManager {
 	 */
 	void delete(ProductRelease productRelease)
 			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException;
+			ProductReleaseStillInstalledException;
 
 	/**
 	 * Update the Product Release (either the cookbook/installable)

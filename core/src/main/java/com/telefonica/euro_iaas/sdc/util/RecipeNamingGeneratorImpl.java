@@ -18,7 +18,6 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
 /**
@@ -41,14 +40,6 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getInstallRecipe(ApplicationInstance application) {
-		String installTemplate = propertiesProvider
-				.getProperty(INSTALL_APPLICATION_RECIPE_TEMPLATE);
-		return populateApplicationRecipe(installTemplate, application);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -79,14 +70,6 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getUninstallRecipe(ApplicationInstance application) {
-		String uninstallTemplate = propertiesProvider
-				.getProperty(UNINSTALL_APPLICATION_RECIPE_TEMPLATE);
-		return populateApplicationRecipe(uninstallTemplate, application);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -106,15 +89,6 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
-	public String getBackupRecipe(ApplicationInstance application) {
-		String backupTemplate = propertiesProvider
-				.getProperty(BACKUP_APPLICATION_RECIPE_TEMPLATE);
-		return populateApplicationRecipe(backupTemplate, application);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -125,16 +99,6 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 				.getProperty(RESTORE_PRODUCT_RECIPE_TEMPLATE);
 		return populateProductRecipe(restoreTemplate, product);
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-
-	public String getRestoreRecipe(ApplicationInstance application) {
-		String restoreTemplate = propertiesProvider
-				.getProperty(RESTORE_APPLICATION_RECIPE_TEMPLATE);
-		return populateApplicationRecipe(restoreTemplate, application);
 	}
 
 	/**
@@ -153,49 +117,6 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 				.getVersion());
 	}
 
-	/**
-	 * Fill the template with application type, application name and version.
-	 * Even the product list will be filled.
-	 * 
-	 * @param template
-	 *            the template
-	 * @param application
-	 *            the application
-	 * @return the filled template
-	 */
-	private String populateApplicationRecipe(String template,
-			ApplicationInstance application) {
-		return MessageFormat.format(template, application.getApplication()
-				.getApplication().getType(), application.getApplication()
-				.getApplication().getName(), application.getApplication()
-				.getVersion(), getProductList(application));
-	}
-
-	/**
-	 * Populate the product list filled by order.
-	 * 
-	 * @param applicationInstance
-	 * @return
-	 */
-	private String getProductList(ApplicationInstance applicationInstance) {
-		String productListTemplate = propertiesProvider
-				.getProperty(PRODUCT_LIST_TEMPLATE);
-		String productListSeparator = propertiesProvider
-				.getProperty(PRODUCT_LIST_SEPARATOR);
-		String result = "";
-		List<ProductInstance> producs = applicationInstance
-				.getEnvironmentInstance().getProductInstances();
-		Collections.sort(producs);
-		for (ProductInstance pi : producs) {
-			if (!result.isEmpty()) {
-				result = result.concat(productListSeparator);
-			}
-			result = result.concat(MessageFormat.format(productListTemplate, pi
-					.getProductRelease().getProduct().getName(), pi
-					.getProductRelease().getVersion()));
-		}
-		return result;
-	}
 
 	// ///////////I.O.C.////////////
 

@@ -8,8 +8,6 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -146,7 +144,7 @@ public class ProductInstanceManagerChefImpl extends
 	@UseCase(traceTo = "UC_001.2", status = "implemented")
 	@Override
 	public void uninstall(ProductInstance productInstance)
-			throws NodeExecutionException, ApplicationInstalledException,
+			throws NodeExecutionException,
 			FSMViolationException {
 		Status previousStatus = productInstance.getStatus();
 		try {
@@ -261,8 +259,7 @@ public class ProductInstanceManagerChefImpl extends
 	@Override
 	public ProductInstance upgrade(ProductInstance productInstance,
 			ProductRelease productRelease) throws NotTransitableException,
-			NodeExecutionException, FSMViolationException,
-			ApplicationIncompatibleException {
+			NodeExecutionException, FSMViolationException {
 		Status previousStatus = productInstance.getStatus();
 		try {
 			validator.validateUpdate(productInstance, productRelease);

@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.xmlsolutions.annotation.Requirement;
 
 /**
@@ -26,7 +23,7 @@ import com.xmlsolutions.annotation.Requirement;
 public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 
 	private FSMValidator fsmValidator;
-	private ApplicationInstanceDao applicationInstanceDao;
+
 
 	/**
 	 * {@inheritDoc}
@@ -59,13 +56,8 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 	 */
 	@Override
 	public void validateUninstall(ProductInstance product)
-			throws ApplicationInstalledException, FSMViolationException {
+			throws FSMViolationException {
 		fsmValidator.validate(product, Status.UNINSTALLING);
-
-		List<ApplicationInstance> applications = getApplicationsByProduct(product);
-		if (!applications.isEmpty()) {
-			throw new ApplicationInstalledException(applications, product);
-		}
 	}
 
 	/**
@@ -83,7 +75,7 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 	@Override
 	public void validateUpdate(ProductInstance product,
 			ProductRelease newRelease) throws FSMViolationException,
-			NotTransitableException, ApplicationIncompatibleException {
+			NotTransitableException {
 		fsmValidator.validate(product, Status.UPGRADING);
 		// validate the product can upgrade the new version
 		List<ProductRelease> productReleases = product.getProductRelease()
@@ -91,30 +83,9 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 		if (!productReleases.contains(newRelease)) {
 			throw new NotTransitableException();
 		}
-		// validate the applications
-		List<ApplicationInstance> applications = getApplicationsByProduct(product);
-		List<ApplicationInstance> unsuportedApplications = new ArrayList<ApplicationInstance>();
-		// get the product that not support the new release
-		for (ApplicationInstance application : applications) {
-			if (!application.getApplication().getEnvironment()
-					.getProductReleases().contains(newRelease)) {
-				unsuportedApplications.add(application);
-			}
-		}
-		if (!unsuportedApplications.isEmpty()) {
-			throw new ApplicationIncompatibleException(unsuportedApplications,
-					newRelease);
-		}
+
 	}
 
-	private List<ApplicationInstance> getApplicationsByProduct(
-			ProductInstance product) {
-		ApplicationInstanceSearchCriteria appCriteria = new ApplicationInstanceSearchCriteria(
-				Arrays.asList(Status.INSTALLED, Status.INSTALLING,
-						Status.CONFIGURING, Status.UPGRADING), product, null,
-				"", "");
-		return applicationInstanceDao.findByCriteria(appCriteria);
-	}
 
 	// ///////I.O.C////////
 	/**
@@ -125,13 +96,5 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 		this.fsmValidator = fsmValidator;
 	}
 
-	/**
-	 * @param applicationInstanceDao
-	 *            the applicationInstanceDao to set
-	 */
-	public void setApplicationInstanceDao(
-			ApplicationInstanceDao applicationInstanceDao) {
-		this.applicationInstanceDao = applicationInstanceDao;
-	}
 
 }

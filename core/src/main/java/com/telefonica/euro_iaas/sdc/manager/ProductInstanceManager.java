@@ -4,8 +4,7 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -79,7 +78,7 @@ public interface ProductInstanceManager {
 	 */
 	ProductInstance upgrade(ProductInstance productInstance,
 			ProductRelease productRelease) throws NotTransitableException,
-			NodeExecutionException, ApplicationIncompatibleException,
+			NodeExecutionException, 
 			FSMViolationException;
 
 	/**
@@ -95,7 +94,7 @@ public interface ProductInstanceManager {
 	 *             if try to make a forbidden transition
 	 */
 	void uninstall(ProductInstance productInstance)
-			throws NodeExecutionException, ApplicationInstalledException,
+			throws NodeExecutionException, 
 			FSMViolationException;
 
 	/**

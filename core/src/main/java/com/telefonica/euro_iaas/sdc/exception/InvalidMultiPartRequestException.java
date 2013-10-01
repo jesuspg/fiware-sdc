@@ -1,6 +1,6 @@
 package com.telefonica.euro_iaas.sdc.exception;
 
-import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 /**
@@ -13,7 +13,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 public class InvalidMultiPartRequestException extends Exception {
 
 	private ProductRelease productRelease;
-	private ApplicationRelease applicationRelease;
+
 
 	public InvalidMultiPartRequestException() {
 		super();
@@ -33,11 +33,6 @@ public class InvalidMultiPartRequestException extends Exception {
 		this.productRelease = productRelease;
 	}
 
-	public InvalidMultiPartRequestException(Throwable e,
-			ApplicationRelease applicationRelease) {
-		super(e);
-		this.applicationRelease = applicationRelease;
-	}
 
 	public InvalidMultiPartRequestException(String msg, Throwable e) {
 		super(msg, e);

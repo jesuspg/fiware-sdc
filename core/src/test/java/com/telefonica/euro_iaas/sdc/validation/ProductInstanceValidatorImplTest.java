@@ -6,22 +6,17 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import com.telefonica.euro_iaas.sdc.dao.ApplicationInstanceDao;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationIncompatibleException;
-import com.telefonica.euro_iaas.sdc.exception.ApplicationInstalledException;
+
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Application;
-import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
-import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
-import com.telefonica.euro_iaas.sdc.model.Environment;
-import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
+
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ApplicationInstanceSearchCriteria;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,31 +43,16 @@ public class ProductInstanceValidatorImplTest extends TestCase {
 			Status.INSTALLED, new VM("ip"), "vdc");
 	private Application app = new Application("app", "description", "type");
 
-	private ApplicationRelease appRelease1 = new ApplicationRelease("1",
-			"releaseNotes", null, app,
-			new Environment(Arrays.asList(release2)),
-			new ArrayList<ApplicationRelease>());
-
-	private ApplicationInstance appInstance1 = new ApplicationInstance();
-
-	private List<ApplicationInstance> applications = Arrays
-			.asList(appInstance1);
 
 	private FSMValidator fsmValidator;
-	private ApplicationInstanceDao applicationInstanceDao;
+
 
 	@Before
 	public void setUp() throws Exception {
 		fsmValidator = mock(FSMValidator.class);
 		Mockito.doNothing().when(fsmValidator).validate(any(InstallableInstance.class), any(Status.class));
 		
-		applicationInstanceDao = mock(ApplicationInstanceDao.class);
-
-		appInstance1.setApplication(appRelease1);
-		appInstance1.setStatus(Status.INSTALLED);
-		appInstance1.setEnvironmentInstance(new EnvironmentInstance(
-				new Environment(Arrays.asList(release1)), Arrays
-						.asList(pInstance)));
+		
 	}
 
 	@Test
@@ -119,13 +99,9 @@ public class ProductInstanceValidatorImplTest extends TestCase {
 
 	@Test
 	public void testValidateUpdate() throws Exception {
-		applicationInstanceDao = mock(ApplicationInstanceDao.class);
-		when(
-				applicationInstanceDao
-						.findByCriteria(any(ApplicationInstanceSearchCriteria.class)))
-				.thenReturn(new ArrayList<ApplicationInstance>());
+		
 		ProductInstanceValidatorImpl validator = new ProductInstanceValidatorImpl();
-		validator.setApplicationInstanceDao(applicationInstanceDao);
+		
 		validator.setFsmValidator(fsmValidator);
 
 		ProductInstance instance = new ProductInstance(release2,

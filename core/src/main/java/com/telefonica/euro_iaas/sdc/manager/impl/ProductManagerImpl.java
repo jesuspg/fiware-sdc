@@ -14,11 +14,10 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsApplicationReleaseException;
+
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidApplicationReleaseException;
+
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -137,8 +136,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements
 	@UseCase(traceTo = "UC_101.3", status = "implemented and tested")
 	public void delete(ProductRelease productRelease)
 			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException {
+			ProductReleaseStillInstalledException {
 
 		boolean lastRelease = false;
 		validator.validateDelete(productRelease);

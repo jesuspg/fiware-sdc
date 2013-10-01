@@ -7,9 +7,6 @@
 
     <persistence-unit name="sdc" transaction-type="RESOURCE_LOCAL">
         <class>com.telefonica.euro_iaas.commons.properties.PersistentProperty</class>
-        <class>com.telefonica.euro_iaas.sdc.model.Application</class>
-        <class>com.telefonica.euro_iaas.sdc.model.ApplicationInstance</class>
-        <class>com.telefonica.euro_iaas.sdc.model.ApplicationRelease</class>
         <class>com.telefonica.euro_iaas.sdc.model.Attribute</class>
         <class>com.telefonica.euro_iaas.sdc.model.Artifact</class> 
 
@@ -22,8 +19,5 @@
         <class>com.telefonica.euro_iaas.sdc.model.OS</class>
         <class>com.telefonica.euro_iaas.sdc.model.Task</class>
         <class>com.telefonica.euro_iaas.sdc.model.NodeCommand</class>
-        
-        <class>com.telefonica.euro_iaas.sdc.model.Environment</class>
-        <class>com.telefonica.euro_iaas.sdc.model.EnvironmentInstance</class>
     </persistence-unit>
 </persistence>
