@@ -25,7 +25,6 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseExcepti
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -223,8 +222,7 @@ public class ProductResourceImpl implements ProductResource {
 	@Override
 	public void delete(String name, String version)
 			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException {
+			ProductReleaseStillInstalledException {
 
 		LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + name
 				+ " ProductVersion : " + version);
@@ -403,8 +401,7 @@ public class ProductResourceImpl implements ProductResource {
 
 	
 	public void delete(String name) throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException {
+			ProductReleaseStillInstalledException {
 		Product product;
 		try {
 			product = productManager.load(name);

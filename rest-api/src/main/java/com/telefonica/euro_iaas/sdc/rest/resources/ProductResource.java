@@ -22,7 +22,6 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseExcepti
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseInApplicationReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -206,16 +205,14 @@ public interface ProductResource {
 	void delete(@PathParam("pName") String name,
 			@PathParam("version") String version)
 			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException;
+			ProductReleaseStillInstalledException;
 	
 	@DELETE
 	@Path("/{pName}")
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	void delete(@PathParam("pName") String name)
 			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException;
+			ProductReleaseStillInstalledException;
 
 	/**
 	 * Update the ProductRelease in BBDD, the associated Recipe in chef server

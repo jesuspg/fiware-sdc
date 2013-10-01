@@ -20,7 +20,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.rest.validation.ApplicationResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 
