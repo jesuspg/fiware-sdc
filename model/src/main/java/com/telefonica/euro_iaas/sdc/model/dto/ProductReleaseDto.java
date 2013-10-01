@@ -65,11 +65,6 @@ public class ProductReleaseDto {
         this.transitableReleases = transitableReleases;
     }
 
-    public ProductReleaseDto(String product, String description, String version, Object object, Object object2,
-            List<OS> supportedOOSS, Object object3) {
-        // TODO Auto-generated constructor stub
-    }
-
     public String getProductName() {
         return productName;
     }

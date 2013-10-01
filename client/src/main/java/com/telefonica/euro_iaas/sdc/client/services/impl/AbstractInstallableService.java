@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
-import com.telefonica.euro_iaas.sdc.client.services.ApplicationInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Task;

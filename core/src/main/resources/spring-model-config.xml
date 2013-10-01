@@ -32,6 +32,9 @@
         <property name="validator" ref="productInstanceValidator"/>
         <property name="artifactDao" ref="artifactDao"/>
     </bean>
+<<<<<<< HEAD
+    
+=======
 
 
     <bean id="applicationInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
@@ -40,6 +43,7 @@
         <property name="applicationDao" ref="applicationDao"/>
         <property name="validator" ref="applicationInstanceValidator"/>
     </bean>
+>>>>>>> 5f740ba64394e3499d13ab4be72d7b67f625bb9e
 
     <!-- CATALOG MANAGER -->
 
@@ -51,6 +55,8 @@
         <property name="validator" ref="productReleaseValidator"/>
     </bean>
 
+<<<<<<< HEAD
+=======
     <bean id="applicationManager" lazy-init="true" parent="baseInstallableManager"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ApplicationManagerImpl">
         <property name="applicationDao" ref="applicationDao"/>
@@ -60,6 +66,7 @@
         <property name="productDao" ref="productDao"/>
         <property name="validator" ref="applicationReleaseValidator"/>
     </bean>
+>>>>>>> 5f740ba64394e3499d13ab4be72d7b67f625bb9e
 
     <bean id="baseInstallableManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
@@ -67,6 +74,11 @@
         <property name="propertiesProvider" ref="systemPropertiesProvider"/>
         <property name="fileDao" ref="fileDao"/>
     </bean>
+<<<<<<< HEAD
+    
+    <bean id="chefNodeManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
+=======
 
     <bean id="environmentManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.impl.EnvironmentManagerImpl">
@@ -86,6 +98,7 @@
 
     <bean id="chefNodeManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
+>>>>>>> 5f740ba64394e3499d13ab4be72d7b67f625bb9e
         <property name="chefNodeDao" ref="chefNodeDao"/>
         <property name="productInstanceDao" ref="productInstanceDao"/>
     </bean>
@@ -174,15 +187,21 @@
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
         <property name="fsmValidator" ref="fsmValidator"/>
     </bean>
+<<<<<<< HEAD
+=======
     <bean id="applicationInstanceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.ApplicationInstanceValidatorImpl">
         <property name="fsmValidator" ref="fsmValidator"/>
     </bean>
+>>>>>>> 5f740ba64394e3499d13ab4be72d7b67f625bb9e
     <bean id="productReleaseValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
         <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
     </bean>
+<<<<<<< HEAD
+    
+=======
     <bean id="applicationReleaseValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.ApplicationReleaseValidatorImpl">
         <property name="productReleaseDao" ref="productReleaseDao"/>
@@ -199,4 +218,5 @@
         <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
     </bean>
 
+>>>>>>> 5f740ba64394e3499d13ab4be72d7b67f625bb9e
 </beans>

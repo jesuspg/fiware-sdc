@@ -29,28 +29,26 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
         return propertiesProvider.load(namespace);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getProperty(String key) {
-        String value = System.getenv(key);
-        if (value == null) {
-            value = loadProperties().getProperty(key);
-        }
-        return value;
-    }
 
-    @Override
-    public Integer getIntProperty(String key) {
-        return Integer.parseInt(getProperty(key));
-    }
+	/** {@inheritDoc} */
+	public String getProperty(String key) {
+		String value = System.getenv(key);
+		if (value == null) {
+			value = loadProperties().getProperty(key);
+		}
+		return value;
+	}
 
-    /**
-     * @ø
-     */
-    @Override
-    public void setProperties(Properties configuration) {
-        propertiesProvider.store(configuration, namespace);
-    }
+	public Integer getIntProperty(String key) {
+		return Integer.parseInt(getProperty(key));
+	}
+
+	/**
+	 * @ø
+	 */
+	public void setProperties(Properties configuration) {
+		propertiesProvider.store(configuration, namespace);
+	}
 
     /**
      * <p>
