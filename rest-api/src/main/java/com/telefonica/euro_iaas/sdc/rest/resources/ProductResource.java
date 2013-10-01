@@ -12,6 +12,7 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -190,14 +191,11 @@ public interface ProductResource {
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
             throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
 
-	
-	@DELETE
-	@Path("/{pName}")
-	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void delete(@PathParam("pName") String name)
-			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException;
-
+    @DELETE
+    @Path("/{pName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
+            ProductReleaseStillInstalledException;
 
     /**
      * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav

@@ -11,15 +11,6 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Map;
-
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
 import static org.mockito.Matchers.anyObject;
@@ -28,6 +19,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.util.Date;
+import java.util.Map;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for MixlibAuthenticationDigester

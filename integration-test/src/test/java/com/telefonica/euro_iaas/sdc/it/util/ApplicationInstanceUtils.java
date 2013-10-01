@@ -11,6 +11,10 @@
 
 package com.telefonica.euro_iaas.sdc.it.util;
 
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
+
 import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -24,11 +28,6 @@ import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-
-
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
 
 /**
  * Provides some utility methods to work with A

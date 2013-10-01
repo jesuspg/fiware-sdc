@@ -11,10 +11,15 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
@@ -31,11 +36,6 @@ import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.scheduling.annotation.Async;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
 
 /**
  * Default implementation for ProductInstanceAsyncManager

@@ -11,11 +11,12 @@
 
 package com.telefonica.euro_iaas.sdc.dao;
 
+import junit.framework.Assert;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
-import junit.framework.Assert;
 
 public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
     // Need to be revisited

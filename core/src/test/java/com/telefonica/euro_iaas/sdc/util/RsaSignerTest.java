@@ -14,6 +14,7 @@ package com.telefonica.euro_iaas.sdc.util;
 import java.io.File;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
 
 /**

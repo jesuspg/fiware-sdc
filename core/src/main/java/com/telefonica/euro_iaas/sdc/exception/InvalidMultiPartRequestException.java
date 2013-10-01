@@ -11,7 +11,6 @@
 
 package com.telefonica.euro_iaas.sdc.exception;
 
-
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 /**
@@ -23,7 +22,6 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 public class InvalidMultiPartRequestException extends Exception {
 
     private ProductRelease productRelease;
-
 
     public InvalidMultiPartRequestException() {
         super();

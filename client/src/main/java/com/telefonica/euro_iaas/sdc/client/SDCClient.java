@@ -12,18 +12,14 @@
 package com.telefonica.euro_iaas.sdc.client;
 
 import com.sun.jersey.api.client.Client;
-
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
-
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
-
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefClientServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefNodeServiceImpl;
-
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
@@ -110,8 +106,6 @@ public class SDCClient {
         return new ProductInstanceSyncServiceImpl(getProductInstanceService(baseUrl, mediaType), getTaskService(
                 baseUrl, mediaType, maxWaiting, waitingPeriod));
     }
-
-
 
     /**
      * Get the service to work with products and product releases in the catalog.

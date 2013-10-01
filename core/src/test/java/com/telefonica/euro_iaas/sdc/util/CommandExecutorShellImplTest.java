@@ -13,8 +13,9 @@ package com.telefonica.euro_iaas.sdc.util;
 
 import java.io.IOException;
 
-import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import junit.framework.TestCase;
+
+import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 
 /**
  * @author Sergio Arroyo

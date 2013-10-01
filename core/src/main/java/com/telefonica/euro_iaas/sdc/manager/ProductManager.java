@@ -17,7 +17,6 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
-
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -96,19 +95,18 @@ public interface ProductManager {
     ProductRelease insert(ProductRelease productRelase, File recipes, File installable)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException;
 
-	/**
-	 * Delete the Product Release consisting on.
-	 * 
-	 * @param ProductRelease
-	 *            Object with name, version, transitableUploads..
-	 * @throws ProductReleaseInApplicationReleaseException
-	 *             thrown when try to delete a ProductRelease which is included
-	 *             in any ApplicationRelease object
-	 * @return the products releases.
-	 */
-	void delete(ProductRelease productRelease)
-			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException;
+    /**
+     * Delete the Product Release consisting on.
+     * 
+     * @param ProductRelease
+     *            Object with name, version, transitableUploads..
+     * @throws ProductReleaseInApplicationReleaseException
+     *             thrown when try to delete a ProductRelease which is included in any ApplicationRelease object
+     * @return the products releases.
+     */
+    void delete(ProductRelease productRelease) throws ProductReleaseNotFoundException,
+            ProductReleaseStillInstalledException;
+
     /**
      * Update the Product Release (either the cookbook/installable)
      * 

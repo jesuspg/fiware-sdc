@@ -11,22 +11,23 @@
 
 package com.telefonica.euro_iaas.sdc.it;
 
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.VDC;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
+
 import java.util.ArrayList;
+
+import junit.framework.Assert;
 
 import com.telefonica.euro_iaas.sdc.it.util.ApplicationInstanceUtils;
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+
 import cuke4duke.Table;
 import cuke4duke.annotation.I18n.EN.Given;
 import cuke4duke.annotation.I18n.EN.Then;
 import cuke4duke.annotation.I18n.EN.When;
 import cuke4duke.annotation.Pending;
-import junit.framework.Assert;
-
-
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.VDC;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
 
 /**
  * Contains the necessary steps to install an application using the SDC.

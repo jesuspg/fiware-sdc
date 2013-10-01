@@ -13,13 +13,14 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 
 /**
  * JPA implementation for ApplicationDao.

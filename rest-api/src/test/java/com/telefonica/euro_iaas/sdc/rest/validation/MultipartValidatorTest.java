@@ -14,7 +14,13 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.ws.rs.core.MediaType;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
@@ -22,9 +28,6 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author Jesus M. Movilla

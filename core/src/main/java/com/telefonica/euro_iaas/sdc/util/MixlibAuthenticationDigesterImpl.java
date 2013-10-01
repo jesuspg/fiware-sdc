@@ -11,6 +11,9 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.MessageFormat;
@@ -20,13 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 
 /**
  * Default MixlibAuthenticationDigester implementation.

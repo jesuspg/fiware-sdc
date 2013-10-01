@@ -13,6 +13,7 @@ package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
