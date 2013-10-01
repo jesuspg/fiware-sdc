@@ -11,13 +11,13 @@
         <href>http://www.tid.es</href>
     </bannerRight>
 
-    <publishDate format="dd MMM yyyy" position="left" />
-    <version position="left" />
+    <publishDate format="dd MMM yyyy" position="left"/>
+    <version position="left"/>
 
     <body>
         <menu name="Documentation">
-            <item name="Index" href="index.html" />
-            <item name="ERS" href="docs/xuse/index.html" />
+            <item name="Index" href="index.html"/>
+            <item name="ERS" href="docs/xuse/index.html"/>
             <item name="Scope" href="scope.html"/>
             <item name="Installation" href="installation.html"/>
             <item name="Create chef recipes" href="add-recipes.html"/>
@@ -28,15 +28,15 @@
         </menu>
 
         <menu name="Downloads">
-            <item name="Downloads" href="downloads.html" />
+            <item name="Downloads" href="downloads.html"/>
         </menu>
 
         <menu name="Development">
             <item name="Work Log" href="work-log.html"/>
             <item name="Roadmap" href="roadmap.html"/>
-            <item name="Scalability Plan" href="scalability.html" />
-            <item name="Views" href="views.html" />
-            <item name="User Stories" href="user-stories.html" />
+            <item name="Scalability Plan" href="scalability.html"/>
+            <item name="Views" href="views.html"/>
+            <item name="User Stories" href="user-stories.html"/>
         </menu>
 
         <menu name="Modules">

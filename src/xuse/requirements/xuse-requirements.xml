@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:requirements xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/requirements.xsd"
-    xmlns:xhtml="http://www.w3.org/1999/xhtml" model-version="1.0">
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/requirements.xsd"
+                   xmlns:xhtml="http://www.w3.org/1999/xhtml" model-version="1.0">
 
     <xuse:req strength="shall" id="RNF000" version="1.0.0"
-        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+              creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
         <xuse:title>The system shall provided a REST API</xuse:title>
         <xuse:description>
             System will provide a RESTFull API.
@@ -15,11 +15,11 @@
             <xuse:status>agreed</xuse:status>
             <xuse:package>system</xuse:package>
         </xuse:classification>
-        <xuse:stakeholder-ref refId="product-owner" />
+        <xuse:stakeholder-ref refId="product-owner"/>
     </xuse:req>
 
     <xuse:req strength="shall" id="RF000" version="1.0.0"
-        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+              creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
         <xuse:title>Only one instance of a product allowed</xuse:title>
         <xuse:description>
             A product can only be installed once at the same time. It means that
@@ -30,11 +30,11 @@
             <xuse:status>implemented</xuse:status>
             <xuse:package>system</xuse:package>
         </xuse:classification>
-        <xuse:stakeholder-ref refId="scrum-master" />
+        <xuse:stakeholder-ref refId="scrum-master"/>
     </xuse:req>
 
     <xuse:req strength="shall" id="RF001" version="1.0.0"
-        creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
+              creation-date="2011-03-12" modification-date="2011-03-12T14:25:00">
         <xuse:title>Only one instance of an application allowed</xuse:title>
         <xuse:description>
             An application can only be installed once at the same time. It means that
@@ -45,27 +45,27 @@
             <xuse:status>implemented</xuse:status>
             <xuse:package>system</xuse:package>
         </xuse:classification>
-        <xuse:stakeholder-ref refId="scrum-master" />
+        <xuse:stakeholder-ref refId="scrum-master"/>
     </xuse:req>
 
     <xuse:req strength="shall" id="RF002" version="1.2.0"
-        creation-date="2011-08-18">
+              creation-date="2011-08-18">
         <xuse:title>ProductInstance management shall be asynchornous</xuse:title>
         <xuse:description>
-          The operation will return a TCloud task in at the moment of the execution.
-          After that the flow continues while the client is liberated.
+            The operation will return a TCloud task in at the moment of the execution.
+            After that the flow continues while the client is liberated.
         </xuse:description>
         <xuse:classification>
             <xuse:type is-feature="true">constraint</xuse:type>
             <xuse:status>implemented</xuse:status>
             <xuse:package>system</xuse:package>
         </xuse:classification>
-        <xuse:stakeholder-ref refId="product-owner" />
+        <xuse:stakeholder-ref refId="product-owner"/>
     </xuse:req>
 
 
     <xuse:req strength="shall" id="BR001" version="1.2.0"
-        creation-date="2011-08-18">
+              creation-date="2011-08-18">
         <xuse:title>Rollback condition for ProductInstances</xuse:title>
         <xuse:description>
             During the execution the flow could fail. The product instance
@@ -73,7 +73,8 @@
             There rule will be:
             <xhtml:ul>
                 <xhtml:li>If the execution fails during the node is performing the
-                action, the new status will be ERROR.</xhtml:li>
+                    action, the new status will be ERROR.
+                </xhtml:li>
                 <xhtml:li>Otherwise the new status will be the previous status.</xhtml:li>
             </xhtml:ul>
         </xuse:description>
@@ -82,7 +83,7 @@
             <xuse:status>implemented</xuse:status>
             <xuse:package>system</xuse:package>
         </xuse:classification>
-        <xuse:stakeholder-ref refId="architect" />
+        <xuse:stakeholder-ref refId="architect"/>
     </xuse:req>
 
 </xuse:requirements>

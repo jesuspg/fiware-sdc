@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
@@ -17,10 +28,10 @@ import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
@@ -32,10 +43,10 @@ import com.xmlsolutions.annotation.UseCase;
  * Implements ProductManager using Chef to do that.
  * 
  * @author Sergio Arroyo
- * 
  */
 @UseCase(traceTo = "UC_001", status = "implemented")
 @Requirement(traceTo = "BR001", status = "implemented")
+
 public class ProductInstanceManagerChefImpl extends
 		BaseInstallableInstanceManager implements ProductInstanceManager {
 
@@ -456,43 +467,41 @@ public class ProductInstanceManagerChefImpl extends
 		
 
 		instance = productInstanceDao.create(instance);
-	
         return instance;
 
-	
-	}
+    }
 
-	// //////////// I.O.C /////////////
-	/**
-	 * @param productInstanceDao
-	 *            the productInstanceDao to set
-	 */
-	public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
-		this.productInstanceDao = productInstanceDao;
-	}
+    // //////////// I.O.C /////////////
+    /**
+     * @param productInstanceDao
+     *            the productInstanceDao to set
+     */
+    public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
+        this.productInstanceDao = productInstanceDao;
+    }
 
-	/**
-	 * @param productDao
-	 *            the productDao to set
-	 */
-	public void setProductDao(ProductDao productDao) {
-		this.productDao = productDao;
-	}
+    /**
+     * @param productDao
+     *            the productDao to set
+     */
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
 
-	/**
-	 * @param ip2vm
-	 *            the ip2vm to set
-	 */
-	public void setIp2vm(IpToVM ip2vm) {
-		this.ip2vm = ip2vm;
-	}
+    /**
+     * @param ip2vm
+     *            the ip2vm to set
+     */
+    public void setIp2vm(IpToVM ip2vm) {
+        this.ip2vm = ip2vm;
+    }
 
-	/**
-	 * @param validator
-	 *            the validator to set
-	 */
-	public void setValidator(ProductInstanceValidator validator) {
-		this.validator = validator;
-	}
+    /**
+     * @param validator
+     *            the validator to set
+     */
+    public void setValidator(ProductInstanceValidator validator) {
+        this.validator = validator;
+    }
 
 }

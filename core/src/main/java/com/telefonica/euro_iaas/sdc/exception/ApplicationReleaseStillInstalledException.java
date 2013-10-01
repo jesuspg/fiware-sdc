@@ -1,0 +1,86 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
+package com.telefonica.euro_iaas.sdc.exception;
+
+import java.util.List;
+
+import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.ApplicationRelease;
+
+/**
+ * Exception thrown when try to delete a ApplicationRelease which is still installed
+ * 
+ * @author Jesus M. Movilla
+ */
+@SuppressWarnings("serial")
+public class ApplicationReleaseStillInstalledException extends Exception {
+
+    private ApplicationRelease applicationRelease;
+    private List<ApplicationInstance> applicationInstances;
+
+    public ApplicationReleaseStillInstalledException() {
+        super();
+    }
+
+    public ApplicationReleaseStillInstalledException(List<ApplicationInstance> applicationInstances) {
+        this.applicationInstances = applicationInstances;
+    }
+
+    public ApplicationReleaseStillInstalledException(ApplicationRelease applicationRelease,
+            List<ApplicationInstance> applicationInstances) {
+        this.applicationRelease = applicationRelease;
+        this.applicationInstances = applicationInstances;
+    }
+
+    public ApplicationReleaseStillInstalledException(String msg) {
+        super(msg);
+    }
+
+    public ApplicationReleaseStillInstalledException(Throwable e) {
+        super(e);
+    }
+
+    public ApplicationReleaseStillInstalledException(String msg, Throwable e) {
+        super(msg, e);
+    }
+
+    /**
+     * @return the productRelease
+     */
+    public ApplicationRelease getApplicationRelease() {
+        return applicationRelease;
+    }
+
+    /**
+     * @param applicationRelease
+     *            the applicationRelease to set
+     */
+    public void setPApplicationRelease(ApplicationRelease applicationRelease) {
+        this.applicationRelease = applicationRelease;
+    }
+
+    /**
+     * @return the List<ApplicationInstances>
+     */
+    public List<ApplicationInstance> getApplicationIntances() {
+        return applicationInstances;
+    }
+
+    /**
+     * @param productInstances
+     *            the productInstances to set
+     */
+    public void setApplicationIntances(List<ApplicationInstance> applicationInstances) {
+        this.applicationInstances = applicationInstances;
+    }
+
+}

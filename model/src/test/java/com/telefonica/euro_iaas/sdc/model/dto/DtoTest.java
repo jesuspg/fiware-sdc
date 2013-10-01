@@ -1,15 +1,27 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.model.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
+import junit.framework.TestCase;
 import org.junit.Before;
 
-import junit.framework.TestCase;
-import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.dto.VM;
-
 public class DtoTest extends TestCase {
+
 
 	public static String KEY1 = "key1";
 	public static String KEY2 = "key2";
@@ -92,7 +104,7 @@ public class DtoTest extends TestCase {
 		vm.setIp("10.33.22.33");
 		ProductReleaseDto productReleaseDto = new ProductReleaseDto(
 				"productName", "productDescription", "version", "notas", atts,
-				null, null);
+				null, null, null);
 
 		assertEquals(productReleaseDto.getProductName(), "productName");
 		assertEquals(productReleaseDto.getProductDescription(),
@@ -107,7 +119,6 @@ public class DtoTest extends TestCase {
 		assertEquals(productReleaseDto.getProductDescription(),
 				"productDescription2");
 		assertEquals(productReleaseDto.getVersion(), "version2");
-
 	}
 
 	/**
@@ -128,10 +139,5 @@ public class DtoTest extends TestCase {
 
 		Map<String, String> attributes = artifact2.getMapAttributes();
 		assertEquals(attributes.get(KEY1), VALUE1);
-
 	}
-
-
-	
-
 }

@@ -1,7 +1,27 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.util;
+
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
+
+import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.BACKUP_APPLICATION_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.BACKUP_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CONFIGURE_PRODUCT_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DEPLOYAC_PRODUCT_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL_APPLICATION_RECIPE_TEMPLATE;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL_PRODUCT_RECIPE_TEMPLATE;
@@ -20,11 +40,11 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
+
 /**
  * Default RecipeNamingGenerator implementation.
  * 
  * @author Sergio Arroyo
- * 
  */
 public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 

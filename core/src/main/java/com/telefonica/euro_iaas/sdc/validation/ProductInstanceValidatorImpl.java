@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.validation;
 
 import java.util.ArrayList;
@@ -9,6 +20,7 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 
+
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -18,9 +30,9 @@ import com.xmlsolutions.annotation.Requirement;
  * Default ProductInstanceValidator implementation
  * 
  * @author Sergio Arroyo
- * 
  */
 public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
+
 
 	private FSMValidator fsmValidator;
 
@@ -95,6 +107,5 @@ public class ProductInstanceValidatorImpl implements ProductInstanceValidator {
 	public void setFsmValidator(FSMValidator fsmValidator) {
 		this.fsmValidator = fsmValidator;
 	}
-
 
 }

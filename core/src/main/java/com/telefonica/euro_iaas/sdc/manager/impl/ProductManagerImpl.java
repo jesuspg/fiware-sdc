@@ -1,6 +1,15 @@
-package com.telefonica.euro_iaas.sdc.manager.impl;
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PRODUCT_BASEDIR;
+package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +31,8 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -31,13 +42,16 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidator;
 import com.xmlsolutions.annotation.UseCase;
 
+
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PRODUCT_BASEDIR;
+
 /**
  * Default ProductManager implementation.
  * 
  * @author Sergio Arroyo, Jesus M. Movilla
- * 
  */
 @UseCase(traceTo = "UC_101", status = "partially implemented")
+
 public class ProductManagerImpl extends BaseInstallableManager implements
 		ProductManager {
 
@@ -568,6 +582,5 @@ public class ProductManagerImpl extends BaseInstallableManager implements
 		productDao.remove(product);
 		
 	}
-
-	
 }
+	

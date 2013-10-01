@@ -1,15 +1,23 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.util;
 
 
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
 /**
- * 
- * Generates the names for every recipe. This names shall be according to naming
- * conventions
+ * Generates the names for every recipe. This names shall be according to naming conventions
  * 
  * @author Sergio Arroyo
- * 
  */
 public interface RecipeNamingGenerator {
 
@@ -71,5 +79,6 @@ public interface RecipeNamingGenerator {
 	 */
 
 	public String getUnDeployArtifactRecipe(ProductInstance productInstance);
+
 
 }

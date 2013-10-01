@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:use-case xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
-    id="UC_002" name="Application Instance Management" model-version="1.0">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
+               id="UC_002" name="Application Instance Management" model-version="1.0">
     <xuse:description>
         Defines the way a Client can request for instanlling,
         uninstalling, configuring
@@ -23,15 +24,15 @@
         </xuse:trigger>
         <xuse:goal>Install, Uninstall, Configure or update an Application
         </xuse:goal>
-        <xuse:primary-actor refId="client" />
+        <xuse:primary-actor refId="client"/>
         <xuse:pre-requisites>
             The Application exists in the catalog (see
-            <xuse:uc-ref refId="UC_102" />
+            <xuse:uc-ref refId="UC_102"/>
             )
             and the products where the Application will be installed are
             installed
             too (see
-            <xuse:uc-ref refId="UC_001" />
+            <xuse:uc-ref refId="UC_001"/>
             )
         </xuse:pre-requisites>
         <xuse:success-outcome>The System performs the action.
@@ -47,20 +48,22 @@
     <xuse:main-flow>
         <xuse:step step-id="client-search-applications">
             <xuse:description>Actor find some applications providing the
-                ApplicationInstanceSearchCriteria.</xuse:description>
+                ApplicationInstanceSearchCriteria.
+            </xuse:description>
             <xuse:ref-alternate-flow refId="af-install-application"
-                condition="Client wants to install an application" />
+                                     condition="Client wants to install an application"/>
             <xuse:ref-alternate-flow refId="af-uninstall-application"
-                condition="Client wants to uninstall a previouslly installed application" />
+                                     condition="Client wants to uninstall a previouslly installed application"/>
             <xuse:ref-alternate-flow refId="af-configure-application"
-                condition="Client wants to configure a previouslly installed application" />
+                                     condition="Client wants to configure a previouslly installed application"/>
             <xuse:ref-alternate-flow refId="af-upgrade-application"
-                condition="Client wants to upgrade a previouslly installed application" />
+                                     condition="Client wants to upgrade a previouslly installed application"/>
         </xuse:step>
         <xuse:step step-id="system-show-applications">
             <xuse:description>System return the list of ApplicationInstances
                 that
-                match with the given criteria.</xuse:description>
+                match with the given criteria.
+            </xuse:description>
         </xuse:step>
         <xuse:step step-id="client-search-concrete-application">
             <xuse:description>Actor search the concrete ApplicationInstance
@@ -71,7 +74,7 @@
             <xuse:description>System return the selected ApplicationInstance.
             </xuse:description>
         </xuse:step>
-        <xuse:end />
+        <xuse:end/>
     </xuse:main-flow>
 
     <xuse:alternate-flows>
@@ -82,35 +85,38 @@
                     </xuse:uc-ref>
                 </xuse:description>
             </xuse:step>
-            <xuse:end />
+            <xuse:end/>
         </xuse:alternate-flow>
 
         <xuse:alternate-flow title="Uninstall application"
-            id="af-uninstall-application">
+                             id="af-uninstall-application">
             <xuse:step step-id="client-request-for-uninstall">
                 <xuse:description>Actor request for uninstall</xuse:description>
             </xuse:step>
             <xuse:step step-id="system-uninstall-the-product">
                 <xuse:description>System uninstall the selected
                     ApplicationInsance form
-                    the VM and change the status in the internal state.</xuse:description>
+                    the VM and change the status in the internal state.
+                </xuse:description>
             </xuse:step>
-            <xuse:end />
+            <xuse:end/>
         </xuse:alternate-flow>
 
         <xuse:alternate-flow title="Configure application"
-            id="af-configure-application">
+                             id="af-configure-application">
             <xuse:step step-id="client-request-for-configure">
                 <xuse:description>Actor request for configure providing all
                     necessary
-                    data (see API specification).</xuse:description>
+                    data (see API specification).
+                </xuse:description>
             </xuse:step>
             <xuse:step step-id="system-configure-the-application">
                 <xuse:description>System configure the application in the target
                     VM
-                    (the parameters wont be stored in the internal state).</xuse:description>
+                    (the parameters wont be stored in the internal state).
+                </xuse:description>
             </xuse:step>
-            <xuse:end />
+            <xuse:end/>
         </xuse:alternate-flow>
 
         <xuse:alternate-flow title="Upgrade application" id="af-upgrade-application">
@@ -120,7 +126,7 @@
                     </xuse:uc-ref>
                 </xuse:description>
             </xuse:step>
-            <xuse:end />
+            <xuse:end/>
         </xuse:alternate-flow>
 
     </xuse:alternate-flows>

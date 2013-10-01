@@ -1,40 +1,50 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.bootstrap;
 
 import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
-
-
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import javax.servlet.ServletContextListener;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.sdc.dao.ApplicationDao;
 
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
+
 import com.telefonica.euro_iaas.sdc.model.Application;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Populates data base with synthetic data to emulate the preconditions of SO
- * management, Image deployable management and customer management.
+ * Populates data base with synthetic data to emulate the preconditions of SO management, Image deployable management
+ * and customer management.
  * 
  * @author Sergio Arroyo
  * @version $Id: $
  */
 // TODO delete this class when the preconditions are done.
 public class InitDbBootstrap implements ServletContextListener {
+
 
 	/** {@inheritDoc} */
 	public void contextInitialized(ServletContextEvent event) {
@@ -44,10 +54,6 @@ public class InitDbBootstrap implements ServletContextListener {
 		ProductDao productDao = (ProductDao) ctx.getBean("productDao");
 		ProductReleaseDao productReleaseDao = (ProductReleaseDao) ctx
 				.getBean("productReleaseDao");
-		
-
-		ApplicationDao applicationDao = (ApplicationDao) ctx
-				.getBean("applicationDao");
 		NodeCommandDao nodeCommandDao = (NodeCommandDao) ctx
 				.getBean("nodeCommandDao");
 
@@ -358,5 +364,4 @@ public class InitDbBootstrap implements ServletContextListener {
 	
 	public void contextDestroyed(ServletContextEvent event) {
 	}
-
 }

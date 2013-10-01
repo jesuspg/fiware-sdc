@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.validation;
 
 import java.util.ArrayList;
@@ -6,32 +17,29 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-
-import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.model.Application;
 
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
+import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 
 /**
- * 
  * @author Sergio Arroyo
- * 
  */
 public class ProductInstanceValidatorImplTest extends TestCase {
+
 
 	private Product product = new Product("product", "description");
 	private ProductRelease release1 = new ProductRelease("1", "releaseNotes",
