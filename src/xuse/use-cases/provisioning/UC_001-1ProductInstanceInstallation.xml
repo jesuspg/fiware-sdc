@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:use-case xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
-    id="UC_001.1" name="Product Instance Installation" model-version="1.0">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
+               id="UC_001.1" name="Product Instance Installation" model-version="1.0">
     <xuse:description>
         Defines the basic and alternative flows for a product installation.
     </xuse:description>
@@ -20,9 +21,9 @@
             Actor request for install a ProductRelease using the API.
         </xuse:trigger>
         <xuse:goal>Install a Product</xuse:goal>
-        <xuse:primary-actor refId="client" />
+        <xuse:primary-actor refId="client"/>
         <xuse:pre-requisites>
-            The Product exists in the catalog (see <xuse:uc-ref refId="UC_101" />)
+            The Product exists in the catalog (see<xuse:uc-ref refId="UC_101"/>)
         </xuse:pre-requisites>
         <xuse:success-outcome>The System performs the action.
         </xuse:success-outcome>
@@ -37,22 +38,24 @@
     <xuse:main-flow>
         <xuse:step step-id="client-request-for-install">
             <xuse:description>Actor request for install providing all necessary
-            data (see API specification)</xuse:description>
+                data (see API specification)
+            </xuse:description>
         </xuse:step>
         <xuse:step step-id="system-install-the-product">
             <xuse:description>System install the product and creates
-            a ProductInstance.</xuse:description>
+                a ProductInstance.
+            </xuse:description>
             <xuse:ref-exception-flow refId="af-icompatible-ost"
-                condition="The product is not available for the target OS" />
+                                     condition="The product is not available for the target OS"/>
             <xuse:ref-exception-flow refId="af-already-installed"
-                condition="The product is already installed" />
+                                     condition="The product is already installed"/>
         </xuse:step>
-        <xuse:end />
+        <xuse:end/>
     </xuse:main-flow>
 
     <xuse:exception-flows>
         <xuse:exception-flow title="Incompatible OS"
-            id="af-icompatible-ost">
+                             id="af-icompatible-ost">
             <xuse:step step-id="error-os">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -60,7 +63,7 @@
         </xuse:exception-flow>
 
         <xuse:exception-flow title="Already installed product"
-            id="af-already-installed">
+                             id="af-already-installed">
             <xuse:step step-id="error-already-installed">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -68,7 +71,7 @@
         </xuse:exception-flow>
     </xuse:exception-flows>
 
-     <xuse:business-rules>
-        <xuse:req-ref refId="RF000" />
+    <xuse:business-rules>
+        <xuse:req-ref refId="RF000"/>
     </xuse:business-rules>
 </xuse:use-case>

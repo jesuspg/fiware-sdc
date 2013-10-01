@@ -1,68 +1,75 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.exception;
 
 import com.telefonica.euro_iaas.sdc.model.ApplicationInstance;
 import com.telefonica.euro_iaas.sdc.model.EnvironmentInstance;
 
 /**
- * Exception thrown when try to uninstall an application that has any
- * application running on it.
+ * Exception thrown when try to uninstall an application that has any application running on it.
  * 
  * @author Jesus M. Movilla
  */
 @SuppressWarnings("serial")
 public class IncompatibleEnvironmentException extends Exception {
 
-	private ApplicationInstance application;
-	private EnvironmentInstance environmentInstance;
+    private ApplicationInstance application;
+    private EnvironmentInstance environmentInstance;
 
-	/**
-	 * @param applications
-	 * @param environmentInstance
-	 */
-	public IncompatibleEnvironmentException(ApplicationInstance application,
-			EnvironmentInstance environmentInstance) {
-		this.application = application;
-		this.environmentInstance = environmentInstance;
+    /**
+     * @param applications
+     * @param environmentInstance
+     */
+    public IncompatibleEnvironmentException(ApplicationInstance application, EnvironmentInstance environmentInstance) {
+        this.application = application;
+        this.environmentInstance = environmentInstance;
 
-	}
+    }
 
-	@Override
-	public String getMessage() {
-		return "The application "
-				+ application.getApplication().getApplication().getName() + "-"
-				+ application.getApplication().getVersion()
-				+ "can not be installed in this environment: "
-				+ environmentInstance.getEnvironment().getName();
-	}
+    @Override
+    public String getMessage() {
+        return "The application " + application.getApplication().getApplication().getName() + "-"
+                + application.getApplication().getVersion() + "can not be installed in this environment: "
+                + environmentInstance.getEnvironment().getName();
+    }
 
-	/**
-	 * @return the application
-	 */
-	public ApplicationInstance getApplication() {
-		return application;
-	}
+    /**
+     * @return the application
+     */
+    public ApplicationInstance getApplication() {
+        return application;
+    }
 
-	/**
-	 * @param application
-	 *            the application to set
-	 */
-	public void setApplication(ApplicationInstance application) {
-		this.application = application;
-	}
+    /**
+     * @param application
+     *            the application to set
+     */
+    public void setApplication(ApplicationInstance application) {
+        this.application = application;
+    }
 
-	/**
-	 * @return the environmentInstance
-	 */
-	public EnvironmentInstance getEnvironmentInstance() {
-		return environmentInstance;
-	}
+    /**
+     * @return the environmentInstance
+     */
+    public EnvironmentInstance getEnvironmentInstance() {
+        return environmentInstance;
+    }
 
-	/**
-	 * @param environmentInstance
-	 *            the environmentInstance to set
-	 */
-	public void setProducts(EnvironmentInstance environmentInstance) {
-		this.environmentInstance = environmentInstance;
-	}
+    /**
+     * @param environmentInstance
+     *            the environmentInstance to set
+     */
+    public void setProducts(EnvironmentInstance environmentInstance) {
+        this.environmentInstance = environmentInstance;
+    }
 
 }

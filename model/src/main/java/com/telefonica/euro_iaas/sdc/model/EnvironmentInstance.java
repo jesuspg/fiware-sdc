@@ -1,7 +1,17 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,94 +33,92 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentInstance {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@ManyToOne(optional = false)
-	private Environment environment;
+    @ManyToOne(optional = false)
+    private Environment environment;
 
-	@OneToMany
-	private List<ProductInstance> productInstances;
+    @OneToMany
+    private List<ProductInstance> productInstances;
 
-	/**
-	 * <p>
-	 * Constructor for EnvironmentInstance.
-	 * </p>
-	 */
-	public EnvironmentInstance() {
-		super();
-	}
+    /**
+     * <p>
+     * Constructor for EnvironmentInstance.
+     * </p>
+     */
+    public EnvironmentInstance() {
+        super();
+    }
 
-	/**
-	 * <p>
-	 * Constructor for EnvironmentInstance.
-	 * </p>
-	 * 
-	 * @param application
-	 *            a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
-	 * @param productInstances
-	 *            a {@link List
-	 *            <com.telefonica.euro_iaas.sdc.model.ProductInstance>} object.
-	 */
-	public EnvironmentInstance(Environment environment,
-			List<ProductInstance> productInstances) {
-		this.environment = environment;
-		this.productInstances = productInstances;
-	}
+    /**
+     * <p>
+     * Constructor for EnvironmentInstance.
+     * </p>
+     * 
+     * @param application
+     *            a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
+     * @param productInstances
+     *            a {@link List <com.telefonica.euro_iaas.sdc.model.ProductInstance>} object.
+     */
+    public EnvironmentInstance(Environment environment, List<ProductInstance> productInstances) {
+        this.environment = environment;
+        this.productInstances = productInstances;
+    }
 
-	/**
-	 * <p>
-	 * Getter for the field <code>environment</code>.
-	 * </p>
-	 * 
-	 * @return the environment
-	 */
-	public Environment getEnvironment() {
-		return environment;
-	}
+    /**
+     * <p>
+     * Getter for the field <code>environment</code>.
+     * </p>
+     * 
+     * @return the environment
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
 
-	/**
-	 * <p>
-	 * Setter for the field <code>environment</code>.
-	 * </p>
-	 * 
-	 * @param environment
-	 *            the environment to set
-	 */
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
+    /**
+     * <p>
+     * Setter for the field <code>environment</code>.
+     * </p>
+     * 
+     * @param environment
+     *            the environment to set
+     */
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
-	/**
-	 * <p>
-	 * Getter for the field <code>productInstances</code>.
-	 * </p>
-	 * 
-	 * @return the productInstances
-	 */
-	public List<ProductInstance> getProductInstances() {
-		return productInstances;
-	}
+    /**
+     * <p>
+     * Getter for the field <code>productInstances</code>.
+     * </p>
+     * 
+     * @return the productInstances
+     */
+    public List<ProductInstance> getProductInstances() {
+        return productInstances;
+    }
 
-	/**
-	 * <p>
-	 * Setter for the field <code>productReleases</code>.
-	 * </p>
-	 * 
-	 * @param productReleases
-	 *            the productReleases to set
-	 */
+    /**
+     * <p>
+     * Setter for the field <code>productReleases</code>.
+     * </p>
+     * 
+     * @param productReleases
+     *            the productReleases to set
+     */
 
-	public void setProductInstances(List<ProductInstance> productInstances) {
-		this.productInstances = productInstances;
-	}
+    public void setProductInstances(List<ProductInstance> productInstances) {
+        this.productInstances = productInstances;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
 }

@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
@@ -15,70 +26,55 @@ import com.telefonica.euro_iaas.sdc.client.services.EnvironmentService;
 import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
 
-public class EnvironmentServiceImpl extends AbstractBaseService implements
-		EnvironmentService {
+public class EnvironmentServiceImpl extends AbstractBaseService implements EnvironmentService {
 
-	public EnvironmentServiceImpl(Client client, String baseUrl,
-			String mediaType) {
-		setBaseHost(baseUrl);
-		setType(mediaType);
-		setClient(client);
-	}
+    public EnvironmentServiceImpl(Client client, String baseUrl, String mediaType) {
+        setBaseHost(baseUrl);
+        setType(mediaType);
+        setClient(client);
+    }
 
-	@Override
-	public Environment insert(EnvironmentDto environmentDto) {
-		String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENT_PATH;
-		WebResource wr = getClient().resource(url);
-		return wr.accept(getType()).type(getType()).entity(environmentDto)
-				.post(Environment.class);
-	}
+    @Override
+    public Environment insert(EnvironmentDto environmentDto) {
+        String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENT_PATH;
+        WebResource wr = getClient().resource(url);
+        return wr.accept(getType()).type(getType()).entity(environmentDto).post(Environment.class);
+    }
 
-	@Override
-	public List<Environment> findAll(Integer page, Integer pageSize,
-			String orderBy, String orderType) {
-		String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENT_PATH;
+    @Override
+    public List<Environment> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
+        String url = getBaseHost() + ClientConstants.BASE_ENVIRONMENT_PATH;
 
-		WebResource wr = getClient().resource(url);
-		MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-		searchParams = addParam(searchParams, "page", page);
-		searchParams = addParam(searchParams, "pageSize", pageSize);
-		searchParams = addParam(searchParams, "orderBy", orderBy);
-		searchParams = addParam(searchParams, "orderType", orderType);
-		return wr.queryParams(searchParams).accept(getType()).get(
-				Environments.class);
-	}
+        WebResource wr = getClient().resource(url);
+        MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
+        searchParams = addParam(searchParams, "page", page);
+        searchParams = addParam(searchParams, "pageSize", pageSize);
+        searchParams = addParam(searchParams, "orderBy", orderBy);
+        searchParams = addParam(searchParams, "orderType", orderType);
+        return wr.queryParams(searchParams).accept(getType()).get(Environments.class);
+    }
 
-	@Override
-	public Environment load(String name) {
-		String url = getBaseHost()
-				+ MessageFormat.format(
-						ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH, name);
-		WebResource wr = getClient().resource(url);
-		return wr.accept(getType()).type(getType()).entity(name).get(
-				Environment.class);
-	}
+    @Override
+    public Environment load(String name) {
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH, name);
+        WebResource wr = getClient().resource(url);
+        return wr.accept(getType()).type(getType()).entity(name).get(Environment.class);
+    }
 
-	@Override
-	public void delete(String envName) {
-		String url = getBaseHost()
-				+ MessageFormat.format(
-						ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH,
-						envName);
-		WebResource wr = getClient().resource(url);
-		wr.accept(getType()).type(getType()).entity(envName).delete(
-				ClientResponse.class);
+    @Override
+    public void delete(String envName) {
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH, envName);
+        WebResource wr = getClient().resource(url);
+        wr.accept(getType()).type(getType()).entity(envName).delete(ClientResponse.class);
 
-	}
+    }
 
-	@Override
-	public Environment update(EnvironmentDto environmentDto) {
-		String url = getBaseHost()
-				+ MessageFormat.format(
-						ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH,
-						environmentDto.getName());
-		WebResource wr = getClient().resource(url);
-		return wr.accept(getType()).type(getType()).entity(environmentDto).put(
-				Environment.class);
-	}
+    @Override
+    public Environment update(EnvironmentDto environmentDto) {
+        String url = getBaseHost()
+                + MessageFormat.format(ClientConstants.ACTION_ENVIRONMENT_INSTANCE_PATH, environmentDto.getName());
+        WebResource wr = getClient().resource(url);
+        return wr.accept(getType()).type(getType()).entity(environmentDto).put(Environment.class);
+    }
 
 }

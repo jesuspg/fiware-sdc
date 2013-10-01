@@ -1,3 +1,14 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.io.File;
@@ -8,19 +19,12 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.MultiPart;
-
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
@@ -39,404 +43,371 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * default ProductResource implementation
  * 
  * @author Sergio Arroyo
- * 
  */
 @Path("/catalog/product")
 @Component
 @Scope("request")
 public class ProductResourceImpl implements ProductResource {
 
-	@InjectParam("productManager")
-	private ProductManager productManager;
+    @InjectParam("productManager")
+    private ProductManager productManager;
 
-	private ProductResourceValidator validator;
-	private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
+    private ProductResourceValidator validator;
+    private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
 
-	public ProductRelease insert(ProductReleaseDto productReleaseDto)
-	throws AlreadyExistsProductReleaseException,
-	InvalidProductReleaseException {
-		LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName() +  " " + productReleaseDto.getVersion()
-				+ " " + productReleaseDto.getProductDescription()); 
-		Product product = new Product(productReleaseDto.getProductName(),
-				productReleaseDto.getProductDescription());
+    public ProductRelease insert(ProductReleaseDto productReleaseDto) throws AlreadyExistsProductReleaseException,
+            InvalidProductReleaseException {
+        LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
+                + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
+        Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
-		if (productReleaseDto.getPrivateAttributes() != null) {
-			LOGGER.info("Attributes " + productReleaseDto.getPrivateAttributes().size());
-			for (Attribute att: productReleaseDto.getPrivateAttributes())
-				product.addAttribute(att);
-		}
-		
-		if (productReleaseDto.getMetadatas() != null) {
-			for (Metadata metadata: productReleaseDto.getMetadatas()){
-				product.addMetadata(metadata);
-			}
-		}
-		
-		ProductRelease productRelease = new ProductRelease(productReleaseDto
-				.getVersion(), productReleaseDto.getReleaseNotes(),
-				productReleaseDto.getPrivateAttributes(), product,
-				productReleaseDto.getSupportedOS(), productReleaseDto
-						.getTransitableReleases());
-		LOGGER.info(productRelease.toString());
-		return productManager.insert(productRelease);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @throws InvalidProductReleaseUpdateRequestException
-	 * @throws InvalidMultiPartRequestException
-	 */
-	public ProductRelease insert(MultiPart multiPart)
-			throws AlreadyExistsProductReleaseException,
-			InvalidProductReleaseException, InvalidMultiPartRequestException {
+        if (productReleaseDto.getPrivateAttributes() != null) {
+            LOGGER.info("Attributes " + productReleaseDto.getPrivateAttributes().size());
+            for (Attribute att : productReleaseDto.getPrivateAttributes())
+                product.addAttribute(att);
+        }
 
-		validator.validateInsert(multiPart);
+        if (productReleaseDto.getMetadatas() != null) {
+            for (Metadata metadata : productReleaseDto.getMetadatas()) {
+                product.addMetadata(metadata);
+            }
+        }
 
-		File cookbook = null;
-		File installable = null;
+        ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
+                productReleaseDto.getReleaseNotes(), productReleaseDto.getPrivateAttributes(), product,
+                productReleaseDto.getSupportedOS(), productReleaseDto.getTransitableReleases());
+        LOGGER.info(productRelease.toString());
+        return productManager.insert(productRelease);
+    }
 
-		// First part contains a Project object
-		ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0)
-				.getEntityAs(ProductReleaseDto.class);
-		LOGGER.log(Level.INFO, " Insert ProductRelease "
-				+ productReleaseDto.getProductName() + " version "
-				+ productReleaseDto.getVersion());
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws InvalidProductReleaseUpdateRequestException
+     * @throws InvalidMultiPartRequestException
+     */
+    public ProductRelease insert(MultiPart multiPart) throws AlreadyExistsProductReleaseException,
+            InvalidProductReleaseException, InvalidMultiPartRequestException {
 
-		Product product = new Product(productReleaseDto.getProductName(),
-				productReleaseDto.getProductDescription());
-	
-		if ( productReleaseDto.getMetadatas() != null){
-			for (Metadata metadata: productReleaseDto.getMetadatas()){
-				product.addMetadata(metadata);
-			}
-		}
-	
-		for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
-			product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
-		}
-		
-		ProductRelease productRelease = new ProductRelease(productReleaseDto
-				.getVersion(), productReleaseDto.getReleaseNotes(),
-				productReleaseDto.getPrivateAttributes(), product,
-				productReleaseDto.getSupportedOS(), productReleaseDto
-						.getTransitableReleases());
+        validator.validateInsert(multiPart);
 
-		try {
-			cookbook = File.createTempFile("cookbook-"
-					+ productReleaseDto.getProductName() + "-"
-					+ productReleaseDto.getVersion() + ".tar", ".tmp");
+        File cookbook = null;
+        File installable = null;
 
-			installable = File.createTempFile("installable-"
-					+ productReleaseDto.getProductName() + "-"
-					+ productReleaseDto.getVersion() + ".tar", ".tmp");
+        // First part contains a Project object
+        ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
+        LOGGER.log(Level.INFO, " Insert ProductRelease " + productReleaseDto.getProductName() + " version "
+                + productReleaseDto.getVersion());
 
-			cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart
-					.getBodyParts().get(1).getEntity(), cookbook);
-			installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart
-					.getBodyParts().get(2).getEntity(), installable);
+        Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+        if (productReleaseDto.getMetadatas() != null) {
+            for (Metadata metadata : productReleaseDto.getMetadatas()) {
+                product.addMetadata(metadata);
+            }
+        }
 
-		return productManager.insert(productRelease, cookbook, installable);
-	}
+        for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
+            product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Product> findAll(Integer page, Integer pageSize,
-			String orderBy, String orderType) {
-		ProductSearchCriteria criteria = new ProductSearchCriteria();
+        ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
+                productReleaseDto.getReleaseNotes(), productReleaseDto.getPrivateAttributes(), product,
+                productReleaseDto.getSupportedOS(), productReleaseDto.getTransitableReleases());
 
-		if (page != null && pageSize != null) {
-			criteria.setPage(page);
-			criteria.setPageSize(pageSize);
-		}
-		if (!StringUtils.isEmpty(orderBy)) {
-			criteria.setOrderBy(orderBy);
-		}
-		if (!StringUtils.isEmpty(orderType)) {
-			criteria.setOrderBy(orderType);
-		}
-		return productManager.findByCriteria(criteria);
-	}
+        try {
+            cookbook = File.createTempFile(
+                    "cookbook-" + productReleaseDto.getProductName() + "-" + productReleaseDto.getVersion() + ".tar",
+                    ".tmp");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Product load(String name) throws EntityNotFoundException {
-		return productManager.load(name);
-	}
+            installable = File.createTempFile("installable-" + productReleaseDto.getProductName() + "-"
+                    + productReleaseDto.getVersion() + ".tar", ".tmp");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Attribute> loadAttributes(String name)
-			throws EntityNotFoundException {
-		return productManager.load(name).getAttributes();
-	}
+            cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), cookbook);
+            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(),
+                    installable);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	
-	public List<ProductRelease> findAll(String name, String osType,
-			Integer page, Integer pageSize, String orderBy, String orderType) {
-		ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-		if (!StringUtils.isEmpty(name)) {
-			try {
-				Product product = productManager.load(name);
-				criteria.setProduct(product);
-			} catch (EntityNotFoundException e) {
-				throw new SdcRuntimeException("Can not find the application "
-						+ name, e);
-			}
-		}
+        return productManager.insert(productRelease, cookbook, installable);
+    }
 
-		if (!StringUtils.isEmpty(osType))
-			criteria.setOSType(osType);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
+        ProductSearchCriteria criteria = new ProductSearchCriteria();
 
-		if (page != null && pageSize != null) {
-			criteria.setPage(page);
-			criteria.setPageSize(pageSize);
-		}
-		if (!StringUtils.isEmpty(orderBy)) {
-			criteria.setOrderBy(orderBy);
-		}
-		if (!StringUtils.isEmpty(orderType)) {
-			criteria.setOrderBy(orderType);
-		}
-		return productManager.findReleasesByCriteria(criteria);
-	}
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
+        return productManager.findByCriteria(criteria);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ProductRelease load(String name, String version)
-			throws EntityNotFoundException {
-		Product product = productManager.load(name);
-		return productManager.load(product, version);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Product load(String name) throws EntityNotFoundException {
+        return productManager.load(name);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void delete(String name, String version)
-			throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
+        return productManager.load(name).getAttributes();
+    }
 
-		LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + name
-				+ " ProductVersion : " + version);
+    /**
+     * {@inheritDoc}
+     */
 
-		Product product;
-		try {
-			product = productManager.load(name);
-		} catch (EntityNotFoundException e) {
-			throw new ProductReleaseNotFoundException(e);
-		}
+    public List<ProductRelease> findAll(String name, String osType, Integer page, Integer pageSize, String orderBy,
+            String orderType) {
+        ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
-		ProductRelease productRelease;
-		try {
-			productRelease = productManager.load(product, version);
-		} catch (EntityNotFoundException e) {
-			throw new ProductReleaseNotFoundException(e);
-		}
+        if (!StringUtils.isEmpty(name)) {
+            try {
+                Product product = productManager.load(name);
+                criteria.setProduct(product);
+            } catch (EntityNotFoundException e) {
+                throw new SdcRuntimeException("Can not find the application " + name, e);
+            }
+        }
 
-		productManager.delete(productRelease);
-	}
+        if (!StringUtils.isEmpty(osType))
+            criteria.setOSType(osType);
 
-	public ProductRelease update(MultiPart multiPart)
-			throws ProductReleaseNotFoundException,
-			InvalidProductReleaseException,
-			InvalidProductReleaseUpdateRequestException,
-			InvalidMultiPartRequestException {
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
+        return productManager.findReleasesByCriteria(criteria);
+    }
 
-		ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0)
-				.getEntityAs(ProductReleaseDto.class);
-		LOGGER.log(Level.INFO, "ProductRelease "
-				+ productReleaseDto.getProductName() + " version "
-				+ productReleaseDto.getVersion());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductRelease load(String name, String version) throws EntityNotFoundException {
+        Product product = productManager.load(name);
+        return productManager.load(product, version);
+    }
 
-		// TODO Validar el Objeto ProductReleaseDto en las validaciones
-		Product product = new Product();
-		ProductRelease productRelease = new ProductRelease();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(String name, String version) throws ProductReleaseNotFoundException,
+            ProductReleaseStillInstalledException, ProductReleaseInApplicationReleaseException {
 
-		product.setName(productReleaseDto.getProductName());
+        LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + name + " ProductVersion : " + version);
 
-		if (productReleaseDto.getProductDescription() != null)
-			product.setDescription(productReleaseDto.getProductDescription());
+        Product product;
+        try {
+            product = productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            throw new ProductReleaseNotFoundException(e);
+        }
 
-		if (productReleaseDto.getPrivateAttributes()!=null){
-		for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++)
-			product.addAttribute(productReleaseDto.getPrivateAttributes()
-					.get(i));
-		}
-		
-		if (productReleaseDto.getMetadatas()!=null){
-			for (int i = 0; i  < productReleaseDto.getMetadatas().size(); i++){
-				product.addMetadata(productReleaseDto.getMetadatas().get(i));
-			}
-		}
+        ProductRelease productRelease;
+        try {
+            productRelease = productManager.load(product, version);
+        } catch (EntityNotFoundException e) {
+            throw new ProductReleaseNotFoundException(e);
+        }
 
-		productRelease.setProduct(product);
+        productManager.delete(productRelease);
+    }
 
-		if (productReleaseDto.getVersion() != null)
-			productRelease.setVersion(productReleaseDto.getVersion());
+    public ProductRelease update(MultiPart multiPart) throws ProductReleaseNotFoundException,
+            InvalidProductReleaseException, InvalidProductReleaseUpdateRequestException,
+            InvalidMultiPartRequestException {
 
-		// ReleaseNotes
-		if (productReleaseDto.getReleaseNotes() != null)
-			productRelease.setReleaseNotes(productReleaseDto.getReleaseNotes());
+        ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
+        LOGGER.log(Level.INFO,
+                "ProductRelease " + productReleaseDto.getProductName() + " version " + productReleaseDto.getVersion());
 
-		// PrivateAttributes
-		if (productReleaseDto.getPrivateAttributes() != null)
-			productRelease.setPrivateAttributes(productReleaseDto
-					.getPrivateAttributes());
+        // TODO Validar el Objeto ProductReleaseDto en las validaciones
+        Product product = new Product();
+        ProductRelease productRelease = new ProductRelease();
 
-		// SupportedOS
-		if (productReleaseDto.getSupportedOS() != null)
-			productRelease.setSupportedOOSS(productReleaseDto.getSupportedOS());
+        product.setName(productReleaseDto.getProductName());
 
-		// TransitableRelease
-		if (productReleaseDto.getTransitableReleases() != null)
-			productRelease.setTransitableReleases(productReleaseDto
-					.getTransitableReleases());
+        if (productReleaseDto.getProductDescription() != null)
+            product.setDescription(productReleaseDto.getProductDescription());
 
-		ReleaseDto releaseDto = new ReleaseDto(productReleaseDto
-				.getProductName(), productReleaseDto.getVersion(), "product");
+        if (productReleaseDto.getPrivateAttributes() != null) {
+            for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++)
+                product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
+        }
 
-		validator.validateUpdate(releaseDto, multiPart);
+        if (productReleaseDto.getMetadatas() != null) {
+            for (int i = 0; i < productReleaseDto.getMetadatas().size(); i++) {
+                product.addMetadata(productReleaseDto.getMetadatas().get(i));
+            }
+        }
 
-		File cookbook = null;
-		File installable = null;
+        productRelease.setProduct(product);
 
-		try {
-			cookbook = File.createTempFile("cookbook-" + releaseDto.getName()
-					+ "-" + releaseDto.getVersion() + ".tar", ".tmp");
-			cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart
-					.getBodyParts().get(1).getEntity(), cookbook);
-		} catch (IOException e) {
-			throw new SdcRuntimeException(e);
-		}
+        if (productReleaseDto.getVersion() != null)
+            productRelease.setVersion(productReleaseDto.getVersion());
 
-		try {
-			installable = File.createTempFile("installable-"
-					+ releaseDto.getName() + "-" + releaseDto.getVersion()
-					+ ".tar", ".tmp");
+        // ReleaseNotes
+        if (productReleaseDto.getReleaseNotes() != null)
+            productRelease.setReleaseNotes(productReleaseDto.getReleaseNotes());
 
-			installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart
-					.getBodyParts().get(2).getEntity(), installable);
-		} catch (IOException e) {
-			throw new SdcRuntimeException(e);
-		}
+        // PrivateAttributes
+        if (productReleaseDto.getPrivateAttributes() != null)
+            productRelease.setPrivateAttributes(productReleaseDto.getPrivateAttributes());
 
-		return productManager.update(productRelease, cookbook, installable);
-	}
+        // SupportedOS
+        if (productReleaseDto.getSupportedOS() != null)
+            productRelease.setSupportedOOSS(productReleaseDto.getSupportedOS());
 
-	private File getFileFromBodyPartEntity(BodyPartEntity bpe, File file) {
-		try {
-			InputStream input = bpe.getInputStream();
+        // TransitableRelease
+        if (productReleaseDto.getTransitableReleases() != null)
+            productRelease.setTransitableReleases(productReleaseDto.getTransitableReleases());
 
-			OutputStream out = new FileOutputStream(file);
+        ReleaseDto releaseDto = new ReleaseDto(productReleaseDto.getProductName(), productReleaseDto.getVersion(),
+                "product");
 
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = input.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			input.close();
+        validator.validateUpdate(releaseDto, multiPart);
 
-		} catch (IOException e) {
-			System.out.println("An error was produced : " + e.toString());
-		}
-		return file;
+        File cookbook = null;
+        File installable = null;
 
-	}
+        try {
+            cookbook = File.createTempFile("cookbook-" + releaseDto.getName() + "-" + releaseDto.getVersion() + ".tar",
+                    ".tmp");
+            cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), cookbook);
+        } catch (IOException e) {
+            throw new SdcRuntimeException(e);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Attribute> loadAttributes(String name, String version)
-			throws EntityNotFoundException {
-		return load(name, version).getAttributes();
-	}
+        try {
+            installable = File.createTempFile("installable-" + releaseDto.getName() + "-" + releaseDto.getVersion()
+                    + ".tar", ".tmp");
 
-	@Override
-	public List<ProductRelease> findTransitable(String name, String version)
-			throws EntityNotFoundException {
-		return load(name, version).getTransitableReleases();
-	}
+            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(),
+                    installable);
+        } catch (IOException e) {
+            throw new SdcRuntimeException(e);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<ProductRelease> findAllReleases(String osType, Integer page,
-			Integer pageSize, String orderBy, String orderType) {
-		ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
-		if (!StringUtils.isEmpty(osType)) {
-			criteria.setOSType(osType);
-		}
-		if (page != null && pageSize != null) {
-			criteria.setPage(page);
-			criteria.setPageSize(pageSize);
-		}
-		if (!StringUtils.isEmpty(orderBy)) {
-			criteria.setOrderBy(orderBy);
-		}
-		if (!StringUtils.isEmpty(orderType)) {
-			criteria.setOrderBy(orderType);
-		}
-		return productManager.findReleasesByCriteria(criteria);
-	}
+        return productManager.update(productRelease, cookbook, installable);
+    }
 
-	/**
-	 * @param validator
-	 *            the validator to set
-	 */
-	public void setValidator(ProductResourceValidator validator) {
-		this.validator = validator;
-	}
-	/**
-	 * @param validator
-	 *            the validator to set
-	 */
-	public void setProductManager(ProductManager productManager) {
-		this.productManager = productManager;
-	}
+    private File getFileFromBodyPartEntity(BodyPartEntity bpe, File file) {
+        try {
+            InputStream input = bpe.getInputStream();
 
-	
-	public void delete(String name) throws ProductReleaseNotFoundException,
-			ProductReleaseStillInstalledException,
-			ProductReleaseInApplicationReleaseException {
-		Product product;
-		try {
-			product = productManager.load(name);
-		} catch (EntityNotFoundException e) {
-			throw new ProductReleaseNotFoundException(e);
-		}
+            OutputStream out = new FileOutputStream(file);
 
-		
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = input.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            input.close();
 
-		productManager.delete(product);
-		
-	}
+        } catch (IOException e) {
+            System.out.println("An error was produced : " + e.toString());
+        }
+        return file;
 
-	
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Attribute> loadAttributes(String name, String version) throws EntityNotFoundException {
+        return load(name, version).getAttributes();
+    }
+
+    @Override
+    public List<ProductRelease> findTransitable(String name, String version) throws EntityNotFoundException {
+        return load(name, version).getTransitableReleases();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ProductRelease> findAllReleases(String osType, Integer page, Integer pageSize, String orderBy,
+            String orderType) {
+        ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
+        if (!StringUtils.isEmpty(osType)) {
+            criteria.setOSType(osType);
+        }
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
+        return productManager.findReleasesByCriteria(criteria);
+    }
+
+    /**
+     * @param validator
+     *            the validator to set
+     */
+    public void setValidator(ProductResourceValidator validator) {
+        this.validator = validator;
+    }
+
+    /**
+     * @param validator
+     *            the validator to set
+     */
+    public void setProductManager(ProductManager productManager) {
+        this.productManager = productManager;
+    }
+
+    public void delete(String name) throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException,
+            ProductReleaseInApplicationReleaseException {
+        Product product;
+        try {
+            product = productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            throw new ProductReleaseNotFoundException(e);
+        }
+
+        productManager.delete(product);
+
+    }
 
 }

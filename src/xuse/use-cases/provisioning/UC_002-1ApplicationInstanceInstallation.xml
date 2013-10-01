@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xuse:use-case xmlns:xuse="http://xuse.sourceforge.net"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
-    id="UC_002.1" name="Application Instance Installation" model-version="1.0">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://xuse.sourceforge.net ../../../xusexsds/use-case.xsd"
+               id="UC_002.1" name="Application Instance Installation" model-version="1.0">
     <xuse:description>
         Defines the basic and alternative flows for application release installation.
     </xuse:description>
@@ -20,9 +21,9 @@
             Actor request for install an ApplicationRelease using the API.
         </xuse:trigger>
         <xuse:goal>Install a Product</xuse:goal>
-        <xuse:primary-actor refId="client" />
+        <xuse:primary-actor refId="client"/>
         <xuse:pre-requisites>
-            The Application exists in the catalog (see <xuse:uc-ref refId="UC_102" />)
+            The Application exists in the catalog (see<xuse:uc-ref refId="UC_102"/>)
         </xuse:pre-requisites>
         <xuse:success-outcome>The System performs the action.
         </xuse:success-outcome>
@@ -37,26 +38,28 @@
     <xuse:main-flow>
         <xuse:step step-id="client-request-for-install">
             <xuse:description>Actor request for install providing all necessary
-            data (see API specification)</xuse:description>
+                data (see API specification)
+            </xuse:description>
         </xuse:step>
         <xuse:step step-id="system-install-the-product">
             <xuse:description>System install the application and creates
-            an ApplicationInstance.</xuse:description>
+                an ApplicationInstance.
+            </xuse:description>
             <xuse:ref-exception-flow refId="af-icompatible-products"
-                condition="The products where the application will be installed are
-                incompatible" />
+                                     condition="The products where the application will be installed are
+                incompatible"/>
             <xuse:ref-exception-flow refId="af-non-installed-products"
-                condition="The products where the application should be installed
-                are not installed" />
+                                     condition="The products where the application should be installed
+                are not installed"/>
             <xuse:ref-exception-flow refId="af-already-installed"
-                condition="The application is already installed" />
+                                     condition="The application is already installed"/>
         </xuse:step>
-        <xuse:end />
+        <xuse:end/>
     </xuse:main-flow>
 
     <xuse:exception-flows>
         <xuse:exception-flow title="Incompatible products"
-            id="af-icompatible-products">
+                             id="af-icompatible-products">
             <xuse:step step-id="error-os">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -64,7 +67,7 @@
         </xuse:exception-flow>
 
         <xuse:exception-flow title="Non-installed products"
-            id="af-non-installed-products">
+                             id="af-non-installed-products">
             <xuse:step step-id="error-products">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -72,7 +75,7 @@
         </xuse:exception-flow>
 
         <xuse:exception-flow title="Already installed application"
-            id="af-already-installed">
+                             id="af-already-installed">
             <xuse:step step-id="error-already-installed">
                 <xuse:description>System return an error message</xuse:description>
             </xuse:step>
@@ -81,6 +84,6 @@
     </xuse:exception-flows>
 
     <xuse:business-rules>
-        <xuse:req-ref refId="RF001" />
+        <xuse:req-ref refId="RF001"/>
     </xuse:business-rules>
 </xuse:use-case>

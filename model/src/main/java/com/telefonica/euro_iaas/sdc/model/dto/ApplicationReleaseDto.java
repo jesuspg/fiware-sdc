@@ -1,7 +1,17 @@
+/**
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.model.dto;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,108 +29,106 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationReleaseDto {
 
-	private String appName;
-	private String appDescription;
-	private String appType;
-	private String version;
-	private String releaseNotes;
-	private List<Attribute> privateAttributes;
-	// private List<ProductRelease> supportedProducts;
-	private EnvironmentDto environmentDto;
-	private List<ApplicationRelease> transitableReleases;
+    private String appName;
+    private String appDescription;
+    private String appType;
+    private String version;
+    private String releaseNotes;
+    private List<Attribute> privateAttributes;
+    // private List<ProductRelease> supportedProducts;
+    private EnvironmentDto environmentDto;
+    private List<ApplicationRelease> transitableReleases;
 
-	/**
+    /**
      */
-	public ApplicationReleaseDto() {
-	}
+    public ApplicationReleaseDto() {
+    }
 
-	/**
-	 * @param applicationName
-	 * @param applicationDescription
-	 * @param applicationType
-	 * @param version
-	 * @param releaseNotes
-	 * @param privateAttributes
-	 * @param supportedProducts
-	 * @param transitableReleases
-	 */
-	public ApplicationReleaseDto(String appName, String appDescription,
-			String appType, String version, String releaseNotes,
-			List<Attribute> privateAttributes, EnvironmentDto environmentDto,
-			List<ApplicationRelease> transitableReleases) {
-		this.appName = appName;
-		this.appDescription = appDescription;
-		this.appType = appType;
-		this.version = version;
-		this.releaseNotes = releaseNotes;
-		this.privateAttributes = privateAttributes;
-		this.environmentDto = environmentDto;
-		this.transitableReleases = transitableReleases;
-	}
+    /**
+     * @param applicationName
+     * @param applicationDescription
+     * @param applicationType
+     * @param version
+     * @param releaseNotes
+     * @param privateAttributes
+     * @param supportedProducts
+     * @param transitableReleases
+     */
+    public ApplicationReleaseDto(String appName, String appDescription, String appType, String version,
+            String releaseNotes, List<Attribute> privateAttributes, EnvironmentDto environmentDto,
+            List<ApplicationRelease> transitableReleases) {
+        this.appName = appName;
+        this.appDescription = appDescription;
+        this.appType = appType;
+        this.version = version;
+        this.releaseNotes = releaseNotes;
+        this.privateAttributes = privateAttributes;
+        this.environmentDto = environmentDto;
+        this.transitableReleases = transitableReleases;
+    }
 
-	public String getApplicationName() {
-		return appName;
-	}
+    public String getApplicationName() {
+        return appName;
+    }
 
-	public void setApplicationName(String appName) {
-		this.appName = appName;
-	}
+    public void setApplicationName(String appName) {
+        this.appName = appName;
+    }
 
-	public String getApplicationDescription() {
-		return appDescription;
-	}
+    public String getApplicationDescription() {
+        return appDescription;
+    }
 
-	public void setApplicationDescription(String appType) {
-		this.appType = appType;
-	}
+    public void setApplicationDescription(String appType) {
+        this.appType = appType;
+    }
 
-	public String getApplicationType() {
-		return appType;
-	}
+    public String getApplicationType() {
+        return appType;
+    }
 
-	public void setApplicationType(String appType) {
-		this.appType = appType;
-	}
+    public void setApplicationType(String appType) {
+        this.appType = appType;
+    }
 
-	public String getVersion() {
-		return version;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	public String getReleaseNotes() {
-		return releaseNotes;
-	}
+    public String getReleaseNotes() {
+        return releaseNotes;
+    }
 
-	public void setReleaseNotes(String releaseNotes) {
-		this.releaseNotes = releaseNotes;
-	}
+    public void setReleaseNotes(String releaseNotes) {
+        this.releaseNotes = releaseNotes;
+    }
 
-	public List<Attribute> getPrivateAttributes() {
-		return privateAttributes;
-	}
+    public List<Attribute> getPrivateAttributes() {
+        return privateAttributes;
+    }
 
-	public void setPrivateAttributes(List<Attribute> privateAttributes) {
-		this.privateAttributes = privateAttributes;
-	}
+    public void setPrivateAttributes(List<Attribute> privateAttributes) {
+        this.privateAttributes = privateAttributes;
+    }
 
-	public EnvironmentDto getEnvironmentDto() {
-		return environmentDto;
-	}
+    public EnvironmentDto getEnvironmentDto() {
+        return environmentDto;
+    }
 
-	public void setEnvironmentDto(EnvironmentDto environmentDto) {
-		this.environmentDto = environmentDto;
-	}
+    public void setEnvironmentDto(EnvironmentDto environmentDto) {
+        this.environmentDto = environmentDto;
+    }
 
-	public List<ApplicationRelease> getTransitableReleases() {
-		return transitableReleases;
-	}
+    public List<ApplicationRelease> getTransitableReleases() {
+        return transitableReleases;
+    }
 
-	public void setTransitableReleases(
-			List<ApplicationRelease> transitableReleases) {
-		this.transitableReleases = transitableReleases;
-	}
+    public void setTransitableReleases(List<ApplicationRelease> transitableReleases) {
+        this.transitableReleases = transitableReleases;
+    }
 
 }

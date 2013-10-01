@@ -1,13 +1,14 @@
 /**
- *   (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
  *   Reserved.
- *
+ * 
  *   The copyright to the software program(s) is property of Telefonica I+D.
  *   The program(s) may be used and or copied only with the express written
  *   consent of Telefonica I+D or in accordance with the terms and conditions
  *   stipulated in the agreement/contract under which the program(s) have
  *   been supplied.
  */
+
 package com.telefonica.euro_iaas.sdc.model.dto;
 
 import java.util.Collection;
@@ -18,7 +19,6 @@ import org.springframework.security.core.userdetails.User;
 
 /**
  * @author dbermejo
- *
  */
 public class OpenStackUser extends User {
 
@@ -45,10 +45,13 @@ public class OpenStackUser extends User {
 
     /**
      * Instantiates a new open stack user.
-     *
-     * @param username the username
-     * @param password the password
-     * @param authorities the authorities
+     * 
+     * @param username
+     *            the username
+     * @param password
+     *            the password
+     * @param authorities
+     *            the authorities
      */
     public OpenStackUser(final String username, final String password,
             final Collection<? extends GrantedAuthority> authorities) {
@@ -64,7 +67,8 @@ public class OpenStackUser extends User {
     }
 
     /**
-     * @param token the token to set
+     * @param token
+     *            the token to set
      */
     public void setToken(String token) {
         this.token = token;
@@ -78,7 +82,8 @@ public class OpenStackUser extends User {
     }
 
     /**
-     * @param tenantId the tenantId to set
+     * @param tenantId
+     *            the tenantId to set
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
@@ -92,7 +97,8 @@ public class OpenStackUser extends User {
     }
 
     /**
-     * @param tenantName the tenantName to set
+     * @param tenantName
+     *            the tenantName to set
      */
     public void setTenantName(String tenantName) {
         this.tenantName = tenantName;
@@ -106,7 +112,8 @@ public class OpenStackUser extends User {
     }
 
     /**
-     * @param domain the domain to set
+     * @param domain
+     *            the domain to set
      */
     public void setDomain(String domain) {
         this.domain = domain;
