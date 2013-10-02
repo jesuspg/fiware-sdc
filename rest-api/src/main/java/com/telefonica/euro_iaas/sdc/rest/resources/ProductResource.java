@@ -1,12 +1,8 @@
 /**
- *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
- *   Reserved.
- * 
- *   The copyright to the software program(s) is property of Telefonica I+D.
- *   The program(s) may be used and or copied only with the express written
- *   consent of Telefonica I+D or in accordance with the terms and conditions
- *   stipulated in the agreement/contract under which the program(s) have
- *   been supplied.
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
+ * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
+ * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
+ * which the program(s) have been supplied.
  */
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
@@ -33,6 +29,7 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequest
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
@@ -80,7 +77,7 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException;
+                    InvalidProductReleaseException;
 
     /**
      * Retrieve all Products available created in the system.
@@ -99,7 +96,7 @@ public interface ProductResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product.
@@ -129,6 +126,18 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Attribute> loadAttributes(@PathParam("pName") String name) throws EntityNotFoundException;
 
+    /**
+     * Retrieve the metadatas for the selected product
+     * 
+     * @param name
+     * @return
+     * @throws EntityNotFoundException
+     */
+    @GET
+    @Path("/{pName}/metadatas/")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    List<Metadata> loadMetadatas(@PathParam("pName") String name) throws EntityNotFoundException;
+
     // ///////////// PRODUCT RELEASES ///////////////
 
     /**
@@ -150,8 +159,8 @@ public interface ProductResource {
     @Path("/{pName}/release/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findAll(@PathParam("pName") String name, @QueryParam("osType") String osType,
-            @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+                    @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product version.
@@ -168,7 +177,7 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease load(@PathParam("pName") String name, @PathParam("version") String version)
-            throws EntityNotFoundException;
+                    throws EntityNotFoundException;
 
     /**
      * Delete the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav
@@ -181,21 +190,19 @@ public interface ProductResource {
      *             if the Product Release does not exists
      * @throws ProductReleaseStillInstalledException
      *             if the Product Release is still installed on some VMs
-     * @throws ProductReleaseInApplicationReleaseException
-     *             thrown when try to delete a ProductRelease which is included in any ApplicationRelease object
      */
 
     @DELETE
     @Path("/{pName}/release/{version}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
-            throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
+                    throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
 
     @DELETE
     @Path("/{pName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
-            ProductReleaseStillInstalledException;
+                    ProductReleaseStillInstalledException;
 
     /**
      * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav
@@ -217,7 +224,7 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes("multipart/mixed")
     ProductRelease update(MultiPart multipart) throws ProductReleaseNotFoundException, InvalidProductReleaseException,
-            InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException;
+                    InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException;
 
     /**
      * Retrieve the attributes for the selected product release. The result is a merge between common attributes (of the
@@ -235,7 +242,7 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}/attributes/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Attribute> loadAttributes(@PathParam("pName") String name, @PathParam("version") String version)
-            throws EntityNotFoundException;
+                    throws EntityNotFoundException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -253,7 +260,7 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}/updatable")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
-            throws EntityNotFoundException;
+                    throws EntityNotFoundException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -276,6 +283,6 @@ public interface ProductResource {
     @Path("/release")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findAllReleases(@QueryParam("osType") String osType, @QueryParam("page") Integer page,
-            @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
-            @QueryParam("orderType") String orderType);
+                    @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
+                    @QueryParam("orderType") String orderType);
 }
