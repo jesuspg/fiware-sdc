@@ -70,6 +70,7 @@ public class ProductManagerImplTest extends TestCase {
         osDao = mock(OSDao.class);
         productDao = mock(ProductDao.class);
         when(productDao.load(product.getName())).thenReturn(loadedProduct);
+        when(productDao.update(any(Product.class))).thenReturn(product);
 
         productReleaseDao = mock(ProductReleaseDao.class);
         propertiesProvider = mock(SystemPropertiesProvider.class);
