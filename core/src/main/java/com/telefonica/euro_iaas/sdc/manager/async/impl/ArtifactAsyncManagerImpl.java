@@ -38,12 +38,12 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 /**
- * Default implementation for ProductInstanceAsyncManager
+ * Default implementation for ProductInstanceAsyncManager.
  * 
  * @author Sergio Arroyo
  */
 public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
-    private static Logger LOGGER = Logger.getLogger(ArtifactAsyncManagerImpl.class.getName());
+    private Logger logger = Logger.getLogger(ArtifactAsyncManagerImpl.class.getName());
     private ArtifactManager artifactManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
@@ -58,7 +58,7 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         try {
             artifactManager.deployArtifact(productInstance, artifact);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Artefact  " + artifact.getName() + "installed in Product "
+            logger.info("Artefact  " + artifact.getName() + " installed in Product "
                     + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " successfully");
         } catch (FSMViolationException e) {
@@ -82,7 +82,7 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         try {
             artifactManager.undeployArtifact(productInstance, artifactName);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Artefact  " + artifactName + " uninstalled in Product "
+            logger.info("Artefact  " + artifactName + " uninstalled in Product "
                     + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " successfully");
         } catch (FSMViolationException e) {
@@ -154,8 +154,8 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing a product action. See task " + task.getHref()
-                + "for more information");
+        logger.info("An error occurs while executing a product action. See task " + task.getHref()
+                + " for more information");
     }
 
     private void notifyTask(String url, Task task) {
@@ -166,34 +166,18 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
 
     // ////////// I.O.C ////////////
 
-    /**
-     * @param productInstanceManager
-     *            the productInstanceManager to set
-     */
     public void setArtifactManager(ArtifactManager artifactManager) {
         this.artifactManager = artifactManager;
     }
 
-    /**
-     * @param taskManager
-     *            the taskManager to set
-     */
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
         this.propertiesProvider = propertiesProvider;
     }
 
-    /**
-     * @param taskNotificator
-     *            the taskNotificator to set
-     */
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
     }

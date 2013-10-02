@@ -72,8 +72,8 @@ public class ChefNodeAsyncManagerImpl implements ChefNodeAsyncManager {
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, String vdc, String chefNodename) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename); // the
-                                                                                                                         // product
+        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename);
+
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
@@ -84,8 +84,8 @@ public class ChefNodeAsyncManagerImpl implements ChefNodeAsyncManager {
      * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(String vdc, String chefNodename, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename); // the
-                                                                                                                         // product
+        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename);
+
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }
