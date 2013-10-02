@@ -1,12 +1,8 @@
 /**
- *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
- *   Reserved.
- * 
- *   The copyright to the software program(s) is property of Telefonica I+D.
- *   The program(s) may be used and or copied only with the express written
- *   consent of Telefonica I+D or in accordance with the terms and conditions
- *   stipulated in the agreement/contract under which the program(s) have
- *   been supplied.
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
+ * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
+ * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
+ * which the program(s) have been supplied.
  */
 
 package com.telefonica.euro_iaas.sdc.dao;
@@ -61,7 +57,7 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
 
         List<Metadata> metadatas = Arrays.asList(new Metadata("key1", "value1", "desc1"), new Metadata("key2",
-                "value2", "desc2"));
+                        "value2", "desc2"));
 
         Product product = new Product();
         product.setName("yum");
@@ -89,6 +85,9 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
     public void testCreateAndFindByCriteria() throws Exception {
         createProduct();
         Product product = productDao.findAll().get(0);
+        product.addAttribute(new Attribute("clave", "valor"));
+
+        product.addMetadata(new Metadata("metKey", "metValue"));
 
         ProductRelease release = new ProductRelease("v1", "releaseNotes1", null, product, soDao.findAll(), null);
         ProductRelease createdRelease = productReleaseDao.create(release);

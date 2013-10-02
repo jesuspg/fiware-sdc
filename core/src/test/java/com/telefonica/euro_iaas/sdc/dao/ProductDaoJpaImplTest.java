@@ -63,7 +63,7 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
         Product loadedProduct = productDao.load(PRODUCT_NAME);
         assertEquals(loadedProduct.getName(), product.getName());
 
-        loadedProduct.addAttribute(new Attribute("key2", "value2"));
+        loadedProduct.addAttribute(new Attribute("key", "value"));
 
         Product updatedProduct = productDao.update(loadedProduct);
         assertEquals(updatedProduct.getAttributes().size(), 2);
