@@ -1,8 +1,12 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
- * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
- * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
- * which the program(s) have been supplied.
+ *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ *   Reserved.
+ * 
+ *   The copyright to the software program(s) is property of Telefonica I+D.
+ *   The program(s) may be used and or copied only with the express written
+ *   consent of Telefonica I+D or in accordance with the terms and conditions
+ *   stipulated in the agreement/contract under which the program(s) have
+ *   been supplied.
  */
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
@@ -303,11 +307,6 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             loadedProduct = productDao.load(productRelease.getProduct().getName());
             LOGGER.log(Level.INFO, "Product " + loadedProduct.getName() + " LOADED");
 
-            /*
-             * if (productRelease.getAttributes() != null) { LOGGER.info("Attributes " +
-             * productRelease.getAttributes().size()); for (Attribute att : productRelease.getAttributes()) {
-             * loadedProduct.addAttribute(att); } }
-             */
             if ((productRelease.getProduct().getAttributes() != null) && (loadedProduct.getAttributes() == null)) {
                 LOGGER.info("Attributes " + productRelease.getProduct().getAttributes().size());
                 for (Attribute att : productRelease.getAttributes()) {
