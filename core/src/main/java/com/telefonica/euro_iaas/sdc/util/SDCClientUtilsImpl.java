@@ -14,7 +14,6 @@ package com.telefonica.euro_iaas.sdc.util;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -26,6 +25,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
@@ -36,11 +36,11 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriter
 
 public class SDCClientUtilsImpl implements SDCClientUtils {
 
-    public final static String VM_PATH = "/rest/vm";
-    public final static String CONFIG_PATH = "/rest/config";
-    public final static String EXECUTE_PATH = "/rest/installable";
+    public static final String VM_PATH = "/rest/vm";
+    public static final String CONFIG_PATH = "/rest/config";
+    public static final String EXECUTE_PATH = "/rest/installable";
 
-    private int MAX_TIME = 90000;
+    private static final int MAX_TIME = 90000;
 
     private SystemPropertiesProvider propertiesProvider;
     private Client client;
@@ -110,50 +110,28 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
         Attribute outputAttribute = response.getEntity(Attribute.class);
         return outputAttribute;
 
-        /*
-         * ClientConfig config = new DefaultClientConfig(); Client client2 = Client.create(config); String url =
-         * MessageFormat.format( propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE),
-         * vm.getExecuteChefConectionUrl()) + CONFIG_PATH; WebResource service = client2.resource(url); ClientResponse
-         * response = service.accept(MediaType.APPLICATION_XML) .put(ClientResponse.class, attribute); Attribute
-         * outputAttribute = response.getEntity(Attribute.class); return outputAttribute;
-         */
-        // Return code should be 201 == created resource
-
-        // Builder builder =
-        // webResource.accept(MediaType.APPLICATION_XML).type(MediaType.APPLICATION_XML);
-        // create Attributes object because Jersey can not write List<Attribute>
-        // builder.entity(attribute);
-        // Attribute outputAttribute = builder.put(Attribute.class);
-        // return outputAttribute;
     }
 
     /**
      * {@inheritDoc}
      */
 
-    public void setNodeCommands(VM vm) {
-        OS os = null;
+    public void setNodeCommands(VM vm) throws InvalidInstallProductRequestException {
+        OS os;
         try {
-            os = osDao.load("76");
+
+            os = osDao.load(vm.getOsType());
         } catch (EntityNotFoundException e) {
             // Logger.warn (" The Operatng Sytem has not been provided");
-            // throw new InvalidInstallProductRequestException(
-            // " The Operating Sytem has not been provided");
+            throw new InvalidInstallProductRequestException("The Operating Sytem has not been provided");
 
         }
 
         List<NodeCommand> nodeCommands = nodeCommandDao.findByCriteria(new NodeCommandSearchCriteria(os));
 
-        ArrayList<Attribute> configuration = new ArrayList<Attribute>();
-        ArrayList<Attribute> outputAttributes = new ArrayList<Attribute>();
-
-        for (int i = 0; i < nodeCommands.size(); i++) {
-            configuration.add(new Attribute(nodeCommands.get(i).getKey(), nodeCommands.get(i).getValue()));
-        }
-
-        // List <Attribute> attributes = configure (vm, configuration);
-        for (int i = 0; i < configuration.size(); i++) {
-            outputAttributes.add(configureProperty(vm, configuration.get(i)));
+        for (NodeCommand nodeCommand : nodeCommands) {
+            Attribute attribute = new Attribute(nodeCommand.getKey(), nodeCommand.getValue());
+            configureProperty(vm, attribute);
         }
 
     }
