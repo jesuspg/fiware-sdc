@@ -1,12 +1,8 @@
 /**
- *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
- *   Reserved.
- * 
- *   The copyright to the software program(s) is property of Telefonica I+D.
- *   The program(s) may be used and or copied only with the express written
- *   consent of Telefonica I+D or in accordance with the terms and conditions
- *   stipulated in the agreement/contract under which the program(s) have
- *   been supplied.
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
+ * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
+ * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
+ * which the program(s) have been supplied.
  */
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
@@ -102,7 +98,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     @Override
     @UseCase(traceTo = "UC_101.1", status = "implemented and tested")
     public ProductRelease insert(ProductRelease productRelease, File cookbook, File installable)
-                    throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
+        throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
         LOGGER.info("Inserting productRelease " + productRelease.getVersion() + " "
                         + productRelease.getProduct().getName());
@@ -122,8 +118,15 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return productReleaseOut;
     }
 
+    /**
+     * Insert a ProductRelease in DB.
+     * 
+     * @param productRelease
+     * @throws AlreadyExistsProductReleaseException
+     *             , InvalidProductReleaseException
+     */
     public ProductRelease insert(ProductRelease productRelease) throws AlreadyExistsProductReleaseException,
-                    InvalidProductReleaseException {
+        InvalidProductReleaseException {
         LOGGER.info("Inserting productRelease " + productRelease.getVersion() + " "
                         + productRelease.getProduct().getName());
         ProductRelease productReleaseOut = insertProductReleaseBBDD(productRelease);
@@ -143,7 +146,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     @Override
     @UseCase(traceTo = "UC_101.3", status = "implemented and tested")
     public void delete(ProductRelease productRelease) throws ProductReleaseNotFoundException,
-                    ProductReleaseStillInstalledException {
+        ProductReleaseStillInstalledException {
 
         boolean lastRelease = false;
         validator.validateDelete(productRelease);
@@ -175,37 +178,40 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     @Override
     @UseCase(traceTo = "UC_101.3", status = "implemented and tested")
     public ProductRelease update(ProductRelease productRelease, File cookbook, File installable)
-                    throws ProductReleaseNotFoundException, InvalidProductReleaseException {
+        throws ProductReleaseNotFoundException, InvalidProductReleaseException {
 
-        if (productRelease != null)
+        if (productRelease != null) {
             productRelease = updateProductReleaseBBDD(productRelease);
+        }
 
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
         releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
 
-        if (installable != null)
+        if (installable != null) {
             uploadInstallable(installable, releaseDto);
+        }
 
-        if (cookbook != null)
+        if (cookbook != null) {
             uploadRecipe(cookbook, releaseDto.getName());
+        }
 
         return productRelease;
     }
 
     // *********** PRIVATE METHODS ************//
     private ProductRelease insertProductReleaseBBDD(ProductRelease productRelease)
-                    throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
+        throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
         LOGGER.info("Inserting insertProductReleaseBBDD " + productRelease.getVersion() + " "
                         + productRelease.getProduct().getName());
         Product product;
         ProductRelease productReleaseOut;
 
-        List<OS> OSs = insertProductReleaseLoadSO(productRelease);
+        List<OS> oss = insertProductReleaseLoadSO(productRelease);
 
-        productRelease.setSupportedOOSS(OSs);
+        productRelease.setSupportedOOSS(oss);
         product = insertProductReleaseLoadProduct(productRelease);
 
         productRelease.setProduct(product);
@@ -235,21 +241,22 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
 
         List<ProductRelease> productReleases = productReleaseDao.findByCriteria(criteria);
 
-        if (productReleases.size() == 1)
+        if (productReleases.size() == 1) {
             lastRelease = true;
+        }
 
         return lastRelease;
     }
 
     private ProductRelease updateProductReleaseBBDD(ProductRelease productRelease)
-                    throws ProductReleaseNotFoundException, InvalidProductReleaseException {
+        throws ProductReleaseNotFoundException, InvalidProductReleaseException {
 
         ProductRelease productReleaseOut;
         Product product;
 
         if (productRelease.getSupportedOOSS() != null) {
-            List<OS> OSs = updateProductReleaseLoadSO(productRelease);
-            productRelease.setSupportedOOSS(OSs);
+            List<OS> oss = updateProductReleaseLoadSO(productRelease);
+            productRelease.setSupportedOOSS(oss);
         }
 
         product = updateProductReleaseLoadProduct(productRelease);
@@ -263,21 +270,21 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     private List<OS> insertProductReleaseLoadSO(ProductRelease productRelease) throws InvalidProductReleaseException {
 
         OS os;
-        List<OS> OSs = new ArrayList<OS>();
+        List<OS> oss = new ArrayList<OS>();
 
         if (productRelease.getSupportedOOSS() == null || productRelease.getSupportedOOSS().size() == 0) {
-            return OSs;
+            return oss;
         }
         for (int i = 0; i < productRelease.getSupportedOOSS().size(); i++) {
             try {
                 os = osDao.load(productRelease.getSupportedOOSS().get(i).getName());
                 LOGGER.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " LOADED");
-                OSs.add(os);
+                oss.add(os);
             } catch (EntityNotFoundException e) {
                 try {
                     os = osDao.create(productRelease.getSupportedOOSS().get(i));
                     LOGGER.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " CREATED");
-                    OSs.add(os);
+                    oss.add(os);
                 } catch (InvalidEntityException e1) {
                     String invalidOSMessageLog = "The supportedOS "
                                     + productRelease.getSupportedOOSS().get(i).getName() + " in Product Release"
@@ -293,11 +300,11 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
                 }
             }
         }
-        return OSs;
+        return oss;
     }
 
-    private Product insertProductReleaseLoadProduct(ProductRelease productRelease)
-                    throws InvalidProductReleaseException {
+    private Product insertProductReleaseLoadProduct(ProductRelease productRelease) 
+        throws InvalidProductReleaseException {
 
         LOGGER.info("Inserting insertProductReleaseLoadProduct " + productRelease.getVersion() + " "
                         + productRelease.getProduct().getName());
@@ -351,7 +358,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     }
 
     private ProductRelease insertProductRelease(ProductRelease productRelease) throws InvalidProductReleaseException,
-                    AlreadyExistsProductReleaseException {
+        AlreadyExistsProductReleaseException {
         LOGGER.info("Inserting insertProductRelease " + productRelease.getVersion() + " "
                         + productRelease.getProduct().getName());
         ProductRelease productReleaseOut;
@@ -394,7 +401,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     }
 
     private List<OS> updateProductReleaseLoadSO(ProductRelease productRelease) throws ProductReleaseNotFoundException,
-                    InvalidProductReleaseException {
+        InvalidProductReleaseException {
 
         return insertProductReleaseLoadSO(productRelease);
 
@@ -409,8 +416,8 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
          */
     }
 
-    private Product updateProductReleaseLoadProduct(ProductRelease productRelease)
-                    throws ProductReleaseNotFoundException, InvalidProductReleaseException {
+    private Product updateProductReleaseLoadProduct(ProductRelease productRelease) 
+        throws ProductReleaseNotFoundException, InvalidProductReleaseException {
 
         Product product = null;
         // Product productOut = null;
@@ -459,7 +466,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     }
 
     private ProductRelease updateProductRelease(ProductRelease productRelease) throws InvalidProductReleaseException,
-                    ProductReleaseNotFoundException {
+        ProductReleaseNotFoundException {
 
         ProductRelease productReleaseOut, existedProductRelease;
         try {
@@ -472,14 +479,18 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
                             "Product Release " + productRelease.getProduct().getName() + "-"
                                             + productRelease.getVersion() + " LOADED");
 
-            if (productRelease.getPrivateAttributes() != null)
+            if (productRelease.getPrivateAttributes() != null) {
                 existedProductRelease.setPrivateAttributes(productRelease.getPrivateAttributes());
-            if (productRelease.getReleaseNotes() != null)
+            }
+            if (productRelease.getReleaseNotes() != null) {
                 existedProductRelease.setReleaseNotes(productRelease.getReleaseNotes());
-            if (productRelease.getSupportedOOSS() != null)
+            }
+            if (productRelease.getSupportedOOSS() != null) {
                 existedProductRelease.setSupportedOOSS(productRelease.getSupportedOOSS());
-            if (productRelease.getTransitableReleases() != null)
+            }
+            if (productRelease.getTransitableReleases() != null) {
                 existedProductRelease.setTransitableReleases(productRelease.getTransitableReleases());
+            }
 
             productReleaseOut = productReleaseDao.update(existedProductRelease);
             LOGGER.log(Level.INFO,
