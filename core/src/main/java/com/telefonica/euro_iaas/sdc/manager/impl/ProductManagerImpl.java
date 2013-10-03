@@ -420,14 +420,15 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             existedProduct = productDao.load(productRelease.getProduct().getName());
             LOGGER.log(Level.INFO, "Product " + existedProduct.getName() + " LOADED");
 
-            if (productRelease.getProduct().getDescription() != null)
+            if (productRelease.getProduct().getDescription() != null) {
                 existedProduct.setDescription(productRelease.getProduct().getDescription());
-
-            if (productRelease.getProduct().getAttributes() != null)
+            }
+            if (productRelease.getProduct().getAttributes() != null) {
                 existedProduct.setAttributes(productRelease.getProduct().getAttributes());
-
-            if (productRelease.getProduct().getMetadatas() != null)
+            }
+            if (productRelease.getProduct().getMetadatas() != null) {
                 existedProduct.setMetadatas(productRelease.getProduct().getMetadatas());
+            }
 
             product = productDao.update(existedProduct);
             LOGGER.log(Level.INFO, "Product " + existedProduct.getName() + " UPDATED");
