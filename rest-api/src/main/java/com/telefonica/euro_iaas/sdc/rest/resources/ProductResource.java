@@ -49,25 +49,21 @@ public interface ProductResource {
      * Add the selected Product Release in to the SDC's catalog. If the Product already exists, then add the new
      * Release. If not, this method also creates the product.
      * 
-     * @param name
-     *            the product name
-     * @param Multipart
-     *            which includes
-     *            <ol>
-     *            <li>The ProductReleaseDto: contains the information about the product</li>
-     *            <li>The cookbook: a tar file containing the whole cookbook.</li>
-     *            <li>The binary files: if the product needs some files which isn't in the OS repositories, a tar file
-     *            containing the structure will be deploying in a webdav.</li>
-     *            </ol>
-     * @return the product.
+     * @param productRelease
+     *            the producRelease object
+     * @return the productrelease.
      * @throws AlreadyExistsProductReleaseException
      *             if the Product Release exists
      * @throws InvalidProductReleaseException
      *             if the Product Release is invalid due to either OS, Product or Product Release
-     * @throws InvalidMultiPartRequestException
-     *             when the MUltipart object in the request is null, or its size is different to three or the type sof
-     *             the different parts are not ProductReleaseDto, File and File
      */
+    @POST
+    @Path("/")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
+                    InvalidProductReleaseException;
+
     /*
      * @POST
      * @Path("/")
@@ -75,13 +71,6 @@ public interface ProductResource {
      * @Consumes("multipart/mixed") ProductRelease insert(MultiPart multiPart) throws
      * AlreadyExistsProductReleaseException, InvalidProductReleaseException, InvalidMultiPartRequestException;
      */
-
-    @POST
-    @Path("/")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
-                    InvalidProductReleaseException;
 
     /**
      * Retrieve all Products available created in the system.
@@ -131,7 +120,7 @@ public interface ProductResource {
     List<Attribute> loadAttributes(@PathParam("pName") String name) throws EntityNotFoundException;
 
     /**
-     * Retrieve the metadatas for the selected product
+     * Retrieve the metadatas for the selected product.
      * 
      * @param name
      * @return
@@ -181,10 +170,10 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease load(@PathParam("pName") String name, @PathParam("version") String version)
-                    throws EntityNotFoundException;
+        throws EntityNotFoundException;
 
     /**
-     * Delete the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav
+     * Delete the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
      * 
      * @param name
      *            the product name
@@ -200,8 +189,18 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
-                    throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
+        throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
 
+    /**
+     * Delete the Product in BBDD.
+     * 
+     * @param name
+     *            the product name
+     * @throws ProductReleaseNotFoundException
+     *             if the Product Release does not exists
+     * @throws ProductReleaseStillInstalledException
+     *             if the Product Release is still installed on some VMs
+     */
     @DELETE
     @Path("/{pName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -209,20 +208,25 @@ public interface ProductResource {
                     ProductReleaseStillInstalledException;
 
     /**
-     * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav
+     * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
      * 
-     * @param name
-     *            the product name
-     * @param version
-     *            the concrete version
-     * @param MultiPart
-     *            with three parts (ProductReleaseDto, File cookbook and File installable)
+     * @param multipart
+     *            which includes
+     *            <ol>
+     *            <li>The ProductReleaseDto: contains the information about the product</li>
+     *            <li>The cookbook: a tar file containing the whole cookbook.</li>
+     *            <li>The binary files: if the product needs some files which isn't in the OS repositories, a tar file
+     *            containing the structure will be deploying in a webdav.</li>
+     *            </ol>
      * @throws ProductReleaseNotFoundException
      *             if the Product Release does not exists
-     * @throws ProductReleaseStillInstalledException
+     * @throws InvalidProductReleaseException
      *             if the Product Release is still installed on some VMs
+     * @throws InvalidProductReleaseUpdateRequestException
+     *             if the Product is invalid
+     * @throws InvalidMultiPartRequestException
+     *             fi the Multipart is Invalid
      */
-
     @PUT
     @Path("/{pName}/release/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -246,7 +250,7 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}/attributes/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Attribute> loadAttributes(@PathParam("pName") String name, @PathParam("version") String version)
-                    throws EntityNotFoundException;
+        throws EntityNotFoundException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -264,7 +268,7 @@ public interface ProductResource {
     @Path("/{pName}/release/{version}/updatable")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
-                    throws EntityNotFoundException;
+        throws EntityNotFoundException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -287,6 +291,6 @@ public interface ProductResource {
     @Path("/release")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findAllReleases(@QueryParam("osType") String osType, @QueryParam("page") Integer page,
-                    @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
-                    @QueryParam("orderType") String orderType);
+        @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
+        @QueryParam("orderType") String orderType);
 }

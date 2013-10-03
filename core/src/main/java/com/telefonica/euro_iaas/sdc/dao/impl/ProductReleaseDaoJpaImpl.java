@@ -82,15 +82,15 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, Lo
 
         ProductRelease release = (ProductRelease) baseCriteria.uniqueResult();
         if (release == null) {
-            String[] keys = { "product", "version" };
-            Object[] values = { product, version };
+            String[] keys = {"product", "version"};
+            Object[] values = {product, version};
             throw new EntityNotFoundException(ProductRelease.class, keys, values);
         }
         return release;
     }
 
     /**
-     * Filter the result by product release
+     * Filter the result by product release.
      * 
      * @param applications
      * @param product
