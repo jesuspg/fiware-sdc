@@ -120,7 +120,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
         OS os;
         try {
 
-            os = osDao.load(vm.getOsType());
+            os = osDao.load("76");
         } catch (EntityNotFoundException e) {
             // Logger.warn (" The Operatng Sytem has not been provided");
             throw new InvalidInstallProductRequestException("The Operating Sytem has not been provided");

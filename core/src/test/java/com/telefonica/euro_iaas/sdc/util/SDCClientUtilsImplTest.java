@@ -116,7 +116,7 @@ public class SDCClientUtilsImplTest {
     }
 
     @Test
-    public void shouldSetCommandWithOSWithoutNodeCommands() throws InvalidInstallProductRequestException,
+    public void shouldSetCommandWithOS76WithoutNodeCommands() throws InvalidInstallProductRequestException,
             EntityNotFoundException {
         // given
         SDCClientUtilsImpl sdcClientUtils = new SDCClientUtilsImpl();
@@ -129,7 +129,7 @@ public class SDCClientUtilsImplTest {
         List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
         // when
         OS os1 = new OS();
-        when(osDao1.load(osType)).thenReturn(os1);
+        when(osDao1.load("76")).thenReturn(os1);
         when(nodeCommandDao1.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
 
         sdcClientUtils.setNodeCommands(vm);
@@ -139,7 +139,7 @@ public class SDCClientUtilsImplTest {
     }
 
     @Test
-    public void shouldSetCommandWithOSWithNodeCommands() throws InvalidInstallProductRequestException,
+    public void shouldSetCommandWithOS76WithNodeCommands() throws InvalidInstallProductRequestException,
             EntityNotFoundException {
         // given
 
@@ -153,7 +153,7 @@ public class SDCClientUtilsImplTest {
         OS os1 = new OS();
 
         // when
-        when(osDao1.load(osType)).thenReturn(os1);
+        when(osDao1.load("76")).thenReturn(os1);
         when(nodeCommandDao.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
         when(webResource.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
         when(builder.type(MediaType.APPLICATION_XML)).thenReturn(builder);
@@ -165,5 +165,29 @@ public class SDCClientUtilsImplTest {
         verify(nodeCommandDao).findByCriteria(any(NodeCommandSearchCriteria.class));
         verify(client).resource(anyString());
         verify(builder).put(eq(ClientResponse.class), any(Attribute.class));
+    }
+
+    @Test
+    public void shouldSetCommandWithOS7777WithoutNodeCommands() throws InvalidInstallProductRequestException,
+            EntityNotFoundException {
+        // given
+        SDCClientUtilsImpl sdcClientUtils = new SDCClientUtilsImpl();
+        NodeCommandDao nodeCommandDao1 = mock(NodeCommandDao.class);
+        String osType = "7777";
+        VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
+        OSDao osDao1 = mock(OSDao.class);
+        sdcClientUtils.setOsDao(osDao1);
+        sdcClientUtils.setNodeCommandDao(nodeCommandDao1);
+        List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
+        // when
+        OS os1 = new OS();
+        when(osDao1.load("76")).thenReturn(os1);
+        when(nodeCommandDao1.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
+
+        sdcClientUtils.setNodeCommands(vm);
+
+        // then
+        verify(osDao1).load("76");
+        verify(nodeCommandDao1).findByCriteria(any(NodeCommandSearchCriteria.class));
     }
 }
