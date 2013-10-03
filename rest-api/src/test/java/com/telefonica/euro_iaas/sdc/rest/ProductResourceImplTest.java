@@ -21,7 +21,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
-import com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl;
+import com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,15 +36,15 @@ import static org.mockito.Mockito.when;
 public class ProductResourceImplTest {
     public static String PRODUCT_NAME = "Product::server";
     public static String PRODUCT_VERSION = "Product::version";
-    ProductResourceImpl productResource = null;
+    ProductReleaseResourceImpl productReleaseResource = null;
 
     @Before
     public void setUp() throws Exception {
-        productResource = new ProductResourceImpl();
+        productReleaseResource = new ProductReleaseResourceImpl();
         ProductManager productManager = mock(ProductManager.class);
         ProductResourceValidator productResourceValidator = mock(ProductResourceValidator.class);
-        productResource.setValidator(productResourceValidator);
-        productResource.setProductManager(productManager);
+        productReleaseResource.setValidator(productResourceValidator);
+        productReleaseResource.setProductManager(productManager);
         Product product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 
@@ -69,7 +69,7 @@ public class ProductResourceImplTest {
         productReleaseDto.setVersion(PRODUCT_VERSION);
         productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
 
-        ProductRelease productRelease = productResource.insert(productReleaseDto);
+        ProductRelease productRelease = productReleaseResource.insert(productReleaseDto);
         assertEquals(productRelease.getProduct().getName(), PRODUCT_NAME);
         assertEquals(productRelease.getVersion(), PRODUCT_VERSION);
 
@@ -77,13 +77,14 @@ public class ProductResourceImplTest {
 
     @Test
     public void testDelete() throws Exception {
-        productResource.delete(PRODUCT_NAME + "-" + PRODUCT_VERSION);
+        productReleaseResource.delete(PRODUCT_NAME, PRODUCT_VERSION);
 
     }
 
     @Test
     public void testList() throws Exception {
-        List<ProductRelease> lProductRelease = productResource.findAll(PRODUCT_NAME, null, null, null, null, null);
+        List<ProductRelease> lProductRelease 
+            = productReleaseResource.findAll(PRODUCT_NAME, null, null, null, null, null);
         assertEquals(lProductRelease.size(), 1);
         assertEquals(lProductRelease.get(0).getProduct().getName(), PRODUCT_NAME);
     }
