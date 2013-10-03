@@ -11,6 +11,8 @@
 
 package com.telefonica.euro_iaas.sdc.dao;
 
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
@@ -40,11 +42,39 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
 
         Product product = new Product();
         product.setName(PRODUCT_NAME);
+        product.addAttribute(new Attribute("key", "value"));
+        product.addMetadata(new Metadata("netkey", "metvalue"));
 
         assertEquals(0, productDao.findAll().size());
         product = productDao.create(product);
         assertEquals(product, productDao.load(PRODUCT_NAME));
         assertEquals(1, productDao.findAll().size());
+
+    }
+
+    /**
+     * Test the update and load method
+     */
+    public void testUpdate() throws Exception {
+        Product product = new Product();
+        product.setName(PRODUCT_NAME);
+        product.addAttribute(new Attribute("key", "value"));
+        product.addMetadata(new Metadata("netkey", "metvalue"));
+
+        assertEquals(0, productDao.findAll().size());
+        product = productDao.create(product);
+
+        Product loadedProduct = productDao.load(PRODUCT_NAME);
+        assertEquals(loadedProduct.getName(), product.getName());
+
+        loadedProduct.addAttribute(new Attribute("key", "value"));
+
+        Product updatedProduct = productDao.update(loadedProduct);
+        assertEquals(updatedProduct.getAttributes().size(), 2);
+
+        loadedProduct.addMetadata(new Metadata("met_key2", "met_value2"));
+        updatedProduct = productDao.update(loadedProduct);
+        assertEquals(updatedProduct.getMetadatas().size(), 2);
 
     }
 
