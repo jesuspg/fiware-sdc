@@ -21,6 +21,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
+import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -56,9 +57,9 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
     public Task install(String vdc, ProductInstanceDto product, String callback) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_PRODUCT_INSTANCE_PATH, vdc);
         WebResource wr = getClient().resource(url);
-
-        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.post(getType(), product, callback);
+        WebResource.Builder builder = wr.accept(getType()).type(getType()).entity(product);
+        builder = addCallback(builder, callback);
+        return builder.post(Task.class);
 
     }
 
@@ -68,21 +69,24 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
 
     public Task installArtifact(String vdc, String product, com.telefonica.euro_iaas.sdc.model.Artifact artifact,
             String callback) {
-        String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
-        WebResource wr = getClient().resource(url);
+        String url = getBaseHost() + MessageFormat.format(
 
-        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.post(getType(), artifact, callback);
+        ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
+        WebResource wr = getClient().resource(url);
+        WebResource.Builder builder = wr.accept(getType()).type(getType()).entity(artifact);
+        builder = addCallback(builder, callback);
+        return builder.post(Task.class);
+
     }
 
     public Task uninstallArtifact(String vdc, String productInstanceId, Artifact artefact, String callback) {
-        String url = getBaseHost()
-                + MessageFormat.format(ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId,
-                        artefact.getName());
-        WebResource wr = getClient().resource(url);
+        String url = getBaseHost() + MessageFormat.format(
 
-        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.delete(getType(), callback);
+        ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId, artefact.getName());
+        WebResource wr = getClient().resource(url);
+        WebResource.Builder builder = wr.accept(getType()).type(getType());
+        builder = addCallback(builder, callback);
+        return builder.delete(Task.class);
 
     }
 
@@ -106,8 +110,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         searchParams = addParam(searchParams, "status", status);
         searchParams = addParam(searchParams, "product", productName);
 
-        SDCWebResource<ProductInstance> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.queryParams(searchParams, getType());
+        return wr.queryParams(searchParams).accept(getType()).get(ProductInstances.class);
 
     }
 
@@ -124,12 +127,10 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      * {@inheritDoc}
      */
 
-    public ProductInstance  load(String url) throws ResourceNotFoundException {
+    public ProductInstance load(String url) throws ResourceNotFoundException {
         try {
             WebResource wr = getClient().resource(url);
-
-            SDCWebResource<ProductInstance> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-            return sdcWebResource.get(getType(), ProductInstance.class);
+            return wr.accept(getType()).get(ProductInstance.class);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ProductInstance.class, url);
         }

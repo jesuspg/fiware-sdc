@@ -39,9 +39,8 @@ public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNode
 
             String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFNODE_PATH, vdc, chefNodeName);
             WebResource wr = getClient().resource(url);
-
-            SDCWebResource<Task> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-            return sdcWebResource.delete(getType());
+            WebResource.Builder builder = wr.accept(getType()).type(getType());
+            return builder.delete(Task.class);
 
         } catch (UniformInterfaceException e) {
             String errorMsg = " Error deleting a chefnode " + chefNodeName + " in vdc " + vdc + ". Description: "

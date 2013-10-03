@@ -15,6 +15,7 @@
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
+
 import javax.persistence.EntityNotFoundException;
 
 import com.sun.jersey.api.client.Client;
@@ -48,8 +49,9 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
 
             String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
             WebResource wr = getClient().resource(url);
-            SDCWebResource<ChefClient> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-            return sdcWebResource.delete(getType());
+            WebResource.Builder builder = wr.accept(getType()).type(getType());
+            // builder = addCallback(builder, callback);
+            return builder.delete(Task.class);
 
         } catch (UniformInterfaceException e) {
             String errorMsg = " Error deleting a ChefClient  " + chefClientName + " in vdc " + vdc
@@ -66,8 +68,7 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
 
             WebResource wr = getClient().resource(url);
 
-            SDCWebResource<ChefClient> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-            return sdcWebResource.get(getType(), ChefClient.class);
+            return wr.accept(getType()).get(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);
@@ -84,8 +85,7 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
 
             WebResource wr = getClient().resource(url);
 
-            SDCWebResource<ChefClient> sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-            return sdcWebResource.get(getType(), ChefClient.class);
+            return wr.accept(getType()).get(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);

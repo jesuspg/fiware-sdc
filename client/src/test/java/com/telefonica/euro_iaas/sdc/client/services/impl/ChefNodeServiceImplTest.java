@@ -13,50 +13,39 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
-import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 public class ChefNodeServiceImplTest {
 
-    SDCWebResourceFactory sdcWebResourceFactory;
-    SDCWebResource sdcWebResource;
-    ChefNodeService chefNodeService;
     String type = "application/json";
     String baseHost = "baseHost";
-    Client client = mock(Client.class);
-
-    @Before
-    public void setUp() {
-        sdcWebResourceFactory = mock(SDCWebResourceFactory.class);
-        sdcWebResource = mock(SDCWebResource.class);
-
-        chefNodeService = new ChefNodeServiceImpl(client, baseHost, type);
-        ((ChefNodeServiceImpl) chefNodeService).setSdcWebResourceFactory(sdcWebResourceFactory);
-        when(sdcWebResourceFactory.getInstance(any(WebResource.class))).thenReturn(sdcWebResource);
-    }
 
     @Test
     public void shouldDeleteNode() {
         // given
+        Task expectedTask = new Task();
         String chefNodeName = "nodeName";
         String vdc = "virtualDataCenter";
         String url = baseHost + "/vdc/" + vdc + "/node/" + chefNodeName;
         WebResource webResource = mock(WebResource.class);
+        WebResource.Builder builder = mock(WebResource.Builder.class);
+        Client client = mock(Client.class);
+        ChefNodeServiceImpl chefNodeService = new ChefNodeServiceImpl(client, baseHost, type);
 
         // when
         when(client.resource(url)).thenReturn(webResource);
-        when(sdcWebResource.delete(type)).thenReturn(new Task());
+        when(webResource.accept(type)).thenReturn(builder);
+        when(builder.type(type)).thenReturn(builder);
+        when(builder.delete(Task.class)).thenReturn(expectedTask);
 
         Task task = null;
         try {
@@ -68,5 +57,7 @@ public class ChefNodeServiceImplTest {
         // then
         assertNotNull(task);
         verify(client).resource(url);
+        verify(webResource).accept(type);
+        verify(builder).delete(Task.class);
     }
 }
