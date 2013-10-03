@@ -13,6 +13,7 @@ package com.telefonica.euro_iaas.sdc.util;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -25,7 +26,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 public interface SDCClientUtils {
 
     /**
-     * Retrieve the VM where the node is
+     * Retrieve the VM where the node is.
      * 
      * @param ip
      *            the ip
@@ -38,7 +39,7 @@ public interface SDCClientUtils {
     VM getVM(String ip, String fqn, String osType);
 
     /**
-     * Make the target node call Chef to execute the enqueued tasks
+     * Make the target node call Chef to execute the queued tasks.
      * 
      * @param vm
      *            the node
@@ -46,7 +47,7 @@ public interface SDCClientUtils {
     void execute(VM vm) throws NodeExecutionException;
 
     /**
-     * Add or update some configuration parameters to node
+     * Add or update some configuration parameters to node.
      * 
      * @param vm
      *            the node
@@ -57,28 +58,29 @@ public interface SDCClientUtils {
     List<Attribute> configure(VM vm, List<Attribute> configuration);
 
     /**
-     * Add or update some configuration parameters to node
+     * Add or update some configuration parameters to node.
      * 
      * @param vm
      *            the node
-     * @param the
-     *            property to be modfied
+     * @param attribute
+     *            the property to be modfied
      * @return the modified property.
      */
-    Attribute configureProperty(VM vm, Attribute attriute);
+    Attribute configureProperty(VM vm, Attribute attribute);
 
     /**
-     * set the NodeCommands in a particular node
+     * set the NodeCommands in a particular node.
      * 
      * @param vm
      *            the node
      */
-    void setNodeCommands(VM vm);// throws InvalidInstallProductRequestException;
+    void setNodeCommands(VM vm) throws InvalidInstallProductRequestException;
 
     /**
-     * Check if the node is ready to install software
+     * Check if the node is ready to install software.
      * 
      * @param ip
+     *            IP where node is
      * @throws NodeExecutionException
      */
     void checkIfSdcNodeIsReady(String ip) throws NodeExecutionException;
