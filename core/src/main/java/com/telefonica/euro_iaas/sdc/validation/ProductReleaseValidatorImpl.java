@@ -27,16 +27,14 @@ public class ProductReleaseValidatorImpl implements ProductReleaseValidator {
 
     public void validateDelete(ProductRelease productRelease) throws ProductReleaseStillInstalledException {
         // validate if the product release are installed on some VMs
-        List<ProductInstance> productInstancesbyProduct = getProductInstancesByProduct(productRelease);
+        List<ProductInstance> productInstancesByProduct = getProductInstancesByProduct(productRelease);
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
 
-        if (productInstancesbyProduct.size() > 0) {
-            for (ProductInstance product : productInstancesbyProduct) {
-                if (product.getStatus().equals(Status.INSTALLED) || product.getStatus().equals(Status.CONFIGURING)
-                        || product.getStatus().equals(Status.UPGRADING)
-                        || product.getStatus().equals(Status.INSTALLING)) {
-                    productInstances.add(product);
-                }
+        for (ProductInstance product : productInstancesByProduct) {
+            Status productStatus = product.getStatus();
+            if (Status.INSTALLED.equals(productStatus) || Status.CONFIGURING.equals(productStatus)
+                    || Status.UPGRADING.equals(productStatus) || Status.INSTALLING.equals(productStatus)) {
+                productInstances.add(product);
             }
         }
 
