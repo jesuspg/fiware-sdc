@@ -84,7 +84,7 @@ public class ProductResourceImpl implements ProductResource {
                 product.addAttribute(att);
             }
         }
-
+        
         if (productReleaseDto.getMetadatas() != null) {
             LOGGER.info("Metadatas " + productReleaseDto.getMetadatas().size());
             for (Metadata metadata : productReleaseDto.getMetadatas()) {
