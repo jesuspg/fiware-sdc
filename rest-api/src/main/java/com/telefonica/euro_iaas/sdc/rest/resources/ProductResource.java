@@ -89,9 +89,8 @@ public interface ProductResource {
      * @throws ProductReleaseStillInstalledException
      */
     @DELETE
-	  @Path("/{pName}")
-	  @Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	  void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException, 
-	      ProductReleaseStillInstalledException;
-
+    @Path("/{pName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
+    ProductReleaseStillInstalledException;
 }

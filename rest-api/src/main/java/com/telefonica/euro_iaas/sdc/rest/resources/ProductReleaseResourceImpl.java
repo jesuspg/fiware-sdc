@@ -123,23 +123,23 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
         }
       
-        ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(), 
+        ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
             productReleaseDto.getReleaseNotes(),
-            productReleaseDto.getPrivateAttributes(), 
+            productReleaseDto.getPrivateAttributes(),
             product,
-            productReleaseDto.getSupportedOS(), 
+            productReleaseDto.getSupportedOS(),
             productReleaseDto.getTransitableReleases());
 
         try {
-            cookbook = File.createTempFile("cookbook-"+ productReleaseDto.getProductName() + "-"
+            cookbook = File.createTempFile("cookbook-" + productReleaseDto.getProductName() + "-"
                 + productReleaseDto.getVersion() + ".tar", ".tmp");
 
-            installable = File.createTempFile("installable-"+ productReleaseDto.getProductName() + "-"
+            installable = File.createTempFile("installable-" + productReleaseDto.getProductName() + "-"
                 + productReleaseDto.getVersion() + ".tar", ".tmp");
 
-            cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(), 
+            cookbook = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(1).getEntity(),
                 cookbook);
-            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(), 
+            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(),
                 installable);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -217,7 +217,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     }
 
     /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#findTransitable(java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#findTransitable(java.lang.String,
+     * java.lang.String)
      */
     @Override
     public List<ProductRelease> findTransitable(String name, String version) throws EntityNotFoundException {
@@ -247,7 +248,15 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         return productManager.findReleasesByCriteria(criteria);
     }
 
-
+    /**
+     * Update the ProductRelease (productReleaseDto, cookbooks, installable).
+     * @param multipart
+     * @throws ProductReleaseNotFoundException, 
+     * @throws InvalidProductReleaseException,
+     * @throws InvalidProductReleaseException
+     * @throws InvalidMultiPartRequestException
+     * @return productRelease
+     */
     public ProductRelease update(MultiPart multiPart) throws ProductReleaseNotFoundException,
         InvalidProductReleaseException, InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException {
 
@@ -265,7 +274,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             product.setDescription(productReleaseDto.getProductDescription());
         }
         
-        if (productReleaseDto.getPrivateAttributes()!=null) {
+        if (productReleaseDto.getPrivateAttributes() != null) {
             for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
                 product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
             }
@@ -297,8 +306,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             productRelease.setTransitableReleases(productReleaseDto.getTransitableReleases());
         }
         
-        ReleaseDto releaseDto = new ReleaseDto(productReleaseDto.getProductName(), 
-            productReleaseDto.getVersion(), 
+        ReleaseDto releaseDto = new ReleaseDto(productReleaseDto.getProductName(),
+            productReleaseDto.getVersion(),
             "product");
 
         validator.validateUpdate(releaseDto, multiPart);
@@ -316,10 +325,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
 
         try {
-            installable = File.createTempFile("installable-"+ releaseDto.getName() + "-" + releaseDto.getVersion()
+            installable = File.createTempFile("installable-" + releaseDto.getName() + "-" + releaseDto.getVersion()
                         + ".tar", ".tmp");
 
-            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(), 
+            installable = getFileFromBodyPartEntity((BodyPartEntity) multiPart.getBodyParts().get(2).getEntity(),
                 installable);
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
@@ -351,13 +360,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      *            the validator to set
      */
     public void setValidator(ProductResourceValidator validator) {
-      this.validator = validator;
+        this.validator = validator;
     }
     /**
      * @param productManager
      *            the productManager to set
      */
     public void setProductManager(ProductManager productManager) {
-      this.productManager = productManager;
+        this.productManager = productManager;
     }
 }
