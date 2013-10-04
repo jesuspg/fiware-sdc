@@ -13,7 +13,9 @@ package com.telefonica.euro_iaas.sdc.manager;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
@@ -25,6 +27,14 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
  */
 public interface ProductManager {
 
+    /**
+     * Insert the Product in SDC Database
+     * @param product
+     * @return
+     * @throws AlreadyExistsEntityException
+     */
+    Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException;
+    
     /**
      * Find the ProductInstance using the given id.
      * 

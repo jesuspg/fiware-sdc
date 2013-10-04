@@ -12,10 +12,13 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
@@ -24,6 +27,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -42,6 +46,41 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     private ProductDao productDao;
     private static Logger LOGGER = Logger.getLogger("ProductManagerImpl");
 
+    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+              
+        List<Metadata> metadatas = new ArrayList<Metadata>();
+        metadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4")); //centos6.3_sdc
+        metadatas.add(new Metadata("cookbook_url",""));
+        metadatas.add(new Metadata("cloud","yes"));
+        metadatas.add(new Metadata("installator","chef"));
+        metadatas.add(new Metadata("open_ports","80 22"));
+        
+        List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
+        defaultmetadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
+        defaultmetadatas.add(new Metadata("cookbook_url",""));
+        defaultmetadatas.add(new Metadata("cloud","yes"));
+        defaultmetadatas.add(new Metadata("installator","chef"));
+        defaultmetadatas.add(new Metadata("open_ports","80 22"));
+        
+        for (Metadata external_metadata : product.getMetadatas()) {
+            boolean defaultmetadata = false; 
+            for (Metadata default_metadata : defaultmetadatas) {
+                if (external_metadata.getKey().equals(default_metadata.getKey())) {
+                     metadatas.remove(default_metadata);
+                     metadatas.add(external_metadata);
+                     defaultmetadata = true;
+                }
+            }
+            if (!defaultmetadata) {
+                metadatas.add(external_metadata);
+            }
+            
+        }
+        
+        product.setMetadatas(metadatas);
+        product = productDao.create(product);
+        return product;
+    }
     /**
     * {@inheritDoc}
     */
@@ -50,7 +89,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return productDao.findAll();
     }
 
-	  /**
+    /**
 	   * {@inheritDoc}
 	  */
     @Override
@@ -77,59 +116,6 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
 	  */
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#load(com.telefonica.euro_iaas.sdc.model.Product, java.lang.String)
-     */
-    public ProductRelease load(Product product, String version) throws EntityNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#findReleasesByCriteria(com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria)
-     */
-    public List<ProductRelease> findReleasesByCriteria(ProductReleaseSearchCriteria criteria) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#insert(com.telefonica.euro_iaas.sdc.model.ProductRelease, java.io.File, java.io.File)
-     */
-    public ProductRelease insert(ProductRelease productRelase, File recipes, File installable)
-                    throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#delete(com.telefonica.euro_iaas.sdc.model.ProductRelease)
-     */
-    public void delete(ProductRelease productRelease) throws ProductReleaseNotFoundException,
-                    ProductReleaseStillInstalledException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#update(com.telefonica.euro_iaas.sdc.model.ProductRelease, java.io.File, java.io.File)
-     */
-    public ProductRelease update(ProductRelease productRelease, File recipes, File installable)
-                    throws ProductReleaseNotFoundException, InvalidProductReleaseException,
-                    ProductReleaseNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ProductManager#insert(com.telefonica.euro_iaas.sdc.model.ProductRelease)
-     */
-    public ProductRelease insert(ProductRelease productRelease) throws AlreadyExistsProductReleaseException,
-                    InvalidProductReleaseException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
