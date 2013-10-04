@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
@@ -49,20 +50,21 @@ public class ProductInstanceResourceImplTest {
     ProductRelease pr1 = null;
     ProductInstanceDto productInstance = null;
     ProductManager productManager = null;
+    ProductReleaseManager productReleaseManager = null;
     ProductInstanceResourceImpl productInstanceResource = null;
     ProductInstanceAsyncManager productInstanceAsyncManager = null;
     Product product = null;
 
     @Before
-    public void setUp() throws Exception
-
-    {
+    public void setUp() throws Exception {
         productInstanceResource = new ProductInstanceResourceImpl();
-
+        
+        productReleaseManager = mock (ProductReleaseManager.class);
         productManager = mock(ProductManager.class);
         productInstanceAsyncManager = mock(ProductInstanceAsyncManager.class);
         TaskManager taskManager = mock(TaskManager.class);
         productInstanceResource.setProductManager(productManager);
+        productInstanceResource.setProductReleaseManager(productReleaseManager);
         productInstanceResource.setProductInstanceAsyncManager(productInstanceAsyncManager);
         productInstanceResource.setTaskManager(taskManager);
 
@@ -95,6 +97,7 @@ public class ProductInstanceResourceImplTest {
         lProductInstance.add(productIns);
 
         when(productManager.load(any(String.class))).thenReturn(product);
+        when(productReleaseManager.load(any(Product.class), any(String.class))).thenReturn(productRelease);
         when(taskManager.createTask(any(Task.class))).thenReturn(task);
         when(productInstanceAsyncManager.load(any(String.class), any(String.class))).thenReturn(productIns);
         when(productInstanceAsyncManager.findByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(

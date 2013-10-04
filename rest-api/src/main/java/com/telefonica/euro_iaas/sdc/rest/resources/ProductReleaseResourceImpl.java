@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequest
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -56,9 +57,11 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
+    @InjectParam("productReleaseManager")
+    private ProductReleaseManager productReleaseManager;
     @InjectParam("productManager")
     private ProductManager productManager;
-
+    
     private ProductResourceValidator validator;
     private static Logger LOGGER = Logger.getLogger("ProductReleaseResourceImpl");
     
@@ -95,7 +98,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             productReleaseDto.getSupportedOS(), productReleaseDto.getTransitableReleases());
         
         LOGGER.info(productRelease.toString());
-        return productManager.insert(productRelease);
+        return productReleaseManager.insert(productRelease);
     }
 
     /**
@@ -145,7 +148,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             throw new RuntimeException(e);
         }
 
-        return productManager.insert(productRelease, cookbook, installable);
+        return productReleaseManager.insert(productRelease, cookbook, installable);
     }
 
     /**
@@ -178,7 +181,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         if (!StringUtils.isEmpty(orderType)) {
             criteria.setOrderBy(orderType);
         }
-        return productManager.findReleasesByCriteria(criteria);
+        return productReleaseManager.findReleasesByCriteria(criteria);
     }
 
     /**
@@ -187,7 +190,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     @Override
     public ProductRelease load(String name, String version) throws EntityNotFoundException {
         Product product = productManager.load(name);
-        return productManager.load(product, version);
+        return productReleaseManager.load(product, version);
     }
     
     /**
@@ -208,12 +211,12 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         ProductRelease productRelease;
         try {
-            productRelease = productManager.load(product, version);
+            productRelease = productReleaseManager.load(product, version);
         } catch (EntityNotFoundException e) {
             throw new ProductReleaseNotFoundException(e);
         }
 
-        productManager.delete(productRelease);
+        productReleaseManager.delete(productRelease);
     }
 
     /* (non-Javadoc)
@@ -245,13 +248,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         if (!StringUtils.isEmpty(orderType)) {
             criteria.setOrderBy(orderType);
         }
-        return productManager.findReleasesByCriteria(criteria);
+        return productReleaseManager.findReleasesByCriteria(criteria);
     }
 
     /**
      * Update the ProductRelease (productReleaseDto, cookbooks, installable).
      * @param multipart
-     * @throws ProductReleaseNotFoundException, 
+     * @throws ProductReleaseNotFoundException,
      * @throws InvalidProductReleaseException,
      * @throws InvalidProductReleaseException
      * @throws InvalidMultiPartRequestException
@@ -333,7 +336,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
         }
-        return productManager.update(productRelease, cookbook, installable);
+        return productReleaseManager.update(productRelease, cookbook, installable);
     }
 
 
@@ -361,6 +364,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public void setValidator(ProductResourceValidator validator) {
         this.validator = validator;
+    }
+    /**
+     * @param productReleaseManager
+     *            the productReleaseManager to set
+     */
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
     }
     /**
      * @param productManager
