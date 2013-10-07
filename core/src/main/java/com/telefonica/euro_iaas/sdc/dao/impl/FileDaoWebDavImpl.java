@@ -11,11 +11,16 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PASSWD;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_USERNAME;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
 
 import com.googlecode.sardine.DavResource;
 import com.googlecode.sardine.Sardine;
@@ -25,11 +30,6 @@ import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.sdc.dao.FileDao;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-import org.apache.commons.io.FileUtils;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PASSWD;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_USERNAME;
 
 /**
  * Default implementation of FileDao.

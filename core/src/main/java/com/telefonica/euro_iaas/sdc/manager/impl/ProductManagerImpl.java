@@ -11,6 +11,8 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PRODUCT_BASEDIR;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,6 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseExcepti
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
-
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -33,7 +34,6 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.xmlsolutions.annotation.UseCase;
-
 
 /**
  * Default ProductManager implementation.
@@ -84,6 +84,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     /**
     * {@inheritDoc}
     */
+
     @Override
     public List<Product> findAll() {
         return productDao.findAll();
@@ -97,9 +98,9 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return productDao.findByCriteria(criteria);
     }
 
-	  /**
-	   * {@inheritDoc}
-	  */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Product load(String name) throws EntityNotFoundException {
         return productDao.load(name);
@@ -110,13 +111,11 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         productDao.remove(product);
     }
 
-	  /**
-	  * @param productDao
-	  *            the productDao to set
-	  */
+    /**
+     * @param productDao
+     *            the productDao to set
+     */
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
-
 }
-	

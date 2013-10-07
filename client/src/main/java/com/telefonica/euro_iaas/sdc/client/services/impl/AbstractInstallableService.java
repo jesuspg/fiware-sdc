@@ -33,15 +33,6 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
     private String upgradePath;
     private String configPath;
     private String uninstallPath;
-    private SDCWebResourceFactory sdcWebResourceFactory = new SDCWebResourceFactory();
-
-    public SDCWebResourceFactory getSdcWebResourceFactory() {
-        return sdcWebResourceFactory;
-    }
-
-    public void setSdcWebResourceFactory(SDCWebResourceFactory sdcWebResourceFactory) {
-        this.sdcWebResourceFactory = sdcWebResourceFactory;
-    }
 
     /**
      * See {@link ApplicationInstanceService#upgrade(String, Long, String, String)} or

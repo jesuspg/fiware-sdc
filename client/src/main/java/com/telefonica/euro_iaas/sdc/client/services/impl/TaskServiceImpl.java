@@ -11,13 +11,9 @@
 
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
-import static com.telefonica.euro_iaas.sdc.client.ClientConstants.APPLICATION_INSTANCE_PATH;
-import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
-
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
@@ -29,6 +25,10 @@ import com.telefonica.euro_iaas.sdc.client.model.Tasks;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
+
+
+import static com.telefonica.euro_iaas.sdc.client.ClientConstants.APPLICATION_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
 
 /**
  * Default TaskService implementation.

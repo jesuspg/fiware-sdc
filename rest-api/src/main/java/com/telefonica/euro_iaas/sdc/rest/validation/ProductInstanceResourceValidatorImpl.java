@@ -17,6 +17,11 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -25,9 +30,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.OpenStackUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * @author jesus.movilla

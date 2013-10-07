@@ -11,6 +11,10 @@
 
 package com.telefonica.euro_iaas.sdc.it.util;
 
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
+import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
+
 import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -19,11 +23,6 @@ import com.telefonica.euro_iaas.sdc.client.services.EnvironmentService;
 import com.telefonica.euro_iaas.sdc.model.Environment;
 import com.telefonica.euro_iaas.sdc.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-
-
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.BASE_URL;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.MIME_TYPE;
-import static com.telefonica.euro_iaas.sdc.it.util.QAProperties.getProperty;
 
 public class EnvironmentUtils {
 

@@ -14,9 +14,13 @@
  */
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_NODE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.ChefNodeManager;
@@ -28,10 +32,6 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_NODE_BASE_URL;
 
 /**
  * @author jesus.movilla
@@ -72,8 +72,8 @@ public class ChefNodeAsyncManagerImpl implements ChefNodeAsyncManager {
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, String vdc, String chefNodename) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename); // the
-                                                                                                                         // product
+        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename);
+
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
@@ -84,8 +84,8 @@ public class ChefNodeAsyncManagerImpl implements ChefNodeAsyncManager {
      * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(String vdc, String chefNodename, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename); // the
-                                                                                                                         // product
+        String piResource = MessageFormat.format(propertiesProvider.getProperty(CHEF_NODE_BASE_URL), vdc, chefNodename);
+
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }

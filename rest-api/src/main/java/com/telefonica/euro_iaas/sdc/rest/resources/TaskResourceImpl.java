@@ -13,7 +13,12 @@ package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.ws.rs.Path;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -21,9 +26,6 @@ import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * Default TaskResource implementation.

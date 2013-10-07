@@ -11,8 +11,21 @@
 
 package com.telefonica.euro_iaas.sdc.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
@@ -38,18 +51,6 @@ import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
 import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit test suite for ProductManagerChefImpl.

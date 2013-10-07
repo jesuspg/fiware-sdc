@@ -15,7 +15,6 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -28,7 +27,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 
 /**
- * Defines the operations the system shall be able to do with Products
+ * Defines the operations the system shall be able to do with Products.
  * 
  * @author Sergio Arroyo
  */
@@ -51,7 +50,7 @@ public interface ProductInstanceManager {
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException;
 
     /**
-     * Configure an installed product
+     * Configure an installed product.
      * 
      * @param productInstance
      *            the installed product to configure
@@ -64,45 +63,35 @@ public interface ProductInstanceManager {
     ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
             throws NodeExecutionException, FSMViolationException;
 
-	/**
-	 * Upgrade a ProductInstance
-	 * 
-	 * @param productInstance
-	 *            the installed product to upgrade
-	 * @param productRelease
-	 *            the productRelease to upgrade to.
-	 * @return the productInstance upgraded.
-	 * @throws NotTransitableException
-	 *             if the selected version is not compatible with the installed
-	 *             product
-	 * @throws NodeExecutionException
-	 *             if any error happen during the upgrade in node
-	 * @throws FSMViolationException
-	 *             if try to make a forbidden transition
-	 * @throws ApplicationIncompatibleException
-	 *             if any application which is installed on the upgraded product
-	 *             is not compatible with the new version
-	 */
-	ProductInstance upgrade(ProductInstance productInstance,
-			ProductRelease productRelease) throws NotTransitableException,
-			NodeExecutionException, 
-			FSMViolationException;
+    /**
+     * Upgrade a ProductInstance.
+     * 
+     * @param productInstance
+     *            the installed product to upgrade
+     * @param productRelease
+     *            the productRelease to upgrade to.
+     * @return the productInstance upgraded.
+     * @throws NotTransitableException
+     *             if the selected version is not compatible with the installed product
+     * @throws NodeExecutionException
+     *             if any error happen during the upgrade in node
+     * @throws FSMViolationException
+     *             if try to make a forbidden transition
+     */
+    ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease)
+            throws NotTransitableException, NodeExecutionException, FSMViolationException;
 
-	/**
-	 * Uninstall a previously installed product.
-	 * 
-	 * @param productInstance
-	 *            the candidate to uninstall
-	 * @throws NodeExecutionException
-	 *             if any error happen during the uninstallation in node
-	 * @throws ApplicationInstalledException
-	 *             if the product has some applications which depend on it
-	 * @throws FSMViolationException
-	 *             if try to make a forbidden transition
-	 */
-	void uninstall(ProductInstance productInstance)
-			throws NodeExecutionException, 
-			FSMViolationException;
+    /**
+     * Uninstall a previously installed product.
+     * 
+     * @param productInstance
+     *            the candidate to uninstall
+     * @throws NodeExecutionException
+     *             if any error happen during the uninstallation in node
+     * @throws FSMViolationException
+     *             if try to make a forbidden transition
+     */
+    void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException;
 
     /**
      * Find the ProductInstance using the given id.
@@ -117,6 +106,16 @@ public interface ProductInstanceManager {
      */
     ProductInstance load(String vdc, Long id) throws EntityNotFoundException;
 
+    /**
+     * Find the ProductInstance by name.
+     * 
+     * @param vdc
+     *            the virtual data center
+     * @param name
+     *            the product instance name
+     * @return the product instance
+     * @throws EntityNotFoundException
+     */
     ProductInstance load(String vdc, String name) throws EntityNotFoundException;
 
     /**
@@ -150,10 +149,11 @@ public interface ProductInstanceManager {
     List<ProductInstance> findByCriteria(ProductInstanceSearchCriteria criteria);
 
     /**
-     * Updates a product instance and persist it in the database∫
+     * Updates a product instance and persist it in the database.
      * 
      * @param productInstance
-     * @return
+     *            the product instance to modify
+     * @return the product instance updated
      */
     ProductInstance update(ProductInstance productInstance);
 

@@ -15,8 +15,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import org.apache.commons.io.IOUtils;
+
+import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 
 /**
  * <p>

@@ -14,12 +14,22 @@
  */
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_ID;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_PASS;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_CLIENTS_PATH;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_URL;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Map;
+
 import javax.ws.rs.core.MediaType;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.io.IOUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -32,14 +42,6 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-import net.sf.json.JSONObject;
-import org.apache.commons.io.IOUtils;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_ID;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_PASS;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_CLIENTS_PATH;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_URL;
 
 /**
  * @author jesus.movilla

@@ -11,6 +11,13 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DIRECTORY_COOKBOOK;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DELETE_RECIPES_SCRIPT;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNTAR_COMMAND;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UPLOAD_RECIPES_SCRIPT;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_BASE_URL;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_FILE_URL;
+
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -23,14 +30,6 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DIRECTORY_COOKBOOK;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DELETE_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNTAR_COMMAND;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UPLOAD_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_BASE_URL;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_FILE_URL;
 
 public class BaseInstallableManager {
 

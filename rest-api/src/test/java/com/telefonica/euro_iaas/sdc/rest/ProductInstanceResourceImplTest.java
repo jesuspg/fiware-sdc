@@ -11,9 +11,18 @@
 
 package com.telefonica.euro_iaas.sdc.rest;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
@@ -32,15 +41,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.resources.ProductInstanceResourceImpl;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ProductInstanceResourceImplTest {
 

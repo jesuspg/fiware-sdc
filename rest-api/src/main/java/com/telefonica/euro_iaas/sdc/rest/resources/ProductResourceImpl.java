@@ -18,7 +18,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.ws.rs.Path;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.BodyPartEntity;
@@ -36,9 +41,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 
 /**
  * default ProductResource implementation.
@@ -108,10 +111,9 @@ public class ProductResourceImpl implements ProductResource {
     }
     
     /**
-     * Delete a product in SDC Database.
+     * Delete the Product Resource.
      * 
      * @param name
-     *           the name of the product
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException
      */
@@ -125,12 +127,12 @@ public class ProductResourceImpl implements ProductResource {
         productManager.delete(product);
     }
     
-    
     /**
-	   * @param productManager
-	   *            the productManager to set
-	   */
+     * @param productManager
+     *            the productManager to set
+     */
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
+
 }

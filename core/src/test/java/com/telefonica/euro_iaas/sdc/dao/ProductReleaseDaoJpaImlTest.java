@@ -14,6 +14,8 @@ package com.telefonica.euro_iaas.sdc.dao;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -21,8 +23,12 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
-import junit.framework.Assert;
 
+/**
+ * Unit test for ProductReleaseDaoImpl.
+ * @author jesus.movilla
+ *
+ */
 public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 
     private ProductDao productDao;
@@ -60,7 +66,7 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
 
         List<Metadata> metadatas = Arrays.asList(new Metadata("key1", "value1", "desc1"), new Metadata("key2",
-                "value2", "desc2"));
+            "value2", "desc2"));
 
         Product product = new Product();
         product.setName("yum");
@@ -84,10 +90,17 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         Assert.assertEquals(createdRelease, productRelease);
 
     }
-
+    
+    /**
+     * Testing method create and load ProductRelease.
+     * @throws Exception
+     */
     public void testCreateAndFindByCriteria() throws Exception {
         createProduct();
         Product product = productDao.findAll().get(0);
+        product.addAttribute(new Attribute("clave", "valor"));
+
+        product.addMetadata(new Metadata("metKey", "metValue"));
 
         ProductRelease release = new ProductRelease("v1", "releaseNotes1", null, product, soDao.findAll(), null);
         ProductRelease createdRelease = productReleaseDao.create(release);

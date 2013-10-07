@@ -13,14 +13,15 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
-import com.telefonica.euro_iaas.sdc.model.Artifact;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
+import com.telefonica.euro_iaas.sdc.model.Artifact;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 
 /**
  * JPA implementation for ApplicationInstanceDao.

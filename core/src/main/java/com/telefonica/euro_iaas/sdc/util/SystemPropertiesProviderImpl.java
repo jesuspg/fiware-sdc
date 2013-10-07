@@ -16,7 +16,7 @@ import java.util.Properties;
 import com.telefonica.euro_iaas.commons.properties.PropertiesProvider;
 
 /**
- * Get the properties from the default file or from
+ * Get the properties from the default file or from.
  * 
  * @author Sergio Arroyo
  */
@@ -29,26 +29,22 @@ public class SystemPropertiesProviderImpl implements SystemPropertiesProvider {
         return propertiesProvider.load(namespace);
     }
 
+    /** {@inheritDoc} */
+    public String getProperty(String key) {
+        String value = System.getenv(key);
+        if (value == null) {
+            value = loadProperties().getProperty(key);
+        }
+        return value;
+    }
 
-	/** {@inheritDoc} */
-	public String getProperty(String key) {
-		String value = System.getenv(key);
-		if (value == null) {
-			value = loadProperties().getProperty(key);
-		}
-		return value;
-	}
+    public Integer getIntProperty(String key) {
+        return Integer.parseInt(getProperty(key));
+    }
 
-	public Integer getIntProperty(String key) {
-		return Integer.parseInt(getProperty(key));
-	}
-
-	/**
-	 * @ø
-	 */
-	public void setProperties(Properties configuration) {
-		propertiesProvider.store(configuration, namespace);
-	}
+    public void setProperties(Properties configuration) {
+        propertiesProvider.store(configuration, namespace);
+    }
 
     /**
      * <p>

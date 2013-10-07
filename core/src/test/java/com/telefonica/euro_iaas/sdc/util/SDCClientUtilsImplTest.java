@@ -11,110 +11,183 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import java.io.IOException;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.MediaType;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
-import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
 
+public class SDCClientUtilsImplTest {
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/**
- * @author Jesus M. Movilla
- */
-public class SDCClientUtilsImplTest extends TestCase {
-
-    private NodeCommandDao nodeCommandDao;
-    private OSDao osDao;
-    private SystemPropertiesProvider propertiesProvider;
-    private VM host = new VM("fqn", "ip", "hostname", "domain");
-    private OS os = new OS("os1", "1", "os1 description", "v1");
-    private Client client;
-    private WebResource webResource;
-    private ClientResponse clientResponse;
-    private SDCClientUtilsImpl sdcClientUtilsImpl;
+    SDCClientUtilsImpl sdcClientUtils;
+    SystemPropertiesProvider propertiesProvider;
+    Client client;
+    WebResource webResource;
+    OSDao osDao1;
+    NodeCommandDao nodeCommandDao;
 
     @Before
     public void setUp() throws Exception {
-        sdcClientUtilsImpl = new SDCClientUtilsImpl();
-
-        osDao = mock(OSDao.class);
-        when(osDao.load(anyString())).thenReturn(os);
-
-        ArrayList<NodeCommand> nodeCommands = new ArrayList<NodeCommand>();
-        nodeCommands.add(new NodeCommand(os, "key1", "value1"));
-        nodeCommands.add(new NodeCommand(os, "key2", "value2"));
-
-        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-        attributes.add(new Attribute("key1", "value1"));
-        attributes.add(new Attribute("key2", "value2"));
-
-        nodeCommandDao = mock(NodeCommandDao.class);
-        when(nodeCommandDao.findByCriteria(new NodeCommandSearchCriteria(any(OS.class)))).thenReturn(nodeCommands);
-
+        sdcClientUtils = new SDCClientUtilsImpl();
         propertiesProvider = mock(SystemPropertiesProvider.class);
-        when(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE)).thenReturn("http://{0}:9990/sdc-client");
+        client = mock(Client.class);
+        sdcClientUtils.setClient(client);
+        sdcClientUtils.setPropertiesProvider(propertiesProvider);
+        webResource = mock(WebResource.class);
+        osDao1 = mock(OSDao.class);
+        sdcClientUtils.setOsDao(osDao1);
+        nodeCommandDao = mock(NodeCommandDao.class);
+        sdcClientUtils.setNodeCommandDao(nodeCommandDao);
 
-        // webResource = mock(WebResource.class);
-        // clientResponse = mock(ClientResponse.class);
+        when(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE)).thenReturn("http://baseurl");
+        when(client.resource(anyString())).thenReturn(webResource);
 
-        // client = mock(Client.class);
-        // when(client.resource(anyString())).thenReturn(webResource);
-
-        // doReturn(clientResponse).when(webResource).accept(MediaType.APPLICATION_XML).put(ClientResponse.class,
-        // anyList());;
-
-        // doReturn().when(webResource).accept((MediaType)
-        // anyVararg()).type(anyString()).entity(anyList()).put(anyList());
     }
 
-    /**
-     * Test the correct behavior when invoking setNodeCommands
-     * 
-     * @throws Exception
-     */
     @Test
-    public void testSetNodeCommandOk() {
-        // Pending to find ut how to mock the put call to the sdc-client
-        /*
-         * SDCClientUtilsImpl sdcClientUtilsImpl = new SDCClientUtilsImpl();
-         * sdcClientUtilsImpl.setNodeCommandDao(nodeCommandDao); sdcClientUtilsImpl.setOSDao(osDao);
-         * sdcClientUtilsImpl.setClient(client); sdcClientUtilsImpl.setPropertiesProvider(propertiesProvider); try {
-         * sdcClientUtilsImpl.setNodeCommands(host); fail("ShellCommanException expected"); } catch
-         * (InvalidInstallProductRequestException e) { // it's ok }
-         */
+    public void shouldGetVM() {
+        // given
+
+        String ip = "127.0.0.1";
+        String fqn = "fqn";
+        String osType = "linux";
+        VM vm = new VM();
+
+        String url = "http://baseurl/rest/vm";
+        WebResource.Builder builder = mock(WebResource.Builder.class);
+        // when
+
+        when(client.resource(url)).thenReturn(webResource);
+        when(webResource.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.get(VM.class)).thenReturn(vm);
+
+        VM resultVM = sdcClientUtils.getVM(ip, fqn, osType);
+        // then
+        assertNotNull(resultVM);
+        assertEquals(resultVM.getFqn(), fqn);
+        assertEquals(resultVM.getOsType(), osType);
+        verify(client).resource(url);
+        verify(webResource).accept(MediaType.APPLICATION_XML);
+        verify(builder).get(VM.class);
     }
 
-    /**
-     * Test the correct behavior when the executed command does not exists.
-     * 
-     * @throws Exception
-     */
-    public void testScriptExecutedFailsBecauseDoesNotExists() throws Exception {
-        CommandExecutorShellImpl shellCommand = new CommandExecutorShellImpl();
-        try {
-            shellCommand.executeCommand("asdag");
-            fail("ShellCommanException expected");
-        } catch (ShellCommandException e) {
-            // it's ok
-            assertTrue(e.getCause() instanceof IOException);
-        }
+    @Test(expected = InvalidInstallProductRequestException.class)
+    public void shouldThrowExceptionInSetCommandWithInvalidOsType() throws EntityNotFoundException,
+            InvalidInstallProductRequestException {
+        // given
+        SDCClientUtilsImpl sdcClientUtils = new SDCClientUtilsImpl();
+        NodeCommandDao nodeCommandDao1 = mock(NodeCommandDao.class);
+        String osType = "76";
+        VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
+        OSDao osDao1 = mock(OSDao.class);
+        sdcClientUtils.setOsDao(osDao1);
+        sdcClientUtils.setNodeCommandDao(nodeCommandDao1);
+        // when
+        when(osDao1.load(osType)).thenThrow(new EntityNotFoundException(OS.class, "", ""));
+
+        sdcClientUtils.setNodeCommands(vm);
+
+        // then
+    }
+
+    @Test
+    public void shouldSetCommandWithOS76WithoutNodeCommands() throws InvalidInstallProductRequestException,
+            EntityNotFoundException {
+        // given
+        SDCClientUtilsImpl sdcClientUtils = new SDCClientUtilsImpl();
+        NodeCommandDao nodeCommandDao1 = mock(NodeCommandDao.class);
+        String osType = "76";
+        VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
+        OSDao osDao1 = mock(OSDao.class);
+        sdcClientUtils.setOsDao(osDao1);
+        sdcClientUtils.setNodeCommandDao(nodeCommandDao1);
+        List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
+        // when
+        OS os1 = new OS();
+        when(osDao1.load("76")).thenReturn(os1);
+        when(nodeCommandDao1.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
+
+        sdcClientUtils.setNodeCommands(vm);
+
+        // then
+        verify(nodeCommandDao1).findByCriteria(any(NodeCommandSearchCriteria.class));
+    }
+
+    @Test
+    public void shouldSetCommandWithOS76WithNodeCommands() throws InvalidInstallProductRequestException,
+            EntityNotFoundException {
+        // given
+
+        String osType = "76";
+        VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
+        ClientResponse clientResponse1 = mock(ClientResponse.class);
+        List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
+        NodeCommand nodeCommand = new NodeCommand();
+        nodeCommands.add(nodeCommand);
+        WebResource.Builder builder = mock(WebResource.Builder.class);
+        OS os1 = new OS();
+
+        // when
+        when(osDao1.load("76")).thenReturn(os1);
+        when(nodeCommandDao.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
+        when(webResource.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.type(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.put(eq(ClientResponse.class), any(Attribute.class))).thenReturn(clientResponse1);
+
+        sdcClientUtils.setNodeCommands(vm);
+
+        // then
+        verify(nodeCommandDao).findByCriteria(any(NodeCommandSearchCriteria.class));
+        verify(client).resource(anyString());
+        verify(builder).put(eq(ClientResponse.class), any(Attribute.class));
+    }
+
+    @Test
+    public void shouldSetCommandWithOS7777WithoutNodeCommands() throws InvalidInstallProductRequestException,
+            EntityNotFoundException {
+        // given
+        SDCClientUtilsImpl sdcClientUtils = new SDCClientUtilsImpl();
+        NodeCommandDao nodeCommandDao1 = mock(NodeCommandDao.class);
+        String osType = "7777";
+        VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
+        OSDao osDao1 = mock(OSDao.class);
+        sdcClientUtils.setOsDao(osDao1);
+        sdcClientUtils.setNodeCommandDao(nodeCommandDao1);
+        List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
+        // when
+        OS os1 = new OS();
+        when(osDao1.load("76")).thenReturn(os1);
+        when(nodeCommandDao1.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
+
+        sdcClientUtils.setNodeCommands(vm);
+
+        // then
+        verify(osDao1).load("76");
+        verify(nodeCommandDao1).findByCriteria(any(NodeCommandSearchCriteria.class));
     }
 }

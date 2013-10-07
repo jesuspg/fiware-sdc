@@ -11,14 +11,18 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.scheduling.annotation.Async;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
-
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -38,14 +42,9 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.scheduling.annotation.Async;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
 
 /**
- * Default implementation for ProductInstanceAsyncManager
+ * Default implementation for ProductInstanceAsyncManager.
  * 
  * @author Sergio Arroyo
  */
@@ -61,50 +60,41 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes, Task task,
+    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, Task task,
             String callback) {
         try {
-            ProductInstance productInstance = productInstanceManager.install(vm, vdc, product, attributes);
+            ProductInstance productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + product.getProduct().getName() + '-' + product.getVersion()
+            LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
-            String errorMsg = "The product " + product.getProduct().getName() + "-" + product.getVersion()
-                    + " can not be installed in" + vm + "due to a problem when executing in node";
-            ProductInstance instance = getInstaslledProduct(product, vm);
-            if (instance != null) {
-                updateErrorTask(instance, task, errorMsg, e);
-            } else {
-                updateErrorTask(task, errorMsg, e);
-            }
+            String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
+                    + productRelease.getVersion() + " can not be installed in" + vm
+                    + " due to a problem when executing in node";
+            processErrorTask(vm, productRelease, task, e, errorMsg);
         } catch (InvalidInstallProductRequestException e) {
             String errorMsg = e.getMessage();
-            ProductInstance instance = getInstaslledProduct(product, vm);
-            if (instance != null) {
-                updateErrorTask(instance, task, errorMsg, e);
-            } else {
-                updateErrorTask(task, errorMsg, e);
-            }
+            processErrorTask(vm, productRelease, task, e, errorMsg);
+
         } catch (AlreadyInstalledException e) {
             String errorMsg = e.getMessage();
-            ProductInstance instance = getInstaslledProduct(product, vm);
-            if (instance != null) {
-                updateErrorTask(instance, task, errorMsg, e);
-            } else {
-                updateErrorTask(task, errorMsg, e);
-            }
+            processErrorTask(vm, productRelease, task, e, errorMsg);
 
         } catch (Throwable e) {
-            String errorMsg = "The product " + product.getProduct().getName() + "-" + product.getVersion()
-                    + " can not be installed in" + vm;
-            ProductInstance instance = getInstaslledProduct(product, vm);
-            if (instance != null) {
-                updateErrorTask(instance, task, errorMsg, e);
-            } else {
-                updateErrorTask(task, errorMsg, e);
-            }
+            String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
+                    + productRelease.getVersion() + " can not be installed in" + vm;
+            processErrorTask(vm, productRelease, task, e, errorMsg);
         } finally {
             notifyTask(callback, task);
+        }
+    }
+
+    private void processErrorTask(VM vm, ProductRelease productRelease, Task task, Throwable e, String errorMsg) {
+        ProductInstance instance = getInstalledProduct(productRelease, vm);
+        if (instance != null) {
+            updateErrorTask(instance, task, errorMsg, e);
+        } else {
+            updateErrorTask(task, errorMsg, e);
         }
     }
 
@@ -135,86 +125,62 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Async
+    @Override
+    public void upgrade(ProductInstance productInstance, ProductRelease productRelease, Task task, String callback) {
+        try {
+            productInstanceManager.upgrade(productInstance, productRelease);
+            updateSuccessTask(task, productInstance);
+            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+                    + productInstance.getProductRelease().getVersion() + " upgraded successfully");
+        } catch (NotTransitableException e) {
+            updateErrorTask(productInstance, task, "The product "
+                    + productInstance.getProductRelease().getProduct().getName() + "-"
+                    + productInstance.getProductRelease().getVersion() + " can not be updated to version "
+                    + productRelease.getVersion(), e);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Async
-	@Override
-	public void upgrade(ProductInstance productInstance,
-			ProductRelease productRelease, Task task, String callback) {
-		try {
-			productInstanceManager.upgrade(productInstance, productRelease);
-			updateSuccessTask(task, productInstance);
-			LOGGER.info("Product "
-					+ productInstance.getProductRelease().getProduct()
-							.getName() + "-"
-					+ productInstance.getProductRelease().getVersion()
-					+ " upgraded successfully");
-		} catch (NotTransitableException e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getProductRelease().getProduct()
-							.getName() + "-"
-					+ productInstance.getProductRelease().getVersion()
-					+ " can not be updated to version "
-					+ productRelease.getVersion(), e);
-		
-		} catch (FSMViolationException e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be uninstalled due to previous status", e);
-		} catch (NodeExecutionException e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be upgrade to version "
-					+ productRelease.getVersion()
-					+ "due to an error executing in node.", e);
-		} catch (Throwable e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be upgrade to version "
-					+ productRelease.getVersion() + "due to unexpected error.",
-					e);
-		} finally {
-			notifyTask(callback, task);
-		}
-	}
+        } catch (FSMViolationException e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be uninstalled due to previous status", e);
+        } catch (NodeExecutionException e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be upgrade to version " + productRelease.getVersion()
+                    + "due to an error executing in node.", e);
+        } catch (Throwable e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be upgrade to version " + productRelease.getVersion() + "due to unexpected error.", e);
+        } finally {
+            notifyTask(callback, task);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Async
-	@Override
-	public void uninstall(ProductInstance productInstance, Task task,
-			String callback) {
-		try {
-			productInstanceManager.uninstall(productInstance);
-			updateSuccessTask(task, productInstance);
-			LOGGER.info("Product "
-					+ productInstance.getProductRelease().getProduct()
-							.getName() + "-"
-					+ productInstance.getProductRelease().getVersion()
-					+ " uninstalled successfully");
-		} catch (FSMViolationException e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be uninstalled due to previous status", e);
-		} catch (NodeExecutionException e) {
-			updateErrorTask(
-					productInstance,
-					task,
-					"The product "
-							+ productInstance.getId()
-							+ " can not be uninstalled due to an error executing in node.",
-					e);
-		} catch (Throwable e) {
-			updateErrorTask(productInstance, task, "The product "
-					+ productInstance.getId()
-					+ " can not be uninstalled due to unexpected error.", e);
-		} finally {
-			notifyTask(callback, task);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Async
+    @Override
+    public void uninstall(ProductInstance productInstance, Task task, String callback) {
+        try {
+            productInstanceManager.uninstall(productInstance);
+            updateSuccessTask(task, productInstance);
+            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+                    + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
+        } catch (FSMViolationException e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be uninstalled due to previous status", e);
+        } catch (NodeExecutionException e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be uninstalled due to an error executing in node.", e);
+        } catch (Throwable e) {
+            updateErrorTask(productInstance, task, "The product " + productInstance.getId()
+                    + " can not be uninstalled due to unexpected error.", e);
+        } finally {
+            notifyTask(callback, task);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -286,10 +252,10 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 + "for more information");
     }
 
-    private ProductInstance getInstaslledProduct(ProductRelease product, VM vm) {
+    private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {
         ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
         criteria.setVm(vm);
-        criteria.setProductRelease(product);
+        criteria.setProductRelease(productRelease);
         try {
             return productInstanceManager.loadByCriteria(criteria);
         } catch (EntityNotFoundException e) {

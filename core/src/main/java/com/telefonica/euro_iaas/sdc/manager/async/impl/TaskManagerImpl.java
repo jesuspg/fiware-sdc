@@ -11,6 +11,8 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.TASK_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -23,9 +25,6 @@ import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-
-
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.TASK_BASE_URL;
 
 /**
  * Default TaskManager implementation.

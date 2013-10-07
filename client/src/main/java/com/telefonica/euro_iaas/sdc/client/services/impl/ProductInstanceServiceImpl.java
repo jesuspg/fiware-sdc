@@ -18,7 +18,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -58,9 +57,9 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
     public Task install(String vdc, ProductInstanceDto product, String callback) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_PRODUCT_INSTANCE_PATH, vdc);
         WebResource wr = getClient().resource(url);
-
-        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.post(getType(), product, callback);
+        WebResource.Builder builder = wr.accept(getType()).type(getType()).entity(product);
+        builder = addCallback(builder, callback);
+        return builder.post(Task.class);
 
     }
 
@@ -70,21 +69,25 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
 
     public Task installArtifact(String vdc, String product, com.telefonica.euro_iaas.sdc.model.Artifact artifact,
             String callback) {
-        String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
-        WebResource wr = getClient().resource(url);
+        String url = getBaseHost() + MessageFormat.format(
 
-        SDCWebResource sdcWebResource = getSdcWebResourceFactory().getInstance(wr);
-        return sdcWebResource.post(getType(), artifact, callback);
+        ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
+        WebResource wr = getClient().resource(url);
+        WebResource.Builder builder = wr.accept(getType()).type(getType()).entity(artifact);
+        builder = addCallback(builder, callback);
+        return builder.post(Task.class);
+
     }
 
     public Task uninstallArtifact(String vdc, String productInstanceId, Artifact artefact, String callback) {
-        String url = getBaseHost()
-                + MessageFormat.format(ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId,
-                        artefact.getName());
+        String url = getBaseHost() + MessageFormat.format(
+
+        ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId, artefact.getName());
         WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(getType()).type(getType());
+        WebResource.Builder builder = wr.accept(getType()).type(getType());
         builder = addCallback(builder, callback);
         return builder.delete(Task.class);
+
     }
 
     /**
@@ -108,6 +111,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         searchParams = addParam(searchParams, "product", productName);
 
         return wr.queryParams(searchParams).accept(getType()).get(ProductInstances.class);
+
     }
 
     /**

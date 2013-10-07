@@ -12,6 +12,7 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -68,7 +69,7 @@ public interface ProductResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product.
@@ -123,5 +124,5 @@ public interface ProductResource {
     @Path("/{pName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
-    ProductReleaseStillInstalledException;
+        ProductReleaseStillInstalledException;
 }
