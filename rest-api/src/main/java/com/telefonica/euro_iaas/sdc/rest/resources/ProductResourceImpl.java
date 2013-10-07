@@ -22,12 +22,15 @@ import javax.ws.rs.Path;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.BodyPartEntity;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
@@ -47,11 +50,19 @@ import org.springframework.stereotype.Component;
 @Scope("request")
 public class ProductResourceImpl implements ProductResource {
 
-    @InjectParam("productManager")
+    //@InjectParam("productManager")
     private ProductManager productManager;
 
     private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
 
+    /**
+     * Insert a product into SDC Databse.
+     * @param product
+     * @return product
+     */
+    public Product insert(Product product)  throws AlreadyExistsEntityException, InvalidEntityException {
+        return productManager.insert(product);
+    }
     /**
 	   * {@inheritDoc}
 	  */
@@ -88,6 +99,14 @@ public class ProductResourceImpl implements ProductResource {
         return productManager.load(name).getAttributes();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
+        return productManager.load(name).getMetadatas();
+    }
+    
     /**
      * Delete a product in SDC Database.
      * 

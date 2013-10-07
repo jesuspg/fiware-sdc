@@ -84,10 +84,9 @@ public interface ProductReleaseResource {
      * @return the ProductReleases.
      */
     @GET
-    @Path("/{pName}/release/")
+    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAll(@PathParam("pName") String name, @QueryParam("osType") String osType,
-                    @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+    List<ProductRelease> findAll( @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**

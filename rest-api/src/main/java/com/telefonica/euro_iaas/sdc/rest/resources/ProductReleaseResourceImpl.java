@@ -52,7 +52,7 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
  * @author jesus.movilla
  *
  */
-@Path("/catalog/product")
+@Path("/catalog/productRelease")
 @Component
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
@@ -155,11 +155,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
 
-    public List<ProductRelease> findAll(String name, String osType, Integer page, Integer pageSize, String orderBy,
+    public List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy,
         String orderType) {
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
-        if (!StringUtils.isEmpty(name)) {
+        /*if (!StringUtils.isEmpty(name)) {
             try {
                 Product product = productManager.load(name);
                 criteria.setProduct(product);
@@ -170,7 +170,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         if (!StringUtils.isEmpty(osType)) {
             criteria.setOSType(osType);
-        }
+        }*/
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);

@@ -101,17 +101,4 @@ public class ProductReleaseResourceImplTest {
         productReleaseResource.delete(PRODUCT_NAME, PRODUCT_VERSION);
 
     }
-    
-    /**
-     * Unit Test for ProductRelease Listing.
-     * @throws Exception
-     */
-    @Test
-    public void testList() throws Exception {
-        List<ProductRelease> lProductRelease
-            = productReleaseResource.findAll(PRODUCT_NAME, null, null, null, null, null);
-        assertEquals(lProductRelease.size(), 1);
-        assertEquals(lProductRelease.get(0).getProduct().getName(), PRODUCT_NAME);
-    }
-
 }
