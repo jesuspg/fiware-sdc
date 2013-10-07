@@ -155,7 +155,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
 
-    public List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy,
+    public List<ProductRelease> findAll(String osType, Integer page, Integer pageSize, String orderBy,
         String orderType) {
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
@@ -166,11 +166,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             } catch (EntityNotFoundException e) {
                 throw new SdcRuntimeException("Can not find the application " + name, e);
             }
-        }
+        }*/
 
         if (!StringUtils.isEmpty(osType)) {
             criteria.setOSType(osType);
-        }*/
+        }
         if (page != null && pageSize != null) {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);
@@ -226,29 +226,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     @Override
     public List<ProductRelease> findTransitable(String name, String version) throws EntityNotFoundException {
         return load(name, version).getTransitableReleases();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ProductRelease> findAllReleases(String osType, Integer page, Integer pageSize, String orderBy,
-        String orderType) {
-        ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
-        if (!StringUtils.isEmpty(osType)) {
-            criteria.setOSType(osType);
-        }
-        if (page != null && pageSize != null) {
-            criteria.setPage(page);
-            criteria.setPageSize(pageSize);
-        }
-        if (!StringUtils.isEmpty(orderBy)) {
-            criteria.setOrderBy(orderBy);
-        }
-        if (!StringUtils.isEmpty(orderType)) {
-            criteria.setOrderBy(orderType);
-        }
-        return productReleaseManager.findReleasesByCriteria(criteria);
     }
 
     /**

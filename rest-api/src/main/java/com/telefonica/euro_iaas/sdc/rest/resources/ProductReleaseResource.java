@@ -86,7 +86,7 @@ public interface ProductReleaseResource {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAll( @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+    List<ProductRelease> findAll( @QueryParam("osType") String osType, @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
@@ -169,29 +169,5 @@ public interface ProductReleaseResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
         throws EntityNotFoundException;
-
-    /**
-     * Find all possible transitions for a concrete release. It means, the different version of a product which are
-     * compatible with the given release.
-     * 
-     * @param osType
-     * @param osType
-     *            the operating system (<i>nullable</i>)
-     * @param page
-     *            for pagination is 0 based number(<i>nullable</i>)
-     * @param pageSize
-     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
-     * @param orderBy
-     *            the file to order the search (id by default <i>nullable</i>)
-     * @param orderType
-     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
-     * @return ProductReleases
-     */
-    @GET
-    @Path("/release")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAllReleases(@QueryParam("osType") String osType, @QueryParam("page") Integer page,
-        @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
-        @QueryParam("orderType") String orderType);
 
 }
