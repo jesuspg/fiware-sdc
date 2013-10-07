@@ -52,7 +52,7 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
  * @author jesus.movilla
  *
  */
-@Path("/catalog/productRelease")
+@Path("/catalog/product/{pName}/release")
 @Component
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
@@ -155,18 +155,18 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
 
-    public List<ProductRelease> findAll(String osType, Integer page, Integer pageSize, String orderBy,
+    public List<ProductRelease> findAll(String pName, String osType, Integer page, Integer pageSize, String orderBy,
         String orderType) {
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
-        /*if (!StringUtils.isEmpty(name)) {
+        if (!StringUtils.isEmpty(pName)) {
             try {
-                Product product = productManager.load(name);
+                Product product = productManager.load(pName);
                 criteria.setProduct(product);
             } catch (EntityNotFoundException e) {
-                throw new SdcRuntimeException("Can not find the application " + name, e);
+                throw new SdcRuntimeException("Can not find the application " + pName, e);
             }
-        }*/
+        }
 
         if (!StringUtils.isEmpty(osType)) {
             criteria.setOSType(osType);
@@ -188,8 +188,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
     @Override
-    public ProductRelease load(String name, String version) throws EntityNotFoundException {
-        Product product = productManager.load(name);
+    public ProductRelease load(String pName, String version) throws EntityNotFoundException {
+        Product product = productManager.load(pName);
         return productReleaseManager.load(product, version);
     }
     
@@ -197,14 +197,14 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
     @Override
-    public void delete(String name, String version) throws ProductReleaseNotFoundException,
+    public void delete(String pName, String version) throws ProductReleaseNotFoundException,
         ProductReleaseStillInstalledException {
 
-        LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + name + " ProductVersion : " + version);
+        LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + pName + " ProductVersion : " + version);
 
         Product product;
         try {
-            product = productManager.load(name);
+            product = productManager.load(pName);
         } catch (EntityNotFoundException e) {
             throw new ProductReleaseNotFoundException(e);
         }
@@ -224,8 +224,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * java.lang.String)
      */
     @Override
-    public List<ProductRelease> findTransitable(String name, String version) throws EntityNotFoundException {
-        return load(name, version).getTransitableReleases();
+    public List<ProductRelease> findTransitable(String pName, String version) throws EntityNotFoundException {
+        return load(pName, version).getTransitableReleases();
     }
 
     /**

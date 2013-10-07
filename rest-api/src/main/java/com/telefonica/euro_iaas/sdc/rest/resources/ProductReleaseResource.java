@@ -59,15 +59,7 @@ public interface ProductReleaseResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
                     InvalidProductReleaseException;
-
-    /*
-     * @POST
-     * @Path("/")
-     * @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-     * @Consumes("multipart/mixed") ProductRelease insert(MultiPart multiPart) throws
-     * AlreadyExistsProductReleaseException, InvalidProductReleaseException, InvalidMultiPartRequestException;
-     */
-     
+  
     /**
      * Retrieve all available versions of the given product.
      * 
@@ -86,7 +78,7 @@ public interface ProductReleaseResource {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAll( @QueryParam("osType") String osType, @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+    List<ProductRelease> findAll( @QueryParam("pName") String pName, @QueryParam("osType") String osType, @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
@@ -101,7 +93,7 @@ public interface ProductReleaseResource {
      *             if the product or the version does not exists
      */
     @GET
-    @Path("/{pName}/release/{version}")
+    @Path("/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease load(@PathParam("pName") String name, @PathParam("version") String version)
         throws EntityNotFoundException;
@@ -120,7 +112,7 @@ public interface ProductReleaseResource {
      */
 
     @DELETE
-    @Path("/{pName}/release/{version}")
+    @Path("/{version}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
         throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
@@ -146,7 +138,7 @@ public interface ProductReleaseResource {
      *             fi the Multipart is Invalid
      */
     @PUT
-    @Path("/{pName}/release/{version}")
+    @Path("/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes("multipart/mixed")
     ProductRelease update(MultiPart multipart) throws ProductReleaseNotFoundException, InvalidProductReleaseException,
@@ -165,7 +157,7 @@ public interface ProductReleaseResource {
      *             if the given release does not exists.
      */
     @GET
-    @Path("/{pName}/release/{version}/updatable")
+    @Path("/{version}/updatable")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
         throws EntityNotFoundException;
