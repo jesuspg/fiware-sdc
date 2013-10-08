@@ -65,10 +65,8 @@
 
         <!-- sonar -->
         <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
-        <coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
         <sonar.jacoco.reportPath>${project.build.directory}/jacoco-unit.exec</sonar.jacoco.reportPath>
         <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.jar>${basedir}/lib/org.jacoco.agent-0.5.10.201208310627-runtime.jar</sonar.jacoco.jar>
 
 
