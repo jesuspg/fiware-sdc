@@ -49,11 +49,11 @@ public class ProductReleaseImplTest extends AbstractJpaDaoTest {
         List<OS> supportedOOSS = Arrays.asList(os);
         productRelease.setSupportedOOSS(supportedOOSS);
 
-        Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
+        /*Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
         Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
 
         List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productRelease.setPrivateAttributes(privateAttributes);
+        productRelease.setPrivateAttributes(privateAttributes);*/
 
         /*
          * productReleaseDao = mock(ProductReleaseDao.class);

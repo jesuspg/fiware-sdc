@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -44,7 +45,7 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValid
 /**
  * Default ProductInstanceResource implementation.
  * 
- * @author Sergio Arroyodd
+ * @author Sergio Arroyo
  */
 @Path("/vdc/{vdc}/productInstance")
 @Component
@@ -53,6 +54,8 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     @InjectParam("productInstanceAsyncManager")
     private ProductInstanceAsyncManager productInstanceAsyncManager;
+    @InjectParam("productReleaseManager")
+    private ProductReleaseManager productReleaseManager;
     @InjectParam("productManager")
     private ProductManager productManager;
     @InjectParam("taskManager")
@@ -68,7 +71,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         // validator.validateInsert(product);
         try {
             Product p = productManager.load(product.getProduct().getName());
-            ProductRelease loadedProduct = productManager.load(p, product.getProduct().getVersion());
+            ProductRelease loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
             List<Attribute> attributes = product.getAttributes();
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
@@ -116,11 +119,11 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     private Task upgrade(String vdc, ProductInstance productInstance, String version, String callback) {
         try {
-
             // work around to fix problem with lazy init when validator looks
             // for transitable releases.
             productInstance.getProductRelease().getTransitableReleases().size();
-            ProductRelease newRelease = productManager.load(productInstance.getProductRelease().getProduct(), version);
+            ProductRelease newRelease = productReleaseManager.load(
+                productInstance.getProductRelease().getProduct(), version);
             Task task = createTask(MessageFormat.format("Upgrade product {0} in  VM {1}{2} from version {3} to {4}",
                     productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                     productInstance.getVm().getDomain(), productInstance.getProductRelease().getVersion(), version),
@@ -142,6 +145,14 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         return task;
     }
 
+    /**
+     * Configure the productInstance with attributes.
+     * @param vdc
+     * @param productInstance
+     * @param arguments
+     * @param callback
+     * @return
+     */
     public Task configure(String vdc, ProductInstance productInstance, Attributes arguments, String callback) {
 
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
@@ -216,19 +227,34 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     }
 
     /**
-     * @param validator
-     *            the validator to set
+     * @param productManager
+     *            the productManager to set
      */
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
 
+    /**
+     * @param productManager
+     *            the productManager to set
+     */
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
+    }
+   
+    /**
+     * @param productReleaseManager
+     *            the productReleaseManager to set
+     */
     public void setProductInstanceAsyncManager(ProductInstanceAsyncManager productInstanceAsyncManager) {
         this.productInstanceAsyncManager = productInstanceAsyncManager;
     }
-
+    
+    /**
+     * @param taskManager
+     *            the taskManager to set
+     */
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
-
 }

@@ -36,7 +36,7 @@ public class ProductReleaseDto {
     private String productDescription;
     private String version;
     private String releaseNotes;
-    private List<Attribute> privateAttributes;
+    //private List<Attribute> privateAttributes;
     private List<Metadata> metadatas;
     private List<OS> supportedOS;
     private List<ProductRelease> transitableReleases;
@@ -53,14 +53,17 @@ public class ProductReleaseDto {
      * @param supportedOS
      * @param transitableReleases
      */
-    public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
+    /*public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
             List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
-            List<ProductRelease> transitableReleases) {
+            List<ProductRelease> transitableReleases) {*/
+    public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
+        List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
+        List<ProductRelease> transitableReleases) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.version = version;
         this.releaseNotes = releaseNotes;
-        this.privateAttributes = privateAttributes;
+        //this.privateAttributes = privateAttributes;
         this.metadatas = metadatas;
         this.supportedOS = supportedOS;
         this.transitableReleases = transitableReleases;
@@ -98,13 +101,13 @@ public class ProductReleaseDto {
         this.releaseNotes = releaseNotes;
     }
 
-    public List<Attribute> getPrivateAttributes() {
+    /*public List<Attribute> getPrivateAttributes() {
         return privateAttributes;
     }
 
     public void setPrivateAttributes(List<Attribute> privateAttributes) {
         this.privateAttributes = privateAttributes;
-    }
+    }*/
 
     public List<Metadata> getMetadatas() {
         return metadatas;

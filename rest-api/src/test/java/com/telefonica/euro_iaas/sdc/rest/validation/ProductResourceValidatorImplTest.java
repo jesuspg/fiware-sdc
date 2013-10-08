@@ -56,8 +56,8 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
         Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
 
-        List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productReleaseDto.setPrivateAttributes(privateAttributes);
+        /*List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
+        productReleaseDto.setPrivateAttributes(privateAttributes);*/
     }
 
     @Test

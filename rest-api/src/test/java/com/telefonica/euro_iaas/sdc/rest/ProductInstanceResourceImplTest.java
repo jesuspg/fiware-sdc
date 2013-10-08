@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
@@ -49,20 +50,21 @@ public class ProductInstanceResourceImplTest {
     ProductRelease pr1 = null;
     ProductInstanceDto productInstance = null;
     ProductManager productManager = null;
+    ProductReleaseManager productReleaseManager = null;
     ProductInstanceResourceImpl productInstanceResource = null;
     ProductInstanceAsyncManager productInstanceAsyncManager = null;
     Product product = null;
 
     @Before
-    public void setUp() throws Exception
-
-    {
+    public void setUp() throws Exception {
         productInstanceResource = new ProductInstanceResourceImpl();
-
+        
+        productReleaseManager = mock (ProductReleaseManager.class);
         productManager = mock(ProductManager.class);
         productInstanceAsyncManager = mock(ProductInstanceAsyncManager.class);
         TaskManager taskManager = mock(TaskManager.class);
         productInstanceResource.setProductManager(productManager);
+        productInstanceResource.setProductReleaseManager(productReleaseManager);
         productInstanceResource.setProductInstanceAsyncManager(productInstanceAsyncManager);
         productInstanceResource.setTaskManager(taskManager);
 
@@ -86,8 +88,8 @@ public class ProductInstanceResourceImplTest {
 
         OS os = new OS("os1", "1", "os1 description", "v1");
         product = new Product("Product::server", "Product::version");
-        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os),
-                null);
+        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", product, 
+            Arrays.asList(os), null);
         ProductInstance productIns = new ProductInstance(productRelease, Status.INSTALLED, vm, VDC);
         Task task = new Task();
         task.setHref("href");
@@ -95,6 +97,7 @@ public class ProductInstanceResourceImplTest {
         lProductInstance.add(productIns);
 
         when(productManager.load(any(String.class))).thenReturn(product);
+        when(productReleaseManager.load(any(Product.class), any(String.class))).thenReturn(productRelease);
         when(taskManager.createTask(any(Task.class))).thenReturn(task);
         when(productInstanceAsyncManager.load(any(String.class), any(String.class))).thenReturn(productIns);
         when(productInstanceAsyncManager.findByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(

@@ -20,7 +20,7 @@
         <property name="taskNotificator" ref="taskNotificator"/>
     </bean>
 
-    <bean id="artifactAsyncManager" lazy-init="true"
+   <bean id="artifactAsyncManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.ArtifactAsyncManagerImpl">
         <property name="artifactManager" ref="artifactManager"/>
         <property name="taskManager" ref="taskManager"/>

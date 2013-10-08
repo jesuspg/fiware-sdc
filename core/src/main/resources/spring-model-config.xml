@@ -37,12 +37,15 @@
 
     <bean id="productManager" lazy-init="true" parent="baseInstallableManager"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
+        <property name="productDao" ref="productDao"/>
+    </bean>
+    <bean id="productReleaseManager" lazy-init="true" parent="baseInstallableManager"
+          class="com.telefonica.euro_iaas.sdc.manager.impl.ProductReleaseManagerImpl">
         <property name="osDao" ref="osDao"/>
         <property name="productDao" ref="productDao"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
         <property name="validator" ref="productReleaseValidator"/>
     </bean>
-
 
     <bean id="baseInstallableManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
@@ -52,11 +55,10 @@
     </bean>
 
     <bean id="chefNodeManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
+        class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
         <property name="chefNodeDao" ref="chefNodeDao"/>
         <property name="productInstanceDao" ref="productInstanceDao"/>
     </bean>
-
     <bean id="chefClientManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ChefClientManagerImpl">
         <property name="chefClientDao" ref="chefClientDao"/>
@@ -135,15 +137,13 @@
     <bean id="fsmValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.FSMValidatorImpl">
     </bean>
-
     <bean id="productInstanceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidatorImpl">
         <property name="fsmValidator" ref="fsmValidator"/>
     </bean>
-    
+
     <bean id="productReleaseValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
     </bean>
-
 </beans>

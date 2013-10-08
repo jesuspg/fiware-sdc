@@ -106,50 +106,50 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 tomcat = productDao.create(tomcat);
 
-                ProductRelease tomcat7 = new ProductRelease("6", "Tomcat server 6", null, tomcat, supportedSSOO123,
+                ProductRelease tomcat7 = new ProductRelease("6", "Tomcat server 6", tomcat, supportedSSOO123,
                         null);
                 tomcat7 = productReleaseDao.create(tomcat7);
 
                 Product nodejs = new Product("nodejs", "nodejs");
                 nodejs = productDao.create(nodejs);
                 nodejs.addAttribute(new Attribute("aux", "aux", "aux"));
-                ProductRelease nodejsr = new ProductRelease("0.6.15", "Nodejs 0.6.15", null, nodejs, supportedSSOO123,
+                ProductRelease nodejsr = new ProductRelease("0.6.15", "Nodejs 0.6.15", nodejs, supportedSSOO123,
                         null);
                 nodejsr = productReleaseDao.create(nodejsr);
 
                 Product mysql = new Product("mysql", "mysql");
                 mysql = productDao.create(mysql);
                 mysql.addAttribute(new Attribute("aux", "aux", "aux"));
-                ProductRelease mysql124 = new ProductRelease("1.2.4", "mysql 1.2.4", null, mysql, supportedSSOO123,
+                ProductRelease mysql124 = new ProductRelease("1.2.4", "mysql 1.2.4", mysql, supportedSSOO123,
                         null);
                 nodejsr = productReleaseDao.create(mysql124);
 
                 Product git = new Product("git", "git");
                 git = productDao.create(git);
-                ProductRelease git17 = new ProductRelease("1.7", "git 1.7", null, git, supportedSSOO123, null);
+                ProductRelease git17 = new ProductRelease("1.7", "git 1.7", git, supportedSSOO123, null);
                 git17 = productReleaseDao.create(git17);
 
                 Product mongoshard = new Product("mongodbshard", "mongodbshard");
                 mongoshard = productDao.create(mongoshard);
-                ProductRelease mongoshard223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", null, mongoshard,
+                ProductRelease mongoshard223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", mongoshard,
                         supportedSSOO123, null);
                 mongoshard223 = productReleaseDao.create(mongoshard223);
 
                 Product mongos = new Product("mongos", "mongos");
                 mongos = productDao.create(mongos);
-                ProductRelease mongos223 = new ProductRelease("2.2.3", "mongos 2.2.3", null, mongos, supportedSSOO123,
+                ProductRelease mongos223 = new ProductRelease("2.2.3", "mongos 2.2.3", mongos, supportedSSOO123,
                         null);
                 mongos223 = productReleaseDao.create(mongos223);
 
                 Product mongodbconfig = new Product("mongodbconfig", "mongodbconfig");
                 mongodbconfig = productDao.create(mongodbconfig);
-                ProductRelease mongodbconfig223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", null,
+                ProductRelease mongodbconfig223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3",
                         mongodbconfig, supportedSSOO123, null);
                 mongodbconfig223 = productReleaseDao.create(mongodbconfig223);
 
                 Product contextbroker = new Product("contextbroker", "contextbroker");
                 contextbroker = productDao.create(contextbroker);
-                ProductRelease contextbroker100 = new ProductRelease("1.0.0", "contextbroker 1.0.0", null,
+                ProductRelease contextbroker100 = new ProductRelease("1.0.0", "contextbroker 1.0.0",
                         contextbroker, supportedSSOO123, null);
                 contextbroker100 = productReleaseDao.create(contextbroker100);
 
@@ -174,7 +174,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 postgresql.addAttribute(new Attribute("password", "postgres", "The administrator password"));
                 postgresql = productDao.create(postgresql);
 
-                ProductRelease postgres84 = new ProductRelease("8.4", "postgresql 8.4", null, postgresql,
+                ProductRelease postgres84 = new ProductRelease("8.4", "postgresql 8.4", postgresql,
                         supportedSSOO123, null);
                 postgres84 = productReleaseDao.create(postgres84);
 
@@ -191,7 +191,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 haproxy = productDao.create(haproxy);
 
-                ProductRelease haproxy10 = new ProductRelease("1.0", "haproxy 1.0", null, haproxy, supportedSSOO123,
+                ProductRelease haproxy10 = new ProductRelease("1.0", "haproxy 1.0", haproxy, supportedSSOO123,
                         null);
                 haproxy10 = productReleaseDao.create(haproxy10);
 
@@ -205,7 +205,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 test = productDao.create(test);
 
-                ProductRelease test01 = new ProductRelease("0.1", "blah blah blah", null, test, supportedSSOO123, null);
+                ProductRelease test01 = new ProductRelease("0.1", "blah blah blah", test, supportedSSOO123, null);
                 test01 = productReleaseDao.create(test01);
 
                 // Wiki Product Releases
@@ -216,7 +216,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 // "The url context to be displayed"));
                 mediawiki = productDao.create(mediawiki);
 
-                ProductRelease mediawiki1 = new ProductRelease("1.17.0", "Mediawiki 1.17.0", null, mediawiki,
+                ProductRelease mediawiki1 = new ProductRelease("1.17.0", "Mediawiki 1.17.0", mediawiki,
                         supportedSSOO123, null);
                 mediawiki1 = productReleaseDao.create(mediawiki1);
 

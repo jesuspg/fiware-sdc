@@ -42,50 +42,34 @@ public class ProductResourceImplTest {
     public void setUp() throws Exception {
         productResource = new ProductResourceImpl();
         ProductManager productManager = mock(ProductManager.class);
-        ProductResourceValidator productResourceValidator = mock(ProductResourceValidator.class);
-        productResource.setValidator(productResourceValidator);
         productResource.setProductManager(productManager);
         Product product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 
-        ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes", null, product,
-                Arrays.asList(os), null);
+        ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes",
+            product, Arrays.asList(os), null);
         List<ProductRelease> lProductRelease = new ArrayList<ProductRelease>();
         lProductRelease.add(productRelease);
 
-        when(productManager.insert(any(ProductRelease.class))).thenReturn(productRelease);
+        when(productManager.insert(any(Product.class))).thenReturn(product);
         when(productManager.load(any(String.class))).thenReturn(product);
-        when(productManager.findReleasesByCriteria(any(ProductReleaseSearchCriteria.class)))
-                .thenReturn(lProductRelease);
-        doNothing().when(productManager).delete(any(ProductRelease.class));
+        doNothing().when(productManager).delete(any(Product.class));
 
     }
 
     @Test
     public void testInsert() throws Exception {
-        ProductReleaseDto productReleaseDto = new ProductReleaseDto();
-        productReleaseDto.setProductName(PRODUCT_NAME);
-        productReleaseDto.setProductDescription("yum 0.1.1 description");
-        productReleaseDto.setVersion(PRODUCT_VERSION);
-        productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
-
-        ProductRelease productRelease = productResource.insert(productReleaseDto);
-        assertEquals(productRelease.getProduct().getName(), PRODUCT_NAME);
-        assertEquals(productRelease.getVersion(), PRODUCT_VERSION);
-
+        Product product = new Product();
+        product.setName(PRODUCT_NAME);
+        product.setDescription("description");
+        
+        Product createdProduct = productResource.insert(product);
+        assertEquals(createdProduct.getName(), PRODUCT_NAME);
     }
 
     @Test
     public void testDelete() throws Exception {
-        productResource.delete(PRODUCT_NAME + "-" + PRODUCT_VERSION);
+        productResource.delete(PRODUCT_NAME);
 
     }
-
-    @Test
-    public void testList() throws Exception {
-        List<ProductRelease> lProductRelease = productResource.findAll(PRODUCT_NAME, null, null, null, null, null);
-        assertEquals(lProductRelease.size(), 1);
-        assertEquals(lProductRelease.get(0).getProduct().getName(), PRODUCT_NAME);
-    }
-
 }

@@ -98,7 +98,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(cheNode);
 
         product = new Product("Product::server", "description");
-        productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os), null);
+        productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
 
@@ -140,7 +140,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setArtifactDao(artifactDao);
 
         product = new Product("Product::test", "description");
-        productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os), null);
+        productRelease = new ProductRelease("version", "releaseNotes", product, 
+            Arrays.asList(os), null);
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
 
@@ -191,7 +192,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setArtifactDao(artifactDao);
 
         product = new Product("Product::test", "description");
-        productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os), null);
+        productRelease = new ProductRelease("version", "releaseNotes", product, 
+            Arrays.asList(os), null);
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
 
@@ -222,7 +224,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setArtifactDao(artifactDao);
 
         product = new Product("Product::test", "description");
-        productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os), null);
+        productRelease = new ProductRelease("version", "releaseNotes", product, 
+            Arrays.asList(os), null);
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
 
