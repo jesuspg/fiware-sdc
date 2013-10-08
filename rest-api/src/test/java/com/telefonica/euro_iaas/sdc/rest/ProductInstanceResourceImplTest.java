@@ -88,8 +88,8 @@ public class ProductInstanceResourceImplTest {
 
         OS os = new OS("os1", "1", "os1 description", "v1");
         product = new Product("Product::server", "Product::version");
-        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os),
-                null);
+        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", product, 
+            Arrays.asList(os), null);
         ProductInstance productIns = new ProductInstance(productRelease, Status.INSTALLED, vm, VDC);
         Task task = new Task();
         task.setHref("href");

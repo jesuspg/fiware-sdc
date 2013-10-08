@@ -29,7 +29,7 @@ public class ProductInstanceTest extends TestCase {
     public void testProductRelease() {
         Product product = new Product("Product::server", "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
-        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", null, product, Arrays.asList(os),
+        ProductRelease productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os),
                 null);
 
         assertEquals(productRelease.getProduct().getName(), "Product::server");
@@ -38,8 +38,8 @@ public class ProductInstanceTest extends TestCase {
         vm = new VM("ip", "hostname", "domain");
         Product p1 = new Product("p1", "description");
         Product p2 = new Product("p2", "description");
-        pr1 = new ProductRelease("version1", "releaseNotes1", null, p1, null, null);
-        ProductRelease pr2 = new ProductRelease("version2", "releaseNotes2", null, p2, null, null);
+        pr1 = new ProductRelease("version1", "releaseNotes1", p1, null, null);
+        ProductRelease pr2 = new ProductRelease("version2", "releaseNotes2", p2, null, null);
 
         java.util.List<ProductInstance> products = Arrays.asList(new ProductInstance(pr1,
                 ProductInstance.Status.INSTALLED, vm, "vdc"), new ProductInstance(pr2,

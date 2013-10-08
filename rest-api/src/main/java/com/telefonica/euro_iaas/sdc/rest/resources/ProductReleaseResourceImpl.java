@@ -79,23 +79,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
-        if (productReleaseDto.getPrivateAttributes() != null) {
-            LOGGER.info("Attributes " + productReleaseDto.getPrivateAttributes().size());
-            for (Attribute att : productReleaseDto.getPrivateAttributes()) {
-                product.addAttribute(att);
-            }
-        }
-        
-        if (productReleaseDto.getMetadatas() != null) {
-            LOGGER.info("Metadatas " + productReleaseDto.getMetadatas().size());
-            for (Metadata metadata : productReleaseDto.getMetadatas()) {
-                product.addMetadata(metadata);
-            }
-        }
         
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
-            productReleaseDto.getReleaseNotes(), productReleaseDto.getPrivateAttributes(), product,
-            productReleaseDto.getSupportedOS(), productReleaseDto.getTransitableReleases());
+            productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(), 
+            productReleaseDto.getTransitableReleases());
         
         LOGGER.info(productRelease.toString());
         return productReleaseManager.insert(productRelease);
@@ -122,13 +109,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
-        for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
+        /*for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
             product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
-        }
+        }*/
       
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
             productReleaseDto.getReleaseNotes(),
-            productReleaseDto.getPrivateAttributes(),
+            //productReleaseDto.getPrivateAttributes(),
             product,
             productReleaseDto.getSupportedOS(),
             productReleaseDto.getTransitableReleases());
@@ -254,11 +241,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             product.setDescription(productReleaseDto.getProductDescription());
         }
         
-        if (productReleaseDto.getPrivateAttributes() != null) {
+        /*if (productReleaseDto.getPrivateAttributes() != null) {
             for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
                 product.addAttribute(productReleaseDto.getPrivateAttributes().get(i));
             }
-        }
+        }*/
         
         productRelease.setProduct(product);
 
@@ -272,9 +259,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         
         // PrivateAttributes
-        if (productReleaseDto.getPrivateAttributes() != null) {
+        /*if (productReleaseDto.getPrivateAttributes() != null) {
             productRelease.setPrivateAttributes(productReleaseDto.getPrivateAttributes());
-        }
+        }*/
          
         // SupportedOS
         if (productReleaseDto.getSupportedOS() != null) {

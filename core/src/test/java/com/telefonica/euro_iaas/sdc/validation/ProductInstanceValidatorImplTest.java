@@ -35,10 +35,10 @@ import static org.mockito.Mockito.mock;
 public class ProductInstanceValidatorImplTest extends TestCase {
 
     private Product product = new Product("product", "description");
-    private ProductRelease release1 = new ProductRelease("1", "releaseNotes", null, product, null,
-            new ArrayList<ProductRelease>());
-    private ProductRelease release2 = new ProductRelease("2", "releaseNotes", null, product, null,
-            Arrays.asList(release1));
+    private ProductRelease release1 = new ProductRelease("1", "releaseNotes", product, null,
+        new ArrayList<ProductRelease>());
+    private ProductRelease release2 = new ProductRelease("2", "releaseNotes", product, null,
+        Arrays.asList(release1));
 
     private ProductInstance pInstance = new ProductInstance(release1, Status.INSTALLED, new VM("ip"), "vdc");
 

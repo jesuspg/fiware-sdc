@@ -83,7 +83,7 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
         }
         productRelease.setProduct(product);
 
-        productRelease.setPrivateAttributes(privateAttributes);
+        //productRelease.setPrivateAttributes(privateAttributes);
 
         ProductRelease createdRelease = productReleaseDao.create(productRelease);
 
@@ -102,7 +102,8 @@ public class ProductReleaseDaoJpaImlTest extends AbstractJpaDaoTest {
 
         product.addMetadata(new Metadata("metKey", "metValue"));
 
-        ProductRelease release = new ProductRelease("v1", "releaseNotes1", null, product, soDao.findAll(), null);
+        ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, 
+            soDao.findAll(), null);
         ProductRelease createdRelease = productReleaseDao.create(release);
         assertEquals(createdRelease, release);
 

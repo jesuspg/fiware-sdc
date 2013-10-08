@@ -58,9 +58,12 @@ public class ProductRelease extends InstallableRelease {
      * @param supportedOOSS
      * @param transitableReleases
      */
-    public ProductRelease(String version, String releaseNotes, List<Attribute> privateAttributes, Product product,
-            List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
-        super(version, releaseNotes, privateAttributes);
+    //public ProductRelease(String version, String releaseNotes, List<Attribute> privateAttributes, Product product,
+      //      List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
+        //super(version, releaseNotes, privateAttributes);
+    public ProductRelease(String version, String releaseNotes, Product product,
+        List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
+        super(version, releaseNotes);
         this.product = product;
         this.supportedOOSS = supportedOOSS;
         this.transitableReleases = transitableReleases;
@@ -71,7 +74,7 @@ public class ProductRelease extends InstallableRelease {
      * 
      * @return
      */
-    public List<Attribute> getAttributes() {
+    /*public List<Attribute> getAttributes() {
         List<Attribute> attr = new ArrayList<Attribute>();
         if (getProduct().getAttributes() != null) {
             attr.addAll(getProduct().getAttributes());
@@ -80,7 +83,7 @@ public class ProductRelease extends InstallableRelease {
             attr.addAll(getPrivateAttributes());
         }
         return attr;
-    }
+    }*/
 
     // /////// GETTERS AND SETTERS /////////
     /**

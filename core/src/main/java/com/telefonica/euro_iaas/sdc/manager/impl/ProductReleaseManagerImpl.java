@@ -407,9 +407,9 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
             LOGGER.log(Level.INFO, "Product Release " + productRelease.getProduct().getName() + "-"
                 + productRelease.getVersion() + " LOADED");
  
-            if (productRelease.getPrivateAttributes() != null) {
+            /*if (productRelease.getPrivateAttributes() != null) {
                 existedProductRelease.setPrivateAttributes(productRelease.getPrivateAttributes());
-            }
+            }*/
             if (productRelease.getReleaseNotes() != null) {
                 existedProductRelease.setReleaseNotes(productRelease.getReleaseNotes());
             }

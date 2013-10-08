@@ -46,8 +46,8 @@ public class ProductResourceImplTest {
         Product product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 
-        ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes", null, product,
-                Arrays.asList(os), null);
+        ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes",
+            product, Arrays.asList(os), null);
         List<ProductRelease> lProductRelease = new ArrayList<ProductRelease>();
         lProductRelease.add(productRelease);
 
