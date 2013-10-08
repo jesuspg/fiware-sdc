@@ -16,12 +16,14 @@ import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
+import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefClientServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefNodeServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.ProductReleaseServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.TaskServiceImpl;
 
@@ -108,7 +110,7 @@ public class SDCClient {
     }
 
     /**
-     * Get the service to work with products and product releases in the catalog.
+     * Get the service to work with products in the catalog.
      * 
      * @param baseUrl
      *            the urle where the SDC is
@@ -118,6 +120,19 @@ public class SDCClient {
      */
     public ProductService getProductService(String baseUrl, String mediaType) {
         return new ProductServiceImpl(client, baseUrl, mediaType);
+    }
+    
+    /**
+     * Get the service to work with product releases in the catalog.
+     * 
+     * @param baseUrl
+     *            the urle where the SDC is
+     * @param mediaType
+     *            the media type (application/xml or application/json)
+     * @return the service.
+     */
+    public ProductReleaseService getProductReleaseService(String baseUrl, String mediaType) {
+        return new ProductReleaseServiceImpl(client, baseUrl, mediaType);
     }
 
     /**
