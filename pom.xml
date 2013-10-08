@@ -48,9 +48,9 @@
             los encodings por defectos de los diferentes sistemas operativos -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.jacoco.itReportPath>${project.build.directory}/itest.jacoco</sonar.jacoco.itReportPath>
+
+
         <seleniumserver.version>2.19.0</seleniumserver.version>
-        <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
         <copyright.year>2012</copyright.year>
         <junit.version>4.10</junit.version>
         <jmock.version>2.5.1</jmock.version>
@@ -58,11 +58,16 @@
         <tomcat.version>6</tomcat.version>
         <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
-        <cuke4duke.version>0.4.3</cuke4duke.version>
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
         <maven-license-plugin.version>1.2.5</maven-license-plugin.version>
+
+        <!-- sonar -->
+        <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
+        <sonar.jacoco.reportPath>${project.build.directory}/jacoco-unit.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <sonar.jacoco.jar>${basedir}/lib/org.jacoco.agent-0.5.10.201208310627-runtime.jar</sonar.jacoco.jar>
 
 
     </properties>
@@ -1294,7 +1299,7 @@
         <module>model</module>
         <module>core</module>
         <module>rest-api</module>
-        <!-- <module>integration-test</module> -->
+        <module>integration-test</module>
         <module>client</module>
     </modules>
 </project>
