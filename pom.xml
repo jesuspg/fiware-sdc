@@ -48,9 +48,9 @@
             los encodings por defectos de los diferentes sistemas operativos -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.jacoco.itReportPath>${project.build.directory}/itest.jacoco</sonar.jacoco.itReportPath>
+        <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
         <seleniumserver.version>2.19.0</seleniumserver.version>
-        <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
+        <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
         <copyright.year>2012</copyright.year>
         <junit.version>4.10</junit.version>
         <jmock.version>2.5.1</jmock.version>
