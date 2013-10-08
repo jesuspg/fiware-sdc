@@ -86,7 +86,7 @@
                 <version>6.1.25</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopPort>8005</stopPort>
+                    <stopPort>8885</stopPort>
                     <stopKey>STOP</stopKey>
                     <contextPath>/sdc</contextPath>
                     <jettyEnvXml>src/test/resources/jetty-env.xml</jettyEnvXml>
