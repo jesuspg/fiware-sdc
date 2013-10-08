@@ -33,7 +33,7 @@ public class ProductIT {
     @Before
     public void setUp() {
         client = new SDCClient();
-        baseUrl = "http://localhost:8080/sdc/rest";
+        baseUrl = "http://localhost:8888/sdc/rest";
         mediaType = "application/xml";
     }
 

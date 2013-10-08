@@ -90,6 +90,7 @@
                     <stopKey>STOP</stopKey>
                     <contextPath>/sdc</contextPath>
                     <jettyEnvXml>src/test/resources/jetty-env.xml</jettyEnvXml>
+                    <jettyConfig>src/test/resources/jetty-http.xml</jettyConfig>
                 </configuration>
                 <executions>
                     <execution>
