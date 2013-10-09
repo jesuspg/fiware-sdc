@@ -13,6 +13,7 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
@@ -27,7 +28,6 @@ import com.telefonica.euro_iaas.sdc.client.services.ProductService;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-
 
 /**
  * Default ProductService implementation.
@@ -46,7 +46,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      * {@inheritDoc}
      */
     @Override
-    public Product add(Product product) throws InsertResourceException{
+    public Product add(Product product) throws InsertResourceException {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
         try {
             WebResource wr = getClient().resource(url);
@@ -89,7 +89,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     @Override
     public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
-        
+
         WebResource wr = getClient().resource(url);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams = addParam(searchParams, "page", page);
@@ -99,7 +99,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
         return wr.queryParams(searchParams).accept(getType()).get(Products.class);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -113,7 +113,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
             throw new ResourceNotFoundException(Product.class, url);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

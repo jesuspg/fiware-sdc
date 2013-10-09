@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -96,60 +95,59 @@ public class ProductIT {
     }
 
     @Test
-    @Ignore
     public void shouldAddProductToCatalog() {
         System.out.println("Starting shouldAddProductToCatalog");
         // given
         String productName = "tomcattest";
         String description = "tomcattest 6";
-        
+
         Product product = new Product();
         product.setName(productName);
         product.setDescription(description);
-        
+
         List<Attribute> attributes = new ArrayList<Attribute>();
         product.setAttributes(attributes);
-        
+
         List<Metadata> metadatas = new ArrayList<Metadata>();
         product.setMetadatas(metadatas);
-        
-        ProductService productService = client.getProductService(baseUrl, mediaType);
+
         // when
+        ProductService productService = client.getProductService(baseUrl, mediaType);
         Product createdProduct = null;
         try {
             createdProduct = productService.add(product);
         } catch (InsertResourceException e) {
-         // then
+            // then
             assertNotNull(productService);
             assertNull(createdProduct);
         }
 
         // then
         assertNotNull(createdProduct);
+
     }
-    
+
     @Test
-    @Ignore
     public void shouldAddProductToCatalogWithoutMetadatas() {
         System.out.println("Starting shouldAddProductToCatalogWithoutMetadatas");
         // given
         String productName = "tomcattestnometadatas";
         String description = "tomcattestnometadatas 6";
-        
+
         Product product = new Product();
         product.setName(productName);
         product.setDescription(description);
-        
+
         List<Attribute> attributes = new ArrayList<Attribute>();
         product.setAttributes(attributes);
-        
+
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
         Product createdProduct = null;
         try {
             createdProduct = productService.add(product);
         } catch (InsertResourceException e) {
-         // then
+            // then
             assertNotNull(productService);
             assertNull(createdProduct);
         }

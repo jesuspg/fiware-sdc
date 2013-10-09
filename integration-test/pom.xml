@@ -126,6 +126,13 @@
                     <contextPath>/sdc</contextPath>
                     <jettyEnvXml>src/test/resources/jetty-env.xml</jettyEnvXml>
                     <jettyConfig>src/test/resources/jetty-http.xml</jettyConfig>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>logback.configurationFile</name>
+                            <value>src/test/resources/logback.xml</value>
+                        </systemProperty>
+                    </systemProperties>
+
                 </configuration>
                 <executions>
                     <execution>
@@ -152,7 +159,21 @@
                         </goals>
                     </execution>
 
+
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                        <version>1.0.13</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.7.5</version>
+                    </dependency>
+                </dependencies>
+
             </plugin>
 
         </plugins>
