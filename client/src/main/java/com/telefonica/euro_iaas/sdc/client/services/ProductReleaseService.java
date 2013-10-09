@@ -20,7 +20,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 /**
  * @author jesus.movilla
- *
  */
 public interface ProductReleaseService {
 
@@ -36,6 +35,12 @@ public interface ProductReleaseService {
      * @return the created product.
      */
     ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files);
+
+    /**
+     * @param releaseDto
+     * @return the created product release
+     */
+    ProductRelease add(ProductReleaseDto releaseDto);
 
     /**
      * Update to the catalog the product release.

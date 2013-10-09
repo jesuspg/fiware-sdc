@@ -45,7 +45,6 @@ public class ProductIT {
 
     @Test
     public void shouldFailWhenLoadAnUnknownProduct() {
-        System.out.println("Starting shouldFailWhenLoadAnUnknownProduct");
         // given
         ProductService productService = client.getProductService(baseUrl, mediaType);
 
@@ -66,7 +65,6 @@ public class ProductIT {
 
     @Test
     public void shouldLoadAProduct() throws ResourceNotFoundException {
-        System.out.println("Starting shouldLoadAProduct");
         // given
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
@@ -80,7 +78,6 @@ public class ProductIT {
 
     @Test
     public void shouldListProductCatalog() {
-        System.out.println("Starting shouldListProductCatalog");
         // given
         ProductService productService = client.getProductService(baseUrl, mediaType);
 
@@ -96,7 +93,6 @@ public class ProductIT {
 
     @Test
     public void shouldAddProductToCatalog() {
-        System.out.println("Starting shouldAddProductToCatalog");
         // given
         String productName = "tomcattest";
         String description = "tomcattest 6";
@@ -127,7 +123,6 @@ public class ProductIT {
 
     @Test
     public void shouldAddProductToCatalogWithoutMetadatas() {
-        System.out.println("Starting shouldAddProductToCatalogWithoutMetadatas");
         // given
         String productName = "tomcattestnometadatas";
         String description = "tomcattestnometadatas 6";
