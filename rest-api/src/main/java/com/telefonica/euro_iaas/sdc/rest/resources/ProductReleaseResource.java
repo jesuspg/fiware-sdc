@@ -58,8 +58,8 @@ public interface ProductReleaseResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
-                    InvalidProductReleaseException;
-  
+            InvalidProductReleaseException;
+
     /**
      * Retrieve all available versions of the given product.
      * 
@@ -78,8 +78,9 @@ public interface ProductReleaseResource {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductRelease> findAll( @QueryParam("pName") String pName, @QueryParam("osType") String osType, @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+    List<ProductRelease> findAll(@PathParam("pName") String pName, @QueryParam("osType") String osType,
+            @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product version.
@@ -96,7 +97,7 @@ public interface ProductReleaseResource {
     @Path("/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease load(@PathParam("pName") String name, @PathParam("version") String version)
-        throws EntityNotFoundException;
+            throws EntityNotFoundException;
 
     /**
      * Delete the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
@@ -115,7 +116,7 @@ public interface ProductReleaseResource {
     @Path("/{version}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
-        throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
+            throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
 
     /**
      * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
@@ -142,7 +143,7 @@ public interface ProductReleaseResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes("multipart/mixed")
     ProductRelease update(MultiPart multipart) throws ProductReleaseNotFoundException, InvalidProductReleaseException,
-                    InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException;
+            InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -160,6 +161,6 @@ public interface ProductReleaseResource {
     @Path("/{version}/updatable")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
-        throws EntityNotFoundException;
+            throws EntityNotFoundException;
 
 }
