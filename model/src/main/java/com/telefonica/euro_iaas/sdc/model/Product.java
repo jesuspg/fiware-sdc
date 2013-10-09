@@ -141,6 +141,8 @@ public class Product {
      * Constructor.
      */
     public Product() {
+        attributes = new ArrayList<Attribute>();
+        metadatas = new ArrayList<Metadata>();
     }
 
     /**
