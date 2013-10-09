@@ -8,6 +8,7 @@
  *   stipulated in the agreement/contract under which the program(s) have
  *   been supplied.
  */
+
 package com.telefonica.euro_iaas.sdc.client.services;
 
 import java.io.InputStream;

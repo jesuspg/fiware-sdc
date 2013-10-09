@@ -27,7 +27,6 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 
 
-import static com.telefonica.euro_iaas.sdc.client.ClientConstants.APPLICATION_INSTANCE_PATH;
 import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
 
 /**
@@ -143,11 +142,4 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
         String resource = MessageFormat.format(getBaseHost() + PRODUCT_INSTANCE_PATH, vdc, productName);
         return findAll(null, null, null, null, null, resource, null, null, null, vdc);
     }
-
-    @Override
-    public List<Task> findAllByApplication(String vdc, Long applicationId) {
-        String resource = MessageFormat.format(getBaseHost() + APPLICATION_INSTANCE_PATH, vdc, applicationId);
-        return findAll(null, null, null, null, null, resource, null, null, null, vdc);
-    }
-
 }
