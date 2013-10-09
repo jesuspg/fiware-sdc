@@ -116,15 +116,13 @@ public class ProductIT {
         Product createdProduct = null;
         try {
             createdProduct = productService.add(product);
+            // then
+            assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
             // then
             assertNotNull(productService);
             assertNull(createdProduct);
         }
-
-        // then
-        assertNotNull(createdProduct);
-
     }
 
     @Test
@@ -146,13 +144,12 @@ public class ProductIT {
         Product createdProduct = null;
         try {
             createdProduct = productService.add(product);
+            // then
+            assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
             // then
             assertNotNull(productService);
             assertNull(createdProduct);
         }
-
-        // then
-        assertNotNull(createdProduct);
     }
 }

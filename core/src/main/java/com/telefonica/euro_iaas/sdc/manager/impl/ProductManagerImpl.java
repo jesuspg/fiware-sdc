@@ -62,24 +62,18 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         defaultmetadatas.add(new Metadata("installator","chef"));
         defaultmetadatas.add(new Metadata("open_ports","80 22"));
         
-        if (product.getMetadatas() != null) {
-            for (Metadata external_metadata : product.getMetadatas()) {
-                boolean defaultmetadata = false; 
-                for (Metadata default_metadata : defaultmetadatas) {
-                    if (external_metadata.getKey().equals(default_metadata.getKey())) {
-                        metadatas.get(metadatas.indexOf(default_metadata))
-                            .setValue(external_metadata.getValue());
-                        defaultmetadata = true;
-                    }
-                }
-                if (!defaultmetadata) {
-                    metadatas.add(external_metadata);
+        for (Metadata external_metadata : product.getMetadatas()) {
+            boolean defaultmetadata = false; 
+            for (Metadata default_metadata : defaultmetadatas) {
+                if (external_metadata.getKey().equals(default_metadata.getKey())) {
+                    metadatas.get(metadatas.indexOf(default_metadata))
+                        .setValue(external_metadata.getValue());
+                    defaultmetadata = true;
                 }
             }
-        } else {
-            for (Metadata default_metadata : defaultmetadatas) {
-                metadatas.add(default_metadata);
-            }  
+            if (!defaultmetadata) {
+                metadatas.add(external_metadata);
+            }
         }
         
         product.setMetadatas(metadatas);
