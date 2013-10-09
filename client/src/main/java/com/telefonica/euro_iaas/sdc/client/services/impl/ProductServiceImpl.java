@@ -50,7 +50,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
         try {
             WebResource wr = getClient().resource(url);
-            return wr.accept(getType()).type("multipart/mixed").entity(product).post(Product.class);
+            return wr.accept(getType()).type(getType()).entity(product).post(Product.class);
         } catch (Exception e) {
             throw new InsertResourceException(Product.class, url);
         }

@@ -14,6 +14,7 @@ package com.telefonica.euro_iaas.sdc;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -143,8 +144,32 @@ public class ProductIT {
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
             // then
-            assertNotNull(productService);
-            assertNull(createdProduct);
+            fail();
         }
     }
+
+    @Test
+    public void shouldDeleteAProduct() throws InsertResourceException {
+        // given
+
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        Product produtToDelete = new Product();
+        produtToDelete.setName("productToDelete");
+        produtToDelete.setDescription("test product");
+
+        productService.add(produtToDelete);
+
+        // when
+
+        productService.delete("productToDelete");
+
+        // then
+        try {
+            productService.load("productToDelete");
+            fail();
+        } catch (ResourceNotFoundException e) {
+            assertTrue(true);
+        }
+    }
+
 }
