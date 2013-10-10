@@ -16,6 +16,7 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -46,41 +47,47 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     private ProductDao productDao;
     private static Logger LOGGER = Logger.getLogger("ProductManagerImpl");
 
-    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
-              
-        List<Metadata> metadatas = new ArrayList<Metadata>();
-        metadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4")); //centos6.3_sdc
-        metadatas.add(new Metadata("cookbook_url",""));
-        metadatas.add(new Metadata("cloud","yes"));
-        metadatas.add(new Metadata("installator","chef"));
-        metadatas.add(new Metadata("open_ports","80 22"));
+    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException{
         
-        List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
-        defaultmetadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
-        defaultmetadatas.add(new Metadata("cookbook_url",""));
-        defaultmetadatas.add(new Metadata("cloud","yes"));
-        defaultmetadatas.add(new Metadata("installator","chef"));
-        defaultmetadatas.add(new Metadata("open_ports","80 22"));
-        
-        for (Metadata external_metadata : product.getMetadatas()) {
-            boolean defaultmetadata = false; 
-            for (Metadata default_metadata : defaultmetadatas) {
-                if (external_metadata.getKey().equals(default_metadata.getKey())) {
-                    metadatas.get(metadatas.indexOf(default_metadata))
-                        .setValue(external_metadata.getValue());
-                    defaultmetadata = true;
+        Product productOut;      
+        try {
+            productOut = productDao.load(product.getName());
+            LOGGER.log(Level.INFO, "Product " + productOut.getName() + " LOADED");        
+        } catch (EntityNotFoundException e) {
+            
+            List<Metadata> metadatas = new ArrayList<Metadata>();
+            metadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4")); //centos6.3_sdc
+            metadatas.add(new Metadata("cookbook_url",""));
+            metadatas.add(new Metadata("cloud","yes"));
+            metadatas.add(new Metadata("installator","chef"));
+            metadatas.add(new Metadata("open_ports","80 22"));
+            
+            List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
+            defaultmetadatas.add(new Metadata("image","df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
+            defaultmetadatas.add(new Metadata("cookbook_url",""));
+            defaultmetadatas.add(new Metadata("cloud","yes"));
+            defaultmetadatas.add(new Metadata("installator","chef"));
+            defaultmetadatas.add(new Metadata("open_ports","80 22"));
+            
+            for (Metadata external_metadata : product.getMetadatas()) {
+                boolean defaultmetadata = false; 
+                for (Metadata default_metadata : defaultmetadatas) {
+                    if (external_metadata.getKey().equals(default_metadata.getKey())) {
+                        metadatas.get(metadatas.indexOf(default_metadata))
+                            .setValue(external_metadata.getValue());
+                        defaultmetadata = true;
+                    }
+                }
+                if (!defaultmetadata) {
+                    metadatas.add(external_metadata);
                 }
             }
-            if (!defaultmetadata) {
-                metadatas.add(external_metadata);
-            }
-        }
-        
-        product.setMetadatas(metadatas);
-        product = productDao.create(product);
-        return product;
-        
+            product.setMetadatas(metadatas);
+            productOut = productDao.create(product);
+        } 
+        return productOut;
     }
+    
     /**
     * {@inheritDoc}
     */
