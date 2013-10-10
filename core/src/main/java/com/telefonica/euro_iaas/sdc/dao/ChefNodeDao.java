@@ -31,8 +31,7 @@ public interface ChefNodeDao {
      */
     ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
         CanNotCallChefException;
-
-    
+ 
     /**
      * Retrieve the node information form Chef server given a VM (containing hostname and domain).
      * 
@@ -64,4 +63,14 @@ public interface ChefNodeDao {
      *             if Chef Server returns an unexpected error code
      */
     void deleteNode(ChefNode node) throws CanNotCallChefException;
+    
+    
+    /**
+     * Checks if ChefNode is already registered in ChefServer.
+     * 
+     * @param node
+     * @return boolean
+     * @throws CanNotCallChefException
+     */
+    boolean isNodeRegistered (ChefNode node) throws CanNotCallChefException;
 }

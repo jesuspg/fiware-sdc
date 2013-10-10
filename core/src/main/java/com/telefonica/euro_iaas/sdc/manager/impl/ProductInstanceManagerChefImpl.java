@@ -62,14 +62,20 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
 
-        if (!vm.canWorkWithChef()) {
+        /*if (!vm.canWorkWithChef()) {
             sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
             sdcClientUtils.setNodeCommands(vm);
 
             vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
             // Configure the node with the corresponding node commands
+        }*/
+        
+        if (!vm.canWorkWithChefServer()) {
+            String message = "The VM does not include the node hostname required to Install " +
+            		"software";
+            throw new InvalidInstallProductRequestException(message);
         }
-
+        
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {

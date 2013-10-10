@@ -188,6 +188,15 @@ public class VM {
     }
 
     /**
+     * Decides if SDC can interact with ChefServer or not.
+     * 
+     * @return <code>true</code> if Chef can work with the available information for this VM
+     */
+    public Boolean canWorkWithChefServer() {
+        return !StringUtils.isEmpty(hostname);
+    }
+    
+    /**
      * Decides if SDC Server can communicate with VM or if can't
      * 
      * @return <code>true</code> if SDC can communicate with VM with the available information for this VM

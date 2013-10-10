@@ -36,6 +36,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
@@ -52,7 +53,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     Client client;
-
+    
+    private String NODE_NOT_FOUND_PATTERN ="404";
+    private static final int MAX_TIME = 90000;
+    
     public ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
         CanNotCallChefException {
         try {
@@ -171,7 +175,47 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             throw new CanNotCallChefException(e);
         }
     }
+    
+    /**
+     * Checks if ChefNode is already registered in ChefServer.
+     */
+    public boolean isNodeRegistered (ChefNode node) throws CanNotCallChefException {
+        boolean registered = false;
+        String path = MessageFormat.format(propertiesProvider
+            .getProperty(CHEF_SERVER_NODES_PATH), node.getName());
 
+        Map<String, String> header = getHeaders("GET", path, "");
+        WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+        Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+        for (String key : header.keySet()) {
+            wr = wr.header(key, header.get(key));
+        }
+        String response = NODE_NOT_FOUND_PATTERN;
+        int time = 10000;
+        while (response.contains(NODE_NOT_FOUND_PATTERN)) {
+            
+            try {
+                Thread.sleep(time);
+                System.out.println("Checking node : " + node.getName() + " time:" + time);
+                if (time > MAX_TIME) {
+                    String errorMesg = "Node  " + node.getName() + " is not registered in ChefServer";
+                    throw new CanNotCallChefException(errorMesg);
+                }
+                response = IOUtils.toString(wr.get(InputStream.class));
+                time += time;
+            } catch (UniformInterfaceException e) {
+                throw new CanNotCallChefException(e);
+            } catch (IOException e) {
+                throw new CanNotCallChefException(e);
+            } catch (InterruptedException e) {
+                String errorMsg = e.getMessage();
+                throw new CanNotCallChefException(errorMsg, e);
+            }
+        }
+        registered = true;
+        return registered;
+    }
+    
     private Map<String, String> getHeaders(String method, String path, String payload) {
 
         return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
