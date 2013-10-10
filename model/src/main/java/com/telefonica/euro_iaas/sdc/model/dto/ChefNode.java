@@ -232,5 +232,15 @@ public class ChefNode {
         defaults = jsonNode.getJSONObject("default");
         attributes = jsonNode.getJSONObject("normal");
     }
+    
+    @SuppressWarnings("unchecked")
+    public String getChefNodeName(String stringChefNodes, String hostname) {
+
+        String[] output = stringChefNodes.split("\"" + hostname);
+        String url = output[1].split("\"")[2];
+        String nameAux = url.split("nodes")[1];
+        String name = nameAux.substring(1, nameAux.length());
+        return name;
+    }
 
 }
