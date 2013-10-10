@@ -16,7 +16,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -68,10 +70,24 @@ public class ProductManagerImplTest extends TestCase {
      * @throws Exception
      */
     @Test
-    public void testInsertProduct() throws Exception {
+    public void testInsertNewProduct() throws Exception {
         productManager.setProductDao(productDao);
         
-        product = productManager.insert(product);
-        assertEquals(product.getMetadatas().size(), 6); 
+        when(productDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Product.class, "name", product.getName()));
+        Product createdProduct = productManager.insert(product);
+        assertEquals(createdProduct.getMetadatas().size(), 6); 
+    }
+    
+    /**
+     * Test Reinsert old Product.
+     * @throws Exception
+     */
+    @Test
+    public void testReinsertProduct() throws Exception {
+        productManager.setProductDao(productDao);
+        
+        when(productDao.load(any(String.class))).thenReturn(product);
+        Product createdProduct = productManager.insert(product);
+        assertEquals(createdProduct.getName(), product.getName()); 
     }
 }
