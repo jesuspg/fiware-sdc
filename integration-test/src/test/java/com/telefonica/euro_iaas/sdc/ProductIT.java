@@ -78,6 +78,20 @@ public class ProductIT {
     }
 
     @Test
+    public void shouldLoadAProductWithJSONMediaType() throws ResourceNotFoundException {
+        mediaType = "application/json";
+        // given
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        // when
+
+        Product product = productService.load("tomcat");
+        // then
+        assertNotNull(productService);
+        assertNotNull(product);
+
+    }
+
+    @Test
     public void shouldListProductCatalog() {
         // given
         ProductService productService = client.getProductService(baseUrl, mediaType);
