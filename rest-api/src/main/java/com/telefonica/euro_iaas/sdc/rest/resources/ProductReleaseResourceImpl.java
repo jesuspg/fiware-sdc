@@ -72,8 +72,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @throws InvalidProductReleaseException
      * @return proudctRelease
      */
-    public ProductRelease insert(ProductReleaseDto productReleaseDto) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException {
+    public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
+            throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
+
+        productReleaseDto.setProductName(pName);
+
         LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
                 + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
@@ -218,8 +221,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * Update the ProductRelease (productReleaseDto, cookbooks, installable).
      * 
      * @param multipart
-     * @throws ProductReleaseNotFoundException,
-     * @throws InvalidProductReleaseException,
+     * @throws ProductReleaseNotFoundException
+     * @throws InvalidProductReleaseException
      * @throws InvalidProductReleaseException
      * @throws InvalidMultiPartRequestException
      * @return productRelease
