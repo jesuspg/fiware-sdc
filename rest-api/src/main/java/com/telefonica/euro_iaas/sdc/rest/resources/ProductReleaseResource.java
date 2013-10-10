@@ -56,8 +56,8 @@ public interface ProductReleaseResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException;
+    ProductRelease insert(@PathParam("pName") String pName, ProductReleaseDto productRelease)
+            throws AlreadyExistsProductReleaseException, InvalidProductReleaseException;
 
     /**
      * @param multiPart
