@@ -137,6 +137,38 @@ public class ProductIT {
     }
 
     @Test
+    public void shouldAddProductToCatalogWithJson() {
+        mediaType = "application/json";
+        // given
+        String productName = "tomcattest";
+        String description = "tomcattest 6";
+
+        Product product = new Product();
+        product.setName(productName);
+        product.setDescription(description);
+
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        product.setAttributes(attributes);
+
+        List<Metadata> metadatas = new ArrayList<Metadata>();
+        product.setMetadatas(metadatas);
+
+        // when
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        Product createdProduct = null;
+        try {
+            createdProduct = productService.add(product);
+            // then
+            assertNotNull(createdProduct);
+        } catch (InsertResourceException e) {
+            // then
+            assertNotNull(productService);
+            assertNull(createdProduct);
+        }
+
+    }
+
+    @Test
     public void shouldAddProductToCatalogWithoutMetadatas() {
         // given
         String productName = "tomcattestnometadatas";
