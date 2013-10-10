@@ -16,6 +16,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
@@ -32,6 +33,7 @@ import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
@@ -51,6 +53,7 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     private ProductInstanceDao productInstanceDao;
 
     private ProductDao productDao;
+    //private ChefNodeDao chefNodeDao;
     private IpToVM ip2vm;
     private ProductInstanceValidator validator;
 
@@ -69,13 +72,24 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
             // Configure the node with the corresponding node commands
         }*/
-        
+        ChefNode chefNode = null;
         if (!vm.canWorkWithChefServer()) {
             String message = "The VM does not include the node hostname required to Install " +
             		"software";
             throw new InvalidInstallProductRequestException(message);
         }
         
+        /*try {
+            //Checking if the node is already registered in ChefServer
+            chefNodeDao.isNodeRegistered(vm.getHostname());
+            //Loading chefnode from ChefServer
+            chefNode = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+        } catch (CanNotCallChefException e) {
+            throw new SdcRuntimeException(e);
+        } catch (EntityNotFoundException enfe) {
+            throw new NodeExecutionException(enfe.getMessage(), enfe);
+        }*/
+               
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {
@@ -446,6 +460,14 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
+
+    /**
+     * @param chefNodeDao
+     *            the chefNodeDao to set
+     */
+    /*public void setChefNodeDao(ChefNodeDao chefNodeDao) {
+        this.chefNodeDao = chefNodeDao;
+    }*/
 
     /**
      * @param ip2vm

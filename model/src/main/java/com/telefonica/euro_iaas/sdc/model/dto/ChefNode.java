@@ -57,6 +57,10 @@ public class ChefNode {
         runlList.remove(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
     }
 
+    public boolean hasRecipe(String recipe) {
+        return runlList.contains(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
+    }
+    
     public void addOverride(String key, String value) {
         overrides.put(key, value);
     }

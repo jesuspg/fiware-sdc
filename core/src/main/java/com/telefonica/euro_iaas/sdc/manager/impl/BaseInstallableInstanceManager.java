@@ -13,6 +13,7 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -35,7 +36,9 @@ public class BaseInstallableInstanceManager {
     protected RecipeNamingGenerator recipeNamingGenerator;
     private ChefNodeDao chefNodeDao;
     protected SDCClientUtils sdcClientUtils;
-
+    
+    int MAX_TIME = 90000;
+    
     protected void callChef(String recipe, VM vm) throws CanNotCallChefException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
@@ -50,11 +53,12 @@ public class BaseInstallableInstanceManager {
 
     protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
             throws CanNotCallChefException, NodeExecutionException {
-        // System.out.println("Attributre " + attributes);
+        //Recipe to be executed is assigned to the node as well as attributes
         configureNode(vm, attributes, process, recipe);
         try {
             System.out.println("Executing recipe " + recipe + " in " + vm.getIp());
-            executeRecipes(vm);
+            isRecipeExecuted(vm, recipe);
+            //executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
             // unassignRecipes(vm, recipe);
@@ -124,6 +128,38 @@ public class BaseInstallableInstanceManager {
         chefNodeDao.updateNode(node);
     }
 
+    /**
+     * Tell Chef the previously assigned recipes are ready to be installed.
+     * 
+     * @param osInstance
+     * @throws  
+     * @throws ShellCommandException
+     */
+    public void isRecipeExecuted(VM vm, String recipe) throws NodeExecutionException {
+        boolean hasRecipe = false;
+        int time = 10000;
+        while (!hasRecipe) {
+            try {
+                Thread.sleep(time);
+                if (time > MAX_TIME) {
+                    String errorMesg = "Recipe " + recipe + " coub not be executed in " +
+                        vm.getChefClientName();
+                    throw new NodeExecutionException(errorMesg);
+                }
+            
+                ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+                //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
+                hasRecipe = node.hasRecipe(recipe);
+                //Thread con un time
+            } catch (EntityNotFoundException e) {
+                throw new NodeExecutionException(e);
+            } catch (CanNotCallChefException e) {
+                throw new NodeExecutionException(e);
+            } catch (InterruptedException ie) {
+                throw new NodeExecutionException(ie);
+            }
+        }
+    }
     // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider

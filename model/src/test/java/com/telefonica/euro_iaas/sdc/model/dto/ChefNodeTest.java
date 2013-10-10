@@ -11,6 +11,9 @@
 
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -37,17 +40,29 @@ public class ChefNodeTest extends TestCase {
     public void setUp() throws Exception {
 
         chefNode = new ChefNode();
-
+        
         json = "{\n"
                 + "\"chef-webui\": \"http://localhost:4000/nodes/chef-webui\"\n"
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/nodes/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/nodes/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/nodes/adam.novalocal\"\n" + "}\"";
+        
+        chefNode.addRecipe("recipe1");
+        chefNode.addRecipe("recipe2");
+        chefNode.addRecipe("recipe3");
+        
+        
     }
 
     @Test
     public void testGetChefClientURL() throws Exception {
         String name = chefNode.getChefNodeName(json, NAME);
         assertEquals(name, NAME);
+    }
+    
+    @Test
+    public void testHasRecipe() throws Exception {
+         assertEquals(chefNode.hasRecipe("recipe"), false);
+         assertEquals(chefNode.hasRecipe("recipe1"), true);
     }
 }

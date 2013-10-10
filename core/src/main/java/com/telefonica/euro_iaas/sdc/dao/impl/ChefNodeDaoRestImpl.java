@@ -179,10 +179,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     /**
      * Checks if ChefNode is already registered in ChefServer.
      */
-    public boolean isNodeRegistered (ChefNode node) throws CanNotCallChefException {
-        boolean registered = false;
-        String path = MessageFormat.format(propertiesProvider
-            .getProperty(CHEF_SERVER_NODES_PATH), node.getName());
+    public void isNodeRegistered (String hostname) throws CanNotCallChefException {
+        String path = "/nodes";
 
         Map<String, String> header = getHeaders("GET", path, "");
         WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
@@ -190,15 +188,16 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         for (String key : header.keySet()) {
             wr = wr.header(key, header.get(key));
         }
-        String response = NODE_NOT_FOUND_PATTERN;
+       
+        String response = hostname;
         int time = 10000;
-        while (response.contains(NODE_NOT_FOUND_PATTERN)) {
+        while (response.contains(hostname)) {
             
             try {
                 Thread.sleep(time);
-                System.out.println("Checking node : " + node.getName() + " time:" + time);
+                System.out.println("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
-                    String errorMesg = "Node  " + node.getName() + " is not registered in ChefServer";
+                    String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
                     throw new CanNotCallChefException(errorMesg);
                 }
                 response = IOUtils.toString(wr.get(InputStream.class));
@@ -212,8 +211,6 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }
-        registered = true;
-        return registered;
     }
     
     private Map<String, String> getHeaders(String method, String path, String payload) {

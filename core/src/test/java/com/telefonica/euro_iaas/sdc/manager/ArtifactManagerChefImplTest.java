@@ -69,17 +69,24 @@ public class ArtifactManagerChefImplTest extends TestCase {
     private ProductRelease productRelease;
     private OS os;
     private VM host = new VM("fqn", "ip", "hostname", "domain");
-
+    
+    private String installRecipe ="Product::server";
+    private String uninstallRecipe ="Product::uninstall-server";
+    private String deployacrecipe ="Product::deployac";
+    
     public final static String EXECUTE_COMMAND = "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";
     public final static String ASSIGN_UNINSTALL_COMMAND = "/opt/sdc/scripts/assignRecipes.sh hostnamedomain Product::uninstall-server";
 
     @Before
     public void setUp() throws Exception {
         recipeNamingGenerator = mock(RecipeNamingGenerator.class);
-        when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn("Product::server");
+        when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn(installRecipe);
+        when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(uninstallRecipe);
+        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(deployacrecipe);
+        /*when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn("Product::server");
         when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(
                 "Product::uninstall-server");
-        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn("Product::deployac");
+        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn("Product::deployac");*/
 
         propertiesProvider = mock(SystemPropertiesProvider.class);
         os = new OS("os1", "1", "os1 description", "v1");
@@ -91,11 +98,13 @@ public class ArtifactManagerChefImplTest extends TestCase {
         chefNodeDao = mock(ChefNodeDao.class);
         artifactDao = mock(ArtifactDao.class);
 
-        ChefNode cheNode = new ChefNode();
-        cheNode.addAttribute("dd", "dd", "dd");
-        when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(cheNode);
-
-        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(cheNode);
+        ChefNode chefNode = new ChefNode();
+        chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addRecipe(deployacrecipe);
+        
+        when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(chefNode);
+        when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
 
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
@@ -154,14 +163,13 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
 
-        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
+        //verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
 
         // verify(chefNodeDao, times(1)).loadNode(host.getChefClientName());
         // verify(chefNodeDao, times(1)).updateNode((ChefNode) anyObject());
-        verify(sdcClientUtils, times(2)).execute(host);
         verify(piValidator, times(1)).validateDeployArtifact(expectedProduct);
 
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);

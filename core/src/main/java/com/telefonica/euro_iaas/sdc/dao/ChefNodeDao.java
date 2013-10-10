@@ -68,9 +68,9 @@ public interface ChefNodeDao {
     /**
      * Checks if ChefNode is already registered in ChefServer.
      * 
-     * @param node
-     * @return boolean
+     * @param hostname
+     * @return void
      * @throws CanNotCallChefException
      */
-    boolean isNodeRegistered (ChefNode node) throws CanNotCallChefException;
+    void isNodeRegistered (String hostname) throws CanNotCallChefException;
 }
