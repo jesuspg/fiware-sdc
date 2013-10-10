@@ -31,6 +31,7 @@ public class ProductReleaseSearchCriteria extends AbstractSearchCriteria {
      */
     private String osType;
 
+   
     /**
      * Default constructor
      */
@@ -54,7 +55,6 @@ public class ProductReleaseSearchCriteria extends AbstractSearchCriteria {
     /**
      * @param orderBy
      * @param orderType
-     * @param vm
      * @param product
      */
     public ProductReleaseSearchCriteria(String orderBy, String orderType, Product product) {

@@ -51,7 +51,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
     private OSDao osDao;
     private static Logger LOGGER = Logger.getLogger("ProductReleaseManagerImpl");
     
-    @Override
+    //@Override
     public ProductRelease load(Product product, String version)
         throws EntityNotFoundException {
         return productReleaseDao.load(product, version);

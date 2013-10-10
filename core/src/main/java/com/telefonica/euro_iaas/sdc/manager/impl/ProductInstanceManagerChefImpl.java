@@ -97,13 +97,6 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
         Status previousStatus = null;
 
         try {
-            // we need the hostname + domain so if we haven't that information,
-            // shall to get it.
-            /*
-             * if (!vm.canWorkWithChef()) { sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
-             * sdcClientUtils.setNodeCommands(vm); vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType()); //
-             * Configure the node with the corresponding node commands }
-             */
             // makes the validations
             // instance = getProductToInstall(product, vm, vdc, attributes);
             previousStatus = instance.getStatus();

@@ -50,6 +50,7 @@ public interface ProductResource {
     @POST
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Product insert(Product product)  throws AlreadyExistsEntityException, InvalidEntityException;
 
     /**

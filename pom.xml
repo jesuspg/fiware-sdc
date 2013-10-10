@@ -709,7 +709,7 @@
             </activation>
             <properties>
                 <env>development</env>
-                <compilerInfoDebug>true</compilerInfoDebug>
+                <compilerInfoDebug>false</compilerInfoDebug>
                 <compilerOptimize>false</compilerOptimize>
             </properties>
         </profile>
@@ -721,7 +721,7 @@
             </activation>
             <properties>
                 <env>integration</env>
-                <compilerInfoDebug>true</compilerInfoDebug>
+                <compilerInfoDebug>false</compilerInfoDebug>
                 <compilerOptimize>false</compilerOptimize>
             </properties>
         </profile>

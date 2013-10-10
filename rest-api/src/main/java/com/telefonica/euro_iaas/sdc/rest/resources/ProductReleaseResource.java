@@ -37,7 +37,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 /**
  * @author jesus.movilla
- *
  */
 public interface ProductReleaseResource {
 
@@ -59,6 +58,20 @@ public interface ProductReleaseResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(ProductReleaseDto productRelease) throws AlreadyExistsProductReleaseException,
             InvalidProductReleaseException;
+
+    /**
+     * @param multiPart
+     * @return
+     * @throws AlreadyExistsProductReleaseException
+     * @throws InvalidProductReleaseException
+     * @throws InvalidMultiPartRequestException
+     */
+    @POST
+    @Path("/")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes("multipart/mixed")
+    ProductRelease insert(MultiPart multiPart) throws AlreadyExistsProductReleaseException,
+            InvalidProductReleaseException, InvalidMultiPartRequestException;
 
     /**
      * Retrieve all available versions of the given product.

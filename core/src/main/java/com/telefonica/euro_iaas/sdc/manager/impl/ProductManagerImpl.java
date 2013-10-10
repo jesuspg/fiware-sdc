@@ -66,15 +66,14 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             boolean defaultmetadata = false; 
             for (Metadata default_metadata : defaultmetadatas) {
                 if (external_metadata.getKey().equals(default_metadata.getKey())) {
-                     metadatas.get(metadatas.indexOf(default_metadata))
-                         .setValue(external_metadata.getValue());
-                     defaultmetadata = true;
+                    metadatas.get(metadatas.indexOf(default_metadata))
+                        .setValue(external_metadata.getValue());
+                    defaultmetadata = true;
                 }
             }
             if (!defaultmetadata) {
                 metadatas.add(external_metadata);
             }
-            
         }
         
         product.setMetadatas(metadatas);

@@ -11,30 +11,23 @@
 
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
+import com.telefonica.euro_iaas.sdc.client.exception.InsertResourceException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
-import com.telefonica.euro_iaas.sdc.client.model.ProductReleases;
+import com.telefonica.euro_iaas.sdc.client.model.Products;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
+import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
  * Default ProductService implementation.
@@ -53,20 +46,13 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      * {@inheritDoc}
      */
     @Override
-    public ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files) {
+    public Product add(Product product) throws InsertResourceException {
+        String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
         try {
-
-            MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
-                    .bodyPart(new BodyPart(IOUtils.toByteArray(cookbook), MediaType.APPLICATION_OCTET_STREAM_TYPE))
-                    .bodyPart(new BodyPart(IOUtils.toByteArray(files), MediaType.APPLICATION_OCTET_STREAM_TYPE));
-
-            String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
             WebResource wr = getClient().resource(url);
-            return wr.accept(getType()).type("multipart/mixed").entity(payload).post(ProductRelease.class);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return wr.accept(getType()).type(getType()).entity(product).post(Product.class);
+        } catch (Exception e) {
+            throw new InsertResourceException(Product.class, url);
         }
     }
 
@@ -74,33 +60,10 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      * {@inheritDoc}
      */
     @Override
-    public ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files) {
-        try {
+    public void delete(String pname) {
 
-            MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
-                    .bodyPart(new BodyPart(IOUtils.toByteArray(cookbook), MediaType.APPLICATION_OCTET_STREAM_TYPE))
-                    .bodyPart(new BodyPart(IOUtils.toByteArray(files), MediaType.APPLICATION_OCTET_STREAM_TYPE));
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pname);
 
-            String url = getBaseHost()
-                    + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, releaseDto.getProductName(),
-                            releaseDto.getVersion());
-            WebResource wr = getClient().resource(url);
-            return wr.accept(getType()).type("multipart/mixed").entity(payload).put(ProductRelease.class);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(String pname, String version) {
-
-        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, pname, version);
-        ;
         WebResource wr = getClient().resource(url);
 
         wr.accept(getType()).type(getType()).delete(ClientResponse.class);
@@ -110,13 +73,13 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      * {@inheritDoc}
      */
     @Override
-    public ProductRelease load(String product, String version) throws ResourceNotFoundException {
-        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, product, version);
+    public Product load(String pName) throws ResourceNotFoundException {
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pName);
         WebResource wr = getClient().resource(url);
         try {
-            return wr.accept(getType()).get(ProductRelease.class);
+            return wr.accept(getType()).get(Product.class);
         } catch (Exception e) {
-            throw new ResourceNotFoundException(ProductRelease.class, url);
+            throw new ResourceNotFoundException(Product.class, url);
         }
     }
 
@@ -124,23 +87,45 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      * {@inheritDoc}
      */
     @Override
-    public List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
-            String productName, String osType) {
-        String url;
-        if (StringUtils.isEmpty(productName)) {
-            url = getBaseHost() + ClientConstants.ALL_PRODUCT_RELEASE_PATH;
-        } else {
-            url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, productName);
-        }
+    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
+        String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
+
         WebResource wr = getClient().resource(url);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams = addParam(searchParams, "osType", osType);
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
         searchParams = addParam(searchParams, "orderBy", orderBy);
         searchParams = addParam(searchParams, "orderType", orderType);
 
-        return wr.queryParams(searchParams).accept(getType()).get(ProductReleases.class);
+        return wr.queryParams(searchParams).accept(getType()).get(Products.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Attribute> loadAttributes(String pName) throws ResourceNotFoundException {
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_ATTRIBUTES, pName);
+        WebResource wr = getClient().resource(url);
+        try {
+            return wr.accept(getType()).get(Product.class).getAttributes();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(Product.class, url);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Metadata> loadMetadatas(String pName) throws ResourceNotFoundException {
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_METADATAS, pName);
+        WebResource wr = getClient().resource(url);
+        try {
+            return wr.accept(getType()).get(Product.class).getMetadatas();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(Product.class, url);
+        }
     }
 
 }

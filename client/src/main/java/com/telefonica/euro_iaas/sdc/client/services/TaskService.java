@@ -81,15 +81,6 @@ public interface TaskService {
     List<Task> findAllByProduct(String vdc, String productName);
 
     /**
-     * Retrieve all task for a given application.
-     * 
-     * @param vdc
-     * @param applicationId
-     * @return
-     */
-    List<Task> findAllByApplication(String vdc, Long applicationId);
-
-    /**
      * Wait while the task is running.
      * 
      * @param url

@@ -11,12 +11,13 @@
 
 package com.telefonica.euro_iaas.sdc.client.services;
 
-import java.io.InputStream;
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.client.exception.InsertResourceException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
+import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
  * Provides the methods which encapsulate SDC's product management's related calls.
@@ -26,54 +27,34 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 public interface ProductService {
 
     /**
-     * Add to the catalog the product release.
+     * Add to the catalog the product.
      * 
-     * @param releaseDto
+     * @param product
      *            the release dto
-     * @param cookbook
-     *            the file containing the cookbook
-     * @param files
-     *            the file containing the binaries.
+     * @throws InsertResourceException
      * @return the created product.
      */
-    ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files);
+    Product add(Product product) throws InsertResourceException;
 
-    /**
-     * Update to the catalog the product release.
-     * 
-     * @param releaseDto
-     *            the release dto
-     * @param cookbook
-     *            the file containing the cookbook
-     * @param files
-     *            the file containing the binaries.
-     * @return the created product.
-     */
-    ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files);
-
-    /**
-     * Delete the product release from the catalogue
+     /**
+     * Delete the product from the catalogue.
      * 
      * @param pname
      *            product name
-     * @param version
-     *            version product
      * @return void.
      */
-    void delete(String pname, String version);
+    void delete(String pname);
 
     /**
-     * Retrieve the product release from the SDC catalog
+     * Retrieve the product from the SDC catalog
      * 
-     * @param product
-     *            the product
-     * @param version
-     *            the version
-     * @return the product release
+     * @param pname
+     *            the pname
+     * @return the product 
      * @throws ResourceNotFoundException
      *             if the selected product does not exists.
      */
-    ProductRelease load(String product, String version) throws ResourceNotFoundException;
+    Product load(String pname) throws ResourceNotFoundException;
 
     /**
      * Retrieve all ProductReleases available in SDC catalog.
@@ -86,12 +67,23 @@ public interface ProductService {
      *            the file to order the search (id by default <i>nullable</i>)
      * @param orderType
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
-     * @param productName
-     *            the different releases for the given product (<i>not nullable</i>).
-     * @param osType
-     *            the different supported operating system (<i>not nullable</i>).
-     * @return the product instances that match with the criteria.
+     * @return the product that match with the criteria.
      */
-    List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String productName,
-            String osType);
+    List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType);
+    
+    /**
+     * Retrieve the attributes of a product.
+     * @param pname
+     *                 the product Name
+     * @return list of attributes
+     */
+    List<Attribute> loadAttributes(String pname) throws ResourceNotFoundException;
+    
+    /**
+     * Retrieve the metadatas of a product.
+     * @param pname
+     *                 the product Name
+     * @return list of metadatas
+     */
+    List<Metadata> loadMetadatas(String pname)  throws ResourceNotFoundException;
 }
