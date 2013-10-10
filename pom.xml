@@ -49,6 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <jersey.version>1.17.1</jersey.version>
 
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <copyright.year>2012</copyright.year>
@@ -125,17 +126,17 @@
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-client</artifactId>
-                <version>1.17.1</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey.contribs</groupId>
                 <artifactId>jersey-multipart</artifactId>
-                <version>1.17.1</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-json</artifactId>
-                <version>1.17.1</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
