@@ -22,6 +22,7 @@
           class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
         <property name="productDao" ref="productDao"/>
+        <property name="chefNodeDao" ref="chefNodeDao"/>
         <property name="validator" ref="productInstanceValidator"/>
         <property name="ip2vm" ref="ip2vm"/>
     </bean>
