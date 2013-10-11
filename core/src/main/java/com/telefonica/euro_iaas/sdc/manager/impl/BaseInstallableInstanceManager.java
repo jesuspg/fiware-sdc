@@ -158,7 +158,6 @@ public class BaseInstallableInstanceManager {
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
                 //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
                 hasRecipe = node.hasRecipe(recipe);
-                //Thread con un time
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
@@ -176,7 +175,6 @@ public class BaseInstallableInstanceManager {
     public void isNodeRegistered(String hostname)
     {
         try {
-            //Checking if the node is already registered in ChefServer
             chefNodeDao.isNodeRegistered(hostname);
         } catch (CanNotCallChefException e) {
             throw new SdcRuntimeException(e);
