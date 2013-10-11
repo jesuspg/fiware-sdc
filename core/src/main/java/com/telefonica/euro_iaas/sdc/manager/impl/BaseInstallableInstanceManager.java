@@ -17,6 +17,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
@@ -159,6 +160,20 @@ public class BaseInstallableInstanceManager {
                 throw new NodeExecutionException(ie);
             }
         }
+    }
+    
+    /**
+     * Checks if the Node is already registres in ChefServer.
+     * @param hostname
+     */
+    public void isNodeRegistered(String hostname)
+    {
+        try {
+            //Checking if the node is already registered in ChefServer
+            chefNodeDao.isNodeRegistered(hostname);
+        } catch (CanNotCallChefException e) {
+            throw new SdcRuntimeException(e);
+        } 
     }
     // //////////// I.O.C. //////////////
     /**

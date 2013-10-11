@@ -53,7 +53,6 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     private ProductInstanceDao productInstanceDao;
 
     private ProductDao productDao;
-    //private ChefNodeDao chefNodeDao;
     private IpToVM ip2vm;
     private ProductInstanceValidator validator;
 
@@ -61,7 +60,6 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
      * {@inheritDoc}
      */
     @UseCase(traceTo = "UC_001.1", status = "implemented")
-    @Override
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
 
@@ -72,24 +70,15 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
             // Configure the node with the corresponding node commands
         }*/
-        ChefNode chefNode = null;
+        
         if (!vm.canWorkWithChefServer()) {
             String message = "The VM does not include the node hostname required to Install " +
             		"software";
             throw new InvalidInstallProductRequestException(message);
         }
         
-        /*try {
-            //Checking if the node is already registered in ChefServer
-            chefNodeDao.isNodeRegistered(vm.getHostname());
-            //Loading chefnode from ChefServer
-            chefNode = chefNodeDao.loadNodeFromHostname(vm.getHostname());
-        } catch (CanNotCallChefException e) {
-            throw new SdcRuntimeException(e);
-        } catch (EntityNotFoundException enfe) {
-            throw new NodeExecutionException(enfe.getMessage(), enfe);
-        }*/
-               
+        isNodeRegistered(vm.getHostname());
+                      
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {
@@ -460,14 +449,6 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
-
-    /**
-     * @param chefNodeDao
-     *            the chefNodeDao to set
-     */
-    /*public void setChefNodeDao(ChefNodeDao chefNodeDao) {
-        this.chefNodeDao = chefNodeDao;
-    }*/
 
     /**
      * @param ip2vm

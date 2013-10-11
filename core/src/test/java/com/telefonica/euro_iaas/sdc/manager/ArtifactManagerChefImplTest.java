@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
@@ -105,7 +106,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
         when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(chefNode);
         when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
         when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
-
+        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
+        
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
 
