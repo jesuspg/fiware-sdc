@@ -206,10 +206,11 @@ public class VM {
             throw new IllegalStateException("ChefClientName can not be empty");
         }
 
-        if (hostname.contains(domain))
+        if (hostname.contains(domain)) {
             return hostname;
-        else
+        } else {
             return hostname + domain;
+        }
     }
 
     public String getExecuteChefConectionUrl() {
