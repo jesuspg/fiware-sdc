@@ -1,6 +1,6 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
 
-import com.telefonica.euro_iaas.sdc.pupperwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 
 public interface FileManager {
 

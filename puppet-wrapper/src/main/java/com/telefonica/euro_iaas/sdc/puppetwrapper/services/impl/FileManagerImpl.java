@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services.impl;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import static java.text.MessageFormat.format;
 
@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import com.telefonica.euro_iaas.sdc.pupperwrapper.data.Node;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
 
 @Service("fileManager")
 public class FileManagerImpl implements FileManager {
 
+	private static final Log logger = LogFactory.getLog(FileCreationServiceImpl.class);
 	private String eol = System.getProperty("line.separator"); 
 	
 	private List<Node> nodes = new ArrayList<Node>();
@@ -32,6 +35,8 @@ public class FileManagerImpl implements FileManager {
 			}
 		}
 		if (result == null) {
+			logger.debug(format(
+					"The node {0} could not be found", nodeName));
 			throw new NoSuchElementException(format(
 					"The node {0} could not be found", nodeName));
 		}

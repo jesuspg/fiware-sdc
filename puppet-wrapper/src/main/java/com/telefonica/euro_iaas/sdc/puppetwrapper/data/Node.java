@@ -1,8 +1,7 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.data;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 
 import static java.text.MessageFormat.format;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -40,7 +39,7 @@ public class Node {
 		}
 		if (result==null) {
 			throw new NoSuchElementException(format(
-					"The software «0 could not be found", softName));
+					"The software {0} could not be found", softName));
 		}
 		return result;
 	}

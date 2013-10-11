@@ -10,7 +10,7 @@
     
 	
 	<context:annotation-config />
-	<context:component-scan base-package="com.telefonica.euro_iaas.sdc.pupperwrapper.services"/>  
+	
 	
 	
 	<bean id="propertyConfigurer"

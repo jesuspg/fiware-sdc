@@ -13,10 +13,10 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.sdc.pupperwrapper.constants.Action;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.data.Node;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.data.Software;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.constants.Action;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:**testContext.xml" })

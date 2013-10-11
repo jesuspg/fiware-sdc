@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
 
 import java.awt.image.ImagingOpException;
 import java.io.FileNotFoundException;

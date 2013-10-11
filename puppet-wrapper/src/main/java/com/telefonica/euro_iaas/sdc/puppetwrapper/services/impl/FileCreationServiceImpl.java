@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services.impl;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,15 +10,20 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.telefonica.euro_iaas.sdc.pupperwrapper.data.Node;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.services.FileCreationService;
-import com.telefonica.euro_iaas.sdc.pupperwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.controllers.PuppetController;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileCreationService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
 
 @Service("fileService")
 public class FileCreationServiceImpl implements FileCreationService {
+
+	private static final Log logger = LogFactory.getLog(FileCreationServiceImpl.class);
 
 	@Resource
 	private FileManager fileManager;
@@ -27,6 +32,8 @@ public class FileCreationServiceImpl implements FileCreationService {
 	private String defaultManifestsPath;
 
 	public void generateManifestFile(String nodeName) throws IOException {
+		
+		logger.info("creating Manifest file for node: "+nodeName);
 
 		Node node = fileManager.getNode(nodeName);
 
@@ -39,6 +46,7 @@ public class FileCreationServiceImpl implements FileCreationService {
 			f.mkdirs();
 			f.createNewFile();
 		} catch (IOException ex) {
+			logger.debug("Error creating manifest paths and pp file", ex);
 			throw new IOException("Error creating manifest paths and pp file");
 		}
 
@@ -48,13 +56,18 @@ public class FileCreationServiceImpl implements FileCreationService {
 			fw.write(fileContent);
 			fw.close();
 		} catch (IOException ex) {
+			logger.debug("Error creating manifest paths and pp file", ex);
 			throw new IOException("Error creating manifest paths and pp file");
 		}
+		
+		logger.debug("Manifest file created");
 
 	}
 
-	public void generateSiteFile() throws IOException {
+	public void generateSiteFile() throws IOException{
 
+		logger.info("Generate site.pp");
+		
 		String fileContent = fileManager.generateSiteStr();
 
 		try {
@@ -63,8 +76,11 @@ public class FileCreationServiceImpl implements FileCreationService {
 			writer.println(fileContent);
 			writer.close();
 		} catch (IOException ex) {
-			throw new IOException("Error creating manifest paths and pp file");
+			logger.debug("Error creating site.pp file", ex);
+			throw new IOException("Error creating site.pp file");
 		}
+		
+		logger.debug("Site.pp file created");
 	}
 
 }

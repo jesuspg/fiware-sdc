@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.data;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 
 public class PuppetWrapperError {
     private short code;

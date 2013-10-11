@@ -1,6 +1,6 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.data;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 
-import com.telefonica.euro_iaas.sdc.pupperwrapper.constants.Action;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.constants.Action;
 
 public class Software {
 	
