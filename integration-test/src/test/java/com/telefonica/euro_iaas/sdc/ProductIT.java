@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -61,7 +62,7 @@ public class ProductIT {
     }
 
     @Test
-    public void shouldLoadAProduct() throws ResourceNotFoundException {
+    public void shouldLoadAProductTomcat() throws ResourceNotFoundException {
         // given
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
@@ -120,15 +121,12 @@ public class ProductIT {
 
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
-        Product createdProduct = null;
         try {
-            createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
-            // then
-            assertNotNull(productService);
-            assertNull(createdProduct);
+            fail();
         }
     }
 
@@ -151,15 +149,12 @@ public class ProductIT {
 
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
-        Product createdProduct = null;
         try {
-            createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
-            // then
-            assertNotNull(productService);
-            assertNull(createdProduct);
+            fail();
         }
 
     }
@@ -212,6 +207,68 @@ public class ProductIT {
         } catch (ResourceNotFoundException e) {
             assertTrue(true);
         }
+    }
+
+    @Test
+    public void shouldLoadAttributes() {
+        // given
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        createTestProduct("kk1");
+        // when
+
+        try {
+            productService.loadAttributes("kk1");
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+            fail("ResourceNotFoundException " + e.getMessage());
+        }
+        // then
+    }
+
+    @Test
+    @Ignore
+    public void shouldLoadMetadatas() {
+        // given
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        // when
+
+        try {
+            productService.loadMetadatas("tomcat");
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
+            fail("ResourceNotFoundException " + e.getMessage());
+        }
+        // then
+    }
+
+    private Product createTestProduct(String productName) {
+        String description = "tomcattest 6";
+        mediaType = "application/json";
+
+        Product product = new Product();
+        product.setName(productName);
+        product.setDescription(description);
+
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        product.setAttributes(attributes);
+
+        Attribute userRootAttribute = new Attribute();
+        userRootAttribute.setValue("8080");
+        userRootAttribute.setKey("port");
+        userRootAttribute.setDescription("desc");
+        attributes.add(userRootAttribute);
+
+        List<Metadata> metadatas = new ArrayList<Metadata>();
+        product.setMetadatas(metadatas);
+
+        // when
+        ProductService productService = client.getProductService(baseUrl, mediaType);
+        try {
+            return productService.add(product);
+        } catch (InsertResourceException e) {
+            fail("InsertResourceException:" + e);
+        }
+        return null;
     }
 
 }
