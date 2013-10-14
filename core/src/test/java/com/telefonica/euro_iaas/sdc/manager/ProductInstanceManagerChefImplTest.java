@@ -102,12 +102,14 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
 
         ChefNode chefNode = new ChefNode();
         chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addAttribute(installRecipe, "dd", "dd");
         chefNode.addRecipe(installRecipe);
+        
         when(chefNodeDao.loadNode(any(String.class))).thenReturn(chefNode);
         when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
         when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
         Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
-                
+               
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
 

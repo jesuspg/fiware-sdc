@@ -58,7 +58,7 @@ public class BaseInstallableInstanceManager {
         configureNode(vm, attributes, process, recipe);
         try {
             System.out.println("Executing recipe " + recipe + " in " + vm.getIp());
-            isRecipeExecuted(vm, recipe);
+            isRecipeExecuted(vm, process, recipe);
             //executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
@@ -143,10 +143,10 @@ public class BaseInstallableInstanceManager {
      * @throws  
      * @throws ShellCommandException
      */
-    public void isRecipeExecuted(VM vm, String recipe) throws NodeExecutionException {
-        boolean hasRecipe = false;
+    public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
+        boolean isExecuted = false;
         int time = 10000;
-        while (!hasRecipe) {
+        while (!isExecuted) {
             try {
                 Thread.sleep(time);
                 if (time > MAX_TIME) {
@@ -157,7 +157,11 @@ public class BaseInstallableInstanceManager {
             
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
                 //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
-                hasRecipe = node.hasRecipe(recipe);
+                //hasRecipe = node.hasRecipe(recipe);
+                if (node.getAttributes().containsKey(process)) {
+                    isExecuted = true;
+                }
+                
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {

@@ -74,8 +74,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             if (stringNodes == null) {
                 throw new EntityNotFoundException(ChefNode.class, null, 
                     "The ChefServer is empty of ChefNodes");
-            }
-            
+            }           
             ChefNode node = new ChefNode();
             String nodeName = node.getChefNodeName(stringNodes, hostname);
             return loadNode(nodeName);
@@ -201,8 +200,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     throw new CanNotCallChefException(errorMesg);
                 }
                 response = IOUtils.toString(wr.get(InputStream.class));
-                System.out.println("Nodes: ****");
-                System.out.println(response);
+                //System.out.println("Nodes: ****");
+                //System.out.println(response);
                 time += time;
             } catch (UniformInterfaceException e) {
                 throw new CanNotCallChefException(e);

@@ -74,6 +74,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
     private String installRecipe ="Product::server";
     private String uninstallRecipe ="Product::uninstall-server";
     private String deployacrecipe ="Product::deployac";
+    private String undeployacrecipe ="Product::test";
     
     public final static String EXECUTE_COMMAND = "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";
     public final static String ASSIGN_UNINSTALL_COMMAND = "/opt/sdc/scripts/assignRecipes.sh hostnamedomain Product::uninstall-server";
@@ -84,11 +85,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
         when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn(installRecipe);
         when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(uninstallRecipe);
         when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(deployacrecipe);
-        /*when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn("Product::server");
-        when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(
-                "Product::uninstall-server");
-        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn("Product::deployac");*/
-
+        when(recipeNamingGenerator.getUnDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(undeployacrecipe);
+        
         propertiesProvider = mock(SystemPropertiesProvider.class);
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
@@ -101,7 +99,11 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         ChefNode chefNode = new ChefNode();
         chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addAttribute(deployacrecipe, "dd", "dd");
+        chefNode.addAttribute(undeployacrecipe, "dd", "dd");
+        
         chefNode.addRecipe(deployacrecipe);
+        chefNode.addRecipe(undeployacrecipe);
         
         when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(chefNode);
         when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
