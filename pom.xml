@@ -22,6 +22,7 @@
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
 
+
         <!-- repositories for distribution -->
         <!-- snapshots -->
         <repoMavenSnapshotId>repo-snapshot</repoMavenSnapshotId>
@@ -43,11 +44,17 @@
         <!-- plugins versions -->
 
         <maven-site-plugin.version>2.2</maven-site-plugin.version>
+        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
+        <cobertura-maven-plugin.version>2.5.2</cobertura-maven-plugin.version>
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
-        <!-- Forzamos a los plugins a utilizar UTF-8, para evitar problemas con
-            los encodings por defectos de los diferentes sistemas operativos -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <compilerInfoDebug>false</compilerInfoDebug>
+        <compilerOptimize>false</compilerOptimize>
+        <compilerShowWarnings>true</compilerShowWarnings>
+        <compilerShowDeprecation>true</compilerShowDeprecation>
 
         <jersey.version>1.17.1</jersey.version>
 
@@ -57,7 +64,6 @@
         <jmock.version>2.5.1</jmock.version>
         <jvm.version>1.6</jvm.version>
         <tomcat.version>6</tomcat.version>
-        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
 
         <!-- Release generation -->
@@ -155,35 +161,6 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
-        <!-- Propiedades del proyecto dependendientes del entorno -->
-        <filters>
-            <!-- 	<filter>src/main/filters/${env}.properties</filter> -->
-            <!-- Para un entorno en concreto -->
-        </filters>
-        <!-- Recursos sobre los que se van a aplicar los filtros -->
-        <resources>
-            <resource>
-                <!-- Solo se filtran los contenidos textuales. Si se filtra una imagen(*.png,*.gif),
-                    esta quedara corrupta -->
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <!-- 	<includes>
-                        <include>**/*.xml</include>
-                        <include>**/*.txt</include>
-                        <include>**/*.properties</include>
-                    </includes>-->
-            </resource>
-            <resource>
-                <!-- El contenido textual ya se ha aniadido y filtrado en el paso anterior -->
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <!--  <excludes>
-                       <exclude>**/*.xml</exclude>
-                       <exclude>**/*.txt</exclude>
-                       <exclude>**/*.properties</exclude>
-                   </excludes>-->
-            </resource>
-        </resources>
 
         <pluginManagement>
             <plugins>
@@ -214,7 +191,6 @@
 
         <plugins>
 
-
             <!-- jgitflow -->
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
@@ -236,42 +212,12 @@
                     <useReleaseProfile>false</useReleaseProfile>
                 </configuration>
             </plugin>
-            <!-- Plugin HUDSON -->
-            <plugin>
-                <groupId>org.jvnet.hudson.tools</groupId>
-                <artifactId>maven-hudson-plugin</artifactId>
-                <version>2.0-alpha-4</version>
-                <configuration>
-                    <subversionURL>
-                        https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk/${project.artifactId}
-                    </subversionURL>
-                    <includeCobertura>false</includeCobertura>
-                    <!-- Cada vez que se actualice el proyecto en hudson se contruira el
-                        site -->
-                    <additionalGoals>site:site site:deploy</additionalGoals>
-                    <!-- Para anadir la integracion con sonar. Anadir org.codehaus.sonar:sonar-maven-plugin:1.8:sonar -->
-                </configuration>
-            </plugin>
-            <!-- modificar las opciones del compilador -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>${jvm.version}</source>
-                    <target>${jvm.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <debug>${compilerInfoDebug}</debug>
-                    <optimize>${compilerOptimize}</optimize>
-                    <showWarnings>${compilerShowWarnings}</showWarnings>
-                    <showDeprecation>${compilerShowDeprecation}</showDeprecation>
-                    <verbose>${compilerVerbose}</verbose>
-                </configuration>
-            </plugin>
 
-            <!-- modificar las opciones del compilador -->
-            <!-- <plugin>
+            <!-- modify compiler options -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${jvm.version}</source>
                     <target>${jvm.version}</target>
@@ -280,16 +226,14 @@
                     <optimize>${compilerOptimize}</optimize>
                     <showWarnings>${compilerShowWarnings}</showWarnings>
                     <showDeprecation>${compilerShowDeprecation}</showDeprecation>
-                    <verbose>${compilerVerbose}</verbose>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <!-- Generacion de test -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <!-- <version>2.3</version>-->
                 <configuration>
                     <includes>
                         <include>**/*Test*.java</include>
@@ -308,88 +252,18 @@
                                 <exclude>**/test/utils/**</exclude>
                             </excludes>
                             <includes>
-                                <include>**/test/Component.java</include>
+                                <include>**/test/**.java</include>
                             </includes>
                         </configuration>
                     </execution>
-                    <!--	<execution>
-                            <id>it-test</id>
-                            <phase>integration-test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <configuration>
-                                <excludes>
-                                    <exclude>**/test/Component.java</exclude>
-                                </excludes>
-                                <includes>
-                                    <include>**/test/acceptance/*.java</include>
-                                </includes>
-                                <systemPropertyVariables>
-                                    <concordion.output.dir>target/site/concordion</concordion.output.dir>
-                                </systemPropertyVariables>
-                            </configuration>
-                        </execution>-->
-                </executions>
-            </plugin>
-            <!-- En modo SNAPSHOT se hace coincidir con el numero de revision del SVN -->
-            <!--  	<plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>buildnumber-maven-plugin</artifactId>
-                  <version>1.0</version>
-                  <executions>
-                      <execution>
-                          <phase>validate</phase>
-                          <goals>
-                              <goal>create</goal>
-                          </goals>
-                      </execution>
-                  </executions>
-                  <configuration>
-                      <doCheck>false</doCheck>
-                      <doUpdate>true</doUpdate>
-                  </configuration>
-              </plugin>-->
-            <!-- Enviar un mail con las releases notes descritas en el src/changes/changes.xml -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changes-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>changes-report</goal>
-                            <!-- <goal>announcement-generate</goal> -->
-                        </goals>
-                        <id>announcement-generate</id>
-                    </execution>
-                    <execution>
-                        <phase>release</phase>
-                        <goals>
-                            <goal>announcement-mail</goal>
-                        </goals>
-                        <id>announcement-mail</id>
-                    </execution>
-                </executions>
 
-                <configuration>
-                    <mailSender>
-                        <name>Henar</name>
-                        <email>henar@tid.es</email>
-                    </mailSender>
-                    <smtpHost>mailhost.hi.inet</smtpHost>
-                    <toAddresses>
-                        <toAddress implementation="java.lang.String">henar@tid.es</toAddress>
-                    </toAddresses>
-                </configuration>
+                </executions>
             </plugin>
-            <!-- Cobertura de los test -->
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin
-                </artifactId>
-                <version>2.5.1</version>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
                 <configuration>
                     <check>
                         <haltOnFailure>false</haltOnFailure>
@@ -412,767 +286,17 @@
                         <id>instrument</id>
                         <phase>site</phase>
                         <goals>
-                            <!--   	<goal>instrument</goal> -->
+                            <goal>instrument</goal>
                             <goal>cobertura</goal>
                             <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
+
             </plugin>
-            <!--Agregador de informes -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dashboard-maven-plugin
-                </artifactId>
-                <version>1.0.0-beta-1</version>
-            </plugin>
-            <!-- Plugin para generar los javadocs -->
-            <!--  <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.8</version>
-
-                    <configuration>
-
-
-            </configuration>
-            <executions>
-              <execution>
-                <id>aggregate</id>
-                <goals>
-                  <goal>aggregate</goal>
-                </goals>
-                <phase>site</phase>
-                <configuration>
-
-
-                </configuration>
-              </execution>
-
-            </executions>
-                </plugin> -->
-
-
-            <!--   <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-antrun-plugin</artifactId>
-                 <executions>
-                     <execution>
-                         <id>copy-subprojects-sites</id>
-                         <phase>site</phase>
-                         <configuration>
-                             <tasks>
-
-                                 <mkdir dir="./target/site/core-site" />
-                                 <copy todir="./target/site/core-site">
-                                     <fileset dir="./core/target/site/" />
-                                 </copy>
-                                 <mkdir dir="./target/site/rest-api" />
-                                 <copy todir="./target/site/rest-api">
-                                     <fileset dir="./rest-api/target/site/" />
-                                 </copy>
-                             </tasks>
-                         </configuration>
-                         <goals>
-                             <goal>run</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>-->
-
-            <!--     <plugin>
-                    <groupId>net.sourceforge.xuse</groupId>
-                    <artifactId>maven-xuse-m2-plugin</artifactId>
-                    <version>01.00.00-RC2</version>
-                    <executions>
-                        <execution>
-                            <phase>site</phase>
-                            <id>gendocs</id>
-                            <goals>
-                                <goal>xuse</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>-->
-
 
         </plugins>
     </build>
-
-
-    <profiles>
-
-        <profile>
-            <id>runCobertura</id>
-            <activation>
-                <property>
-                    <name>runCobertura</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <properties>
-                <cobertura.format>html</cobertura.format>
-                <working.dir>/tmp</working.dir>
-                <cobertura.working.dir>${working.dir}/${project.version}/cobertura</cobertura.working.dir>
-                <cobertura.complete.ser.file>${cobertura.working.dir}/complete.ser</cobertura.complete.ser.file>
-
-                <!-- scope which determines whether or not cobertura is included in .war file: overriden here -->
-                <cobertura.dependency.scope>compile</cobertura.dependency.scope>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <version>2.4.1</version>
-                        <inherited>false</inherited>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>.</directory>
-                                    <includes>
-                                        <include>**/cobertura.ser</include>
-                                    </includes>
-                                </fileset>
-                                <fileset>
-                                    <directory>${cobertura.working.dir}</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </plugin>
-
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
-                        <executions>
-                            <execution>
-                                <id>cobertura-Instrument</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-                                        <echo message="::PROCESS CLASSES: ${project.artifactId}"/>
-
-                                        <if>
-                                            <equals arg1="${project.artifactId}"
-                                                    arg2="web-test-driver-for-code-coverage"/>
-                                            <then>
-                                                <echo message="::SKIPPING PHASE for integration test"/>
-                                            </then>
-                                            <else>
-                                                <if>
-                                                    <available file="${project.build.outputDirectory}"/>
-                                                    <then>
-                                                        <echo message="::BEFORE INSTRUMENT"/>
-                                                        <cobertura-instrument>
-                                                            <fileset dir="${project.build.outputDirectory}">
-                                                                <include name="**/*.class"/>
-                                                            </fileset>
-                                                        </cobertura-instrument>
-                                                    </then>
-                                                </if>
-                                            </else>
-                                        </if>
-
-
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>cobertura-createCombinedSerFile</id>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-                                        <echo message=":::generate-test-sources"/>
-
-
-                                        <if>
-                                            <equals arg1="${project.artifactId}"
-                                                    arg2="web-test-driver-for-code-coverage"/>
-                                            <then>
-                                                <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test"/>
-                                                <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser"/>
-                                                <copy file="${cobertura.complete.ser.file}"
-                                                      tofile="${basedir}/cobertura.ser"/>
-                                            </then>
-                                            <else>
-                                                <if>
-                                                    <available file="${basedir}/cobertura.ser"/>
-                                                    <then>
-                                                        <echo message="::: Is available ${basedir}/cobertura.ser"/>
-                                                    </then>
-                                                </if>
-
-                                                <if>
-                                                    <available file="${cobertura.complete.ser.file}"/>
-                                                    <then>
-                                                        <echo message="before merge1"/>
-                                                        <cobertura-merge datafile="${basedir}/tmp.ser">
-                                                            <fileset file="${cobertura.complete.ser.file}"/>
-                                                            <fileset file="${basedir}/cobertura.ser"/>
-                                                        </cobertura-merge>
-                                                        <echo message="move temp.ser to ${basedir}/cobertura.ser"/>
-                                                        <move file="${basedir}/tmp.ser"
-                                                              tofile="${basedir}/cobertura.ser"/>
-                                                    </then>
-                                                </if>
-                                            </else>
-                                        </if>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>cobertura-copyResultSerFileAndSources</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-
-                                        <echo message=":::copyResultSerFileAndSources -beforeIf"/>
-                                        <if>
-                                            <available file="${basedir}/cobertura.ser"/>
-                                            <then>
-                                                <echo message="move1"/>
-                                                <move file="${basedir}/cobertura.ser"
-                                                      tofile="${cobertura.complete.ser.file}"/>
-                                                <mkdir dir="${cobertura.working.dir}/source"/>
-                                                <if>
-                                                    <available file="${basedir}/src/main/java"/>
-                                                    <then>
-                                                        <copy todir="${cobertura.working.dir}/source">
-                                                            <fileset dir="src/main/java">
-                                                                <include name="**/*.java"/>
-                                                            </fileset>
-                                                        </copy>
-                                                    </then>
-                                                </if>
-                                                <echo message="runreport"/>
-                                                <cobertura-report datafile="${cobertura.complete.ser.file}"
-                                                                  format="${cobertura.format}"
-                                                                  destdir="${cobertura.working.dir}/report">
-                                                    <fileset dir="${cobertura.working.dir}/source"/>
-                                                </cobertura-report>
-                                            </then>
-                                        </if>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sourceforge.cobertura</groupId>
-                                <artifactId>cobertura</artifactId>
-                                <version>1.9.4.1</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>ant-contrib</groupId>
-                                <artifactId>ant-contrib</artifactId>
-                                <version>20020829</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>net.sourceforge.cobertura</groupId>
-                    <artifactId>cobertura</artifactId>
-                    <version>1.9.4.1</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <!-- Profile desarrollo (Activo por defecto) -->
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <file>
-                    <!-- This employs that the basedir expression is only recognized by
-                        Maven 3.x (see MNG-2363) -->
-                    <exists>${basedir}</exists>
-                </file>
-
-            </activation>
-            <properties>
-                <env>development</env>
-                <compilerInfoDebug>false</compilerInfoDebug>
-                <compilerOptimize>false</compilerOptimize>
-            </properties>
-        </profile>
-        <!-- Integracion -->
-        <profile>
-            <id>integration</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <env>integration</env>
-                <compilerInfoDebug>false</compilerInfoDebug>
-                <compilerOptimize>false</compilerOptimize>
-            </properties>
-        </profile>
-        <!-- Produccion -->
-        <profile>
-            <id>production</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <env>production</env>
-                <compilerInfoDebug>false</compilerInfoDebug>
-                <compilerOptimize>true</compilerOptimize>
-            </properties>
-        </profile>
-        <profile>
-            <id>maven-2</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-site-plugin</artifactId>
-                            <version>${maven-site-plugin.version}</version>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>${maven-site-plugin.version}</version>
-                        <configuration>
-                            <locales>es</locales>
-                            <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
-                            <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-                            <reportPlugins>
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                                    <version>2.2</version>
-                                    <reports>
-                                        <report>index</report>
-                                        <report>project-team</report>
-                                        <report>license</report>
-                                        <report>mailing-list</report>
-                                        <!--  <report>dependencies</report>-->
-                                        <report>dependency-convergence</report>
-                                        <report>plugin-management</report>
-                                        <report>cim</report>
-                                        <report>issue-tracking</report>
-                                        <report>scm</report>
-                                        <report>summary</report>
-                                    </reports>
-                                </plugin>
-                            </reportPlugins>
-                        </configuration>
-
-                    </plugin>
-                </plugins>
-            </build>
-            <reporting>
-                <plugins>
-                    <!-- plugin para reports de sonar -->
-                    <plugin>
-                        <groupId>org.codehaus.sonar-plugins</groupId>
-                        <artifactId>maven-report</artifactId>
-                        <version>0.1</version>
-                    </plugin>
-
-                    <!-- Plugin para generar los referencias cruzadas del codigo -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>jxr-maven-plugin</artifactId>
-                        <version>2.0-beta-1</version>
-                    </plugin>
-                    <!-- Plugin para generar los informes de entregas al SVN por desarrollador -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>changelog-maven-plugin</artifactId>
-                        <version>2.0-beta-1</version>
-                    </plugin>
-                    <!-- Plugin para generar los reports de calidad de codigo. Faltaria
-                        definir las metricas a aplicar -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <version>2.7</version>
-                        <configuration>
-                            <linkXref>true</linkXref>
-                            <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                            <minimumTokens>100</minimumTokens>
-                            <targetJdk>${jvm.version}</targetJdk>
-                            <excludes>
-                                <exclude>**/pojos/*.java</exclude>
-                                <exclude>**/generated/*.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>javancss-maven-plugin</artifactId>
-                        <version>2.0-beta-2</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>jdepend-maven-plugin</artifactId>
-                        <version>2.0-beta-2</version>
-                    </plugin>
-
-                    <!-- Plugin para generar los informes del JUNIT -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-project-info-reports-plugin</artifactId>
-                        <version>2.1.2</version>
-                    </plugin>
-                    <!-- Plugin para analizar las tags en el codigo, por ejemplo para generar
-                        un informe con todos los TODO -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>taglist-maven-plugin</artifactId>
-                        <version>2.4</version>
-                        <configuration>
-                            <tags>
-                                <tag>TODO</tag>
-                                <tag>FIXME</tag>
-                                <tag>@todo</tag>
-                                <tag>@deprecated</tag>
-                            </tags>
-                        </configuration>
-                    </plugin>
-                    <!-- Plugin para generar el control de cambios -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-changes-plugin</artifactId>
-                        <version>2.6</version>
-                        <reportSets>
-                            <reportSet>
-                                <reports>
-                                    <!--     <report>changes-report</report>-->
-                                </reports>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                    <!-- Plugin para generar informes de calidad del codigo -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.8</version>
-                    </plugin>
-                    <!-- Genera los informes de Cobertura de los Test -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.5.1</version>
-                        <configuration>
-                            <formats>
-                                <format>xml</format>
-                                <format>html</format>
-                            </formats>
-                        </configuration>
-                    </plugin>
-                    <!-- Genera una agregacion de informes -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>dashboard-maven-plugin</artifactId>
-                        <version>1.0.0-beta-1</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>jdepend-maven-plugin</artifactId>
-                        <version>2.0-beta-2</version>
-                    </plugin>
-                    <!-- 		<plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-javadoc-plugin</artifactId>
-                                <version>2.8</version>
-
-
-                                                    <configuration>
-
-                </configuration>
-                <reportSets>
-                  <reportSet>
-                    <id>non-aggregate</id>
-                    <configuration>
-
-                    </configuration>
-                    <reports>
-                      <report>javadoc</report>
-                    </reports>
-                  </reportSet>
-                  <reportSet>
-                    <id>aggregate</id>
-                    <configuration>
-
-
-                    </configuration>
-                    <reports>
-                      <report>aggregate</report>
-                    </reports>
-                  </reportSet>
-
-                </reportSets>
-                            </plugin> -->
-                </plugins>
-            </reporting>
-        </profile>
-
-        <profile>
-            <id>maven-3</id>
-            <activation>
-                <file>
-                    <!-- This employs that the basedir expression is only recognized by
-                        Maven 3.x (see MNG-2363) -->
-                    <exists>${basedir}</exists>
-                </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-site-plugin</artifactId>
-                            <version>3.0</version>
-
-                            <configuration>
-                                <reportPlugins>
-                                    <plugin>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-project-info-reports-plugin</artifactId>
-                                        <version>2.2</version>
-                                        <reports>
-                                            <report>index</report>
-                                            <report>project-team</report>
-                                            <report>license</report>
-                                            <report>mailing-list</report>
-                                            <!--    <report>dependencies</report> -->
-                                            <report>dependency-convergence</report>
-                                            <report>plugin-management</report>
-                                            <report>cim</report>
-                                            <report>issue-tracking</report>
-                                            <report>scm</report>
-                                            <report>summary</report>
-                                        </reports>
-                                    </plugin>
-                                    <plugin>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-changes-plugin</artifactId>
-                                        <version>2.4</version>
-                                        <reportSets>
-                                            <reportSet>
-                                                <reports>
-                                                    <!--   <report>changes-report</report>-->
-                                                </reports>
-                                            </reportSet>
-                                        </reportSets>
-                                    </plugin>
-                                </reportPlugins>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <configuration>
-                            <locales>es</locales>
-                            <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
-                            <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-
-
-                            <reportPlugins>
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                                    <version>2.2</version>
-                                    <reports>
-                                        <report>index</report>
-                                        <report>project-team</report>
-                                        <report>license</report>
-                                        <report>mailing-list</report>
-                                        <!--  <report>dependencies</report> -->
-                                        <report>dependency-convergence</report>
-                                        <report>plugin-management</report>
-                                        <report>cim</report>
-                                        <report>issue-tracking</report>
-                                        <report>scm</report>
-                                        <report>summary</report>
-                                    </reports>
-                                </plugin>
-                                <!--  	<plugin>
-                                       <groupId>org.apache.maven.plugins</groupId>
-                                       <artifactId>maven-javadoc-plugin</artifactId>
-                                       <version>2.8</version>
-                                       <configuration>
-
-           </configuration>
-           <reportSets>
-             <reportSet>
-               <id>non-aggregate</id>
-               <configuration>
-
-               </configuration>
-               <reports>
-                 <report>javadoc</report>
-               </reports>
-             </reportSet>
-             <reportSet>
-               <id>aggregate</id>
-               <configuration>
-
-               </configuration>
-               <reports>
-                 <report>aggregate</report>
-               </reports>
-             </reportSet>
-
-           </reportSets>
-                                   </plugin>  -->
-                                <!-- plugin para reports de sonar -->
-                                <plugin>
-                                    <groupId>org.codehaus.sonar-plugins</groupId>
-                                    <artifactId>maven-report</artifactId>
-                                    <version>0.1</version>
-                                </plugin>
-                                <!-- Plugin para generar los referencias cruzadas del codigo -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-jxr-plugin</artifactId>
-                                    <version>2.3</version>
-                                </plugin>
-                                <!-- Plugin para generar los informes de entregas al SVN por desarrollador -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-changelog-plugin</artifactId>
-                                    <version>2.2</version>
-                                </plugin>
-                                <!-- Plugin para generar los reports de calidad de codigo. Faltaria
-                                    definir las metricas a aplicar -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-pmd-plugin</artifactId>
-                                    <version>2.6</version>
-                                    <configuration>
-                                        <linkXref>true</linkXref>
-                                        <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                                        <minimumTokens>100</minimumTokens>
-                                        <targetJdk>${jvm.version}</targetJdk>
-                                        <excludes>
-                                            <exclude>**/pojos/*.java</exclude>
-                                            <exclude>**/generated/*.java</exclude>
-                                        </excludes>
-                                    </configuration>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-plugin-plugin</artifactId>
-                                    <version>2.7</version>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>javancss-maven-plugin</artifactId>
-                                    <version>2.0-beta-2</version>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>jdepend-maven-plugin</artifactId>
-                                    <version>2.0-beta-2</version>
-                                </plugin>
-                                <!-- Plugin para generar los informes del JUNIT -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-surefire-report-plugin</artifactId>
-                                    <version>${maven-surefire-plugin.version}</version>
-                                </plugin>
-                                <!-- Plugin para analizar las tags en el codigo, por ejemplo para
-                                    generar un informe con todos los TODO -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>taglist-maven-plugin</artifactId>
-                                    <version>2.4</version>
-                                    <configuration>
-                                        <tags>
-                                            <tag>TODO</tag>
-                                            <tag>FIXME</tag>
-                                            <tag>@todo</tag>
-                                            <tag>@deprecated</tag>
-                                        </tags>
-                                    </configuration>
-                                </plugin>
-                                <!-- Plugin para generar el control de cambios -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-changes-plugin</artifactId>
-                                    <version>2.6</version>
-                                    <reportSets>
-                                        <reportSet>
-                                            <reports>
-                                                <!--  		<report>changes-report</report>-->
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-                                <!-- Plugin para generar informes de calidad del codigo -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-checkstyle-plugin</artifactId>
-                                    <version>2.8</version>
-                                </plugin>
-                                <!-- Genera los informes de Cobertura de los Test -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>cobertura-maven-plugin</artifactId>
-                                    <version>2.5.1</version>
-                                    <configuration>
-                                        <formats>
-                                            <!--<format>xml</format>-->
-                                            <format>html</format>
-                                        </formats>
-                                    </configuration>
-                                </plugin>
-                            </reportPlugins>
-                        </configuration>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>stat-scm</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>stat-scm</id>
-                    <name>stat-scm</name>
-                    <url>http://stat-scm.sourceforge.net/maven2/</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-    </profiles>
 
 
     <repositories>

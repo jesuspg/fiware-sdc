@@ -83,7 +83,6 @@ public interface ProductInstanceResource extends BaseInstallableInstanceResource
      * @param name
      *            the product name
      * @return the product instance
-     * @throws EntityNotFoundException
      */
     @GET
     @Path("/{name}")
