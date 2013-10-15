@@ -5,9 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+
 public interface FileCreationService {
 	
-	public void generateManifestFile(String nodeName) throws ImagingOpException, IOException;
+	public Node generateManifestFile(String nodeName) throws ImagingOpException, IOException;
 	
 	public void generateSiteFile() throws FileNotFoundException, UnsupportedEncodingException, IOException;
 

@@ -35,8 +35,8 @@ public class FileManagerImpl implements FileManager {
 			}
 		}
 		if (result == null) {
-			logger.debug(format(
-					"The node {0} could not be found", nodeName));
+//			logger.debug(format(
+//					"The node {0} could not be found", nodeName));
 			throw new NoSuchElementException(format(
 					"The node {0} could not be found", nodeName));
 		}

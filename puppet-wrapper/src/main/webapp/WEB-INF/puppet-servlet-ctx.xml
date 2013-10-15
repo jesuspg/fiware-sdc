@@ -16,8 +16,7 @@
 	<context:annotation-config />
 	<context:component-scan
 		base-package="com.telefonica.euro_iaas.sdc.puppetwrapper.controllers" />
-	<context:component-scan
-		base-package="com.telefonica.euro_iaas.sdc.puppetwrapper.services" /> 
+	
 
 
 

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.telefonica.euro_iaas.sdc.puppetwrapper.constants.Error;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Error;
 
 public class GenericController {
 

@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.puppetwrapper.constants;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.common;
 
 import static java.text.MessageFormat.format;
 

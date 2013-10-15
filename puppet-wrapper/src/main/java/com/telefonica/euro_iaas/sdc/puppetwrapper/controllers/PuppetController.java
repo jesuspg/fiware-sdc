@@ -1,7 +1,9 @@
 package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 
 import java.awt.image.ImagingOpException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileCreationService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.FileManagerImpl;
 
 @Controller
 public class PuppetController /*extends GenericController*/{
@@ -61,8 +64,7 @@ public class PuppetController /*extends GenericController*/{
 
 	@RequestMapping("/generate/{nodeName}")
 	@ResponseBody
-	public void generateManifest(@PathVariable String nodeName)
-			throws ImagingOpException, IOException {
+	public Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
 		if (nodeName==null || "".equals(nodeName)){
 			throw new IllegalArgumentException("Node name is not set");
@@ -72,8 +74,10 @@ public class PuppetController /*extends GenericController*/{
 		fileService.generateSiteFile();
 		logger.debug("site.pp OK");
 		
-		fileService.generateManifestFile(nodeName);
+		Node node = fileService.generateManifestFile(nodeName);
 		logger.debug("nodes pp files OK");
+		
+		return node;
 	}
 	
 	@RequestMapping("/test")

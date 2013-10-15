@@ -22,7 +22,13 @@
     
     <!-- SpringFramework logger -->
      <logger name="org.springframework" additivity="false">
-        <level value="error" />
+        <level value="debug" />
+        <appender-ref ref="puppetwrapper" />
+    </logger>
+    
+    <!-- SpringFramework logger -->
+     <logger name="org.springframework.web.context.ContextLoader" additivity="false">
+        <level value="debug" />
         <appender-ref ref="puppetwrapper" />
     </logger>
 

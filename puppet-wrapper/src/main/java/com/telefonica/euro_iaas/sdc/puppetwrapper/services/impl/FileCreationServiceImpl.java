@@ -28,10 +28,9 @@ public class FileCreationServiceImpl implements FileCreationService {
 	@Resource
 	private FileManager fileManager;
 
-	@Value("${defaultManifestsPath}")
 	private String defaultManifestsPath;
 
-	public void generateManifestFile(String nodeName) throws IOException {
+	public Node generateManifestFile(String nodeName) throws IOException {
 		
 		logger.info("creating Manifest file for node: "+nodeName);
 
@@ -61,6 +60,8 @@ public class FileCreationServiceImpl implements FileCreationService {
 		}
 		
 		logger.debug("Manifest file created");
+		
+		return node;
 
 	}
 
@@ -70,6 +71,9 @@ public class FileCreationServiceImpl implements FileCreationService {
 		
 		String fileContent = fileManager.generateSiteStr();
 
+		logger.debug("site content: "+ fileContent);
+		logger.debug("defaultManifestsPath: "+defaultManifestsPath);
+		
 		try {
 			PrintWriter writer = new PrintWriter(defaultManifestsPath
 					+ "site.pp", "UTF-8");
@@ -81,6 +85,11 @@ public class FileCreationServiceImpl implements FileCreationService {
 		}
 		
 		logger.debug("Site.pp file created");
+	}
+	
+	@Value(value= "${defaultManifestsPath}" )
+	public void setDefaultManifestsPath(String defaultManifestsPath) {
+		this.defaultManifestsPath = defaultManifestsPath;
 	}
 
 }
