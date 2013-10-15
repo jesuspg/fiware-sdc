@@ -199,11 +199,11 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!-- to test a release set to true -->
-                    <noDeploy>true</noDeploy>
+                    <noDeploy>false</noDeploy>
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
-                    <pushChanges>false</pushChanges>
+                    <pushChanges>true</pushChanges>
                     <!-- rse: To keep release branch -->
                     <keepBranch>true</keepBranch>
                     <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
