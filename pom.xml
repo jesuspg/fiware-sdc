@@ -199,7 +199,7 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!-- to test a release set to true -->
-                    <noDeploy>false</noDeploy>
+                    <noDeploy>true</noDeploy>
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
