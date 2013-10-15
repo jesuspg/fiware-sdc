@@ -57,7 +57,7 @@ public class BaseInstallableInstanceManager {
         //Recipe to be executed is assigned to the node as well as attributes
         configureNode(vm, attributes, process, recipe);
         try {
-            System.out.println("Executing recipe " + recipe + " in " + vm.getIp());
+            System.out.println("Updating node with recipe " + recipe + " in " + vm.getIp());
             isRecipeExecuted(vm, process, recipe);
             //executeRecipes(vm);
             // unassignRecipes(vm, recipe);
@@ -158,7 +158,7 @@ public class BaseInstallableInstanceManager {
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
                 //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
                 //hasRecipe = node.hasRecipe(recipe);
-                if (node.getAttributes().containsKey(process)) {
+                if ((node.getAttributes().containsKey(process)) && (node.getAttributes().containsKey("platform"))) {
                     isExecuted = true;
                 }
                 

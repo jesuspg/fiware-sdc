@@ -102,6 +102,7 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
 
         ChefNode chefNode = new ChefNode();
         chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addAttribute("platform", "dd", "dd");
         chefNode.addAttribute(installRecipe, "dd", "dd");
         chefNode.addRecipe(installRecipe);
         

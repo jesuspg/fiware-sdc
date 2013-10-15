@@ -99,6 +99,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         ChefNode chefNode = new ChefNode();
         chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addAttribute("platform", "dd", "dd");
         chefNode.addAttribute(deployacrecipe, "dd", "dd");
         chefNode.addAttribute(undeployacrecipe, "dd", "dd");
         
