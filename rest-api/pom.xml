@@ -1,28 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.telefonica.euro_iaas</groupId>
+
     <artifactId>sdc-server-rest-api</artifactId>
     <packaging>war</packaging>
     <name>sdc-server-rest-api</name>
-    <version>0.1.3</version>
+
+
+    <parent>
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>sdc-server</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <properties>
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-702.jdbc4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>sdc-server-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-core</artifactId>
-            <version>0.1.3</version>
+            <version>${project.version}</version>
         </dependency>
-        <!--JERSEY DEPENDENCIES-->
+
+        <!--  CORS FILTER -->
+        <dependency>
+            <groupId>com.thetransactioncompany</groupId>
+            <artifactId>java-property-utils</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>cors-filter</artifactId>
+            <version>1.3.4</version>
+        </dependency>
+        <!--JERSEY DEPENDENCIES -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.6</version>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-spring</artifactId>
-            <version>1.6</version>
+            <version>1.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -46,25 +110,51 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--/JERSEY DEPENDENCIES-->
+        <!--/JERSEY DEPENDENCIES -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.6</version>
-            <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.1</version>
-            <scope>test</scope>
+        </dependency>
+
+        <!-- SPRINC SECURITY DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 
@@ -72,35 +162,42 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+                <artifactId>maven-site-plugin</artifactId>
+
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                        </plugin>
+                    </reportPlugins>
                 </configuration>
             </plugin>
-
-
+            <!-- Modulo de validacion de token -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.8.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <scmCommentPrefix>[CLAUDIA-1]</scmCommentPrefix>
+                    <strict>false</strict>
+                    <verbose>true</verbose>
+                    <schemaDirectory>${basedir}/src/main/resources/keystone/</schemaDirectory>
                 </configuration>
             </plugin>
-
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.codehaus.enunciate</groupId>
                 <artifactId>maven-enunciate-plugin</artifactId>
-
+                <version>1.23</version>
                 <configuration>
                     <configFile>src/build/enunciate.xml</configFile>
+            <docsDir>${project.build.directory}/docs</docsDir>
                     <exports>
                         <jaxws.client.library.binaries>client.jar</jaxws.client.library.binaries>
                     </exports>
@@ -108,67 +205,13 @@
                 <executions>
                     <execution>
                         <goals>
+            <goal>docs</goal>
                             <goal>assemble</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>  -->
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <repositories>
-        <repository>
-            <id>maven2-repository.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>maven-repository.java.net</id>
-            <name>Java.net Maven 1 Repository (legacy)</name>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-        </repository>
-	<repository> 
-		<id>${repoMavenId}</id> 
-		<name>${repoMavenName}</name> 
-		<url>${repoMavenUrl}</url> 
-	</repository>
-
-    </repositories>
-
-    <!--
-        ===================================== Distribution Management ====
-    -->
-    <distributionManagement>
-        <!-- Repositorio para hacer el deploy de las releases -->
-        <repository>
-            <id>${repoMavenId}</id>
-            <name>${repoMavenName}</name>
-            <url>${repoMavenUrl}</url>
-        </repository>
-        <!--Don't want deploy snapshots -->
-        <!--
-            <snapshotRepository> <id>${repoMavenSnapshotId}</id>
-            <name>${repoMavenSnapshotName}</name>
-            <url>${repoMavenSnapshotUrl}</url> </snapshotRepository>
-        -->
-        <!-- Maquina donde se publica el site del proyecto -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}/${project.version}
-               </url>
-        </site>
-    </distributionManagement>
 </project>

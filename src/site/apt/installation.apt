@@ -6,12 +6,25 @@ Installation guide
   a database manager. In development we will use <<<Tomcat>>> as J2EE server and <<<Postgresql>>>
   as database management.
 
+** Java installation
+   
+   The first step is to install java (jsun-java6). In Ubuntu 10.04 we follow these steps.
+   JRE_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26
+
++-------   
+apt-get install python-software-properties   
+add-apt-repository "deb http://archive.canonical.com/ lucid partner"
+apt-get update
+apt-get install sun-java6-jre sun-java6-bin sun-java6-jdk sun-java6-plugin sun-java6-fonts
++-------
+
 ** Tomcat installation
 
-  The choosen version during the development process will be 7.X.X
+  The chosen version during the development process will be 7.X.X
   {{{http://apache.rediris.es/tomcat/tomcat-7/v7.0.12/bin/apache-tomcat-7.0.12.zip}
-  availbale on the website}}.
+  available on the website}}.
   You only need to extract the files and run the startup and shutdown scripts.
+  The installation directory will be /opt
 
 +-------
     $PROMT: $CATALINA_HOME/bin/catalina run (run tomcat)
@@ -28,15 +41,126 @@ Installation guide
 
   We also shall create a new database to store the persistence data. The system
   is in charge to create the tables on first deploy so only is needed the empty
-  database.
+  database. The name of the database should be <<sdc>> and the username and password 
+  to access <<postgres>>
+
++-------
+apt-get install postgreql
+sudo -u postgres psql postgres
+\password postgres
+postgres
+sudo -u postgres createdb sdc
++----------  
 
   Finally we need to add the jdbc connector in Tomcat library. To do that,
   {{{http://jdbc.postgresql.org/}download}} the connector from and store in
    <<$CATALINA_HOME/lib>>.
 
 
-** Chef installation
+** WebDav installation
+    
+   These instructions are based on {{{http://www.debian-administration.org/articles/285}Web Dav how to install}}
 
+   
+   The webdav  is the component of the SDC-Server that stores the installables of
+   the available software (products and applications) to be installed in the nodes.
+   
+   Make sure Apache2 is installed and the optional DAV modules are enabled
+
++-------
+apt-get install apache2
+a2enmod dav_fs
+a2enmod dav
++----------   
+   
+   Create a Virtual host in /etc/apache2/sites-available/sdc.com
+
++-------
+<VirtualHost *:80>
+        ServerAdmin webmaster@example.com
+        ServerName 109.231.82.11
+
+        DocumentRoot /opt/sdc/webdav
+        <Directory /opt/sdc/webdav>
+                Options Indexes MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+</VirtualHost>
++----------  
+
+   We need now to create the directory where all the files managed by our WebDav 
+   are going to be:
+
++-------
+mkdir /opt/sdc/webdav
+chown www-data /opt/sdc/webdav
+a2ensite sdc.com
+apache2ctl configtest
+/etc/init.d/apache2 reload
++-------
+   
+   Now we are interested in setup a Basic Authentication mechanism in our WebDav
+   server. Enable the authentication module and create the password file
+
++-------
+htpasswd -c /etc/apache2/passwd/passwords root
++-------
+   
+   You will be prompted to introduce the password: <<temporal>>
+   
+   After, we introduce the WebDAV section into the Virtual host:
+   
++-------
+# Note Alias goes to our DocumentRoot.
+Alias /webdav /opt/sdc/webdav
+
+# But we apply different settings
+<Location /webdav>
+    Dav on
+    AuthType Basic
+    AuthName "SDC Server Webdav"
+    AuthUserFile /etc/apache2/passwd/passwords
+    Require user root
+ </Location>
+
++-------
+
+   We reconfigure apache and reload it
+
++-------
+apache2ctl configtest
+/etc/init.d/apache2 reload
++-------
+
+   In order to test if the webdav has been configured in a good way, we use
+   the cadaver webdav client
+
++-------
+apt-get install cadaver
+cadaver http://109.231.82.11/webdav/
++-------
+    
+    Finally, create the directories <<product>> and <<application>> in the webdav.
+    This directories will be visible trough the url:
+
++-------
+http://109.231.82.11/webdav/product
+http://109.231.82.11/webdav/application
++-------
+   
+   
+   Useful References:
+   
+   {{{http://www.debian-administration.org/articles/285}Web Dav how to install}}
+   
+   {{{http://httpd.apache.org/docs/2.0/mod/mod_dav.html}mod_dav apache2 module}}
+   
+   {{{ http://www.webdav.org/cadaver/}Cadaver Website}}
+  
+
+** Chef installation in SDC Server machine
 *** Using the script
 
   Simply {{{./install_chef_knife.sh}download}} the script and execute it .
@@ -108,6 +232,150 @@ knife client list
 ]
 +----------
 
+** Chef Server installation in SDC Server machine
+
+  Please go to the official site 
+  {{{http://wiki.opscode.com/display/chef/Installing+Chef+Server+on+Debian+or+Ubuntu+using+Packages} Installation Guide }}
+  
+  Ubuntu 10.04 in Telefonica Private Cloud (hostname: chefserver)
+  
+  Installing chef-server using the Opscode provided packages for Debian and Ubuntu requires that you:
+
+  [[1]]Add the Opscode Apt Repository to your apt sources and 
+       before you install the packages, make sure you add the Opscode GPG key to apt.
+
++---------- 
+echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
++----------
+
+    The next step did not work
+    
++----------
+sudo mkdir -p /etc/apt/trusted.gpg.d
+gpg --keyserver keys.gnupg.net --recv-keys 83EF826A
+gpg --export packages@opscode.com | sudo tee /etc/apt/trusted.gpg.d/opscode-keyring.gpg > /dev/null
++----------
+    
+    and we executed teh following one instead:
+
++----------    
+wget -qO - http://apt.opscode.com/packages@opscode.com.gpg.key | apt-key add -
++----------
+
+    proceed with the update of the surces list and the upgrade of the libraries
+    
++----------
+apt-get update
+apt-get upgrade
++----------
+    
+  [[2]]Install the chef-server package and its dependencies
+  
++----------
+sudo apt-get install chef chef-server
++----------
+
+    The following quesions appear in the installation process:
+    
+    chefservr_url: http://10.95.107.48:4000
+    Rabbit password for chef user: claudia
+    Chef server WebUi passwrod for admin user: claudia
+  
+  [[3]]Verify the installation succeeded, and
+  
++----------
+Name     Listen Port     Example Program Name in ps (Erlang programs truncated)
+Chef Server  4000   merb : chef-server (api) : worker (port 4000)
+Chef Server WebUI    4040   merb : chef-server-webui : worker (port 4040)
+CouchDB  5984   beam.smp -Bd -K true – -root /usr/local/lib/erlang -progname erl – -noshell -noinput -couch_ini /usr/local/etc/couchdb/default.ini /usr/local/etc/couchdb/local.ini -s couch
+RabbitMQ     5672    {{beam.smp -W w -K true -A30 – -root /usr/local/lib/erlang -progname erl – -noshell -noinput -s rabbit -sname 
+rabbit -rabbit tcp_listeners [{"0.0.0.0", 5672}]}}
+Chef Solr    8983   /usr/bin/java -Xmx250M -Xms250M -Dsolr.data.dir=/opscode/chef/features/data/solr/data -Dsolr.solr.home=/opscode/chef/features/data/solr/home -jar /opscode/chef/features/data/solr/jetty/start.jar
+Chef Expander   none    ruby ./chef-solr/bin/chef-expander -c /etc/chef/solr.rb -l debug
++----------
+
+  [[4]]Complete the Post-Install configuration
+  
+  First, create the ~/.chef directory and copy the required certificates created by the server.
+
++----------
+mkdir -p ~/.chef
+sudo cp /etc/chef/validation.pem /etc/chef/webui.pem ~/.chef
+sudo chown -R $USER ~/.chef 
++----------
+  
+  Next run the knife configure command, and pass the -i flag so the initial client that will be used to authenticate with the API.
+  
++----------
+chef-server > knife configure -i
+Where should I put the config file? [~/.chef/knife.rb] 
+Please enter the chef server URL: [http://localhost:4000] 
+Please enter a clientname for the new client: [bob]
++----------
+
+  API Client creation must use an existing admin client's credentials to create the new account. On a brand new server, the chef-webui is created by chef-server-api startup. Use the default for the clientname, and specify the webui.pem copied above.
+
++----------
+Please enter the existing admin clientname: [chef-webui] 
+Please enter the location of the existing admin client's private key: [/etc/chef/webui.pem] .chef/webui.pem
++----------
+
+  The "chef-validator" client is a special account used to auto-register new nodes. Use the default clientname, and specify the validation.pem copied above.
+
++----------
+Please enter the validation clientname: [chef-validator] 
+Please enter the location of the validation key: [/etc/chef/validation.pem] .chef/validation.pem
++----------
+  
+  Finally, specify a location for the Chef Repository. This is used to configure knife to point to the directory where Cookbooks will be stored.
+
++----------
+Please enter the path to a chef repository (or leave blank): 
+WARN: Creating initial API user...
+INFO: Created (or updated) client[bob]
+WARN: Configuration file written to /home/bob/.chef/knife.rb
++----------
+
+  You can now run some basic knife commands to verify that you can communicate with the server.
+
++----------
+chef-server> knife client list
+  chef-webui
+  bob
+  chef-validator
+chef-server> knife cookbook list
++----------
+
+  Finnaly set the COOKBOOK_PATH in the knife.rb file located at /root/.chef/knife.rb
+  by insertng the following line:
+
++----------
+cookbook_path            ["/root/chef-repo/cookbooks"]
++----------
+
+  If chef server WebUI was not up and running, please execute
+  
++----------
+/etc/init.d/chef-server-webui start
++----------
+
+    After finishing the installation, check that rabbit is well configured. You should 
+    allow chef username to be allowed to access rabbitserver. Check the following url for that
+
++----------
+http://jonathanpolansky.com/2010/10/chef-server-connection-failed-to-rabbitmq-using-bunny-protocol-as-user-chef/
++----------
+
+    Basically, you have to execute the follosing commands
+ 
++----------
+# rabbitmqctl add_vhost /chef
+# rabbitmqctl add_user chef <password>
+# rabbitmqctl set_permissions -p /chef chef ".*" ".*" ".*"
++----------   
+    
+    where <password> appears in file /etc/chef/server.rb  in amqp_pass line
+
 * SDC-Server installation
 
   Once the prerequisites are satisfied, you shall create the context file. To do
@@ -131,6 +399,59 @@ knife client list
   {{{./downloads/sdc-server-dist-bin.zip} dist file}} (in folder /opt/sdc/scripts/)
   in the same folder (or everywhere you want if you prefer to change the default
   configuration).
+  
+  Include the library postgresql-8.4-702.jdbc4.jar in $CATALINA_HOME/lib
+
+  The last step is configure the system to log into Chef Server. To do that, the only
+  thing shall do is to create a client thowugh the web-ui:
+
++---- 
+ http://chefserver.h.inet:4040/clients and generate a Private key of suche client:
++----
+
+  The client and the file should be updated in the SystemConfiguration.properties 
+  of the sdc-server:
+
++----
+chefClientId = sdcserver
+chefClientPass = /opt/sdc/private.pem
++----
+
+  Locate the pem file containig the Clien's  private key in chefClientPass location.
+  It is very important to note that the client should have admin privileges in the Chef-Server
+  
+  Create the directory /root/chef-repo/cookbooks as the working chef directory 
+  to upload/delete product/application recipes
+
+  It is also needed to provide the installables in the WebDav repository installed.
+  So far, due to the fact that the recipes done are in a testing mode, the WebDav structure
+  associated to each product/application should be done manually:
+  
+  Tomcat need the following structure 
+
++----
+  product/tomcat/7/tomcat7-bin.tar
+  product/tomcat/6/tomcat6-bin.tar
+  product/tomcat/5.5/tomcat5.5-bin.tar
++----
+
+  and this structure can be done leaving the installables in /tmp directory and using 
+  the <<cadaver>> WebDav client ( <<cadaver http://109.231.82.11/webdav>> command
+  <<root/temporal>> and with <<mkdir>> and <<put>> commands)
+  
+  Sdc need the following structure (proceed in a similar way as with tomcat)
+  
++----
+  application/sdc/1.0.0/install/postgresql-8.4-702.jdbc4.jar
+  application/sdc/1.0.0/install/sdc-postgres.sh
+  application/sdc/1.0.0/install/sdc-server-rest-api.war
+  application/sdc/1.0.0/uninstall/uninstall-sdc-postgres.sh
++----
+
+  Postgresql does not need any structure since the installatin/uninstallation
+  is done via apt-get taking the packages directy form debian repo.
+  
+
 
   Finally, run Tomcat and enjoy!!!
 

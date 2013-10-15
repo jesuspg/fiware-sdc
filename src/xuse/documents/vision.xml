@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xuse:document
+        xmlns:xuse="http://xuse.sourceforge.net"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:xi="http://www.w3.org/2001/XInclude"
+        document-type="vision-document"
+        model-version="1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/document.xsd">
+
+
+    <xuse:document-information>
+        <xuse:title>ACME Online Vision Document</xuse:title>
+        <xuse:author>Michael</xuse:author>
+        <xuse:project>ACME Online</xuse:project>
+        <xuse:document-reference>9245-1A</xuse:document-reference>
+        <xuse:owner>Mrs. Head of Department</xuse:owner>
+        <xuse:customer>ACME Plc.</xuse:customer>
+        <xuse:release>Apples</xuse:release>
+    </xuse:document-information>
+    <xuse:document-history current-version="$Revision: 1.9 $">
+        <xuse:version>
+            <xuse:revision>1.1</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-14</xuse:change-date>
+            <xuse:description>Initial Draft</xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.2</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-15</xuse:change-date>
+            <xuse:description>Created outline structure</xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.3</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-15</xuse:change-date>
+            <xuse:description>Added content for background section.</xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.4</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-15</xuse:change-date>
+            <xuse:description>Added business objectives.</xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.5</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-16</xuse:change-date>
+            <xuse:description>Completed business requirements section, added vision statement and constraints.
+            </xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.7</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-22</xuse:change-date>
+            <xuse:description>Importing content via XInclude.</xuse:description>
+        </xuse:version>
+        <xuse:version>
+            <xuse:revision>1.8</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-22</xuse:change-date>
+            <xuse:description>Externalising more content via XInclude.</xuse:description>
+        </xuse:version>
+    </xuse:document-history>
+
+    <!--
+        Use XInclude instruction to import the whole introduction section from stock content
+        See "appendix-a" below for an example of how to import a single paragraph
+    -->
+    <xi:include href="../resources/stock-section-content.xml" xpointer="vision-intro-section"/>
+
+    <xuse:section id="business-requirements" title="Business Requirements">
+        <xuse:section id="background" title="Background">
+            <xuse:p>
+                <xuse:customer/>
+                has operated in the retail space for over thirty years supplying goods to customers via mail or
+                telephone.
+                With the advent of the internet
+                <xuse:customer/>
+                quickly realised that they would have to provide an internet based sales
+                channel in order to maintain their market position.
+            </xuse:p>
+            <xuse:p>
+                In 2002
+                <xuse:customer/>
+                embarked on a project to build a web channel for their services - they did this with their in-house IT
+                department.
+                Whilst this solution provided
+                <xuse:customer/>
+                with a web sales channel it had several shortcomings:
+                <xhtml:ol>
+                    <xhtml:li>It did not integrate with the backoffice system.
+                        <xhtml:ul>
+                            <xhtml:li>It did not allow users to track orders.</xhtml:li>
+                            <xhtml:li>Manual effort was spent re-keying orders into the back office system.</xhtml:li>
+                            <xhtml:li>Manual effort is expended by
+                                <xuse:customer/>
+                                answering customer queries about their order status.
+                            </xhtml:li>
+                        </xhtml:ul>
+                    </xhtml:li>
+                    <xhtml:li>Users could not create an account and had to re-type invoice/delivery address details etc.
+                        every time they visited.
+                    </xhtml:li>
+                    <xhtml:li>Usability issues were reported by end users.</xhtml:li>
+                    <xhtml:li>It is now quite dated an does not take advantage of lastest developments in technology.
+                    </xhtml:li>
+                </xhtml:ol>
+            </xuse:p>
+            <xuse:p>
+                Recently
+                <xuse:customer/>
+                has been losing market share to some of its competitors who have a more streamlined internet sales
+                operation.
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="business-opportunity" title="Business Opportunity">
+            <xuse:p>
+                <xuse:customer/>
+                realise that they need to invest in their online sales channel or face a further decline in their market
+                share. They
+                view a revamped online offering that integrates with the backend CRM not only as an opportunity to
+                improve their online presence and thus improve sales,
+                but also as a way of reducing internal costs such that they can offer goods and services at more
+                competitive prices. Additionally - should they regain market share - they
+                will be in a better negotiating position with suppliers such that they can further improve their margin.
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="business-objectives" title="Business Objectives and Success Criteria">
+            <xuse:requirements-list xuse:detail="title-only" sort-order="id" category="business success-criteria"
+                                    level="1"/>
+        </xuse:section>
+        <xuse:section id="needs" title="Customer/Market Needs">
+            <xuse:p>The online retail market is now fairly mature. There is an expectation that:
+                <xhtml:ul>
+                    <xhtml:li>User's can add, remove save one or more items in a shopping cart.</xhtml:li>
+                    <xhtml:li>Save some items for another visit.</xhtml:li>
+                    <xhtml:li>Recommend item's to a friend or add them to a wish list.</xhtml:li>
+                    <xhtml:li>Be able to review the status of current and historical orders.</xhtml:li>
+                    <xhtml:li>Be able to review the products and the merchants.</xhtml:li>
+                </xhtml:ul>
+            </xuse:p>
+            <xuse:p>
+                Additionally purchase to pay supply chains are typically electronic with suppliers being able to
+                recieve, process, dispatch and invoice electronically. These functions should operate
+                seemlessly with<xuse:customer/>'s CRM system that interfaces with<xuse:project/>.
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="risks" title="Business Risks">
+            <xuse:p>
+                <xhtml:ol>
+                    <xhtml:li>There is a risk that the adverse publicity of the existing system will mean that it is
+                        difficult to attract new users to the online store resulting in a further reduction in market
+                        share and the possibility that some suppliers will terminate their contract with<xuse:customer/>
+                        .
+                    </xhtml:li>
+                    <xhtml:li>There is a risk that mechants/suppliers will prefer to use the existing (human) channels
+                        to track orders resulting in no cost benefit from the new system.
+                    </xhtml:li>
+                    <xhtml:li>There is a risk that poor integration between the
+                        <xuse:project/>
+                        solution and the existing CRM system could cause issues that affect all sales channels - not
+                        just those made online.
+                    </xhtml:li>
+                    <xhtml:li>There is a risk that staff currently performing re-keying and supplier managment roles may
+                        not want to be retrained for other roles resulting in discontentment and (worst case) legal
+                        proceedings.
+                    </xhtml:li>
+                </xhtml:ol>
+            </xuse:p>
+        </xuse:section>
+    </xuse:section>
+    <xuse:section id="vision" title="Vision of the Solution">
+        <xuse:section id="vision-statement" title="Vision Statement">
+            <xuse:p higlight="true">
+                <xuse:project/>
+                will relaunch the
+                <xuse:customer/>
+                brand and online presence, providing users with a pleasurable and secure online shopping experience
+                that increases their confidence in the ability of
+                <xuse:customer/>
+                to deliver the right goods every time. Furthermore
+                <xuse:project/>
+                will reduce internal
+                costs, improve supplier management and become the most important sales platform of the company.
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="features" title="Major Features">
+            <xuse:p>The list below shows the features that
+                <xuse:project/>
+                will provide.
+            </xuse:p>
+            <xuse:feature-list/>
+        </xuse:section>
+        <xuse:section id="assumptions-and-dependencies" title="Assumptions and Dependencies">
+            <xuse:requirements-list xuse:detail="title-only" sort-order="id" category="assumption constraint"
+                                    level="1"/>
+        </xuse:section>
+    </xuse:section>
+    <xuse:section id="scope-and-limitations" title="Scope and Limitations">
+        <xuse:section id="scope-of-next-release" title="Scope of Initial Release">
+            <xuse:p>
+                Release-1 consists of the minimal functionality required to permit users to place orders with the new
+                system. It will not allow buyers the ability to
+                track orders, likewise suppliers/merchants will not be able to report on or manage their sales via
+                <xuse:project/>.
+            </xuse:p>
+            <xuse:p>
+                The full contents of relase-1 are summarised in<xuse:section-ref section-id="appendix-b"/>.
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="scope-of-upcoming-releases" title="Scope of Subsequent Releases">
+            <xuse:p>The remainder of the use-cases and requirements will be delivered in release-2.</xuse:p>
+        </xuse:section>
+        <xuse:section id="limitations-and-exclusions" title="Limitations and Exclusions">
+            <xuse:p>There are no limitations and exclusions.</xuse:p>
+        </xuse:section>
+    </xuse:section>
+    <xuse:section id="business-context" title="Business Context">
+        <xuse:section id="stakeholder-profiles" title="Stakeholder Profiles">
+            <xuse:stakeholder-list/>
+        </xuse:section>
+        <xuse:section id="priorities" title="Project Priorities">
+            <xuse:section id="project-timeline" title="Project Timeline">
+                <xuse:p>Release-1 shall be operational by Q3<xuse:current-year/>.
+                </xuse:p>
+            </xuse:section>
+            <xuse:section id="staffing" title="Project resourcing">
+                <xuse:p>The project team is expected to consist of:
+                    <xhtml:ul>
+                        <xhtml:li>1 project manager</xhtml:li>
+                        <xhtml:li>1 Business Analyst</xhtml:li>
+                        <xhtml:li>1 Archiect designer</xhtml:li>
+                        <xhtml:li>3 developers</xhtml:li>
+                        <xhtml:li>2 functional test engineers</xhtml:li>
+                        <xhtml:li>1 performance and reilience test engineer.</xhtml:li>
+                        <xhtml:li>1 live service (4th line) support enginner</xhtml:li>
+                    </xhtml:ul>
+                </xuse:p>
+            </xuse:section>
+            <xuse:section id="cost" title="Project costs">
+                <xuse:p>Project costs are managed in a seperate document.</xuse:p>
+            </xuse:section>
+            <xuse:section id="quality" title="Quality">
+                <xuse:p>95% of functional, non-functional tests must have passed unit, system and UAT test phases. All
+                    severity 1 and 2 defects will be resolved prior to live operations.
+                </xuse:p>
+            </xuse:section>
+        </xuse:section>
+        <xuse:section id="operating-environment" title="Operating Environment">
+            <xuse:p>
+                <xuse:project/>
+                will be developed in Java and be deployed on a complaint J2EE appserver running on Linux. As this
+                application is busines critical to
+                <xuse:customer/>
+                it will be deployed across two remote sites with both intra and inter-site redundancy.
+            </xuse:p>
+            <xuse:p>The client environment cannot be managed or controlled. The application must run smoothly and
+                reliably on all common combinations of OS and browser such that 98% of the target demographic are able
+                to use the site reliably and securely.
+            </xuse:p>
+        </xuse:section>
+    </xuse:section>
+    <xuse:section id="use-cases" title="All Use-cases">
+        <xuse:use-case-list xuse:detail="description" sort-order="package"/>
+    </xuse:section>
+    <xuse:section id="appendix-a" title="Appendix A: High level requirements">
+        <!-- Import standard paragraph using XInclude -->
+        <xi:include href="../resources/stock-paragraph-content.xml" xpointer="vision-high-level-reqs"/>
+        <xuse:requirements-list xuse:detail="description" level="1" sort-order="category"
+                                category="functional non-functional"/>
+    </xuse:section>
+    <xuse:section id="appendix-b" title="Appendix B: Release 1 scope">
+        <xuse:p>Full contents of release-1.</xuse:p>
+        <xuse:section title="Use-cases" id="r1-use-cases">
+            <xuse:use-case-list xuse:detail="description" sort-order="package" taxonomy="target-release=release-1"/>
+        </xuse:section>
+        <xuse:section title="Requirements" id="r1-requirements">
+            <xuse:requirements-list xuse:detail="description" sort-order="id" category="functional non-functional"
+                                    taxonomy="target-release=release-1"/>
+        </xuse:section>
+    </xuse:section>
+</xuse:document>

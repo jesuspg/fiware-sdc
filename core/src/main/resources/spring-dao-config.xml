@@ -2,7 +2,6 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
         default-autowire="no">
@@ -11,15 +10,15 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductDaoJpaImpl"/>
     <bean id="productInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
-    <bean id="applicationDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationDaoJpaImpl"/>
-    <bean id="applicationInstanceDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationInstanceDaoJpaImpl"/>
+    <bean id="artifactDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ArtifactDaoJpaImpl"/>  
     <bean id="osDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.OSDaoJpaImpl"/>
     <bean id="productReleaseDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductReleaseDaoJpaImpl"/>
-    <bean id="applicationReleaseDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ApplicationReleaseDaoJpaImpl"/>
+    <bean id="taskDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.TaskDaoJpaImpl"/>
+    <bean id="nodeCommandDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.NodeCommandDaoJpaImpl"/>
 
 </beans>

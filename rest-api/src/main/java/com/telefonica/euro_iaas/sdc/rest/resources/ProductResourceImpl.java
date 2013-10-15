@@ -1,6 +1,14 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
 
@@ -8,36 +16,47 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 
 /**
- * default ProductResource implementation
- *
+ * default ProductResource implementation.
+ * 
  * @author Sergio Arroyo
- *
  */
 @Path("/catalog/product")
 @Component
 @Scope("request")
 public class ProductResourceImpl implements ProductResource {
 
-    @InjectParam("productManager")
+    // @InjectParam("productManager")
     private ProductManager productManager;
+
+    private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
+
+    /**
+     * Insert a product into SDC Databse.
+     * 
+     * @param product
+     * @return product
+     */
+    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+        return productManager.insert(product);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Product> findAll(Integer page, Integer pageSize,
-            String orderBy, String orderType) {
+    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
         ProductSearchCriteria criteria = new ProductSearchCriteria();
 
         if (page != null && pageSize != null) {
@@ -65,8 +84,7 @@ public class ProductResourceImpl implements ProductResource {
      * {@inheritDoc}
      */
     @Override
-    public List<Attribute> loadAttributes(String name)
-            throws EntityNotFoundException {
+    public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
         return productManager.load(name).getAttributes();
     }
 
@@ -74,56 +92,33 @@ public class ProductResourceImpl implements ProductResource {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductRelease> findAll(String name, Integer page,
-            Integer pageSize, String orderBy, String orderType) {
-        ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
-
-        if (!StringUtils.isEmpty(name)) {
-            try {
-                Product product = productManager.load(name);
-                criteria.setProduct(product);
-            } catch (EntityNotFoundException e) {
-                throw new SdcRuntimeException("Can not find the application "
-                        + name, e);
-            }
-        }
-
-        if (page != null && pageSize != null) {
-            criteria.setPage(page);
-            criteria.setPageSize(pageSize);
-        }
-        if (!StringUtils.isEmpty(orderBy)) {
-            criteria.setOrderBy(orderBy);
-        }
-        if (!StringUtils.isEmpty(orderType)) {
-            criteria.setOrderBy(orderType);
-        }
-        return productManager.findReleasesByCriteria(criteria);
+    public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
+        return productManager.load(name).getMetadatas();
     }
 
     /**
-     * {@inheritDoc}
+     * Delete the Product Resource.
+     * 
+     * @param name
+     * @throws ProductReleaseNotFoundException
+     * @throws ProductReleaseStillInstalledException
      */
-    @Override
-    public ProductRelease load(String name, String version)
-            throws EntityNotFoundException {
-        Product product = productManager.load(name);
-        return productManager.load(product, version);
+    public void delete(String name) throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException {
+        Product product;
+        try {
+            product = productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            throw new ProductReleaseNotFoundException(e);
+        }
+        productManager.delete(product);
     }
 
     /**
-     * {@inheritDoc}
+     * @param productManager
+     *            the productManager to set
      */
-    @Override
-    public List<Attribute> loadAttributes(String name, String version)
-            throws EntityNotFoundException {
-        return load(name, version).getAttributes();
-    }
-
-    @Override
-    public List<ProductRelease> findTransitable(String name, String version)
-            throws EntityNotFoundException {
-        return load(name, version).getTransitableReleases();
+    public void setProductManager(ProductManager productManager) {
+        this.productManager = productManager;
     }
 
 }

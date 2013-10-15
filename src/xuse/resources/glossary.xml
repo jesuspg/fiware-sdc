@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xuse:glossary
+        xmlns:xuse="http://xuse.sourceforge.net"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/glossary.xsd" model-version="1.0">
+
+    <xuse:entry type="Product">
+        <xuse:title>Product</xuse:title>
+        <xuse:description>
+            A product represents an installable unit wich works as a single program.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="ProductRelease">
+        <xuse:title>ProductRelease</xuse:title>
+        <xuse:description>
+            A product release represents a concrete version of a given product.
+            This way, with different versions, we have different properties, like
+            default configuration or OS compatibility.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="ProductInstance">
+        <xuse:title>ProductInstance</xuse:title>
+        <xuse:description>
+            An instance of a product release represents the installation of a release
+            in a given VM.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="SearchCriteria">
+        <xuse:title>ProductInstanceSearchCriteria</xuse:title>
+        <xuse:description>
+            In order to find some products, the system provides a mechanism to
+            search by a criteria.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="Application">
+        <xuse:title>Application</xuse:title>
+        <xuse:description>
+            An application represents an installable unit wich need one or more
+            products to be installed and working
+            (i.e. a web application like wordpress or hudson, etc.).
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="ApplicationRelease">
+        <xuse:title>ApplicationRelease</xuse:title>
+        <xuse:description>
+            Represents a concrete version of an Application. It could be installed
+            in a list of product releases.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="ApplicationInstance">
+        <xuse:title>ApplicationInstance</xuse:title>
+        <xuse:description>
+            When an ApplicationRelease is installed on a given VM the System creates
+            an ApplicationInstance.∫
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="SearchCriteria">
+        <xuse:title>ApplicationInstanceSearchCriteria</xuse:title>
+        <xuse:description>
+            In order to find some applications, the system provides a mechanism to
+            search by a criteria.
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="SearchCriteria">
+        <xuse:title>SearchCriteria</xuse:title>
+        <xuse:description>
+            In order to find a collection of any kind of elements,
+            the system provides a mechanism to make a pagination and ordenation.
+            It consists in some attributes listed bellow:
+            <xhtml:ul>
+                <xhtml:li>Page size</xhtml:li>
+                <xhtml:li>Page number</xhtml:li>
+                <xhtml:li>Order by field</xhtml:li>
+                <xhtml:li>Order type</xhtml:li>
+            </xhtml:ul>
+        </xuse:description>
+    </xuse:entry>
+
+    <xuse:entry type="Convention">
+        <xuse:title>FSMValidationConvention</xuse:title>
+        <xuse:description>
+            In order to assure the State Finite Machine that represents the
+            instances (both product and application) life cycle System provides a
+            mechanism to validate whether possible actions on instances could be
+            performed. It means, every use case defined in provisioning package
+            shall be implicit exception flow to define this validation.
+        </xuse:description>
+    </xuse:entry>
+
+
+</xuse:glossary>

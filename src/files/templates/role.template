@@ -1,5 +1,0 @@
-name "role-<hostname>-<cookbook>"
-description " This role aims to overwrite cookbook  attributes of <cookbook> cookbook associated to the node <hostname> by defining override attributes "
-run_list "recipe[<cookbook>]"
-override_attributes "<process>" => { "<attributename>"  => <attributevalue> }
-

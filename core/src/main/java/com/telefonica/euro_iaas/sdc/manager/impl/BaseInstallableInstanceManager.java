@@ -1,200 +1,156 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.ASSING_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_ATTRIBUTES_LEFT_LIMITER;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_ATTRIBUTES_RIGHT_LIMITER;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_ATTRIBUTES_SEPARATOR;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_ATTRIBUTES_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_ROLE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.EXECUTE_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNASSING_RECIPES_SCRIPT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UPDATE_ATTRIBUTES_SCRIPT;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
 import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
+import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+
 /**
- * Provides some methods to work with deployable units
- * (products and applications).
+ * Provides some methods to work with deployable units (products and applications).
+ * 
  * @author Sergio Arroyo
- *
  */
 public class BaseInstallableInstanceManager {
 
     protected SystemPropertiesProvider propertiesProvider;
     protected RecipeNamingGenerator recipeNamingGenerator;
-    private CommandExecutor commandExecutor;
+    private ChefNodeDao chefNodeDao;
+    protected SDCClientUtils sdcClientUtils;
 
-
-    protected void callChef(String recipe, VM vm) throws ShellCommandException {
+    protected void callChef(String recipe, VM vm) throws CanNotCallChefException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
             executeRecipes(vm);
-            unassignRecipes(vm, recipe);
-        } catch (ShellCommandException e) {
-            unassignRecipes(vm, recipe);
-            //even if execution fails  want to unassign the recipe
-            throw new ShellCommandException(e.getMessage());
+            // unassignRecipes(vm, recipe);
+        } catch (NodeExecutionException e) {
+            // unassignRecipes(vm, recipe);
+            // even if execution fails want to unassign the recipe
+            throw new NodeExecutionException(e.getMessage());
         }
     }
 
-    /**
-     * Tell Chef the previously assigned recipes are ready to be installed.
-     *
-     * @param osInstance
-     * @throws ShellCommandException
-     */
-    public void executeRecipes(VM vm)
-            throws ShellCommandException {
-        // tell Chef the assigned recipes shall be installed:
-        String command = MessageFormat.format(propertiesProvider
-                .getProperty(EXECUTE_RECIPES_SCRIPT),
-                vm.getExecuteChefConectionUrl());
-        commandExecutor.executeCommand(command);
-    }
-
-    /**
-     * Tell Chef the previously assigned recipes are ready to be installed.
-     *
-     * @param osInstance
-     * @throws ShellCommandException
-     */
-    public void assignRecipes(VM vm, String recipe)
-            throws ShellCommandException {
-        // tell Chef the assigned recipes shall be installed:
-        String command = MessageFormat.format(propertiesProvider
-                .getProperty(ASSING_RECIPES_SCRIPT), vm.getChefClientName(),
-                recipe);
-        commandExecutor.executeCommand(command);
-    }
-
-    /**
-     * Tell Chef the previously assigned recipes are ready to be installed.
-     *
-     * @param osInstance
-     * @throws ShellCommandException
-     */
-    public void unassignRecipes(VM vm, String recipe)
-            throws ShellCommandException {
-        // tell Chef the assigned recipes shall be installed:
-        String command = MessageFormat.format(propertiesProvider
-                .getProperty(UNASSING_RECIPES_SCRIPT), vm.getChefClientName(),
-                recipe);
-        commandExecutor.executeCommand(command);
-    }
-
-    /**
-     *
-     * @param populatedRoleTemplate
-     */
-    public void updateAttributes(String roleName, String fileName, VM vm)
-    throws ShellCommandException {
-        String command = MessageFormat.format(propertiesProvider
-                .getProperty(UPDATE_ATTRIBUTES_SCRIPT), roleName, fileName,
-                vm.getHostname(), vm.getDomain(),
-                vm.getExecuteChefConectionUrl());
-        commandExecutor.executeCommand(command);
-    }
-
-
-    public String populateRoleTemplate(VM vm, String installableName,
-            List<Attribute> attributes, String roleName, String process) {
-        String attributeList = populateAttributeTemplate(attributes);
-        String roleTemplate = propertiesProvider.getProperty(
-                CHEF_ROLE_TEMPLATE);
-
-        return MessageFormat.format(roleTemplate, vm.getHostname(),
-                installableName, attributeList, roleName, process);
-    }
-
-    /**
-     * Get the template with the placeholders replaced by the correct values
-     * @param attributes the attributes
-     * @return
-     */
-    private String populateAttributeTemplate(List<Attribute> attributes) {
-        String attributeList = "";
-        String attributeTemplate = propertiesProvider.getProperty(
-                CHEF_ATTRIBUTES_TEMPLATE);
-        String attributeSeparator = propertiesProvider.getProperty(
-                CHEF_ATTRIBUTES_SEPARATOR);
-        Integer i = attributes.size();
-
-        for (Attribute attribute : attributes) {
-            String value = attribute.getValue();
-            if (!isList(value)) {
-                value = '"' + value + '"';
-            }
-            attributeList = attributeList
-            + MessageFormat.format(attributeTemplate,
-                    attribute.getKey(), value);
-            i = i -1;
-            if (i > 0) {
-                attributeList = attributeList + attributeSeparator;
-            }
-        }
-        attributeList = propertiesProvider.getProperty(CHEF_ATTRIBUTES_LEFT_LIMITER)
-        + attributeList + propertiesProvider.getProperty(CHEF_ATTRIBUTES_RIGHT_LIMITER);
-
-        return attributeList;
-    }
-
-    private Boolean isList (String attributeValue) {
-         Pattern p = Pattern.compile("\\[.*\\]");
-         Matcher m = p.matcher(attributeValue);
-         return  m.matches();
-    }
-
-    public File createRoleFile(String roleTemplate, String filename) {
+    protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
+            throws CanNotCallChefException, NodeExecutionException {
+        // System.out.println("Attributre " + attributes);
+        configureNode(vm, attributes, process, recipe);
         try {
-            File tmpFile = File.createTempFile(filename, "");
-            // Write to temp file
-            BufferedWriter out = new BufferedWriter(new FileWriter(tmpFile));
-            out.write(roleTemplate);
-            out.close();
-            return tmpFile;
-        } catch (IOException e) {
-            throw new SdcRuntimeException(e);
+            System.out.println("Executing recipe " + recipe + " in " + vm.getIp());
+            executeRecipes(vm);
+            // unassignRecipes(vm, recipe);
+        } catch (NodeExecutionException e) {
+            // unassignRecipes(vm, recipe);
+            // even if execution fails want to unassign the recipe
+            throw new NodeExecutionException(e.getMessage());
         }
     }
 
+    /**
+     * Tell Chef the previously assigned recipes are ready to be installed.
+     * 
+     * @param osInstance
+     * @throws ShellCommandException
+     */
+    public void executeRecipes(VM vm) throws NodeExecutionException {
+        // tell Chef the assigned recipes shall be installed:
+        sdcClientUtils.execute(vm);
+    }
 
-    ////////////// I.O.C. //////////////
+    /**
+     * Tell Chef the previously assigned recipes are ready to be installed.
+     * 
+     * @param osInstance
+     * @throws ShellCommandException
+     */
+    public void assignRecipes(VM vm, String recipe) throws CanNotCallChefException {
+        // tell Chef the assigned recipes shall be installed:
+        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        node.addRecipe(recipe);
+
+        chefNodeDao.updateNode(node);
+    }
+
+    /**
+     * Tell Chef the previously assigned recipes are ready to be installed.
+     * 
+     * @param osInstance
+     * @throws ShellCommandException
+     */
+    public void unassignRecipes(VM vm, String recipe) throws CanNotCallChefException {
+        // tell Chef the assigned recipes shall be deleted:
+        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        node.removeRecipe(recipe);
+        chefNodeDao.updateNode(node);
+    }
+
+    /**
+     * Add override attributes for the configured values.
+     * 
+     * @param vm
+     *            the chef node
+     * @param attributes
+     *            the new attributes
+     * @param recipe
+     *            the recipe for that new attributes
+     */
+    public void configureNode(VM vm, List<Attribute> attributes, String process, String recipe)
+            throws CanNotCallChefException {
+        // tell Chef the assigned recipes shall be deleted:
+        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        node.addRecipe(recipe);
+        if (attributes != null) {
+            for (Attribute attr : attributes) {
+                node.addAttribute(process, attr.getKey(), attr.getValue());
+            }
+        }
+        chefNodeDao.updateNode(node);
+    }
+
+    // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider
      *            the propertiesProvider to set
      */
-    public void setPropertiesProvider(
-            SystemPropertiesProvider propertiesProvider) {
+    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
         this.propertiesProvider = propertiesProvider;
     }
 
     /**
-     * @param commandExecutor the commandExecutor to set
-     */
-    public void setCommandExecutor(CommandExecutor commandExecutor) {
-        this.commandExecutor = commandExecutor;
-    }
-
-    /**
-     * @param recipeNamingGenerator the recipeNamingGenerator to set
+     * @param recipeNamingGenerator
+     *            the recipeNamingGenerator to set
      */
     public void setRecipeNamingGenerator(RecipeNamingGenerator recipeNamingGenerator) {
         this.recipeNamingGenerator = recipeNamingGenerator;
     }
 
+    /**
+     * @param chefNodeDao
+     *            the chefNodeDao to set
+     */
+    public void setChefNodeDao(ChefNodeDao chefNodeDao) {
+        this.chefNodeDao = chefNodeDao;
+    }
+
+    /**
+     * @param sdcClientUtils
+     *            the sdcClientUtils to set
+     */
+    public void setSdcClientUtils(SDCClientUtils sdcClientUtils) {
+        this.sdcClientUtils = sdcClientUtils;
+    }
 
 }

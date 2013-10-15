@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-autowire="no">
+
+    <bean id="taskManager" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.manager.async.impl.TaskManagerImpl">
+        <property name="taskDao" ref="taskDao"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+    </bean>
+
+
+    <bean id="productInstanceAsyncManager" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ProductInstanceAsyncManagerImpl">
+        <property name="productInstanceManager" ref="productInstanceManager"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="taskNotificator" ref="taskNotificator"/>
+    </bean>
+
+   <bean id="artifactAsyncManager" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ArtifactAsyncManagerImpl">
+        <property name="artifactManager" ref="artifactManager"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="taskNotificator" ref="taskNotificator"/>
+    </bean>
+
+    <bean id="chefNodeAsyncManager" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ChefNodeAsyncManagerImpl">
+        <property name="chefNodeManager" ref="chefNodeManager"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="taskNotificator" ref="taskNotificator"/>
+    </bean>
+
+    <bean id="chefClientAsyncManager" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ChefClientAsyncManagerImpl">
+        <property name="chefClientManager" ref="chefClientManager"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="taskNotificator" ref="taskNotificator"/>
+    </bean>
+</beans>

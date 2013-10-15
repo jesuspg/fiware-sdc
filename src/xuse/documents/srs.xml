@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xuse:document
+        xmlns:xuse="http://xuse.sourceforge.net"
+        xmlns:xi="http://www.w3.org/2001/XInclude"
+        document-type="software-requirements-specification"
+        model-version="1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xuse.sourceforge.net ../../xusexsds/document.xsd">
+
+    <xuse:document-information>
+        <xuse:title>ACME Online Software Requirements Specification</xuse:title>
+        <xuse:author>Michael</xuse:author>
+        <xuse:project>ACME Online</xuse:project>
+        <xuse:document-reference>9245-1A</xuse:document-reference>
+        <xuse:owner>Mrs. Head of Department</xuse:owner>
+        <xuse:customer>ACME Plc.</xuse:customer>
+        <xuse:release>Apples</xuse:release>
+    </xuse:document-information>
+    <xuse:document-history current-version="$Revision: 1.2 $">
+        <xuse:version>
+            <xuse:revision>1.1</xuse:revision>
+            <xuse:author>odlingsmee</xuse:author>
+            <xuse:change-date>2010-01-14</xuse:change-date>
+            <xuse:description>Initial Draft</xuse:description>
+        </xuse:version>
+    </xuse:document-history>
+
+    <!--
+        Use XInclude instruction to import the whole introduction section from stock content
+        See "appendix-a" below for an example of how to import a single paragraph
+    -->
+    <xi:include href="../resources/stock-section-content.xml" xpointer="srs-intro-section"/>
+
+    <xuse:section id="description" title="Overall Description">
+        <xuse:section id="product-perspective" title="Product Perspective">
+            <xuse:p>
+                <xuse:section-ref/>
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="product-features" title="Product Features">
+            <xuse:p>
+                <xuse:section-ref section-id="bob-the-builder"/>
+            </xuse:p>
+        </xuse:section>
+        <xuse:section id="user-classes" title="User Classes">
+            <xuse:p>TODO</xuse:p>
+        </xuse:section>
+        <xuse:section id="operating-environment" title="Operating Environment">
+            <xuse:p>TODO</xuse:p>
+        </xuse:section>
+        <xuse:section id="constraints" title="Design and Implementation Constraints">
+            <xuse:p>TODO</xuse:p>
+        </xuse:section>
+        <xuse:section id="user-documentation" title="User Documentation">
+            <xuse:p>TODO</xuse:p>
+        </xuse:section>
+        <xuse:section id="assumptions-and-dependencies" title="Assumptions and Dependencies">
+            <xuse:p>TODO</xuse:p>
+        </xuse:section>
+    </xuse:section>
+</xuse:document>
