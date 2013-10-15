@@ -64,7 +64,11 @@ public class Software {
 
 	public String generateFileStr() {
 		StringBuffer sb =new StringBuffer();
-		sb.append("class{'"+this.name+"::"+action.getActionString(action.getCode())+"':}");
+		sb.append("  class{'"+this.name+"::"+action.getActionString(action.getCode())+"':");
+		sb.append(eol);
+		sb.append("   version => '"+version+"',");
+		sb.append(eol);
+		sb.append("  }");
 		sb.append(eol);
 		
 		return sb.toString();

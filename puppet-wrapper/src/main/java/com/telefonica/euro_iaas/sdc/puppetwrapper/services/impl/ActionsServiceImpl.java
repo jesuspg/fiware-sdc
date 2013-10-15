@@ -24,9 +24,9 @@ public class ActionsServiceImpl implements ActionsService {
 	@Resource
 	private FileManager fileManager;
 	
-	public Node install(String group, String nodeName, String softName){
+	public Node install(String group, String nodeName, String softName, String version){
 		
-		logger.info("install group:"+group+ " nodeName: "+nodeName+" soft: "+softName);
+		logger.info("install group:"+group+ " nodeName: "+nodeName+" soft: "+softName+" version: "+version);
 		
 		Node node=null;
 		try{
@@ -42,10 +42,12 @@ public class ActionsServiceImpl implements ActionsService {
 		Software soft=null;
 		try{
 			soft=node.getSoftware(softName);
+			soft.setVersion(version);
 			soft.setAction(Action.INSTALL);
 		}catch (NoSuchElementException e){
 			soft=new Software();
 			soft.setName(softName);
+			soft.setVersion(version);
 			soft.setAction(Action.INSTALL);
 			node.addSoftware(soft);
 		}

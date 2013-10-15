@@ -90,6 +90,7 @@ public class FileManagerTest {
 
 		Software soft = new Software();
 		soft.setName("testSoft");
+		soft.setVersion("1.0.0");
 		soft.setAction(Action.INSTALL);
 		
 		node.addSoftware(soft);
@@ -102,6 +103,7 @@ public class FileManagerTest {
 		assertTrue(str.contains("node"));
 		assertTrue(str.contains("class"));
 		assertTrue(str.contains("install"));
+		assertTrue(str.contains("version"));
 	}
 
 	@Test

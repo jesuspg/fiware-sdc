@@ -53,12 +53,14 @@ public class FileCreationServiceTest {
 		
 		Software soft = new Software();
 		soft.setName("testSoft");
+		soft.setVersion("1.0.0");
 		soft.setAction(Action.INSTALL);
 		
 		node.addSoftware(soft);
 		
 		Software soft2 = new Software();
 		soft2.setName("testSoft2");
+		soft.setVersion("2.0.0");
 		soft2.setAction(Action.INSTALL);
 		
 		node2.addSoftware(soft2);

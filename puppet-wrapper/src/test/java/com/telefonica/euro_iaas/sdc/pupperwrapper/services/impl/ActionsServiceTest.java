@@ -34,7 +34,7 @@ public class ActionsServiceTest {
 	@Test
 	public void install(){
 		
-		actionsService.install("testGroup","testNode", "testSoft");
+		actionsService.install("testGroup","testNode", "testSoft","1.0.0");
 		
 		Node node = fileManager.getNode("testNode");
 		Software soft = node.getSoftware("testSoft");
@@ -44,6 +44,7 @@ public class ActionsServiceTest {
 		assertTrue(node.getGroupName().equals("testGroup"));
 		assertTrue(node.getName().equals("testNode"));
 		assertTrue(soft.getName().equals("testSoft"));
+		assertTrue(soft.getVersion().equals("1.0.0"));
 		assertTrue(soft.getAction().equals(Action.INSTALL));
 		
 		
@@ -53,7 +54,7 @@ public class ActionsServiceTest {
 	@Test
 	public void install_Modification_Soft(){
 		
-		actionsService.install("testGroup","testNode", "testSoft");
+		actionsService.install("testGroup","testNode", "testSoft","1.0.0");
 		
 		Node node = fileManager.getNode("testNode");
 		Software soft = node.getSoftware("testSoft");
@@ -63,9 +64,10 @@ public class ActionsServiceTest {
 		assertTrue(node.getGroupName().equals("testGroup"));
 		assertTrue(node.getName().equals("testNode"));
 		assertTrue(soft.getName().equals("testSoft"));
+		assertTrue(soft.getVersion().equals("1.0.0"));
 		assertTrue(soft.getAction().equals(Action.INSTALL));
 		
-		actionsService.install("testGroup","testNode", "testSoft2");
+		actionsService.install("testGroup","testNode", "testSoft2","2.0.0");
 		node = fileManager.getNode("testNode");
 		soft = node.getSoftware("testSoft2");
 		
@@ -74,6 +76,7 @@ public class ActionsServiceTest {
 		assertTrue(node.getGroupName().equals("testGroup"));
 		assertTrue(node.getName().equals("testNode"));
 		assertTrue(soft.getName().equals("testSoft2"));
+		assertTrue(soft.getVersion().equals("2.0.0"));
 		assertTrue(soft.getAction().equals(Action.INSTALL));
 		
 		

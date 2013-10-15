@@ -31,14 +31,15 @@ public class PuppetController /*extends GenericController*/{
 	@Resource
 	private FileCreationService fileService;
 
-	@RequestMapping("/install/{group}/{nodeName}/{softwareName}")
+	@RequestMapping("/install/{group}/{nodeName}/{softwareName}/{version}")
 	@ResponseBody
 	public Node install(@PathVariable("group") String group,
 			@PathVariable("nodeName") String nodeName,
 			@PathVariable ("softwareName") String softwareName,
+			@PathVariable ("version") String version,
 			HttpServletRequest request) {
 		
-		logger.info("install group:"+group+ " nodeName: "+nodeName+" soft: "+softwareName);
+		logger.info("install group:"+group+ " nodeName: "+nodeName+" soft: "+softwareName+" version: "+version);
 		
 		if (group==null || "".equals(group)){
 			logger.debug("Group is not set");
@@ -55,7 +56,12 @@ public class PuppetController /*extends GenericController*/{
 			throw new IllegalArgumentException("Software name is not set");
 		}
 		
-		Node node= actionsService.install(group, nodeName, softwareName);
+		if (softwareName==null || "".equals(version)){
+			logger.debug("version is not set");
+			throw new IllegalArgumentException("Version is not set");
+		}
+		
+		Node node= actionsService.install(group, nodeName, softwareName, version);
 		
 		logger.debug("node "+node);
 		
