@@ -11,10 +11,20 @@
 
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
+
+import net.sf.json.JSONObject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,10 +45,13 @@ public class ChefNodeTest extends TestCase {
     String json;
 
     public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
-
+    
+    private String jsonFilePath = "src/test/resources/Chefnode.js";
+    private String jsonFromFile;
+    
     @Before
     public void setUp() throws Exception {
-
+        jsonFromFile = getFile(jsonFilePath);
         chefNode = new ChefNode();
         
         json = "{\n"
@@ -65,4 +78,40 @@ public class ChefNodeTest extends TestCase {
          assertEquals(chefNode.hasRecipe("recipe"), false);
          assertEquals(chefNode.hasRecipe("recipe1"), true);
     }
+    
+    @Test
+    public void testFromJson() throws Exception {
+        chefNode.fromJson(JSONObject.fromObject(jsonFromFile));
+        assertEquals(chefNode.getName(), "sdc15102013d.novalocal");
+        assertEquals(chefNode.getJsonClass(), "Chef::Node");
+        assertEquals(chefNode.getChefType(), "node");
+        assertEquals(chefNode.getDefaults().isEmpty(), true);
+        assertEquals(chefNode.getOverrides().isEmpty(), true);
+        assertEquals(chefNode.getAttributes().isEmpty(), false);
+        assertEquals(chefNode.getAttributes().containsKey("tags"), true);
+        assertEquals(chefNode.getAutomaticAttributes().isEmpty(), false);
+        assertEquals(chefNode.getAutomaticAttributes().containsKey("ohai_time"), true);
+        JSONObject attr = new JSONObject();
+        //attr.put("ohai_time", "1381841405.78531");
+        Double value = (Double) chefNode.getAutomaticAttributes().get("ohai_time");
+        System.out.println(value.toString());
+        //Hay cinco segundos de diferencia ohai_time="1381841405.78531"
+        assertEquals(chefNode.getAutomaticAttributes().get("ohai_time"), Double.valueOf("1381841410"));
+    }
+    
+    private String getFile(String file) throws IOException {
+        File f = new File(file);
+        System.out.println(f.isFile() + " " + f.getAbsolutePath());
+
+        InputStream dd = new FileInputStream(f);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        StringBuffer ruleFile = new StringBuffer();
+        String actualString;
+
+        while ((actualString = reader.readLine()) != null) {
+          ruleFile.append(actualString).append("\n");
+        }
+        return ruleFile.toString();
+      }
 }

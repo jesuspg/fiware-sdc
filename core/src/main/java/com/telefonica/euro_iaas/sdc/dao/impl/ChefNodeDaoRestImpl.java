@@ -100,6 +100,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             }
             String stringNode;
             stringNode = IOUtils.toString(wr.get(InputStream.class));
+            System.out.println("Node " + chefNodename + "in Json");
+            System.out.println(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
         
             ChefNode node = new ChefNode();

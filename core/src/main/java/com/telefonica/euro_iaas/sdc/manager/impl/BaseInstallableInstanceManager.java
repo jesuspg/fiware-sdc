@@ -11,6 +11,8 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -146,6 +148,7 @@ public class BaseInstallableInstanceManager {
     public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
         boolean isExecuted = false;
         int time = 10000;
+        Date fechaAhora = new Date();
         while (!isExecuted) {
             try {
                 Thread.sleep(time);
@@ -156,9 +159,14 @@ public class BaseInstallableInstanceManager {
                 }
             
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+                
+                long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
                 //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
-                //hasRecipe = node.hasRecipe(recipe);
-                if ((node.getAttributes().containsKey(process)) && (node.getAttributes().containsKey("platform"))) {
+                
+                System.out.println("Fecha Actual: " + fechaAhora.getTime());                                   
+                System.out.println("Fecha Ultima Ejecucion chef-client: " + last_recipeexecution_timestamp );
+              
+                if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
                     isExecuted = true;
                 }
                 

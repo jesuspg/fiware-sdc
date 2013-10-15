@@ -29,6 +29,8 @@ public class ChefNode {
     private final static String RECIPE_ITEM_TEMPLATE = "recipe[{0}]";
 
     private String name;
+    private String ohai_time;
+    private Map<String, Object> automaticAttributes;
     private Map<String, Object> attributes;
     private Map<String, Object> overrides;
     private Map<String, Object> defaults;
@@ -40,6 +42,7 @@ public class ChefNode {
      *
      */
     public ChefNode() {
+        automaticAttributes = new HashMap<String, Object>();
         attributes = new HashMap<String, Object>();
         overrides = new HashMap<String, Object>();
         defaults = new HashMap<String, Object>();
@@ -76,6 +79,10 @@ public class ChefNode {
     public void addAttribute(String process, String key, String value) {
         attributes = addNewAttribute(attributes, process, key, value);
     }
+    
+    public void addAutomaticAttribute(String process, String key, String value) {
+        automaticAttributes = addNewAttribute(automaticAttributes, process, key, value);
+    }
 
     private Map<String, Object> addNewAttribute(Map<String, Object> map, String process, String key, String value) {
         JSONObject attr;
@@ -108,6 +115,14 @@ public class ChefNode {
     public void removeAttritube(String key) {
         attributes.remove(key);
     }
+    
+    public void addAutomaticAttritube(String key, String value) {
+        automaticAttributes.put(key, value);
+    }
+
+    public void removeAutomaticAttritube(String key) {
+        automaticAttributes.remove(key);
+    }
 
     /**
      * @return the name
@@ -125,6 +140,20 @@ public class ChefNode {
     }
 
     /**
+     * @return the ohai_time
+     */
+    public String getOhai_time() {
+        return ohai_time;
+    }
+
+    /**
+     * @param ohai_time
+     *            the ohai_time to set
+     */
+    public void setOhai_time(String ohai_time) {
+        this.ohai_time = ohai_time;
+    }
+    /**
      * @return the attributes
      */
     public Map<String, Object> getAttributes() {
@@ -138,7 +167,22 @@ public class ChefNode {
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
+    
+    /**
+     * @return the automaticAttributes
+     */
+    public Map<String, Object> getAutomaticAttributes() {
+        return automaticAttributes;
+    }
 
+    /**
+     * @param automaticAttributes
+     *            the automaticAttributes to set
+     */
+    public void setAutomaticAttributes(Map<String, Object> automaticAttributes) {
+        this.automaticAttributes = automaticAttributes;
+    }
+    
     /**
      * @return the overrides
      */
@@ -222,6 +266,7 @@ public class ChefNode {
         jsonObject.accumulate("name", name);
         jsonObject.accumulate("json_class", "Chef::Node");
         jsonObject.accumulate("normal", attributes);
+        jsonObject.accumulate("automatic", automaticAttributes);
         jsonObject.accumulate("default", defaults);
         jsonObject.accumulate("override", overrides);
         jsonObject.accumulate("run_list", runlList);
@@ -235,6 +280,7 @@ public class ChefNode {
         overrides = jsonNode.getJSONObject("override");
         defaults = jsonNode.getJSONObject("default");
         attributes = jsonNode.getJSONObject("normal");
+        automaticAttributes = jsonNode.getJSONObject("automatic");
     }
     
     @SuppressWarnings("unchecked")
