@@ -14,6 +14,7 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
@@ -42,6 +43,8 @@ public class BaseInstallableInstanceManager {
     
     int MAX_TIME = 90000;
     
+    private static Logger LOGGER = Logger.getLogger("BaseInstallableInstanceManager");
+    
     protected void callChef(String recipe, VM vm) throws CanNotCallChefException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
@@ -58,7 +61,7 @@ public class BaseInstallableInstanceManager {
             throws CanNotCallChefException, NodeExecutionException {
         configureNode(vm, attributes, process, recipe);
         try {
-            System.out.println("Updating node with recipe " + recipe + " in " + vm.getIp());
+            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
             isRecipeExecuted(vm, process, recipe);
             unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
@@ -106,6 +109,7 @@ public class BaseInstallableInstanceManager {
             node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
         } catch (EntityNotFoundException e) {
             String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
+            LOGGER.info(message);
             throw new CanNotCallChefException(message,e);
         }
         node.removeRecipe(recipe);
@@ -137,6 +141,7 @@ public class BaseInstallableInstanceManager {
             }
         } catch (EntityNotFoundException e){
             String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
+            LOGGER.info(message);
             throw new CanNotCallChefException(message,e);
         }
         chefNodeDao.updateNode(node);
@@ -159,6 +164,7 @@ public class BaseInstallableInstanceManager {
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + recipe + " coub not be executed in " +
                         vm.getChefClientName();
+                    LOGGER.info(errorMesg);
                     throw new NodeExecutionException(errorMesg);
                 }
             
@@ -167,9 +173,6 @@ public class BaseInstallableInstanceManager {
                 long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
                 //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
                 
-                System.out.println("Fecha Actual: " + fechaAhora.getTime());                                   
-                System.out.println("Fecha Ultima Ejecucion chef-client: " + last_recipeexecution_timestamp );
-              
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
                     isExecuted = true;
                 }
