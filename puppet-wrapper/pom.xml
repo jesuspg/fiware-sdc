@@ -59,9 +59,13 @@
 	</dependencies>
 	<build>
 		<finalName>puppetwrapper</finalName>
+		<filters>
+			<filter>src/main/filters/${env}.properties</filter>
+		</filters>
 		<resources>
 			<resource>
-				<directory>${basedir}/src/main/resources</directory>
+				<directory>src/main/resources/</directory>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<plugins>
@@ -72,6 +76,20 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>mac</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<env>mac</env>
+				<compilerInfoDebug>true</compilerInfoDebug>
+				<compilerOptimize>false</compilerOptimize>
+			</properties>
+		</profile>
+	</profiles>
 
 	<properties>
 		<spring-version>3.1.0.RELEASE</spring-version>
