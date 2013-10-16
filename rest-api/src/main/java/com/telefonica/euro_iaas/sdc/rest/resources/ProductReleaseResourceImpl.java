@@ -1,12 +1,8 @@
 /**
- *   (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights
- *   Reserved.
- * 
- *   The copyright to the software program(s) is property of Telefonica I+D.
- *   The program(s) may be used and or copied only with the express written
- *   consent of Telefonica I+D or in accordance with the terms and conditions
- *   stipulated in the agreement/contract under which the program(s) have
- *   been supplied.
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
@@ -72,8 +68,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @throws InvalidProductReleaseException
      * @return proudctRelease
      */
-    public ProductRelease insert(ProductReleaseDto productReleaseDto) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException {
+    public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
+            throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
+
+        productReleaseDto.setProductName(pName);
+
         LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
                 + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
@@ -218,8 +217,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * Update the ProductRelease (productReleaseDto, cookbooks, installable).
      * 
      * @param multipart
-     * @throws ProductReleaseNotFoundException,
-     * @throws InvalidProductReleaseException,
+     * @throws ProductReleaseNotFoundException
+     * @throws InvalidProductReleaseException
      * @throws InvalidProductReleaseException
      * @throws InvalidMultiPartRequestException
      * @return productRelease
