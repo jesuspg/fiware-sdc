@@ -1,6 +1,5 @@
 package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 
-import java.awt.image.ImagingOpException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileCreationService;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.FileManagerImpl;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
 @Controller
 public class PuppetController /*extends GenericController*/{
@@ -29,7 +28,10 @@ public class PuppetController /*extends GenericController*/{
 	private ActionsService actionsService;
 
 	@Resource
-	private FileCreationService fileService;
+	private FileAccessService fileAccessService;
+	
+	@Resource
+	private CatalogManager catalogManager;
 
 	@RequestMapping("/install/{group}/{nodeName}/{softwareName}/{version}")
 	@ResponseBody
@@ -77,13 +79,20 @@ public class PuppetController /*extends GenericController*/{
 		}
 		logger.info("generating files for node:" + nodeName);
 		
-		fileService.generateSiteFile();
+		fileAccessService.generateSiteFile();
 		logger.debug("site.pp OK");
 		
-		Node node = fileService.generateManifestFile(nodeName);
+		Node node = fileAccessService.generateManifestFile(nodeName);
 		logger.debug("nodes pp files OK");
 		
 		return node;
+	}
+	
+	@RequestMapping("/delete/node/{nodeName}")
+	@ResponseBody
+	public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
+		
+		actionsService.deleteNode(nodeName);
 	}
 	
 	@RequestMapping("/test")

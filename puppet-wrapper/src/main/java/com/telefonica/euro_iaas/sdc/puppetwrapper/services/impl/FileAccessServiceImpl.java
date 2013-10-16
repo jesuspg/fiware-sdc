@@ -1,5 +1,6 @@
 package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
+import static java.text.MessageFormat.format;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -17,26 +18,27 @@ import org.springframework.stereotype.Service;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.controllers.PuppetController;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileCreationService;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
-@Service("fileService")
-public class FileCreationServiceImpl implements FileCreationService {
+@Service("fileAccessService")
+public class FileAccessServiceImpl implements FileAccessService {
 
-	private static final Log logger = LogFactory.getLog(FileCreationServiceImpl.class);
+	private static final Log logger = LogFactory
+			.getLog(FileAccessServiceImpl.class);
 
 	@Resource
-	private FileManager fileManager;
+	private CatalogManager catalogManager;
 
 	private String defaultManifestsPath;
 
 	public Node generateManifestFile(String nodeName) throws IOException {
-		
-		logger.info("creating Manifest file for node: "+nodeName);
 
-		Node node = fileManager.getNode(nodeName);
+		logger.info("creating Manifest file for node: " + nodeName);
 
-		String fileContent = fileManager.generateManifestStr(nodeName);
+		Node node = catalogManager.getNode(nodeName);
+
+		String fileContent = catalogManager.generateManifestStr(nodeName);
 		String path = defaultManifestsPath + node.getGroupName();
 
 		try {
@@ -58,22 +60,22 @@ public class FileCreationServiceImpl implements FileCreationService {
 			logger.debug("Error creating manifest paths and pp file", ex);
 			throw new IOException("Error creating manifest paths and pp file");
 		}
-		
+
 		logger.debug("Manifest file created");
-		
+
 		return node;
 
 	}
 
-	public void generateSiteFile() throws IOException{
+	public void generateSiteFile() throws IOException {
 
 		logger.info("Generate site.pp");
-		
-		String fileContent = fileManager.generateSiteStr();
 
-		logger.debug("site content: "+ fileContent);
-		logger.debug("defaultManifestsPath: "+defaultManifestsPath);
-		
+		String fileContent = catalogManager.generateSiteStr();
+
+		logger.debug("site content: " + fileContent);
+		logger.debug("defaultManifestsPath: " + defaultManifestsPath);
+
 		try {
 			PrintWriter writer = new PrintWriter(defaultManifestsPath
 					+ "site.pp", "UTF-8");
@@ -83,13 +85,28 @@ public class FileCreationServiceImpl implements FileCreationService {
 			logger.debug("Error creating site.pp file", ex);
 			throw new IOException("Error creating site.pp file");
 		}
-		
+
 		logger.debug("Site.pp file created");
 	}
-	
-	@Value(value= "${defaultManifestsPath}" )
+
+	@Value(value = "${defaultManifestsPath}")
 	public void setDefaultManifestsPath(String defaultManifestsPath) {
 		this.defaultManifestsPath = defaultManifestsPath;
+	}
+
+	public void deleteNodeFiles(String nodeName) throws IOException {
+
+		Node node = catalogManager.getNode(nodeName);
+
+		String path = defaultManifestsPath + node.getGroupName();
+
+		File file = new File(path + "/" + node.getName() + ".pp");
+
+		if (!file.delete()) {
+			logger.info(format("File {0} could not be deleted. Did it exist?",
+					node.getName() + ".pp"));
+		}
+
 	}
 
 }

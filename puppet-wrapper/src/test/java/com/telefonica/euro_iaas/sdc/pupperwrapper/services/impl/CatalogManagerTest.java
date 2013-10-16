@@ -16,19 +16,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:**testContext.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class FileManagerTest {
+public class CatalogManagerTest {
 	
 	@Resource
-	private FileManager fileManager;
+	private CatalogManager catalogManager;
 	
 	@Test (expected=NoSuchElementException.class)
 	public void getNodeTest_notfound() {
-		Node node = fileManager.getNode("test");
+		Node node = catalogManager.getNode("test");
 		
 	}
 	@Test
@@ -36,36 +36,36 @@ public class FileManagerTest {
 		Node node = new Node();
 		node.setName("test");
 		node.setGroupName("group");
-		fileManager.addNode(node);
-		Node node1 = fileManager.getNode("test");
+		catalogManager.addNode(node);
+		Node node1 = catalogManager.getNode("test");
 		assertTrue(node1.getName().equals("test"));
 	}
 	
 	@Test
 	public void testAddNode(){
-		int length=fileManager.getNodeLength();
+		int length=catalogManager.getNodeLength();
 		assertTrue(length==0);
 		Node node = new Node();
 		node.setName("test");
 		node.setGroupName("group");
-		fileManager.addNode(node);
-		length=fileManager.getNodeLength();
+		catalogManager.addNode(node);
+		length=catalogManager.getNodeLength();
 		assertTrue(length==1);
 	}
 	
 	@Test
 	public void testRemoveNode(){
-		int length=fileManager.getNodeLength();
+		int length=catalogManager.getNodeLength();
 		assertTrue(length==0);
 		Node node = new Node();
 		node.setName("test");
 		node.setGroupName("group");
-		fileManager.addNode(node);
-		length=fileManager.getNodeLength();
+		catalogManager.addNode(node);
+		length=catalogManager.getNodeLength();
 		assertTrue(length==1);
 		
-		fileManager.removeNode(node);
-		length=fileManager.getNodeLength();
+		catalogManager.removeNode(node.getName());
+		length=catalogManager.getNodeLength();
 		assertTrue(length==0);
 	}
 	
@@ -74,9 +74,9 @@ public class FileManagerTest {
 		Node node = new Node();
 		node.setName("test");
 		node.setGroupName("group");
-		fileManager.addNode(node);
+		catalogManager.addNode(node);
 		
-		String str = fileManager.generateManifestStr("test");
+		String str = catalogManager.generateManifestStr("test");
 		assertTrue(str.length()>0);
 		assertTrue(str.contains("{"));
 		assertTrue(str.contains("node"));
@@ -95,9 +95,9 @@ public class FileManagerTest {
 		
 		node.addSoftware(soft);
 		
-		fileManager.addNode(node);
+		catalogManager.addNode(node);
 		
-		String str = fileManager.generateManifestStr("test");
+		String str = catalogManager.generateManifestStr("test");
 		assertTrue(str.length()>0);
 		assertTrue(str.contains("{"));
 		assertTrue(str.contains("node"));
@@ -116,10 +116,10 @@ public class FileManagerTest {
 		node2.setName("test2");
 		node2.setGroupName("group2");
 		
-		fileManager.addNode(node);
-		fileManager.addNode(node2);
+		catalogManager.addNode(node);
+		catalogManager.addNode(node2);
 		
-		String str= fileManager.generateSiteStr();
+		String str= catalogManager.generateSiteStr();
 		
 		assertTrue(str.length()>0);
 		assertTrue(str.contains("import 'group/*.pp'"));

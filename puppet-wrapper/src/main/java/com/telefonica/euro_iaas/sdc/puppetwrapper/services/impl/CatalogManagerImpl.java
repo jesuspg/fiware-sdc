@@ -11,12 +11,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
-@Service("fileManager")
-public class FileManagerImpl implements FileManager {
+@Service("catalogManager")
+public class CatalogManagerImpl implements CatalogManager {
 
-	private static final Log logger = LogFactory.getLog(FileCreationServiceImpl.class);
+	private static final Log logger = LogFactory.getLog(FileAccessServiceImpl.class);
 	private String eol = System.getProperty("line.separator"); 
 	
 	private List<Node> nodes = new ArrayList<Node>();
@@ -44,7 +44,8 @@ public class FileManagerImpl implements FileManager {
 
 	}
 
-	public void removeNode(Node node) {
+	public void removeNode(String nodeName) {
+		Node node = getNode(nodeName);
 		nodes.remove(node);
 	}
 
