@@ -56,13 +56,11 @@ public class BaseInstallableInstanceManager {
 
     protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
             throws CanNotCallChefException, NodeExecutionException {
-        //Recipe to be executed is assigned to the node as well as attributes
         configureNode(vm, attributes, process, recipe);
         try {
             System.out.println("Updating node with recipe " + recipe + " in " + vm.getIp());
             isRecipeExecuted(vm, process, recipe);
-            //executeRecipes(vm);
-            // unassignRecipes(vm, recipe);
+            unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
             // unassignRecipes(vm, recipe);
             // even if execution fails want to unassign the recipe
@@ -103,7 +101,13 @@ public class BaseInstallableInstanceManager {
      */
     public void unassignRecipes(VM vm, String recipe) throws CanNotCallChefException {
         // tell Chef the assigned recipes shall be deleted:
-        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        ChefNode node = null;
+        try {
+            node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+        } catch (EntityNotFoundException e) {
+            String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
+            throw new CanNotCallChefException(message,e);
+        }
         node.removeRecipe(recipe);
         chefNodeDao.updateNode(node);
     }
