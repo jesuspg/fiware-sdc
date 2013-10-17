@@ -4,15 +4,15 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 
 public interface CatalogManager {
 
-	public void addNode(Node node);
+    public void addNode(Node node);
 
-	public Node getNode(String nodeName);
+    public Node getNode(String nodeName);
 
-	public void removeNode(String nodeName);
+    public void removeNode(String nodeName);
 
-	public String generateManifestStr(String nodeName);
-	
-	public int getNodeLength();
+    public String generateManifestStr(String nodeName);
 
-	public String generateSiteStr();
+    public int getNodeLength();
+
+    public String generateSiteStr();
 }

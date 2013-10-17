@@ -24,89 +24,85 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 @Service("fileAccessService")
 public class FileAccessServiceImpl implements FileAccessService {
 
-	private static final Log logger = LogFactory
-			.getLog(FileAccessServiceImpl.class);
+    private static final Log logger = LogFactory.getLog(FileAccessServiceImpl.class);
 
-	@Resource
-	private CatalogManager catalogManager;
+    @Resource
+    private CatalogManager catalogManager;
 
-	private String defaultManifestsPath;
+    private String defaultManifestsPath;
 
-	public Node generateManifestFile(String nodeName) throws IOException {
+    public Node generateManifestFile(String nodeName) throws IOException {
 
-		logger.info("creating Manifest file for node: " + nodeName);
+        logger.info("creating Manifest file for node: " + nodeName);
 
-		Node node = catalogManager.getNode(nodeName);
+        Node node = catalogManager.getNode(nodeName);
 
-		String fileContent = catalogManager.generateManifestStr(nodeName);
-		String path = defaultManifestsPath + node.getGroupName();
+        String fileContent = catalogManager.generateManifestStr(nodeName);
+        String path = defaultManifestsPath + node.getGroupName();
 
-		try {
+        try {
 
-			File f = new File(path);
-			f.mkdirs();
-			f.createNewFile();
-		} catch (IOException ex) {
-			logger.debug("Error creating manifest paths and pp file", ex);
-			throw new IOException("Error creating manifest paths and pp file");
-		}
+            File f = new File(path);
+            f.mkdirs();
+            f.createNewFile();
+        } catch (IOException ex) {
+            logger.debug("Error creating manifest paths and pp file", ex);
+            throw new IOException("Error creating manifest paths and pp file");
+        }
 
-		try {
-			FileWriter fw = new FileWriter(path + "/" + node.getName() + ".pp",
-					false);
-			fw.write(fileContent);
-			fw.close();
-		} catch (IOException ex) {
-			logger.debug("Error creating manifest paths and pp file", ex);
-			throw new IOException("Error creating manifest paths and pp file");
-		}
+        try {
+            FileWriter fw = new FileWriter(path + "/" + node.getName() + ".pp", false);
+            fw.write(fileContent);
+            fw.close();
+        } catch (IOException ex) {
+            logger.debug("Error creating manifest paths and pp file", ex);
+            throw new IOException("Error creating manifest paths and pp file");
+        }
 
-		logger.debug("Manifest file created");
+        logger.debug("Manifest file created");
 
-		return node;
+        return node;
 
-	}
+    }
 
-	public void generateSiteFile() throws IOException {
+    public void generateSiteFile() throws IOException {
 
-		logger.info("Generate site.pp");
+        logger.info("Generate site.pp");
 
-		String fileContent = catalogManager.generateSiteStr();
+        String fileContent = catalogManager.generateSiteStr();
 
-		logger.debug("site content: " + fileContent);
-		logger.debug("defaultManifestsPath: " + defaultManifestsPath);
+        logger.debug("site content: " + fileContent);
+        logger.debug("defaultManifestsPath: " + defaultManifestsPath);
 
-		try {
-			PrintWriter writer = new PrintWriter(defaultManifestsPath
-					+ "site.pp", "UTF-8");
-			writer.println(fileContent);
-			writer.close();
-		} catch (IOException ex) {
-			logger.debug("Error creating site.pp file", ex);
-			throw new IOException("Error creating site.pp file");
-		}
+        try {
+            PrintWriter writer = new PrintWriter(defaultManifestsPath + "site.pp", "UTF-8");
+            writer.println(fileContent);
+            writer.close();
+        } catch (IOException ex) {
+            logger.debug("Error creating site.pp file", ex);
+            throw new IOException("Error creating site.pp file");
+        }
 
-		logger.debug("Site.pp file created");
-	}
+        logger.debug("Site.pp file created");
+    }
 
-	@Value(value = "${defaultManifestsPath}")
-	public void setDefaultManifestsPath(String defaultManifestsPath) {
-		this.defaultManifestsPath = defaultManifestsPath;
-	}
+    @Value(value = "${defaultManifestsPath}")
+    public void setDefaultManifestsPath(String defaultManifestsPath) {
+        this.defaultManifestsPath = defaultManifestsPath;
+    }
 
-	public void deleteNodeFiles(String nodeName) throws IOException {
+    public void deleteNodeFiles(String nodeName) throws IOException {
 
-		Node node = catalogManager.getNode(nodeName);
+        Node node = catalogManager.getNode(nodeName);
 
-		String path = defaultManifestsPath + node.getGroupName();
+        String path = defaultManifestsPath + node.getGroupName();
 
-		File file = new File(path + "/" + node.getName() + ".pp");
+        File file = new File(path + "/" + node.getName() + ".pp");
 
-		if (!file.delete()) {
-			logger.info(format("File {0} could not be deleted. Did it exist?",
-					node.getName() + ".pp"));
-		}
+        if (!file.delete()) {
+            logger.info(format("File {0} could not be deleted. Did it exist?", node.getName() + ".pp"));
+        }
 
-	}
+    }
 
 }

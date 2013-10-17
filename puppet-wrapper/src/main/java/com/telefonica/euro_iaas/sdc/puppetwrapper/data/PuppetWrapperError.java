@@ -3,16 +3,14 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 public class PuppetWrapperError {
     private short code;
     private String description;
-    
+
     public static final short PUPPETWRAPPER_INTERNAL_SERVER_ERROR = -500;
     public static final short PUPPETWRAPPER_ELEMENT_NOT_FOUND = -404;
-    
 
     /**
      * 
      */
     public PuppetWrapperError() {
-        super();
     }
 
     /**
@@ -70,4 +68,3 @@ public class PuppetWrapperError {
     }
 
 }
-

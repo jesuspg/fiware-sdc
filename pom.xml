@@ -424,6 +424,7 @@
         <module>core</module>
         <module>rest-api</module>
         <module>integration-test</module>
+        <module>puppet-wrapper</module>
         <module>client</module>
     </modules>
 </project>

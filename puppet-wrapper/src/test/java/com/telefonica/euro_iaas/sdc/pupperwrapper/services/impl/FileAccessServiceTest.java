@@ -29,145 +29,137 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class FileAccessServiceTest {
 
-	@Resource
-	private FileAccessService fileAccessService;
+    @Resource
+    private FileAccessService fileAccessService;
 
-	@Resource
-	private CatalogManager catalogManager;
+    @Resource
+    private CatalogManager catalogManager;
 
-	@Value("${defaultManifestsPath}")
-	private String defaultManifestsPath;
+    @Value("${defaultManifestsPath}")
+    private String defaultManifestsPath;
 
-	@Test
-	public void generateManifestFileTest() throws ImagingOpException,
-			IOException {
+    @Test
+    public void generateManifestFileTest() throws ImagingOpException, IOException {
 
-		Node node = new Node();
-		node.setName("test");
-		node.setGroupName("group");
+        Node node = new Node();
+        node.setName("test");
+        node.setGroupName("group");
 
-		Node node2 = new Node();
-		node2.setName("test2");
-		node2.setGroupName("group");
+        Node node2 = new Node();
+        node2.setName("test2");
+        node2.setGroupName("group");
 
-		Software soft = new Software();
-		soft.setName("testSoft");
-		soft.setVersion("1.0.0");
-		soft.setAction(Action.INSTALL);
+        Software soft = new Software();
+        soft.setName("testSoft");
+        soft.setVersion("1.0.0");
+        soft.setAction(Action.INSTALL);
 
-		node.addSoftware(soft);
+        node.addSoftware(soft);
 
-		Software soft2 = new Software();
-		soft2.setName("testSoft2");
-		soft.setVersion("2.0.0");
-		soft2.setAction(Action.INSTALL);
+        Software soft2 = new Software();
+        soft2.setName("testSoft2");
+        soft.setVersion("2.0.0");
+        soft2.setAction(Action.INSTALL);
 
-		node2.addSoftware(soft2);
+        node2.addSoftware(soft2);
 
-		catalogManager.addNode(node);
-		catalogManager.addNode(node2);
+        catalogManager.addNode(node);
+        catalogManager.addNode(node2);
 
-		fileAccessService.generateManifestFile("test");
-		fileAccessService.generateManifestFile("test2");
+        fileAccessService.generateManifestFile("test");
+        fileAccessService.generateManifestFile("test2");
 
-		File f = new File(defaultManifestsPath + node.getGroupName() + "/"
-				+ node.getName() + ".pp");
-		assertTrue(f.exists());
+        File f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        assertTrue(f.exists());
 
-		File f2 = new File(defaultManifestsPath + node2.getGroupName() + "/"
-				+ node2.getName() + ".pp");
-		assertTrue(f2.exists());
-	}
+        File f2 = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        assertTrue(f2.exists());
+    }
 
-	@Test
-	public void generateSiteFileTest() throws IOException {
+    @Test
+    public void generateSiteFileTest() throws IOException {
 
-		Node node = new Node();
-		node.setName("test");
-		node.setGroupName("group");
+        Node node = new Node();
+        node.setName("test");
+        node.setGroupName("group");
 
-		Node node2 = new Node();
-		node2.setName("test2");
-		node2.setGroupName("group2");
+        Node node2 = new Node();
+        node2.setName("test2");
+        node2.setGroupName("group2");
 
-		Software soft = new Software();
-		soft.setName("testSoft");
-		soft.setAction(Action.INSTALL);
+        Software soft = new Software();
+        soft.setName("testSoft");
+        soft.setAction(Action.INSTALL);
 
-		node.addSoftware(soft);
+        node.addSoftware(soft);
 
-		Software soft2 = new Software();
-		soft2.setName("testSoft2");
-		soft2.setAction(Action.INSTALL);
+        Software soft2 = new Software();
+        soft2.setName("testSoft2");
+        soft2.setAction(Action.INSTALL);
 
-		node2.addSoftware(soft2);
+        node2.addSoftware(soft2);
 
-		catalogManager.addNode(node);
-		catalogManager.addNode(node2);
+        catalogManager.addNode(node);
+        catalogManager.addNode(node2);
 
-		fileAccessService.generateSiteFile();
+        fileAccessService.generateSiteFile();
 
-		File f = new File(defaultManifestsPath + "site.pp");
-		assertTrue(f.exists());
+        File f = new File(defaultManifestsPath + "site.pp");
+        assertTrue(f.exists());
 
-	}
+    }
 
-	@Test
-	public void deleteNodeTest() throws FileNotFoundException,
-			UnsupportedEncodingException, IOException {
-		// creating structure
-		Node node = new Node();
-		node.setName("test");
-		node.setGroupName("group");
+    @Test
+    public void deleteNodeTest() throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        // creating structure
+        Node node = new Node();
+        node.setName("test");
+        node.setGroupName("group");
 
-		Node node2 = new Node();
-		node2.setName("test2");
-		node2.setGroupName("group2");
+        Node node2 = new Node();
+        node2.setName("test2");
+        node2.setGroupName("group2");
 
-		Software soft = new Software();
-		soft.setName("testSoft");
-		soft.setAction(Action.INSTALL);
+        Software soft = new Software();
+        soft.setName("testSoft");
+        soft.setAction(Action.INSTALL);
 
-		node.addSoftware(soft);
+        node.addSoftware(soft);
 
-		Software soft2 = new Software();
-		soft2.setName("testSoft2");
-		soft2.setAction(Action.INSTALL);
+        Software soft2 = new Software();
+        soft2.setName("testSoft2");
+        soft2.setAction(Action.INSTALL);
 
-		node2.addSoftware(soft2);
+        node2.addSoftware(soft2);
 
-		catalogManager.addNode(node);
-		catalogManager.addNode(node2);
+        catalogManager.addNode(node);
+        catalogManager.addNode(node2);
 
-		fileAccessService.generateSiteFile();
-		fileAccessService.generateManifestFile(node.getName());
-		fileAccessService.generateManifestFile(node2.getName());
-		
-		File f = new File(defaultManifestsPath + "site.pp");
-		assertTrue(f.exists());
-		f = new File(defaultManifestsPath + node.getGroupName() + "/"
-				+ node.getName() + ".pp");
-		assertTrue(f.exists());
+        fileAccessService.generateSiteFile();
+        fileAccessService.generateManifestFile(node.getName());
+        fileAccessService.generateManifestFile(node2.getName());
 
-		f = new File(defaultManifestsPath + node2.getGroupName() + "/"
-				+ node2.getName() + ".pp");
-		assertTrue(f.exists());
-		
-		//deleting
-		
-		fileAccessService.deleteNodeFiles(node.getName());
-		
-		f = new File(defaultManifestsPath + "site.pp");
-		assertTrue(f.exists());
-		
-		f = new File(defaultManifestsPath + node.getGroupName() + "/"
-				+ node.getName() + ".pp");
-		assertFalse(f.exists());
+        File f = new File(defaultManifestsPath + "site.pp");
+        assertTrue(f.exists());
+        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        assertTrue(f.exists());
 
-		f = new File(defaultManifestsPath + node2.getGroupName() + "/"
-				+ node2.getName() + ".pp");
-		assertTrue(f.exists());
+        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        assertTrue(f.exists());
 
-	}
+        // deleting
+
+        fileAccessService.deleteNodeFiles(node.getName());
+
+        f = new File(defaultManifestsPath + "site.pp");
+        assertTrue(f.exists());
+
+        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        assertFalse(f.exists());
+
+        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        assertTrue(f.exists());
+
+    }
 
 }
