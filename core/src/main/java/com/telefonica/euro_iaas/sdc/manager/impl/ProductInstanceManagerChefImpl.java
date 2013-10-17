@@ -12,6 +12,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
@@ -28,6 +29,7 @@ import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
@@ -54,18 +56,25 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
      * {@inheritDoc}
      */
     @UseCase(traceTo = "UC_001.1", status = "implemented")
-    @Override
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
 
-        if (!vm.canWorkWithChef()) {
+        /*if (!vm.canWorkWithChef()) {
             sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
             sdcClientUtils.setNodeCommands(vm);
 
             vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
             // Configure the node with the corresponding node commands
+        }*/
+        
+        if (!vm.canWorkWithChefServer()) {
+            String message = "The VM does not include the node hostname required to Install " +
+            		"software";
+            throw new InvalidInstallProductRequestException(message);
         }
-
+        
+        isNodeRegistered(vm.getHostname());
+                      
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {

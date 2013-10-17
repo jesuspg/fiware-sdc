@@ -7,11 +7,16 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
@@ -31,7 +36,11 @@ public class BaseInstallableInstanceManager {
     protected RecipeNamingGenerator recipeNamingGenerator;
     private ChefNodeDao chefNodeDao;
     protected SDCClientUtils sdcClientUtils;
-
+    
+    int MAX_TIME = 90000;
+    
+    private static Logger LOGGER = Logger.getLogger("BaseInstallableInstanceManager");
+    
     protected void callChef(String recipe, VM vm) throws CanNotCallChefException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
@@ -46,12 +55,11 @@ public class BaseInstallableInstanceManager {
 
     protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
             throws CanNotCallChefException, NodeExecutionException {
-        // System.out.println("Attributre " + attributes);
         configureNode(vm, attributes, process, recipe);
         try {
-            System.out.println("Executing recipe " + recipe + " in " + vm.getIp());
-            executeRecipes(vm);
-            // unassignRecipes(vm, recipe);
+            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
+            isRecipeExecuted(vm, process, recipe);
+            unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
             // unassignRecipes(vm, recipe);
             // even if execution fails want to unassign the recipe
@@ -92,7 +100,14 @@ public class BaseInstallableInstanceManager {
      */
     public void unassignRecipes(VM vm, String recipe) throws CanNotCallChefException {
         // tell Chef the assigned recipes shall be deleted:
-        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        ChefNode node = null;
+        try {
+            node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+        } catch (EntityNotFoundException e) {
+            String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
+            LOGGER.info(message);
+            throw new CanNotCallChefException(message,e);
+        }
         node.removeRecipe(recipe);
         chefNodeDao.updateNode(node);
     }
@@ -110,16 +125,76 @@ public class BaseInstallableInstanceManager {
     public void configureNode(VM vm, List<Attribute> attributes, String process, String recipe)
             throws CanNotCallChefException {
         // tell Chef the assigned recipes shall be deleted:
-        ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
-        node.addRecipe(recipe);
-        if (attributes != null) {
-            for (Attribute attr : attributes) {
-                node.addAttribute(process, attr.getKey(), attr.getValue());
+        //ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
+        ChefNode node = null;
+        try {
+            node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+            node.addRecipe(recipe);
+            if (attributes != null) {
+                for (Attribute attr : attributes) {
+                    node.addAttribute(process, attr.getKey(), attr.getValue());
+                }
             }
+        } catch (EntityNotFoundException e){
+            String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
+            LOGGER.info(message);
+            throw new CanNotCallChefException(message,e);
         }
         chefNodeDao.updateNode(node);
     }
 
+    /**
+     * Tell Chef the previously assigned recipes are ready to be installed.
+     * 
+     * @param osInstance
+     * @throws  
+     * @throws ShellCommandException
+     */
+    public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
+        boolean isExecuted = false;
+        int time = 10000;
+        Date fechaAhora = new Date();
+        while (!isExecuted) {
+            try {
+                Thread.sleep(time);
+                if (time > MAX_TIME) {
+                    String errorMesg = "Recipe " + recipe + " coub not be executed in " +
+                        vm.getChefClientName();
+                    LOGGER.info(errorMesg);
+                    throw new NodeExecutionException(errorMesg);
+                }
+            
+                ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
+                
+                long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
+                //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
+                
+                if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
+                    isExecuted = true;
+                }
+                
+            } catch (EntityNotFoundException e) {
+                throw new NodeExecutionException(e);
+            } catch (CanNotCallChefException e) {
+                throw new NodeExecutionException(e);
+            } catch (InterruptedException ie) {
+                throw new NodeExecutionException(ie);
+            }
+        }
+    }
+    
+    /**
+     * Checks if the Node is already registres in ChefServer.
+     * @param hostname
+     */
+    public void isNodeRegistered(String hostname)
+    {
+        try {
+            chefNodeDao.isNodeRegistered(hostname);
+        } catch (CanNotCallChefException e) {
+            throw new SdcRuntimeException(e);
+        } 
+    }
     // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider
