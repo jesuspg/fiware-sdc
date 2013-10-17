@@ -16,6 +16,7 @@ public class ChefNodeTest extends TestCase {
     private final static String JSON_STRING = "{\"normal\":{\"tags\":[],\"postgresql\":"
             + "{\"dir\":\"/etc/postgresql/8.4/main\"}},"
             + "\"name\":\"flexichefnode3.flexiscale.com\",\"override\":{},"
+            + "\"ohai_time\":\"123456789\","
             + "\"default\":{},\"json_class\":\"Chef::Node\"," + "\"run_list\": [ \"recipe[apache::2_install]\" ]}";
 
     public void testChefFromJSon() {
