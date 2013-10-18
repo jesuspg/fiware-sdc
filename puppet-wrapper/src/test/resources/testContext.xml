@@ -4,13 +4,16 @@
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-    http://www.springframework.org/schema/util    http://www.springframework.org/schema/util/spring-util.xsd">
-    
-    
+    http://www.springframework.org/schema/util    http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
+
+
+
     <!-- Controllers definitions by annotations -->   
     <context:annotation-config />
 	<context:component-scan base-package="com.telefonica.euro_iaas.sdc.puppetwrapper.controllers"/>
@@ -26,6 +29,13 @@
 	<bean
 		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 		<property name="useDefaultSuffixPattern" value="false" />
+	</bean>
+	
+	<mongo:mongo host="127.0.0.1" port="27017" />
+	<mongo:db-factory dbname="puppetWrapperTest" />
+ 
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
 
 	

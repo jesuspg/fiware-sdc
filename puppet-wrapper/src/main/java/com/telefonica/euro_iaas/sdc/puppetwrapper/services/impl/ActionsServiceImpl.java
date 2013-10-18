@@ -38,10 +38,11 @@ public class ActionsServiceImpl implements ActionsService {
             node.setGroupName(group);
         } catch (NoSuchElementException e) {
             node = new Node();
-            node.setName(nodeName);
+            node.setId(nodeName);
             node.setGroupName(group);
-            catalogManager.addNode(node);
         }
+        
+        
 
         Software soft = null;
         try {
@@ -55,6 +56,8 @@ public class ActionsServiceImpl implements ActionsService {
             soft.setAction(Action.INSTALL);
             node.addSoftware(soft);
         }
+        
+        catalogManager.addNode(node);
 
         logger.debug("node: " + node);
 

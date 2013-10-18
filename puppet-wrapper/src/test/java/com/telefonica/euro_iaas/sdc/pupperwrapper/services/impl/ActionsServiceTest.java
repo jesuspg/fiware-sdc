@@ -32,20 +32,20 @@ public class ActionsServiceTest {
 
     @SuppressWarnings("restriction")
     @Resource
-    private CatalogManager fileManager;
+    private CatalogManager catalogManagerMongo;
 
     @Test
     public void install() {
 
         actionsService.install("testGroup", "testNode", "testSoft", "1.0.0");
 
-        Node node = fileManager.getNode("testNode");
+        Node node = catalogManagerMongo.getNode("testNode");
         Software soft = node.getSoftware("testSoft");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getName().equals("testNode"));
+        assertTrue(node.getId().equals("testNode"));
         assertTrue(soft.getName().equals("testSoft"));
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
@@ -57,25 +57,25 @@ public class ActionsServiceTest {
 
         actionsService.install("testGroup", "testNode", "testSoft", "1.0.0");
 
-        Node node = fileManager.getNode("testNode");
+        Node node = catalogManagerMongo.getNode("testNode");
         Software soft = node.getSoftware("testSoft");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getName().equals("testNode"));
+        assertTrue(node.getId().equals("testNode"));
         assertTrue(soft.getName().equals("testSoft"));
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
         actionsService.install("testGroup", "testNode", "testSoft2", "2.0.0");
-        node = fileManager.getNode("testNode");
+        node = catalogManagerMongo.getNode("testNode");
         soft = node.getSoftware("testSoft2");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getName().equals("testNode"));
+        assertTrue(node.getId().equals("testNode"));
         assertTrue(soft.getName().equals("testSoft2"));
         assertTrue(soft.getVersion().equals("2.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
@@ -88,25 +88,25 @@ public class ActionsServiceTest {
         // install 2 nodes
         actionsService.install("testGroup", "testNode", "testSoft", "1.0.0");
 
-        Node node = fileManager.getNode("testNode");
+        Node node = catalogManagerMongo.getNode("testNode");
         Software soft = node.getSoftware("testSoft");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getName().equals("testNode"));
+        assertTrue(node.getId().equals("testNode"));
         assertTrue(soft.getName().equals("testSoft"));
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
         actionsService.install("testGroup", "testNode2", "testSoft2", "2.0.0");
-        node = fileManager.getNode("testNode2");
+        node = catalogManagerMongo.getNode("testNode2");
         soft = node.getSoftware("testSoft2");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getName().equals("testNode2"));
+        assertTrue(node.getId().equals("testNode2"));
         assertTrue(soft.getName().equals("testSoft2"));
         assertTrue(soft.getVersion().equals("2.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
@@ -115,7 +115,7 @@ public class ActionsServiceTest {
 
         actionsService.deleteNode("testNode");
 
-        fileManager.getNode("testNode");
+        catalogManagerMongo.getNode("testNode");
 
     }
 }

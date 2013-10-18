@@ -42,11 +42,11 @@ public class FileAccessServiceTest {
     public void generateManifestFileTest() throws ImagingOpException, IOException {
 
         Node node = new Node();
-        node.setName("test");
+        node.setId("test");
         node.setGroupName("group");
 
         Node node2 = new Node();
-        node2.setName("test2");
+        node2.setId("test2");
         node2.setGroupName("group");
 
         Software soft = new Software();
@@ -69,10 +69,10 @@ public class FileAccessServiceTest {
         fileAccessService.generateManifestFile("test");
         fileAccessService.generateManifestFile("test2");
 
-        File f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        File f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getId() + ".pp");
         assertTrue(f.exists());
 
-        File f2 = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        File f2 = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getId() + ".pp");
         assertTrue(f2.exists());
     }
 
@@ -80,11 +80,11 @@ public class FileAccessServiceTest {
     public void generateSiteFileTest() throws IOException {
 
         Node node = new Node();
-        node.setName("test");
+        node.setId("test");
         node.setGroupName("group");
 
         Node node2 = new Node();
-        node2.setName("test2");
+        node2.setId("test2");
         node2.setGroupName("group2");
 
         Software soft = new Software();
@@ -113,11 +113,11 @@ public class FileAccessServiceTest {
     public void deleteNodeTest() throws FileNotFoundException, UnsupportedEncodingException, IOException {
         // creating structure
         Node node = new Node();
-        node.setName("test");
+        node.setId("test");
         node.setGroupName("group");
 
         Node node2 = new Node();
-        node2.setName("test2");
+        node2.setId("test2");
         node2.setGroupName("group2");
 
         Software soft = new Software();
@@ -136,28 +136,28 @@ public class FileAccessServiceTest {
         catalogManager.addNode(node2);
 
         fileAccessService.generateSiteFile();
-        fileAccessService.generateManifestFile(node.getName());
-        fileAccessService.generateManifestFile(node2.getName());
+        fileAccessService.generateManifestFile(node.getId());
+        fileAccessService.generateManifestFile(node2.getId());
 
         File f = new File(defaultManifestsPath + "site.pp");
         assertTrue(f.exists());
-        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getId() + ".pp");
         assertTrue(f.exists());
 
-        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getId() + ".pp");
         assertTrue(f.exists());
 
         // deleting
 
-        fileAccessService.deleteNodeFiles(node.getName());
+        fileAccessService.deleteNodeFiles(node.getId());
 
         f = new File(defaultManifestsPath + "site.pp");
         assertTrue(f.exists());
 
-        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getName() + ".pp");
+        f = new File(defaultManifestsPath + node.getGroupName() + "/" + node.getId() + ".pp");
         assertFalse(f.exists());
 
-        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getName() + ".pp");
+        f = new File(defaultManifestsPath + node2.getGroupName() + "/" + node2.getId() + ".pp");
         assertTrue(f.exists());
 
     }

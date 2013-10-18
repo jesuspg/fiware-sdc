@@ -51,7 +51,7 @@ public class FileAccessServiceImpl implements FileAccessService {
         }
 
         try {
-            FileWriter fw = new FileWriter(path + "/" + node.getName() + ".pp", false);
+            FileWriter fw = new FileWriter(path + "/" + node.getId() + ".pp", false);
             fw.write(fileContent);
             fw.close();
         } catch (IOException ex) {
@@ -97,10 +97,10 @@ public class FileAccessServiceImpl implements FileAccessService {
 
         String path = defaultManifestsPath + node.getGroupName();
 
-        File file = new File(path + "/" + node.getName() + ".pp");
+        File file = new File(path + "/" + node.getId() + ".pp");
 
         if (!file.delete()) {
-            logger.info(format("File {0} could not be deleted. Did it exist?", node.getName() + ".pp"));
+            logger.info(format("File {0} could not be deleted. Did it exist?", node.getId() + ".pp"));
         }
 
     }
