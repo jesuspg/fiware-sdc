@@ -16,4 +16,6 @@ public interface CatalogManager {
     public String generateManifestStr(String nodeName);
 
     public String generateSiteStr();
+
+    public void removeNodesByGroupName(String groupName);
 }

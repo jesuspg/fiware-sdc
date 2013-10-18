@@ -76,6 +76,12 @@ public class CatalogManagerMongoImpl implements CatalogManager{
 
     }
 
+    public void removeNodesByGroupName(String groupName) {
+        Query searchNodeQuery = new Query(Criteria.where("groupName").is(groupName));
+        mongoTemplate.remove(searchNodeQuery, Node.class);    
+        
+    }
+
     
 
 }

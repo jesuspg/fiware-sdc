@@ -139,4 +139,26 @@ public class CatalogManagerMongoTest {
         assertTrue(str.contains("import 'group/*.pp'"));
         assertTrue(str.contains("import 'group2/*.pp'"));
     }
+    
+    @Test
+    public void removeNodesByGroupNameTest(){
+        
+        Node node = new Node();
+        node.setId("test");
+        node.setGroupName("group");
+
+        Node node2 = new Node();
+        node2.setId("test2");
+        node2.setGroupName("group");
+
+        catalogManagerMongo.addNode(node);
+        catalogManagerMongo.addNode(node2);
+        
+        assertTrue(catalogManagerMongo.getNodeLength()==2);
+        
+        catalogManagerMongo.removeNodesByGroupName("group");
+        
+        assertTrue(catalogManagerMongo.getNodeLength()==0);
+        
+    }
 }

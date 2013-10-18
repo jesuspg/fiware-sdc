@@ -161,5 +161,35 @@ public class FileAccessServiceTest {
         assertTrue(f.exists());
 
     }
+    
+    @Test
+    public void deleteGoupFolder() throws FileNotFoundException, UnsupportedEncodingException, IOException {
+     // creating structure
+        Node node = new Node();
+        node.setId("test");
+        node.setGroupName("group");
+
+        Node node2 = new Node();
+        node2.setId("test2");
+        node2.setGroupName("group");
+
+        catalogManager.addNode(node);
+        catalogManager.addNode(node2);
+
+        fileAccessService.generateSiteFile();
+        fileAccessService.generateManifestFile(node.getId());
+        fileAccessService.generateManifestFile(node2.getId());
+        
+     // deleting
+
+        fileAccessService.deleteGoupFolder(node.getGroupName());
+        
+        File f = new File(defaultManifestsPath + "site.pp");
+        assertTrue(f.exists());
+
+        f = new File(defaultManifestsPath + node.getGroupName());
+        assertFalse(f.exists());
+        
+    }
 
 }

@@ -11,4 +11,6 @@ public interface ActionsService {
     public Node uninstall(String group, String nodeName, String softName, String version);
 
     public void deleteNode(String nodeName) throws IOException;
+
+    public void deleteGroup(String groupName) throws IOException;
 }

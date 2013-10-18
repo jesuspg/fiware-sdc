@@ -76,4 +76,10 @@ public class ActionsServiceImpl implements ActionsService {
 
     }
 
+    public void deleteGroup(String groupName) throws IOException {
+        fileAccessService.deleteGoupFolder(groupName);
+        catalogManager.removeNodesByGroupName(groupName);
+        
+    }
+
 }

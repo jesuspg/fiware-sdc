@@ -94,6 +94,13 @@ public class PuppetController /* extends GenericController */{
 
         actionsService.deleteNode(nodeName);
     }
+    
+    @RequestMapping("/delete/group/{groupName}")
+    @ResponseBody
+    public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
+
+        actionsService.deleteGroup(groupName);
+    }
 
     @RequestMapping("/test")
     public @ResponseBody
