@@ -130,15 +130,17 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
-            Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
-                    .entity(payload);
+            Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+            wr = wr.type(MediaType.APPLICATION_JSON);
+            wr = wr.entity(payload);
 
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
-
+            
+            InputStream inputStream = wr.put(InputStream.class);
             String stringNode;
-            stringNode = IOUtils.toString(wr.put(InputStream.class));
+            stringNode = IOUtils.toString(inputStream);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
 
             ChefNode updatedNode = new ChefNode();
@@ -158,7 +160,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
-            Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+            Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+            wr = wr.type(MediaType.APPLICATION_JSON);
 
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
