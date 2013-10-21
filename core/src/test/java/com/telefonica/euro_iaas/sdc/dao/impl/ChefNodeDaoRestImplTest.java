@@ -17,14 +17,11 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.ws.rs.core.MediaType;
 
@@ -125,8 +122,12 @@ public class ChefNodeDaoRestImplTest {
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
         MixlibAuthenticationDigester mixlibAuthenticationDigester = mock(MixlibAuthenticationDigester.class);
         Client client = mock(Client.class);
+        InputStream inputStream= mock(InputStream.class);
+        
         ChefNode chefNode = new ChefNode();
         chefNode.setName("hostname.domain");
+        
+        ChefNode chefNode2 = mock(ChefNode.class);
         
         chefNodeDaoRestImpl.setPropertiesProvider(propertiesProvider);
         chefNodeDaoRestImpl.setDigester(mixlibAuthenticationDigester);
@@ -143,6 +144,9 @@ public class ChefNodeDaoRestImplTest {
         
         // then
         chefNodeDaoRestImpl.deleteNode(chefNode);
+        verify(client, times(1)).resource(anyString());
+        verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
+
     }
     
     /**
@@ -182,5 +186,7 @@ public class ChefNodeDaoRestImplTest {
         
         // then
         chefNodeDaoRestImpl.updateNode(chefNode);
+        verify(client, times(1)).resource(anyString());
+        verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
     }
 }
