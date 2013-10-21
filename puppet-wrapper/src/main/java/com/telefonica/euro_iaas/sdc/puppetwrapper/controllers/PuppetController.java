@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 
 @Controller
 public class PuppetController /* extends GenericController */{
@@ -62,7 +63,7 @@ public class PuppetController /* extends GenericController */{
             throw new IllegalArgumentException("Version is not set");
         }
 
-        Node node = actionsService.install(group, nodeName, softwareName, version);
+        Node node = actionsService.action(Action.INSTALL, group, nodeName, softwareName, version);
 
         logger.debug("node " + node);
 
@@ -88,13 +89,50 @@ public class PuppetController /* extends GenericController */{
         return node;
     }
 
+    @RequestMapping("/uninstall/{group}/{nodeName}/{softwareName}/{version}")
+    @ResponseBody
+    public Node uninstall(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
+            @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
+            HttpServletRequest request) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+
+        logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
+                + version);
+
+        if (group == null || "".equals(group)) {
+            logger.debug("Group is not set");
+            throw new IllegalArgumentException("Group is not set");
+        }
+
+        if (nodeName == null || "".equals(nodeName)) {
+            logger.debug("Node name is not set");
+            throw new IllegalArgumentException("Node name is not set");
+        }
+
+        if (softwareName == null || "".equals(softwareName)) {
+            logger.debug("Software Name is not set");
+            throw new IllegalArgumentException("Software name is not set");
+        }
+
+        if (softwareName == null || "".equals(version)) {
+            logger.debug("version is not set");
+            throw new IllegalArgumentException("Version is not set");
+        }
+
+        Node node = actionsService.action(Action.UNINSTALL, group, nodeName, softwareName, version);
+
+        logger.debug("node " + node);
+
+        return node;
+
+    }
+
     @RequestMapping("/delete/node/{nodeName}")
     @ResponseBody
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         actionsService.deleteNode(nodeName);
     }
-    
+
     @RequestMapping("/delete/group/{groupName}")
     @ResponseBody
     public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {

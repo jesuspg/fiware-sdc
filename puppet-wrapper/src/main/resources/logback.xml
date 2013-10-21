@@ -2,7 +2,7 @@
 
 <configuration>
 
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="puppetwrapper" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
 		</encoder>
@@ -10,6 +10,7 @@
 	
 	<logger name="com.telefonica.euro_iaas.sdc.puppetwrapper" additivity="false">
 		<level value="DEBUG" />
+		<appender-ref ref="puppetwrapper" />
 	</logger>
 	
 	<!-- SpringFramework logger -->
@@ -18,13 +19,13 @@
         <appender-ref ref="puppetwrapper" />
     </logger>
 
-	<logger name="org.springframework">
+	<logger name="org.springframework" additivity="false">
 		<level value="error" />
 	</logger>
 
 	<root>
 		<level value="INFO" />
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="puppetwrapper" />
 	</root>
 
 </configuration>

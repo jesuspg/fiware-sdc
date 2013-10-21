@@ -28,7 +28,7 @@ public class ActionsServiceImpl implements ActionsService {
     @Resource
     private FileAccessService fileAccessService;
 
-    public Node install(String group, String nodeName, String softName, String version) {
+    public Node action(Action action, String group, String nodeName, String softName, String version) {
 
         logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softName + " version: " + version);
 
@@ -48,12 +48,12 @@ public class ActionsServiceImpl implements ActionsService {
         try {
             soft = node.getSoftware(softName);
             soft.setVersion(version);
-            soft.setAction(Action.INSTALL);
+            soft.setAction(action);
         } catch (NoSuchElementException e) {
             soft = new Software();
             soft.setName(softName);
             soft.setVersion(version);
-            soft.setAction(Action.INSTALL);
+            soft.setAction(action);
             node.addSoftware(soft);
         }
         
@@ -63,11 +63,6 @@ public class ActionsServiceImpl implements ActionsService {
 
         return node;
 
-    }
-
-    public Node uninstall(String group, String nodeName, String softName, String version) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public void deleteNode(String nodeName) throws IOException {
