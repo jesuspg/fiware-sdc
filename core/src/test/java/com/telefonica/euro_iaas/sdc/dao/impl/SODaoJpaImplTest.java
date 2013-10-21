@@ -9,10 +9,11 @@
  *   been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.model.OS;
 
 /**

@@ -9,7 +9,7 @@
  *   been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +17,9 @@ import java.util.List;
 import junit.framework.Assert;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.OSDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
