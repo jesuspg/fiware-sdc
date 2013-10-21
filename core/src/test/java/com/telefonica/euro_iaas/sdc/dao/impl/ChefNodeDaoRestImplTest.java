@@ -144,6 +144,7 @@ public class ChefNodeDaoRestImplTest {
         
         // then
         chefNodeDaoRestImpl.deleteNode(chefNode);
+        
         verify(client, times(1)).resource(anyString());
         verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
 
@@ -186,6 +187,7 @@ public class ChefNodeDaoRestImplTest {
         
         // then
         chefNodeDaoRestImpl.updateNode(chefNode);
+        
         verify(client, times(1)).resource(anyString());
         verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
     }
