@@ -190,5 +190,6 @@ public class ChefNodeDaoRestImplTest {
         
         verify(client, times(1)).resource(anyString());
         verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
+        verify(chefNode).toJson();
     }
 }
