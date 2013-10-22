@@ -5,7 +5,7 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;

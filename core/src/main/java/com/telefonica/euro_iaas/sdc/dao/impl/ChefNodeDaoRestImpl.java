@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
 
@@ -49,6 +50,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     Client client;
+    
+    private static Logger LOGGER = Logger.getLogger("ChefNodeDaoRestImpl");
     
     private String NODE_NOT_FOUND_PATTERN ="404";
     private static final int MAX_TIME = 90000;
@@ -94,10 +97,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
+            InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
-            stringNode = IOUtils.toString(wr.get(InputStream.class));
-            //System.out.println("Node " + chefNodename + "in Json");
-            //System.out.println(stringNode);
+            stringNode = IOUtils.toString(inputStream);
+            //LOGGER.info("Node " + chefNodename + "in Json");
+            //LOGGER.info(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
         
             ChefNode node = new ChefNode();
@@ -122,15 +126,17 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
-            Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
-                    .entity(payload);
+            Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+            wr = wr.type(MediaType.APPLICATION_JSON);
+            wr = wr.entity(payload);
 
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
-
+            
+            InputStream inputStream = wr.put(InputStream.class);
             String stringNode;
-            stringNode = IOUtils.toString(wr.put(InputStream.class));
+            stringNode = IOUtils.toString(inputStream);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
 
             ChefNode updatedNode = new ChefNode();
@@ -146,28 +152,18 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public void deleteNode(ChefNode node) throws CanNotCallChefException {
         try {
             String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
-            // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
 
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
-            Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+            Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+            wr = wr.type(MediaType.APPLICATION_JSON);
 
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
 
             wr.delete(InputStream.class);
-            // ClientResponse respone = wr.delete(ClientResponse.class);
-
-            /*
-             * String stringNode; stringNode = IOUtils.toString(wr.delete(InputStream.class)); JSONObject jsonNode =
-             * JSONObject.fromObject(stringNode); ChefNode deletedNode = new ChefNode(); deletedNode.fromJson(jsonNode);
-             * return deletedNode;
-             */
-            /*
-             * } catch (IOException e) { throw new SdcRuntimeException(e);
-             */
         } catch (UniformInterfaceException e) {
             throw new CanNotCallChefException(e);
         }
@@ -192,14 +188,13 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             
             try {
                 Thread.sleep(time);
-                System.out.println("Checking node : " + hostname + " time:" + time);
+                LOGGER.info("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
                     String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
+                    LOGGER.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
                 response = IOUtils.toString(wr.get(InputStream.class));
-                //System.out.println("Nodes: ****");
-                //System.out.println(response);
                 time += time;
             } catch (UniformInterfaceException e) {
                 throw new CanNotCallChefException(e);

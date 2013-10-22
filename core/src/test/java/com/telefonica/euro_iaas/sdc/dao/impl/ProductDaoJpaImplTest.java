@@ -5,8 +5,10 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import com.telefonica.euro_iaas.sdc.dao.OSDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;

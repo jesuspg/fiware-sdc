@@ -5,7 +5,7 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 
