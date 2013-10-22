@@ -23,10 +23,10 @@ public class ActionsServiceImpl implements ActionsService {
 
     @SuppressWarnings("restriction")
     @Resource
-    private CatalogManager catalogManager;
+    protected CatalogManager catalogManager;
 
     @Resource
-    private FileAccessService fileAccessService;
+    protected FileAccessService fileAccessService;
 
     public Node action(Action action, String group, String nodeName, String softName, String version) {
 

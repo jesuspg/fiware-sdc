@@ -25,7 +25,7 @@ public class FileAccessServiceImpl implements FileAccessService {
     private static final Log logger = LogFactory.getLog(FileAccessServiceImpl.class);
 
     @Resource
-    private CatalogManager catalogManager;
+    protected CatalogManager catalogManager;
 
     private String defaultManifestsPath;
 

@@ -16,29 +16,29 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
 @Service("catalogManagerMongo")
-public class CatalogManagerMongoImpl implements CatalogManager{
-    
+public class CatalogManagerMongoImpl implements CatalogManager {
+
     @Resource
-    MongoTemplate mongoTemplate ;
-    
+    protected MongoTemplate mongoTemplate;
+
     private String eol = System.getProperty("line.separator");
-    
+
     public void addNode(Node node) {
-        try{
+        try {
             getNode(node.getId());
             mongoTemplate.remove(node);
             mongoTemplate.insert(node);
-            
-        }catch (NoSuchElementException ex){
+
+        } catch (NoSuchElementException ex) {
             mongoTemplate.insert(node);
         }
-        
+
     }
 
     public Node getNode(String nodeName) {
         Query searchNodeQuery = new Query(Criteria.where("id").is(nodeName));
         Node savedNode = mongoTemplate.findOne(searchNodeQuery, Node.class);
-        if (savedNode==null){
+        if (savedNode == null) {
             throw new NoSuchElementException(format("The node {0} could not be found", nodeName));
         }
         return savedNode;
@@ -47,25 +47,25 @@ public class CatalogManagerMongoImpl implements CatalogManager{
     public void removeNode(String nodeName) {
         Query searchNodeQuery = new Query(Criteria.where("id").is(nodeName));
         mongoTemplate.remove(searchNodeQuery, Node.class);
-        
+
     }
 
     public int getNodeLength() {
         List<Node> nodes = mongoTemplate.findAll(Node.class);
         return nodes.size();
     }
-    
+
     public String generateManifestStr(String nodeName) {
         StringBuffer sb = new StringBuffer();
         Node node = getNode(nodeName);
         sb.append(node.generateFileStr());
         return sb.toString();
     }
-    
+
     public String generateSiteStr() {
 
-        List<Node> nodeList=mongoTemplate.findAll(Node.class);
-        
+        List<Node> nodeList = mongoTemplate.findAll(Node.class);
+
         StringBuffer sb = new StringBuffer();
 
         for (Node node : nodeList) {
@@ -78,10 +78,12 @@ public class CatalogManagerMongoImpl implements CatalogManager{
 
     public void removeNodesByGroupName(String groupName) {
         Query searchNodeQuery = new Query(Criteria.where("groupName").is(groupName));
-        mongoTemplate.remove(searchNodeQuery, Node.class);    
-        
+        mongoTemplate.remove(searchNodeQuery, Node.class);
+
     }
 
-    
+//    public void setMongoTemplate(MongoTemplate mongoTemplate) {
+//        this.mongoTemplate = mongoTemplate;
+//    }
 
 }

@@ -1,42 +1,77 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services.impl;
+package com.telefonica.euro_iaas.sdc.pupperwrapper.services.integration.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Resource;
-
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.mongodb.Mongo;
+import com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests.CatalogManagerMongoImpl4Test;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:**testContext.xml" })
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class CatalogManagerMongoTest {
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.config.RuntimeConfig;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.extract.UserTempNaming;
 
-    @Resource
-    private CatalogManager catalogManagerMongo;
 
-    @Resource
-    MongoTemplate mongoTemplate;
+public class CatalogManagerMongoIntegrationTest {
 
+    
+    private static CatalogManagerMongoImpl4Test catalogManagerMongo;
+
+    private static final String LOCALHOST = "127.0.0.1";
+    private static final String DB_NAME = "itest";
+    private static final int MONGO_TEST_PORT = 27028;
+    private static MongodProcess mongoProcess;
+    private static Mongo mongo;
+    
+    private MongoTemplate template;
+    
+    @BeforeClass
+    public static void initializeDB() throws IOException {
+
+        RuntimeConfig config = new RuntimeConfig();
+        config.setExecutableNaming(new UserTempNaming());
+        
+        MongodStarter starter = MongodStarter.getInstance(config);
+
+        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_0, MONGO_TEST_PORT, false));
+        mongoProcess = mongoExecutable.start();
+
+        mongo = new Mongo(LOCALHOST, MONGO_TEST_PORT);
+        mongo.getDB(DB_NAME);
+    }
+
+    @AfterClass
+    public static void shutdownDB() throws InterruptedException {
+        mongo.close();
+        mongoProcess.stop();
+    }
+
+    
     @Before
-    public void setUp() {
-        mongoTemplate.remove(new Query(), "nodes");
+    public void setUp() throws Exception {
+        catalogManagerMongo=new CatalogManagerMongoImpl4Test();
+        template = new MongoTemplate(mongo, DB_NAME);
+        catalogManagerMongo.setMongoTemplate(template);
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        template.dropCollection(Node.class);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -139,10 +174,10 @@ public class CatalogManagerMongoTest {
         assertTrue(str.contains("import 'group/*.pp'"));
         assertTrue(str.contains("import 'group2/*.pp'"));
     }
-    
+
     @Test
-    public void removeNodesByGroupNameTest(){
-        
+    public void removeNodesByGroupNameTest() {
+
         Node node = new Node();
         node.setId("test");
         node.setGroupName("group");
@@ -153,12 +188,12 @@ public class CatalogManagerMongoTest {
 
         catalogManagerMongo.addNode(node);
         catalogManagerMongo.addNode(node2);
-        
-        assertTrue(catalogManagerMongo.getNodeLength()==2);
-        
+
+        assertTrue(catalogManagerMongo.getNodeLength() == 2);
+
         catalogManagerMongo.removeNodesByGroupName("group");
-        
-        assertTrue(catalogManagerMongo.getNodeLength()==0);
-        
+
+        assertTrue(catalogManagerMongo.getNodeLength() == 0);
+
     }
 }

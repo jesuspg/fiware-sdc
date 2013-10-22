@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.pupperwrapper.services.impl;
+package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -7,37 +7,35 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Resource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.CatalogManagerMongoImpl;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.FileAccessServiceImpl;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:**testContext.xml" })
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class ActionsServiceTest {
 
-    @SuppressWarnings("restriction")
-    @Resource
-    private ActionsService actionsService;
+    private ActionServiceImpl4Test actionsService;
 
     private CatalogManager catalogManagerMongo;
     
     @Before
     public void setUpMock() throws Exception {
         catalogManagerMongo = mock(CatalogManagerMongoImpl.class);
+        
+        FileAccessService fileAccessService = mock(FileAccessServiceImpl.class);
+        
+        actionsService=new ActionServiceImpl4Test();
+        actionsService.setCatalogManager(catalogManagerMongo);
+        actionsService.setFileAccessService(fileAccessService);
         
         Node nodeInstall=new Node();
         nodeInstall.setGroupName("testGroup");
@@ -75,22 +73,10 @@ public class ActionsServiceTest {
         softUN_2.setVersion("2.0.0");
         nodeUNInstall_2.addSoftware(softUN_2);
         
-        when(catalogManagerMongo.getNode("1")).thenReturn(nodeInstall).thenThrow(new NoSuchElementException());
+        when(catalogManagerMongo.getNode("1")).thenReturn(nodeInstall).thenReturn(nodeInstall).thenThrow(new NoSuchElementException());
         when(catalogManagerMongo.getNode("2")).thenReturn(nodeInstall_2);
         when(catalogManagerMongo.getNode("3")).thenReturn(nodeUNInstall);
         when(catalogManagerMongo.getNode("4")).thenReturn(nodeUNInstall_2);
-        
-        
-//        /*** apiKey not exists ***/
-//        when(userService.getUserToken(0)).thenThrow(new NoSuchElementException());
-//        
-//        /*** token is not from this user ***/
-//        when(userService.getUserToken(2)).thenReturn("wrongToken");
-//        
-//        /*** all ok ***/
-//        when(userService.getUserToken(1)).thenReturn("token");
-//        
-//        credentialsAspect.setUserService(userService);
         
     }
 
@@ -221,9 +207,9 @@ public class ActionsServiceTest {
 
         // delete node 1
 
-        actionsService.deleteNode("5");
+        actionsService.deleteNode("1");
 
-        catalogManagerMongo.getNode("5");
+        catalogManagerMongo.getNode("1");
 
     }
 }
