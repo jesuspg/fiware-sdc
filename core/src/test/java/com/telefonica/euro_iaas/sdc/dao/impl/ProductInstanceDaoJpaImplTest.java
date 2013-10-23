@@ -5,10 +5,15 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.dao;
+package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
+import com.telefonica.euro_iaas.sdc.dao.OSDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
