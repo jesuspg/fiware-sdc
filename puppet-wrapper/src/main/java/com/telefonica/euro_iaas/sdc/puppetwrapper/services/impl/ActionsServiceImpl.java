@@ -30,12 +30,12 @@ public class ActionsServiceImpl implements ActionsService {
 
     @SuppressWarnings("restriction")
     @Resource
-    private CatalogManager catalogManager;
+    protected CatalogManager catalogManager;
 
     @Resource
-    private FileAccessService fileAccessService;
+    protected FileAccessService fileAccessService;
 
-    public Node install(String group, String nodeName, String softName, String version) {
+    public Node action(Action action, String group, String nodeName, String softName, String version) {
 
         logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softName + " version: " + version);
 
@@ -45,23 +45,26 @@ public class ActionsServiceImpl implements ActionsService {
             node.setGroupName(group);
         } catch (NoSuchElementException e) {
             node = new Node();
-            node.setName(nodeName);
+            node.setId(nodeName);
             node.setGroupName(group);
-            catalogManager.addNode(node);
         }
+        
+        
 
         Software soft = null;
         try {
             soft = node.getSoftware(softName);
             soft.setVersion(version);
-            soft.setAction(Action.INSTALL);
+            soft.setAction(action);
         } catch (NoSuchElementException e) {
             soft = new Software();
             soft.setName(softName);
             soft.setVersion(version);
-            soft.setAction(Action.INSTALL);
+            soft.setAction(action);
             node.addSoftware(soft);
         }
+        
+        catalogManager.addNode(node);
 
         logger.debug("node: " + node);
 
@@ -69,15 +72,16 @@ public class ActionsServiceImpl implements ActionsService {
 
     }
 
-    public Node uninstall(String group, String nodeName, String softName, String version) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public void deleteNode(String nodeName) throws IOException {
         fileAccessService.deleteNodeFiles(nodeName);
         catalogManager.removeNode(nodeName);
 
+    }
+
+    public void deleteGroup(String groupName) throws IOException {
+        fileAccessService.deleteGoupFolder(groupName);
+        catalogManager.removeNodesByGroupName(groupName);
+        
     }
 
 }

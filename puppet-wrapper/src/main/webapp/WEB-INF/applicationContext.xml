@@ -31,6 +31,13 @@
 		<property name="useDefaultSuffixPattern" value="false" />
 	</bean>
 	
+	<mongo:mongo host="127.0.0.1" port="27017" />
+	<mongo:db-factory dbname="puppetWrapper" />
+ 
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+ 
 
 
 </beans>

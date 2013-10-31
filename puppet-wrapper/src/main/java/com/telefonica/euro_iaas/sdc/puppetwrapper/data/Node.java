@@ -10,26 +10,30 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 import static java.text.MessageFormat.format;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="nodes")
 public class Node {
 
     private String eol = System.getProperty("line.separator");
 
-    private String name;
+    private String id;
     private String groupName;
-    private ArrayList<Software> softwareList = new ArrayList<Software>();
+    private List<Software> softwareList = new ArrayList<Software>();
 
     public Node() {
 
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String name) {
+        this.id = name;
     }
 
     public String getGroupName() {
@@ -60,7 +64,7 @@ public class Node {
 
     public String generateFileStr() {
         StringBuffer sb = new StringBuffer();
-        sb.append("node '" + this.name + "'{");
+        sb.append("node '" + this.id + "'{");
         sb.append(eol);
         for (Software soft : softwareList) {
             sb.append(soft.generateFileStr());
@@ -83,7 +87,7 @@ public class Node {
 
         String retValue = "";
 
-        retValue = "Node ( " + super.toString() + TAB + "eol = " + this.eol + TAB + "name = " + this.name + TAB
+        retValue = "Node ( " + super.toString() + TAB + "eol = " + this.eol + TAB + "name = " + this.id + TAB
                 + "groupName = " + this.groupName + TAB + "softwareList = " + this.softwareList + TAB + " )";
 
         return retValue;

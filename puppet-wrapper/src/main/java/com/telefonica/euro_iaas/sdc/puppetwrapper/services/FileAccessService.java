@@ -22,4 +22,6 @@ public interface FileAccessService {
 
     public void deleteNodeFiles(String nodeName) throws IOException;
 
+    public void deleteGoupFolder(String groupName) throws IOException;
+
 }
