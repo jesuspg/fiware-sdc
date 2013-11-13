@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telefonica.euro_iaas</groupId>
@@ -43,8 +44,7 @@
         <!-- plugins versions -->
 
         <maven-site-plugin.version>2.2</maven-site-plugin.version>
-        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
-        <cobertura-maven-plugin.version>2.5.2</cobertura-maven-plugin.version>
+        <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -228,37 +228,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Generacion de test -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Test*.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/test/acceptance/**</exclude>
-                                <exclude>**/test/utils/**</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/test/**.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -291,7 +260,20 @@
                         </goals>
                     </execution>
                 </executions>
-
+                <dependencies>
+                    <dependency>
+                        <artifactId>cobertura</artifactId>
+                        <groupId>net.sourceforge.cobertura</groupId>
+                        <version>2.0.3</version>
+                        <scope>compile</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>com.sun</groupId>
+                                <artifactId>tools</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>
