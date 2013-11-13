@@ -16,7 +16,7 @@
         <repoName>fiware-sdc</repoName>
 
         <scmURI>git@pdihub.hi.inet:fiware</scmURI>
-        <ciURI>http://ci-cpr02.hi.inet</ciURI>
+        <ciURI>http://ci-fiware-01.hi.inet</ciURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
         <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
