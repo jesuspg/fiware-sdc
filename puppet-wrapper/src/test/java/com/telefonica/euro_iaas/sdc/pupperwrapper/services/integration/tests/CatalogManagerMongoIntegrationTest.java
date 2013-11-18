@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests.CatalogManagerM
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.ActionsServiceImpl;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -25,6 +28,7 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.RuntimeConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.extract.UserTempNaming;
+import de.flapdoodle.embed.process.runtime.Network;
 
 
 public class CatalogManagerMongoIntegrationTest {
@@ -34,7 +38,7 @@ public class CatalogManagerMongoIntegrationTest {
 
     private static final String LOCALHOST = "127.0.0.1";
     private static final String DB_NAME = "itest";
-    private static final int MONGO_TEST_PORT = 27028;
+//    private static final int MONGO_TEST_PORT = 12345;
     private static MongodProcess mongoProcess;
     private static Mongo mongo;
     
@@ -42,23 +46,37 @@ public class CatalogManagerMongoIntegrationTest {
     
     @BeforeClass
     public static void initializeDB() throws IOException {
-
+        
+        System.out.println("Init embedded DB");
+        
         RuntimeConfig config = new RuntimeConfig();
         config.setExecutableNaming(new UserTempNaming());
         
+        System.out.println("Init embedded DB - 1"); 
+        
         MongodStarter starter = MongodStarter.getInstance(config);
+        
+        System.out.println("Init embedded DB - 2");
+        
+        int port = Network.getFreeServerPort();
 
-        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_0, MONGO_TEST_PORT, false));
+        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_0, port, false));
         mongoProcess = mongoExecutable.start();
-
-        mongo = new Mongo(LOCALHOST, MONGO_TEST_PORT);
+        
+        System.out.println("Init embedded DB - 3");
+        
+        mongo = new Mongo(LOCALHOST, port);
         mongo.getDB(DB_NAME);
+        
+        System.out.println("Init OK");
     }
 
     @AfterClass
     public static void shutdownDB() throws InterruptedException {
+        System.out.println("shutting down embedded DB");
         mongo.close();
         mongoProcess.stop();
+        System.out.println("shut down OK");
     }
 
     
