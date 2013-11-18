@@ -60,7 +60,7 @@ public class CatalogManagerMongoIntegrationTest {
         
         int port = Network.getFreeServerPort();
 
-        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_0, port, false));
+        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_0_5, port, false));
         mongoProcess = mongoExecutable.start();
         
         System.out.println("Init embedded DB - 3");
