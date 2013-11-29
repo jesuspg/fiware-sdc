@@ -58,6 +58,11 @@ public interface SystemPropertiesProvider {
 
     public final static String CHEF_DIRECTORY_COOKBOOK = "chefDirectoryCookbook";
     public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
+    
+    public final static String PUPPET_MASTER_URL = "puppetMasterUrl";
+    
+    public final static String INSTALATOR_CHEF = "chef";
+    public final static String INSTALATOR_PUPPET = "puppet";
 
     // WEBDAV
     public final static String WEBDAV_BASE_URL = "webdavBaseUrl";

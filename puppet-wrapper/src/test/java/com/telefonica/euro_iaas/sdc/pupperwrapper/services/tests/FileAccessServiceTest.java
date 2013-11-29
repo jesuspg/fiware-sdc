@@ -6,8 +6,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.awt.image.ImagingOpException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -50,7 +52,7 @@ public class FileAccessServiceTest {
         Node node2 = new Node();
         node2.setId("test2");
         node2.setGroupName("group");
-
+        
         Software soft = new Software();
         soft.setName("testSoft");
         soft.setVersion("1.0.0");
@@ -95,6 +97,8 @@ public class FileAccessServiceTest {
 
         File f = new File(defaultManifestsPath + "site.pp");
         assertTrue(f.exists());
+        
+        
 
     }
 

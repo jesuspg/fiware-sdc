@@ -45,23 +45,6 @@ public class Software {
         this.action = action;
     }
 
-    /**
-     * Constructs a <code>String</code> with all attributes in name = value
-     * format.
-     * 
-     * @return a <code>String</code> representation of this object.
-     */
-    public String toString() {
-        final String TAB = "    ";
-
-        String retValue = "";
-
-        retValue = "Software ( " + super.toString() + TAB + "name = " + this.name + TAB + "version = " + this.version
-                + TAB + "action = " + this.action + TAB + " )";
-
-        return retValue;
-    }
-
     public String generateFileStr() {
         StringBuffer sb = new StringBuffer();
         sb.append("  class{'" + this.name + "::" + action.getActionString(action.getCode()) + "':");
@@ -74,5 +57,23 @@ public class Software {
         return sb.toString();
 
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Software]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("[action = ").append(this.action).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 
 }
