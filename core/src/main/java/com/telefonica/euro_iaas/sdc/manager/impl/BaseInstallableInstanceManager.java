@@ -58,8 +58,13 @@ public class BaseInstallableInstanceManager {
         configureNode(vm, attributes, process, recipe);
         try {
             LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
-            isRecipeExecuted(vm, process, recipe);
-            unassignRecipes(vm, recipe);
+            if (isSdcClientInstalled())  {
+                executeRecipes(vm);
+                // unassignRecipes(vm, recipe);
+            } else {
+                isRecipeExecuted(vm, process, recipe);
+                unassignRecipes(vm, recipe);
+            }           
         } catch (NodeExecutionException e) {
             // unassignRecipes(vm, recipe);
             // even if execution fails want to unassign the recipe
@@ -184,7 +189,7 @@ public class BaseInstallableInstanceManager {
     }
     
     /**
-     * Checks if the Node is already registres in ChefServer.
+     * Checks if the Node is already registered in ChefServer.
      * @param hostname
      */
     public void isNodeRegistered(String hostname)
@@ -195,6 +200,12 @@ public class BaseInstallableInstanceManager {
             throw new SdcRuntimeException(e);
         } 
     }
+    
+    protected boolean isSdcClientInstalled () {
+        String sdcClient = propertiesProvider.getProperty(SystemPropertiesProvider.SDCCLIENT_INSTALLED_IN_NODES);
+        return Boolean.parseBoolean(sdcClient);
+    }
+    
     // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider
