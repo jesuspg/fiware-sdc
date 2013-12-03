@@ -171,12 +171,7 @@ public class BaseInstallableInstanceManager {
             
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
                 
-                long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
-                //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
-                
-                if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    isExecuted = true;
-                }
+                isExecuted = hasRecipeBeenExecuted(node, fechaAhora);
                 
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
@@ -185,6 +180,21 @@ public class BaseInstallableInstanceManager {
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
             }
+        }
+    }
+    
+    private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
+        
+        LOGGER.info("oha_time " + ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000);
+        LOGGER.info("RecipeUploadedTime:" + fechaAhora.getTime());
+        
+        long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
+        //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
+        
+        if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
+            return true;
+        } else {
+            return false;
         }
     }
     
