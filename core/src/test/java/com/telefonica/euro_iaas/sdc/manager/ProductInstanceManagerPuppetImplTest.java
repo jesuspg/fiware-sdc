@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -30,9 +31,11 @@ import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
-import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerPuppetImpl;
+import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl;
+import com.telefonica.euro_iaas.sdc.manager.impl.PuppetInstallator;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -53,7 +56,7 @@ import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
 // @Ignore
 public class ProductInstanceManagerPuppetImplTest extends TestCase {
 
-    private ProductInstanceManagerPuppetImpl productManager;
+    private ProductInstanceManagerImpl productManager;
 
     private OS os;
     private Product product;
@@ -74,6 +77,10 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
     public void setUp() throws Exception {
 
         product = new Product("testProduct", "description");
+        Metadata metadata=new Metadata("installator", "puppet");
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         host = new VM("fqn", "ip", "testName", "domain");
         
@@ -104,6 +111,9 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
         when(productDao.create(any(Product.class))).thenReturn(product);
         when(productDao.update(any(Product.class))).thenReturn(product);
         when(productDao.load(any(String.class))).thenReturn(product);
+        
+        Installator installator= mock(PuppetInstallator.class);
+        
 
         /*
          * when(productDao.findUniqueByCriteria(
@@ -112,14 +122,14 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
          */
         piValidator = mock(ProductInstanceValidator.class);
 
-        productManager = new ProductInstanceManagerPuppetImpl();
+        productManager = new ProductInstanceManagerImpl();
         productManager.setPropertiesProvider(propertiesProvider);
         productManager.setProductInstanceDao(productInstanceDao);
         productManager.setProductDao(productDao);
         // productManager.setRecipeNamingGenerator(recipeNamingGenerator);
 //        productManager.setSdcClientUtils(sdcClientUtils);
         productManager.setValidator(piValidator);
-        productManager.setClient(client);
+        productManager.setPuppetInstallator(installator);
 
     }
 

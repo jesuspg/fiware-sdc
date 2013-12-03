@@ -36,6 +36,7 @@ import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl;
+import com.telefonica.euro_iaas.sdc.manager.impl.ChefInstallator;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -68,6 +69,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
     private SDCClientUtils sdcClientUtils;
     private ProductInstanceValidator piValidator;
     private Artifact artifact;
+    private Installator installator;
 
     private Product product;
     private ProductInstance expectedProduct;
@@ -142,6 +144,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
          * NotUniqueResultException());
          */
         piValidator = mock(ProductInstanceValidator.class);
+        
+        installator=mock(ChefInstallator.class);
 
         artifact = new Artifact();
         artifact.setName("artifact");
@@ -162,6 +166,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 
@@ -213,6 +218,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 
@@ -225,7 +231,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
 
-        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
+//        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
         verify(piValidator, times(1)).validateDeployArtifact(expectedProduct);
@@ -245,6 +251,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 

@@ -22,9 +22,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
-
 import net.sf.json.JSONObject;
 
 import org.junit.Before;
@@ -39,10 +39,13 @@ import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
-import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl;
+import com.telefonica.euro_iaas.sdc.manager.impl.ChefInstallator;
+import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl;
+import com.telefonica.euro_iaas.sdc.manager.impl.PuppetInstallator;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -61,7 +64,7 @@ import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
  * 
  * @author Sergio Arroyo
  */
-public class ProductInstanceManagerChefImplTest extends TestCase {
+public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
     private SystemPropertiesProvider propertiesProvider;
     private ProductInstanceDao productInstanceDao;
@@ -72,7 +75,7 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
     private SDCClientUtils sdcClientUtils;
     private ProductInstanceValidator piValidator;
     private Artifact artifact;
-    private ProductInstanceManagerChefImpl manager;
+    private ProductInstanceManagerImpl manager;
 
     private Product product;
     private ProductInstance expectedProduct;
@@ -122,7 +125,12 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
         Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
                
         product = new Product("Product::server", "description");
-        productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
+        Metadata metadata=new Metadata("installator", "chef");
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+        productRelease = new ProductRelease();
+        productRelease.setProduct(product);
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
 
@@ -144,6 +152,9 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
          * NotUniqueResultException());
          */
         piValidator = mock(ProductInstanceValidator.class);
+        
+        Installator puppetInstallator= mock(PuppetInstallator.class);
+        Installator chefInstallator= mock(ChefInstallator.class);
 
         artifact = new Artifact();
         artifact.setName("artifact");
@@ -153,14 +164,16 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
         artifact.setAttributes(att);
         artifact.setName("artifact");
 
-        manager = new ProductInstanceManagerChefImpl();
+        manager = new ProductInstanceManagerImpl();
         manager.setProductInstanceDao(productInstanceDao);
         manager.setProductDao(productDao);
         manager.setPropertiesProvider(propertiesProvider);
-        manager.setRecipeNamingGenerator(recipeNamingGenerator);
-        manager.setChefNodeDao(chefNodeDao);
-        manager.setSdcClientUtils(sdcClientUtils);
+//        manager.setRecipeNamingGenerator(recipeNamingGenerator);
+//        manager.setChefNodeDao(chefNodeDao);
+//        manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
+        manager.setChefInstallator(chefInstallator);
+        manager.setPuppetInstallator(puppetInstallator);
     }
 
     @Test
@@ -195,14 +208,14 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
                 .when(productInstanceDao).load(any(String.class));
         manager.uninstall(expectedProduct);
 
-        verify(recipeNamingGenerator, times(1)).getUninstallRecipe(any(ProductInstance.class));
+//        verify(recipeNamingGenerator, times(1)).getUninstallRecipe(any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(2)).update(any(ProductInstance.class));
 
         // verify(chefNodeDao, times(1)).loadNode(host.getChefClientName());
         // verify(chefNodeDao, times(1)).updateNode((ChefNode) anyObject());
-        verify(sdcClientUtils, times(2)).execute(host);
+        //verify(sdcClientUtils, times(2)).execute(host);
         verify(piValidator, times(1)).validateUninstall(expectedProduct);
         assertEquals("Result", expectedProduct.getStatus(), Status.UNINSTALLED);
     }
@@ -224,13 +237,13 @@ public class ProductInstanceManagerChefImplTest extends TestCase {
 
     }
 
-    @Test
-    public void createProductInstance() throws Exception {
-
-        ProductInstance installedProduct = manager.createProductInstance(productRelease, host, "vdc",
-                new ArrayList<Attribute>());
-
-    }
+//    @Test
+//    public void createProductInstance() throws Exception {
+//
+//        ProductInstance installedProduct = manager.createProductInstance(productRelease, host, "vdc",
+//                new ArrayList<Attribute>());
+//
+//    }
 
     @Test
     public void testUnInstallAndInstall() throws Exception {

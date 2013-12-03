@@ -1,80 +1,67 @@
-/**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
- */
-
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
 
+import org.apache.http.client.HttpClient;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.manager.Installator;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
-import com.xmlsolutions.annotation.Requirement;
 import com.xmlsolutions.annotation.UseCase;
 
-/**
- * Implements ProductManager using Chef to do that.
- * 
- * @author Sergio Arroyo
- */
-@UseCase(traceTo = "UC_001", status = "implemented")
-@Requirement(traceTo = "BR001", status = "implemented")
-public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManager implements ProductInstanceManager {
+public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     private ProductInstanceDao productInstanceDao;
 
     private ProductDao productDao;
     private IpToVM ip2vm;
     private ProductInstanceValidator validator;
+    private SystemPropertiesProvider propertiesProvider;
 
-    /**
-     * {@inheritDoc}
-     */
-    @UseCase(traceTo = "UC_001.1", status = "implemented")
+    private Installator chefInstallator;
+    private Installator puppetInstallator;
+
+    protected String INSTALL = "install";
+    protected String UNINSTALL = "uninstall";
+    protected String CONFIGURE = "configure";
+    protected String DEPLOY_ARTIFACT = "deployArtifact";
+    protected String UNDEPLOY_ARTIFACT = "undeployArtifact";
+
+    @Override
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
-            throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
+            throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
+            EntityNotFoundException {
 
-        /*if (!vm.canWorkWithChef()) {
-            sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
-            sdcClientUtils.setNodeCommands(vm);
-
-            vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
-            // Configure the node with the corresponding node commands
-        }*/
-        
-        if (!vm.canWorkWithChefServer()) {
-            String message = "The VM does not include the node hostname required to Install " +
-            		"software";
+        if (!vm.canWorkWithPuppetServer()) {
+            String message = "The VM does not include the node hostname required to Install " + "software";
             throw new InvalidInstallProductRequestException(message);
         }
-        
-        isNodeRegistered(vm.getHostname());
-                      
+
+        // isNodeRegistered(vm.getHostname());
+
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {
@@ -113,12 +100,18 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             // Id for the ProductInstance
             instance = productInstanceDao.update(instance);
 
-            String installRecipe = recipeNamingGenerator.getInstallRecipe(instance);
-            callChef(productRelease.getProduct().getName(), installRecipe, vm, attributes);
+            Product product = productDao.load(productRelease.getProduct().getName());
+
+            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+                chefInstallator.callService(instance, vm, attributes, INSTALL);
+            } else {
+                puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
+            }
+
             instance.setStatus(Status.INSTALLED);
             return productInstanceDao.update(instance);
 
-        } catch (CanNotCallChefException sce) {
+        } catch (InstallatorException sce) {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
@@ -128,34 +121,34 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(e);
-        } catch (NodeExecutionException e) {
-            restoreInstance(Status.ERROR, instance);
-            throw e;
         }
+
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws FSMViolationException
-     * @throws ApplicationInstalledException
-     */
-    @UseCase(traceTo = "UC_001.2", status = "implemented")
     @Override
-    public void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException {
+    public void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException,
+            EntityNotFoundException {
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateUninstall(productInstance);
             productInstance.setStatus(Status.UNINSTALLING);
             productInstance = productInstanceDao.update(productInstance);
 
-            // at least has one
-            String uninstallRecipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
-            callChef(uninstallRecipe, productInstance.getVm());
+            Product product = productDao.load(productInstance.getName());
+
+            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+                // canviar aqui callChef(uninstallRecipe,
+                // productInstance.getVm());
+
+                chefInstallator.callService(productInstance, UNINSTALL);
+            } else {
+                puppetInstallator.callService(productInstance.getVm(), productInstance.getVdc(),
+                        productInstance.getProductRelease(), UNINSTALL);
+            }
 
             productInstance.setStatus(Status.UNINSTALLED);
             productInstanceDao.update(productInstance);
-        } catch (CanNotCallChefException e) {
+        } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (InvalidEntityException e) {
@@ -164,18 +157,19 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
-        } catch (NodeExecutionException e) {
-            restoreInstance(Status.ERROR, productInstance);
-            throw e;
         }
+
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws InstallatorException
      */
+    // TODO SUSCEPTIBLE DE MOVER A CHEFINSTALLATOR
     @Override
     public ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
-            throws NodeExecutionException, FSMViolationException {
+            throws NodeExecutionException, FSMViolationException, InstallatorException {
         System.out.println("Configuring product instance " + productInstance.getName() + " " + configuration);
         Status previousStatus = productInstance.getStatus();
         try {
@@ -191,8 +185,9 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             // callChef(backupRecipe, vm);
 
             /*
-             * String uninstallRecipe = recipeNamingGenerator .getUninstallRecipe(productInstance);
-             * callChef(uninstallRecipe, vm);
+             * String uninstallRecipe = recipeNamingGenerator
+             * .getUninstallRecipe(productInstance); callChef(uninstallRecipe,
+             * vm);
              */
             System.out.println("Load product " + productInstance.getProductRelease().getProduct().getName());
             Product product = productDao.load(productInstance.getProductRelease().getProduct().getName());
@@ -206,23 +201,26 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             ProductRelease productRelease = productInstance.getProductRelease();
             productRelease.setProduct(product);
 
-            String recipe = recipeNamingGenerator.getConfigureRecipe(productInstance);
-            System.out.println("recipe " + recipe);
-            callChef(productInstance.getProductRelease().getProduct().getName(), recipe, productInstance.getVm(),
-                    configuration);
+            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+                chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
+            } else {
+
+            }
 
             /*
-             * String recipe = recipeNamingGenerator .getInstallRecipe(productInstance); callChef(
-             * productInstance.getProductRelease().getProduct().getName(), recipe, productInstance.getVm(),
-             * configuration); String restoreRecipe = recipeNamingGenerator .getRestoreRecipe(productInstance);
-             * callChef(restoreRecipe, vm);
+             * String recipe = recipeNamingGenerator
+             * .getInstallRecipe(productInstance); callChef(
+             * productInstance.getProductRelease().getProduct().getName(),
+             * recipe, productInstance.getVm(), configuration); String
+             * restoreRecipe = recipeNamingGenerator
+             * .getRestoreRecipe(productInstance); callChef(restoreRecipe, vm);
              */
 
             productInstance.setProductRelease(productRelease);
             productInstance.setStatus(Status.INSTALLED);
             return productInstanceDao.update(productInstance);
 
-        } catch (CanNotCallChefException e) {
+        } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
@@ -237,45 +235,62 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
         }
+    }
 
+    /**
+     * Go to previous state when a runtime exception is thrown in any method
+     * which can change the status of the product instance.
+     * 
+     * @param previousStatus
+     *            the previous status
+     * @param instance
+     *            the product instance
+     * @return the instance.
+     */
+    private ProductInstance restoreInstance(Status previousStatus, ProductInstance instance) {
+        instance.setStatus(previousStatus);
+        return update(instance);
+    }
+
+    @Override
+    public ProductInstance update(ProductInstance productInstance) {
+        try {
+            return productInstanceDao.update(productInstance);
+        } catch (InvalidEntityException e) {
+            throw new SdcRuntimeException(e);
+        }
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws EntityNotFoundException
      */
     @UseCase(traceTo = "UC_001.4", status = "implemented")
     @Override
     public ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease)
-            throws NotTransitableException, NodeExecutionException, FSMViolationException {
+            throws NotTransitableException, NodeExecutionException, FSMViolationException, InstallatorException,
+            EntityNotFoundException {
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateUpdate(productInstance, productRelease);
             // update the status
             productInstance.setStatus(Status.UPGRADING);
             productInstance = productInstanceDao.update(productInstance);
-
-            VM vm = productInstance.getVm();
-
-            String backupRecipe = recipeNamingGenerator.getBackupRecipe(productInstance);
-            callChef(backupRecipe, vm);
-
-            String uninstallRecipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
-            callChef(uninstallRecipe, vm);
-
             productInstance.setProductRelease(productRelease);
 
-            String installRecipe = recipeNamingGenerator.getInstallRecipe(productInstance);
-            callChef(installRecipe, vm);
+            VM vm = productInstance.getVm();
+            Product product = productDao.load(productInstance.getName());
 
-            String restoreRecipe = recipeNamingGenerator.getRestoreRecipe(productInstance);
-            callChef(restoreRecipe, vm);
+            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+                chefInstallator.upgrade(productInstance, vm);
+            } else {
+
+            }
 
             productInstance.setStatus(Status.INSTALLED);
             return productInstanceDao.update(productInstance);
 
-        } catch (CanNotCallChefException sce) {
-            restoreInstance(previousStatus, productInstance);
-            throw new SdcRuntimeException(sce);
         } catch (InvalidEntityException e) {
             // don't restore the status because this exception is storing the
             // product in database so it will fail anyway
@@ -284,9 +299,6 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
             // restore the status
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
-        } catch (NodeExecutionException e) {
-            restoreInstance(Status.ERROR, productInstance);
-            throw e;
         }
     }
 
@@ -342,68 +354,7 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
         return products.get(0);
     }
 
-    @Override
-    public ProductInstance update(ProductInstance productInstance) {
-        try {
-            return productInstanceDao.update(productInstance);
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
-        }
-    }
-
-    // //////// PRIVATE METHODS ///////////
-    /**
-     * Go to previous state when a runtime exception is thrown in any method which can change the status of the product
-     * instance.
-     * 
-     * @param previousStatus
-     *            the previous status
-     * @param instance
-     *            the product instance
-     * @return the instance.
-     */
-    private ProductInstance restoreInstance(Status previousStatus, ProductInstance instance) {
-        instance.setStatus(previousStatus);
-        return update(instance);
-    }
-
-    /**
-     * Creates or find the product instance in installation operation.
-     * 
-     * @param product
-     * @param vm
-     * @return
-     */
-    private ProductInstance getProductToInstall(ProductRelease productRelease, VM vm, String vdc,
-            List<Attribute> attributes) {
-        ProductInstance instance;
-        try {
-            ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
-            criteria.setVm(vm);
-            criteria.setProductName(productRelease.getProduct().getName());
-            instance = productInstanceDao.findUniqueByCriteria(criteria);
-
-            Product product;
-            try {
-                product = productDao.load(productRelease.getProduct().getName());
-            } catch (EntityNotFoundException e) {
-                product = new Product(productRelease.getProduct().getName(), productRelease.getProduct()
-                        .getDescription());
-            }
-            product.setAttributes(attributes);
-
-            productRelease.setProduct(product);
-            instance.setProductRelease(productRelease);
-            instance.setName(vm.getFqn() + "_" + productRelease.getProduct().getName() + "_"
-                    + productRelease.getVersion());
-
-        } catch (NotUniqueResultException e) {
-            instance = new ProductInstance(productRelease, Status.UNINSTALLED, vm, vdc);
-        }
-        return instance;
-    }
-
-    public ProductInstance createProductInstance(ProductRelease productRelease, VM vm, String vdc,
+    private ProductInstance createProductInstance(ProductRelease productRelease, VM vm, String vdc,
             List<Attribute> attributes) throws InvalidEntityException, AlreadyExistsEntityException {
 
         ProductInstance instance = new ProductInstance();
@@ -460,6 +411,22 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
      */
     public void setValidator(ProductInstanceValidator validator) {
         this.validator = validator;
+    }
+
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
+        this.propertiesProvider = propertiesProvider;
+    }
+
+    public void setChefInstallator(Installator chefInstallator) {
+        this.chefInstallator = chefInstallator;
+    }
+
+    public void setPuppetInstallator(Installator puppetInstallator) {
+        this.puppetInstallator = puppetInstallator;
     }
 
 }
