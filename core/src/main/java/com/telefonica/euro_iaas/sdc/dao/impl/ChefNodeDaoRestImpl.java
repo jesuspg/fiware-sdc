@@ -175,17 +175,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public void isNodeRegistered (String hostname) throws CanNotCallChefException {
         String path = "/nodes";
 
-        Map<String, String> header = getHeaders("GET", path, "");
-        WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
-        Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
-        for (String key : header.keySet()) {
-            wr = wr.header(key, header.get(key));
-        }
-       
         String response = "RESPONSE";
         int time = 10000;
         while (!response.contains(hostname)) {
-            
+                      
             try {
                 Thread.sleep(time);
                 LOGGER.info("Checking node : " + hostname + " time:" + time);
@@ -194,7 +187,16 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     LOGGER.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
+                
+                Map<String, String> header = getHeaders("GET", path, "");
+                WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+                Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
+                for (String key : header.keySet()) {
+                    wr = wr.header(key, header.get(key));
+                }
+                
                 response = IOUtils.toString(wr.get(InputStream.class));
+                LOGGER.info("List of nodes : " + response);
                 time += time;
             } catch (UniformInterfaceException e) {
                 throw new CanNotCallChefException(e);
