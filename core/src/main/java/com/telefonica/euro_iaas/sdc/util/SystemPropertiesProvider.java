@@ -100,6 +100,10 @@ public interface SystemPropertiesProvider {
     public static final String URL_NOVA_PROPERTY = "openstack.nova.url";
     public static final String VERSION_PROPERTY = "openstack.version";
 
+    // Tells if the SDC works with sdc-client installed in the nodes
+    public static final String SDCCLIENT_INSTALLED_IN_NODES = "sdcclient.installed.innodes";
+
+    
     /**
      * Get the property for a given key.
      * 

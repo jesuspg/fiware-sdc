@@ -33,6 +33,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
 import com.xmlsolutions.annotation.Requirement;
 import com.xmlsolutions.annotation.UseCase;
@@ -59,21 +60,22 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
 
-        /*if (!vm.canWorkWithChef()) {
-            sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
-            sdcClientUtils.setNodeCommands(vm);
+        if (isSdcClientInstalled()){
+            if (!vm.canWorkWithChef()) {
+                sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
+                sdcClientUtils.setNodeCommands(vm);
 
-            vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
-            // Configure the node with the corresponding node commands
-        }*/
-        
-        if (!vm.canWorkWithInstallatorServer()) {
-            String message = "The VM does not include the node hostname required to Install " +
-            		"software";
-            throw new InvalidInstallProductRequestException(message);
-        }
-        
-        isNodeRegistered(vm.getHostname());
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
+                // Configure the node with the corresponding node commands
+            }
+        } else {       
+            if (!vm.canWorkWithInstallatorServer()) {
+                String message = "The VM does not include the node hostname required to Install " +
+                                "software";
+                throw new InvalidInstallProductRequestException(message);
+            }
+            isNodeRegistered(vm.getHostname());
+       }
                       
         // Check that there is not another product installed
         ProductInstance instance = null;
