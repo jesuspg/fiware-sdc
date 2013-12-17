@@ -52,7 +52,7 @@ public class ProductInstanceManagerPuppetImpl /*extends BaseInstallableInstanceM
     public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException {
 
-        if (!vm.canWorkWithPuppetServer()) {
+        if (!vm.canWorkWithInstallatorServer()) {
             String message = "The VM does not include the node hostname required to Install " + "software";
             throw new InvalidInstallProductRequestException(message);
         }
