@@ -39,9 +39,10 @@ import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
-import com.telefonica.euro_iaas.sdc.manager.impl.ChefInstallator;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl;
-import com.telefonica.euro_iaas.sdc.manager.impl.PuppetInstallator;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -71,7 +72,6 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
     private ProductDao productDao;
     private RecipeNamingGenerator recipeNamingGenerator;
     private ChefNodeDao chefNodeDao;
-    private ArtifactDao artifactDao;
     private SDCClientUtils sdcClientUtils;
     private ProductInstanceValidator piValidator;
     private Artifact artifact;
@@ -110,7 +110,6 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
         sdcClientUtils.execute(host);
 
         chefNodeDao = mock(ChefNodeDao.class);
-        artifactDao = mock(ArtifactDao.class);
 
         ChefNode chefNode = new ChefNode();
         chefNode.fromJson(JSONObject.fromObject(jsonFromFile));
@@ -153,8 +152,8 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
          */
         piValidator = mock(ProductInstanceValidator.class);
         
-        Installator puppetInstallator= mock(PuppetInstallator.class);
-        Installator chefInstallator= mock(ChefInstallator.class);
+        Installator puppetInstallator= mock(InstallatorPuppetImpl.class);
+        Installator chefInstallator= mock(InstallatorChefImpl.class);
 
         artifact = new Artifact();
         artifact.setName("artifact");
@@ -167,7 +166,6 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
         manager = new ProductInstanceManagerImpl();
         manager.setProductInstanceDao(productInstanceDao);
         manager.setProductDao(productDao);
-        manager.setPropertiesProvider(propertiesProvider);
 //        manager.setRecipeNamingGenerator(recipeNamingGenerator);
 //        manager.setChefNodeDao(chefNodeDao);
 //        manager.setSdcClientUtils(sdcClientUtils);

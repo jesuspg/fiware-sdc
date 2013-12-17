@@ -18,7 +18,6 @@
         <property name="taskManager" ref="taskManager"/>
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
-        <property name="productDao" ref="productDao"/>
     </bean>
 
    <bean id="artifactAsyncManager" lazy-init="true"

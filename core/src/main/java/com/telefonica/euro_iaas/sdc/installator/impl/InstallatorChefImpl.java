@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.manager.impl;
+package com.telefonica.euro_iaas.sdc.installator.impl;
 
 import java.util.Date;
 import java.util.List;
@@ -8,14 +8,14 @@ import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
-import com.telefonica.euro_iaas.sdc.manager.Installator;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
-public class ChefInstallator extends BaseInstallableInstanceManager implements Installator {
+public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef implements Installator {
 
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action)
@@ -31,7 +31,7 @@ public class ChefInstallator extends BaseInstallableInstanceManager implements I
         String process = productInstance.getProductRelease().getProduct().getName();
 
         String recipe = "";
-        ;
+        
         if ("install".equals(action)) {
             recipe = recipeNamingGenerator.getInstallRecipe(productInstance);
         } else if ("uninstall".equals(action)) {
@@ -197,6 +197,7 @@ public class ChefInstallator extends BaseInstallableInstanceManager implements I
         }
     }
 
+    
     
 
 }

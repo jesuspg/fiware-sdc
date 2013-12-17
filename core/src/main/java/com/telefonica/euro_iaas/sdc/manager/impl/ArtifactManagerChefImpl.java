@@ -14,14 +14,14 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
-import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.BaseInstallableInstanceManagerChef;
 import com.telefonica.euro_iaas.sdc.manager.ArtifactManager;
-import com.telefonica.euro_iaas.sdc.manager.Installator;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -38,7 +38,7 @@ import com.xmlsolutions.annotation.UseCase;
  */
 @UseCase(traceTo = "UC_001", status = "implemented")
 @Requirement(traceTo = "BR001", status = "implemented")
-public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager implements ArtifactManager {
+public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef implements ArtifactManager {
 
     private ProductInstanceDao productInstanceDao;
     private ArtifactDao artifactDao;

@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.manager.impl;
+package com.telefonica.euro_iaas.sdc.installator.impl;
 
 import static java.text.MessageFormat.format;
 
@@ -13,14 +13,14 @@ import org.apache.http.util.EntityUtils;
 
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.manager.Installator;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
-public class PuppetInstallator implements Installator {
+public class InstallatorPuppetImpl implements Installator {
 
     private HttpClient client;
     private SystemPropertiesProvider propertiesProvider;
@@ -29,6 +29,10 @@ public class PuppetInstallator implements Installator {
     public void callService(VM vm, String vdc, ProductRelease product, String action) throws InstallatorException {
 
         HttpPost postInstall = new HttpPost(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
+                + product.getVersion());
+        
+        System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
                 + product.getVersion());
 

@@ -11,7 +11,7 @@
 
 
 	<bean id="baseInstallableInstanceManager" lazy-init="true"
-		class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableInstanceManager">
+		class="com.telefonica.euro_iaas.sdc.installator.impl.BaseInstallableInstanceManagerChef">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="sdcClientUtils" ref="sdcClientUtils" />
 		<property name="recipeNamingGenerator" ref="recipeNamingGenerator" />
@@ -19,32 +19,32 @@
 	</bean>
 
 	<bean id="productInstanceManager" lazy-init="true"
-		parent="baseInstallableInstanceManager"
 		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl">
 		<property name="productInstanceDao" ref="productInstanceDao" />
 		<property name="productDao" ref="productDao" />
-		<property name="chefNodeDao" ref="chefNodeDao" />
 		<property name="validator" ref="productInstanceValidator" />
-		<property name="ip2vm" ref="ip2vm" />
 		<property name="chefInstallator" ref="chefInstallator" />
 		<property name="puppetInstallator" ref="puppetInstallator" />
 	</bean>
 
 
 	<bean id="chefInstallator" lazy-init="true"
-		parent="baseInstallableInstanceManager" class="com.telefonica.euro_iaas.sdc.manager.impl.ChefInstallator">
+		parent="baseInstallableInstanceManager" 
+		class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="sdcClientUtils" ref="sdcClientUtils" />
 		<property name="recipeNamingGenerator" ref="recipeNamingGenerator" />
 		<property name="chefNodeDao" ref="chefNodeDao" />
 	</bean>
-	
-	<bean id="puppetInstallator" lazy-init="true" class="com.telefonica.euro_iaas.sdc.manager.impl.PuppetInstallator">
+
+	<bean id="puppetInstallator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="client" ref="httpClient" />
 	</bean>
 
-	<bean id="httpClient" lazy-init="true" class="org.apache.http.impl.client.DefaultHttpClient" />
+	<bean id="httpClient" lazy-init="true"
+		class="org.apache.http.impl.client.DefaultHttpClient" />
 
 	<bean id="artifactManager" lazy-init="true"
 		parent="baseInstallableInstanceManager"

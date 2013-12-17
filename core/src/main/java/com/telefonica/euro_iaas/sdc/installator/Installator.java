@@ -1,4 +1,4 @@
-package com.telefonica.euro_iaas.sdc.manager;
+package com.telefonica.euro_iaas.sdc.installator;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface Installator {
     void callService(VM vm, String vdc, ProductRelease productRelease, String action) throws InstallatorException;
 
     void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
-    throws InstallatorException, NodeExecutionException;
+            throws InstallatorException, NodeExecutionException;
 
     void upgrade(ProductInstance productInstance, VM vm) throws InstallatorException;
 

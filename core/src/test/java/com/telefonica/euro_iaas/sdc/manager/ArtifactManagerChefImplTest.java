@@ -35,8 +35,9 @@ import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
 import com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl;
-import com.telefonica.euro_iaas.sdc.manager.impl.ChefInstallator;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -145,7 +146,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
          */
         piValidator = mock(ProductInstanceValidator.class);
         
-        installator=mock(ChefInstallator.class);
+        installator=mock(InstallatorChefImpl.class);
 
         artifact = new Artifact();
         artifact.setName("artifact");

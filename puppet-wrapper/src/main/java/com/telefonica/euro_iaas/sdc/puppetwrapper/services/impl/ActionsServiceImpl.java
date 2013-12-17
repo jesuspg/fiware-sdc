@@ -37,7 +37,7 @@ public class ActionsServiceImpl implements ActionsService {
 
     public Node action(Action action, String group, String nodeName, String softName, String version) {
 
-        logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softName + " version: " + version);
+        logger.info("action: "+action+ "group:" + group + " nodeName: " + nodeName + " soft: " + softName + " version: " + version);
 
         Node node = null;
         try {

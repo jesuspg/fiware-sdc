@@ -18,7 +18,7 @@ import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotTransitableException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.manager.Installator;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
 import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -37,9 +37,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     private ProductInstanceDao productInstanceDao;
 
     private ProductDao productDao;
-    private IpToVM ip2vm;
     private ProductInstanceValidator validator;
-    private SystemPropertiesProvider propertiesProvider;
 
     private Installator chefInstallator;
     private Installator puppetInstallator;
@@ -68,6 +66,9 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             instance = productInstanceDao.load(vm.getFqn() + "_" + productRelease.getProduct().getName() + "_"
                     + productRelease.getVersion());
+            
+            System.out.println("intance:"+instance.getStatus());
+            
             if (instance.getStatus().equals(Status.INSTALLED)) {
                 throw new AlreadyInstalledException(instance);
             } else if (!(instance.getStatus().equals(Status.UNINSTALLED))
@@ -134,7 +135,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             productInstance.setStatus(Status.UNINSTALLING);
             productInstance = productInstanceDao.update(productInstance);
 
-            Product product = productDao.load(productInstance.getName());
+            Product product = productDao.load(productInstance.getProductRelease().getProduct().getName());
 
             if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 // canviar aqui callChef(uninstallRecipe,
@@ -166,7 +167,6 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
      * 
      * @throws InstallatorException
      */
-    // TODO SUSCEPTIBLE DE MOVER A CHEFINSTALLATOR
     @Override
     public ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
@@ -204,7 +204,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
             } else {
-
+                throw new InstallatorException("Product not configurable in Puppet");
             }
 
             /*
@@ -285,7 +285,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.upgrade(productInstance, vm);
             } else {
-
+                throw new InstallatorException("Product not upgradeable in Puppet");
             }
 
             productInstance.setStatus(Status.INSTALLED);
@@ -398,27 +398,11 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     }
 
     /**
-     * @param ip2vm
-     *            the ip2vm to set
-     */
-    public void setIp2vm(IpToVM ip2vm) {
-        this.ip2vm = ip2vm;
-    }
-
-    /**
      * @param validator
      *            the validator to set
      */
     public void setValidator(ProductInstanceValidator validator) {
         this.validator = validator;
-    }
-
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
     }
 
     public void setChefInstallator(Installator chefInstallator) {

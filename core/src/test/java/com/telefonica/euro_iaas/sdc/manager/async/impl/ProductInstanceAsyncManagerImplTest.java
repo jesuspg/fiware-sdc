@@ -69,8 +69,6 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstanceAsyncManager.setTaskManager(taskManager);
         productInstanceAsyncManager.setTaskNotificator(taskNotificator);
         productInstanceAsyncManager.setProductInstanceManager(productInstanceManager);
-        productInstanceAsyncManager.setProductInstancePuppetManager(productInstanceManager); 
-        productInstanceAsyncManager.setProductDao(productDao);
     }
 
     @Test

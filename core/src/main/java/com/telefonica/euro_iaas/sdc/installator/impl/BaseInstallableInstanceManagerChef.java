@@ -5,7 +5,7 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-package com.telefonica.euro_iaas.sdc.manager.impl;
+package com.telefonica.euro_iaas.sdc.installator.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,7 +32,7 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
  * 
  * @author Sergio Arroyo
  */
-public class BaseInstallableInstanceManager {
+public class BaseInstallableInstanceManagerChef {
     
     protected String INSTALL = "install";
     protected String UNINSTALL = "uninstall";
@@ -45,7 +45,7 @@ public class BaseInstallableInstanceManager {
     protected ChefNodeDao chefNodeDao;
     protected SDCClientUtils sdcClientUtils;
 
-    int MAX_TIME = 90000;
+    protected int MAX_TIME = 90000;
 
     protected static Logger LOGGER = Logger.getLogger("BaseInstallableInstanceManager");
 

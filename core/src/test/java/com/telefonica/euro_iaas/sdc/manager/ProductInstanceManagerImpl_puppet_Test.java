@@ -17,22 +17,17 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
-import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl;
-import com.telefonica.euro_iaas.sdc.manager.impl.PuppetInstallator;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -42,8 +37,6 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
-import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
 
@@ -54,7 +47,7 @@ import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
  */
 
 // @Ignore
-public class ProductInstanceManagerPuppetImplTest extends TestCase {
+public class ProductInstanceManagerImpl_puppet_Test extends TestCase {
 
     private ProductInstanceManagerImpl productManager;
 
@@ -63,13 +56,8 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
     private ProductRelease productRelease;
     private VM host;
     private SystemPropertiesProvider propertiesProvider;
-    private HttpClient client;
     private ProductInstanceDao productInstanceDao;
     private ProductDao productDao;
-    private RecipeNamingGenerator recipeNamingGenerator;
-    private ChefNodeDao chefNodeDao;
-    private ArtifactDao artifactDao;
-    private SDCClientUtils sdcClientUtils;
     private ProductInstanceValidator piValidator;
     private ProductInstance expectedProduct;
 
@@ -91,13 +79,7 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
         when(propertiesProvider.getProperty("PUPPET_MASTER_URL")).thenReturn(
                 "http://130.206.82.190:8080/puppetwrapper/");
 
-        client = (HttpClient) new HTTPClientMock();
-        HttpPost post = new HttpPost(propertiesProvider.getProperty("PUPPET_MASTER_URL")
-                + "install/testGroup/testName/testProduct/testVersion");
-
-        HttpResponse response = mock(HttpResponse.class);
-        response.setStatusCode(HttpStatus.SC_OK);
-
+        
         productInstanceDao = mock(ProductInstanceDao.class);
         
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
@@ -112,7 +94,7 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
         when(productDao.update(any(Product.class))).thenReturn(product);
         when(productDao.load(any(String.class))).thenReturn(product);
         
-        Installator installator= mock(PuppetInstallator.class);
+        Installator installator= mock(InstallatorPuppetImpl.class);
         
 
         /*
@@ -123,7 +105,6 @@ public class ProductInstanceManagerPuppetImplTest extends TestCase {
         piValidator = mock(ProductInstanceValidator.class);
 
         productManager = new ProductInstanceManagerImpl();
-        productManager.setPropertiesProvider(propertiesProvider);
         productManager.setProductInstanceDao(productInstanceDao);
         productManager.setProductDao(productDao);
         // productManager.setRecipeNamingGenerator(recipeNamingGenerator);

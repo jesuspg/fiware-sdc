@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -29,7 +28,6 @@ import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.Task;
@@ -49,11 +47,9 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
     private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
     private ProductInstanceManager productInstanceManager;
-    private ProductInstanceManager productInstancePuppetManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
-    private ProductDao productDao;
 
     /**
      * {@inheritDoc}
@@ -289,14 +285,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     /**
-     * @param productInstancePuppetManager
-     *            the productInstancePuppetManager to set
-     */
-    public void setProductInstancePuppetManager(ProductInstanceManager productInstancePuppetManager) {
-        this.productInstancePuppetManager = productInstancePuppetManager;
-    }
-
-    /**
      * @param taskManager
      *            the taskManager to set
      */
@@ -318,14 +306,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
-    }
-
-    /**
-     * @param productDao
-     *            the productDao to set
-     */
-    public void setProductDao(ProductDao productDao) {
-        this.productDao = productDao;
     }
 
 }
