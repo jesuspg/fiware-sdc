@@ -26,6 +26,18 @@
         <property name="validator" ref="productInstanceValidator"/>
         <property name="ip2vm" ref="ip2vm"/>
     </bean>
+    
+    <bean id="productInstancePuppetManager" lazy-init="true" 
+          class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerPuppetImpl">
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="productDao" ref="productDao"/>
+        <property name="validator" ref="productInstanceValidator"/>
+        <property name="ip2vm" ref="ip2vm"/>
+        <property name="client" ref="httpClient"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+    </bean>
+    
+    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient"/>
 
     <bean id="artifactManager" lazy-init="true" parent="baseInstallableInstanceManager"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl">

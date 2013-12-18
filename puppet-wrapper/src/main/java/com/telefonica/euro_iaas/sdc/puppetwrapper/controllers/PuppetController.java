@@ -42,8 +42,8 @@ public class PuppetController /* extends GenericController */{
     private CatalogManager catalogManager;
 
     @RequestMapping("/install/{group}/{nodeName}/{softwareName}/{version}")
-    @ResponseBody
-    public Node install(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
+    public @ResponseBody
+    Node install(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
             HttpServletRequest request) {
 
@@ -78,8 +78,8 @@ public class PuppetController /* extends GenericController */{
     }
 
     @RequestMapping("/generate/{nodeName}")
-    @ResponseBody
-    public Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException,
+    public @ResponseBody
+    Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException,
             UnsupportedEncodingException, IOException {
 
         if (nodeName == null || "".equals(nodeName)) {
@@ -97,8 +97,8 @@ public class PuppetController /* extends GenericController */{
     }
 
     @RequestMapping("/uninstall/{group}/{nodeName}/{softwareName}/{version}")
-    @ResponseBody
-    public Node uninstall(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
+    public @ResponseBody
+    Node uninstall(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
             HttpServletRequest request) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -134,22 +134,19 @@ public class PuppetController /* extends GenericController */{
     }
 
     @RequestMapping("/delete/node/{nodeName}")
-    @ResponseBody
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         actionsService.deleteNode(nodeName);
     }
 
     @RequestMapping("/delete/group/{groupName}")
-    @ResponseBody
     public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
 
         actionsService.deleteGroup(groupName);
     }
 
     @RequestMapping("/test")
-    public @ResponseBody
-    String test() {
+    public String test() {
         return "test";
     }
 

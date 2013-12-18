@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -47,6 +49,7 @@ public class CatalogManagerMongoTest {
         final Node node2 = new Node();
         node2.setId("test2");
         node2.setGroupName("group2");
+        
         final Node node3 = new Node();
         node3.setId("test2");
         node3.setGroupName("group2");
@@ -156,6 +159,7 @@ public class CatalogManagerMongoTest {
         assertTrue(str.length() > 0);
         assertTrue(str.contains("import 'group/*.pp'"));
         assertTrue(str.contains("import 'group2/*.pp'"));
+        
     }
 
     @Test

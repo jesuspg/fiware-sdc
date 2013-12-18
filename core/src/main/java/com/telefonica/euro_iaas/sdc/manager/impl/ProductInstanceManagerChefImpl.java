@@ -69,7 +69,7 @@ public class ProductInstanceManagerChefImpl extends BaseInstallableInstanceManag
                 // Configure the node with the corresponding node commands
             }
         } else {       
-            if (!vm.canWorkWithChefServer()) {
+            if (!vm.canWorkWithInstallatorServer()) {
                 String message = "The VM does not include the node hostname required to Install " +
                                 "software";
                 throw new InvalidInstallProductRequestException(message);

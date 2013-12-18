@@ -77,20 +77,21 @@ public class Node {
     }
 
     /**
-     * Constructs a <code>String</code> with all attributes in name = value
-     * format.
-     * 
-     * @return a <code>String</code> representation of this object.
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
      */
     public String toString() {
-        final String TAB = "    ";
-
-        String retValue = "";
-
-        retValue = "Node ( " + super.toString() + TAB + "eol = " + this.eol + TAB + "name = " + this.id + TAB
-                + "groupName = " + this.groupName + TAB + "softwareList = " + this.softwareList + TAB + " )";
-
-        return retValue;
+       StringBuilder sb = new StringBuilder("[[Node]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[groupName = ").append(this.groupName).append("]");
+       sb.append("[softwareList = ").append(this.softwareList).append("]");
+       sb.append("]");
+       return sb.toString();
     }
+
+    
 
 }

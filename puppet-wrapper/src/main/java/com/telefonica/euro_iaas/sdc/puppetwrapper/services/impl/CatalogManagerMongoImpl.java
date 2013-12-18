@@ -69,8 +69,10 @@ public class CatalogManagerMongoImpl implements CatalogManager {
         StringBuffer sb = new StringBuffer();
 
         for (Node node : nodeList) {
-            sb.append("import '" + node.getGroupName() + "/*.pp'");
-            sb.append(eol);
+//            if (sb.indexOf("import '" +node.getGroupName() + "/*.pp'") != -1) {
+                sb.append("import '" + node.getGroupName() + "/*.pp'");
+                sb.append(eol);
+//            }
         }
         return sb.toString();
 
@@ -82,8 +84,8 @@ public class CatalogManagerMongoImpl implements CatalogManager {
 
     }
 
-//    public void setMongoTemplate(MongoTemplate mongoTemplate) {
-//        this.mongoTemplate = mongoTemplate;
-//    }
+    // public void setMongoTemplate(MongoTemplate mongoTemplate) {
+    // this.mongoTemplate = mongoTemplate;
+    // }
 
 }

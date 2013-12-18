@@ -19,8 +19,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -31,6 +33,7 @@ import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -46,6 +49,7 @@ public class ProductInstanceAsyncManagerImplTest {
     TaskManager taskManager = mock(TaskManager.class);
     TaskNotificator taskNotificator = mock(TaskNotificator.class);
     ProductInstanceManager productInstanceManager = mock(ProductInstanceManager.class);
+    ProductDao productDao = mock(ProductDao.class);
 
     @Before
     public void setUp() {
@@ -54,12 +58,45 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstanceAsyncManager.setTaskManager(taskManager);
         productInstanceAsyncManager.setTaskNotificator(taskNotificator);
         productInstanceAsyncManager.setProductInstanceManager(productInstanceManager);
-
+        productInstanceAsyncManager.setProductInstancePuppetManager(productInstanceManager); 
+        productInstanceAsyncManager.setProductDao(productDao);
     }
 
     @Test
-    public void shouldInstall() throws NodeExecutionException, AlreadyInstalledException,
-            InvalidInstallProductRequestException {
+    public void shouldInstallCHEF() throws NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException, EntityNotFoundException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Metadata metadata=new Metadata("installator", "chef");
+        Product product = new Product();
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+        productRelease.setProduct(product);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+    }
+    
+    @Test
+    public void shouldInstallPuPPET() throws NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException, EntityNotFoundException {
         // given
         VM vm = new VM();
         String vdc = "virtualDataCenter";
@@ -72,10 +109,15 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -84,7 +126,7 @@ public class ProductInstanceAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionException() throws NotUniqueResultException,
+    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionException_CHEF() throws NotUniqueResultException,
             EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
             InvalidInstallProductRequestException {
         // given
@@ -99,6 +141,10 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
@@ -107,6 +153,44 @@ public class ProductInstanceAsyncManagerImplTest {
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionException_PUPPET() throws NotUniqueResultException,
+            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                new NodeExecutionException("node execution exception"));
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
+                productInstance);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -116,7 +200,7 @@ public class ProductInstanceAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionExceptionAndProductInstallNotExist()
+    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionExceptionAndProductInstallNotExist_CHEF()
             throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
             AlreadyInstalledException, InvalidInstallProductRequestException {
         // given
@@ -131,6 +215,10 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
@@ -138,6 +226,43 @@ public class ProductInstanceAsyncManagerImplTest {
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionExceptionAndProductInstallNotExist_PUPPET()
+            throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
+            AlreadyInstalledException, InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                new NodeExecutionException("node execution exception"));
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -146,8 +271,9 @@ public class ProductInstanceAsyncManagerImplTest {
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
 
+
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalled() throws NotUniqueResultException,
+    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalled_CHEF() throws NotUniqueResultException,
             EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
             InvalidInstallProductRequestException {
         // given
@@ -162,6 +288,10 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         AlreadyInstalledException alreadyInstalledException = new AlreadyInstalledException(
                 "already installed exception");
@@ -173,6 +303,47 @@ public class ProductInstanceAsyncManagerImplTest {
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalled_PUPPET() throws NotUniqueResultException,
+            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        AlreadyInstalledException alreadyInstalledException = new AlreadyInstalledException(
+                "already installed exception");
+        alreadyInstalledException.setInstace(new InstallableInstance());
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(alreadyInstalledException);
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
+                productInstance);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -182,7 +353,7 @@ public class ProductInstanceAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalledAndInstanceNotExist()
+    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalledAndInstanceNotExist_CHEF()
             throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
             AlreadyInstalledException, InvalidInstallProductRequestException {
         // given
@@ -197,6 +368,10 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         AlreadyInstalledException alreadyInstalledException = new AlreadyInstalledException(
                 "already installed exception");
@@ -207,6 +382,7 @@ public class ProductInstanceAsyncManagerImplTest {
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -214,9 +390,9 @@ public class ProductInstanceAsyncManagerImplTest {
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
-
+    
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequestAndInstanceNotExist()
+    public void shouldUpdateErrorTaskWhenInstallAndAlreadyInstalledAndInstanceNotExist_PUPPET()
             throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
             AlreadyInstalledException, InvalidInstallProductRequestException {
         // given
@@ -231,16 +407,21 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
-        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
-                "invalid request exception");
+        AlreadyInstalledException alreadyInstalledException = new AlreadyInstalledException(
+                "already installed exception");
+        alreadyInstalledException.setInstace(new InstallableInstance());
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
-                invalidInstallProductRequestException);
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(alreadyInstalledException);
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -250,42 +431,7 @@ public class ProductInstanceAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequest() throws NotUniqueResultException,
-            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
-            InvalidInstallProductRequestException {
-        // given
-        VM vm = new VM();
-        String vdc = "virtualDataCenter";
-        ProductRelease productRelease = new ProductRelease();
-        List<Attribute> attributes = new ArrayList<Attribute>(2);
-        Task task = new Task();
-        String callback = "http://localhost/callback";
-        ProductInstance productInstance = new ProductInstance();
-        productInstance.setVm(vm);
-        productInstance.setProductRelease(productRelease);
-        Product product = new Product();
-        productRelease.setProduct(product);
-
-        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
-                "invalid request exception");
-
-        // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
-                invalidInstallProductRequestException);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
-                productInstance);
-
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
-
-        // then
-        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
-    }
-
-    @Test
-    public void shouldUpdateErrorTaskWhenInstallAndRuntimeExceptionAndInstanceNotExist()
+    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequestAndInstanceNotExist_CHEF()
             throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
             AlreadyInstalledException, InvalidInstallProductRequestException {
         // given
@@ -300,13 +446,60 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
+                "invalid request exception");
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
-                new RuntimeException("runtime exception"));
+                invalidInstallProductRequestException);
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequestAndInstanceNotExist_PUPPET()
+            throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
+            AlreadyInstalledException, InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
+                "invalid request exception");
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                invalidInstallProductRequestException);
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
@@ -316,7 +509,7 @@ public class ProductInstanceAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUpdateErrorTaskWhenInstallAndRuntimeException() throws NotUniqueResultException,
+    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequest_CHEF() throws NotUniqueResultException,
             EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
             InvalidInstallProductRequestException {
         // given
@@ -331,6 +524,162 @@ public class ProductInstanceAsyncManagerImplTest {
         productInstance.setProductRelease(productRelease);
         Product product = new Product();
         productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
+                "invalid request exception");
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                invalidInstallProductRequestException);
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
+                productInstance);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndInvalidInstallProductRequest_PUPPET() throws NotUniqueResultException,
+            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        InvalidInstallProductRequestException invalidInstallProductRequestException = new InvalidInstallProductRequestException(
+                "invalid request exception");
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                invalidInstallProductRequestException);
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
+                productInstance);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndRuntimeExceptionAndInstanceNotExist_CHEF()
+            throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
+            AlreadyInstalledException, InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                new RuntimeException("runtime exception"));
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndRuntimeExceptionAndInstanceNotExist_PUPPET()
+            throws NotUniqueResultException, EntityNotFoundException, NodeExecutionException,
+            AlreadyInstalledException, InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                new RuntimeException("runtime exception"));
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndRuntimeException_CHEF() throws NotUniqueResultException,
+            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "chef");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
@@ -339,6 +688,44 @@ public class ProductInstanceAsyncManagerImplTest {
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+
+        // then
+        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+    }
+    
+    @Test
+    public void shouldUpdateErrorTaskWhenInstallAndRuntimeException_PUPPET() throws NotUniqueResultException,
+            EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException {
+        // given
+        VM vm = new VM();
+        String vdc = "virtualDataCenter";
+        ProductRelease productRelease = new ProductRelease();
+        List<Attribute> attributes = new ArrayList<Attribute>(2);
+        Task task = new Task();
+        String callback = "http://localhost/callback";
+        ProductInstance productInstance = new ProductInstance();
+        productInstance.setVm(vm);
+        productInstance.setProductRelease(productRelease);
+        Product product = new Product();
+        productRelease.setProduct(product);
+        List<Metadata>metadatas = new ArrayList<Metadata>();
+        Metadata metadata=new Metadata("installator", "puppet");
+        metadatas.add(metadata);
+        product.setMetadatas(metadatas);
+
+        // when
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+                new RuntimeException("runtime exception"));
+        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
+                productInstance);
+
+        when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
 
         // then
