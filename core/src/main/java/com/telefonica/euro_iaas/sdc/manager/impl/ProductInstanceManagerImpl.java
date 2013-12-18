@@ -41,6 +41,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     private Installator chefInstallator;
     private Installator puppetInstallator;
+    
+    private String INSTALATOR_CHEF="chef";
 
     protected String INSTALL = "install";
     protected String UNINSTALL = "uninstall";
@@ -103,7 +105,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             Product product = productDao.load(productRelease.getProduct().getName());
 
-            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
             } else {
                 puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
@@ -137,7 +139,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             Product product = productDao.load(productInstance.getProductRelease().getProduct().getName());
 
-            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 // canviar aqui callChef(uninstallRecipe,
                 // productInstance.getVm());
 
@@ -201,7 +203,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             ProductRelease productRelease = productInstance.getProductRelease();
             productRelease.setProduct(product);
 
-            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
             } else {
                 throw new InstallatorException("Product not configurable in Puppet");
@@ -282,7 +284,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             VM vm = productInstance.getVm();
             Product product = productDao.load(productInstance.getName());
 
-            if (SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.upgrade(productInstance, vm);
             } else {
                 throw new InstallatorException("Product not upgradeable in Puppet");
