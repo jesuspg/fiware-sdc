@@ -54,6 +54,9 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
     private ProductDao productDao;
+    
+    public final static String INSTALATOR_CHEF = "chef";
+    public final static String INSTALATOR_PUPPET = "puppet";
 
     /**
      * {@inheritDoc}
@@ -68,7 +71,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
             Product product=productDao.load(productRelease.getProduct().getName());
             
             ProductInstance productInstance=null;
-            if(SystemPropertiesProvider.INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))){
+            if(INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))){
                 productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
             }else { //PUPPET
                 productInstance = productInstancePuppetManager.install(vm, vdc, productRelease, attributes);
