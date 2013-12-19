@@ -172,7 +172,7 @@ public class BaseInstallableInstanceManager {
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
                 
                 isExecuted = hasRecipeBeenExecuted(node, fechaAhora);
-                
+                time += time;
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
