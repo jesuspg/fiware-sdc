@@ -61,20 +61,24 @@ public class BaseInstallableInstanceManagerChef {
         }
     }
 
-    // protected void callChef(String process, String recipe, VM vm,
-    // List<Attribute> attributes)
-    // throws InstallatorException, NodeExecutionException {
-    // configureNode(vm, attributes, process, recipe);
-    // try {
-    // LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
-    // isRecipeExecuted(vm, process, recipe);
-    // unassignRecipes(vm, recipe);
-    // } catch (NodeExecutionException e) {
-    // // unassignRecipes(vm, recipe);
-    // // even if execution fails want to unassign the recipe
-    // throw new NodeExecutionException(e.getMessage());
-    // }
-    // }
+    protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
+            throws CanNotCallChefException, NodeExecutionException, InstallatorException {
+        configureNode(vm, attributes, process, recipe);
+        try {
+            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
+            if (isSdcClientInstalled())  {
+                executeRecipes(vm);
+                // unassignRecipes(vm, recipe);
+            } else {
+                isRecipeExecuted(vm, process, recipe);
+                unassignRecipes(vm, recipe);
+            }           
+        } catch (NodeExecutionException e) {
+            // unassignRecipes(vm, recipe);
+            // even if execution fails want to unassign the recipe
+            throw new NodeExecutionException(e.getMessage());
+        }
+    }
 
     /**
      * Tell Chef the previously assigned recipes are ready to be installed.
@@ -214,6 +218,24 @@ public class BaseInstallableInstanceManagerChef {
     /**
      * Checks if the Node is already registres in ChefServer.
      * 
+    
+    private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
+        
+        LOGGER.info("oha_time " + ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000);
+        LOGGER.info("RecipeUploadedTime:" + fechaAhora.getTime());
+        
+        long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
+        //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
+        
+        if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if the Node is already registered in ChefServer.
      * @param hostname
      */
     public void isNodeRegistered(String hostname) {
@@ -224,11 +246,12 @@ public class BaseInstallableInstanceManagerChef {
         }
     }
 
-    protected boolean isSdcClientInstalled() {
+    
+    protected boolean isSdcClientInstalled () {
         String sdcClient = propertiesProvider.getProperty(SystemPropertiesProvider.SDCCLIENT_INSTALLED_IN_NODES);
         return Boolean.parseBoolean(sdcClient);
     }
-
+    
     // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider

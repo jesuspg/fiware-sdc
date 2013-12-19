@@ -62,8 +62,9 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
 
             ProductInstance productInstance = null;
             productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
-
+            
             updateSuccessTask(task, productInstance);
+
             LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telefonica.euro_iaas</groupId>
@@ -11,11 +12,16 @@
 
     <properties>
 
+        <!-- TDigital PROPERTIES -->
+        <!-- This properties will be added to sonar as manual measures -->
+        <product.area.name>Industrial IoT</product.area.name>
+        <product.name>FIWARE</product.name>
+        <product.release>3.2.3</product.release>
 
         <repoName>fiware-sdc</repoName>
 
         <scmURI>git@pdihub.hi.inet:fiware</scmURI>
-        <ciURI>http://ci-cpr02.hi.inet</ciURI>
+        <ciURI>http://ci-fiware-01.hi.inet</ciURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
         <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
@@ -43,8 +49,7 @@
         <!-- plugins versions -->
 
         <maven-site-plugin.version>2.2</maven-site-plugin.version>
-        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
-        <cobertura-maven-plugin.version>2.5.2</cobertura-maven-plugin.version>
+        <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,10 +76,10 @@
 
         <!-- sonar -->
         <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
-        <sonar.jacoco.reportPath>${project.build.directory}/jacoco-unit.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
-        <sonar.jacoco.jar>${basedir}/lib/org.jacoco.agent-0.5.10.201208310627-runtime.jar</sonar.jacoco.jar>
-
+        <!--     <sonar.jacoco.reportPath>${project.build.directory}/jacoco-unit.exec</sonar.jacoco.reportPath>
+             <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
+             <sonar.jacoco.jar>${basedir}/lib/org.jacoco.agent-0.5.10.201208310627-runtime.jar</sonar.jacoco.jar>
+            -->
 
     </properties>
 
@@ -228,37 +233,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Generacion de test -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Test*.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/test/acceptance/**</exclude>
-                                <exclude>**/test/utils/**</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/test/**.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -291,7 +265,20 @@
                         </goals>
                     </execution>
                 </executions>
-
+                <dependencies>
+                    <dependency>
+                        <artifactId>cobertura</artifactId>
+                        <groupId>net.sourceforge.cobertura</groupId>
+                        <version>2.0.3</version>
+                        <scope>compile</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>com.sun</groupId>
+                                <artifactId>tools</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>

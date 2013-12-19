@@ -3,6 +3,7 @@ package com.telefonica.euro_iaas.sdc.installator;
 import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -19,4 +20,6 @@ public interface Installator {
     void upgrade(ProductInstance productInstance, VM vm) throws InstallatorException;
 
     void callService(ProductInstance productInstance, String action) throws InstallatorException, NodeExecutionException;
+    
+    void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException;
 }

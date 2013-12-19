@@ -93,7 +93,6 @@ public class ProductInstanceAsyncManagerImplTest {
 
         // when
         when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
@@ -108,7 +107,7 @@ public class ProductInstanceAsyncManagerImplTest {
     public void shouldUpdateErrorTaskWhenInstallAndNodeExecutionException() throws NotUniqueResultException,
             EntityNotFoundException, NodeExecutionException, AlreadyInstalledException,
             InvalidInstallProductRequestException {
-        // given
+     // given
         VM vm = new VM();
         String vdc = "virtualDataCenter";
         ProductRelease productRelease = new ProductRelease();
@@ -118,27 +117,23 @@ public class ProductInstanceAsyncManagerImplTest {
         ProductInstance productInstance = new ProductInstance();
         productInstance.setVm(vm);
         productInstance.setProductRelease(productRelease);
-        Product product = new Product();
-        productRelease.setProduct(product);
-        List<Metadata>metadatas = new ArrayList<Metadata>();
         Metadata metadata=new Metadata("installator", "chef");
+        Product product = new Product();
+        List<Metadata>metadatas = new ArrayList<Metadata>();
         metadatas.add(metadata);
         product.setMetadatas(metadatas);
+        productRelease.setProduct(product);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
-                new NodeExecutionException("node execution exception"));
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
         when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
-                productInstance);
-
         when(productDao.load(Mockito.anyString())).thenReturn(product);
         productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        
 
         // then
-        assertEquals(task.getStatus(), Task.TaskStates.ERROR);
+        assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
     @Test

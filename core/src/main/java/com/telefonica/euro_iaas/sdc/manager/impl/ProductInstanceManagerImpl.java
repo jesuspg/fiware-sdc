@@ -51,17 +51,15 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     protected String UNDEPLOY_ARTIFACT = "undeployArtifact";
 
     @Override
-    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
-            throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
+    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes) throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
             EntityNotFoundException {
 
-        if (!vm.canWorkWithPuppetServer()) {
-            String message = "The VM does not include the node hostname required to Install " + "software";
-            throw new InvalidInstallProductRequestException(message);
-        }
-
-        // isNodeRegistered(vm.getHostname());
-
+//        if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+//            
+//        }else{
+//            
+//        }
+                      
         // Check that there is not another product installed
         ProductInstance instance = null;
         try {
@@ -105,9 +103,11 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             Product product = productDao.load(productRelease.getProduct().getName());
 
-            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
+            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {   
+                chefInstallator.validateInstalatorData(vm);
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
             } else {
+                puppetInstallator.validateInstalatorData(vm);
                 puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
             }
 

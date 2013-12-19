@@ -35,6 +35,7 @@
 		<property name="sdcClientUtils" ref="sdcClientUtils" />
 		<property name="recipeNamingGenerator" ref="recipeNamingGenerator" />
 		<property name="chefNodeDao" ref="chefNodeDao" />
+		<property name="ip2vm" ref="ip2vm"/>
 	</bean>
 
 	<bean id="puppetInstallator" lazy-init="true"

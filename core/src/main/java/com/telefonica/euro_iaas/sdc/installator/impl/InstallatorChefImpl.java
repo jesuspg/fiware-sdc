@@ -6,6 +6,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.installator.Installator;
@@ -14,8 +15,11 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.util.IpToVM;
 
 public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef implements Installator {
+    
+    private IpToVM ip2vm;
 
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action)
@@ -197,7 +201,33 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }
     }
 
-    
+    @Override
+    public void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException, NodeExecutionException {
+        if (isSdcClientInstalled()){
+            if (!vm.canWorkWithChef()) {
+                sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
+                sdcClientUtils.setNodeCommands(vm);
+
+                vm = ip2vm.getVm(vm.getIp(), vm.getFqn(), vm.getOsType());
+                // Configure the node with the corresponding node commands
+            }
+        } else {       
+            if (!vm.canWorkWithInstallatorServer()) {
+                String message = "The VM does not include the node hostname required to Install " +
+                                "software";
+                throw new InvalidInstallProductRequestException(message);
+            }
+            isNodeRegistered(vm.getHostname());
+       }
+    }
+
+    /**
+     * @param ip2vm
+     *            the ip2vm to set
+     */
+    public void setIp2vm(IpToVM ip2vm) {
+        this.ip2vm = ip2vm;
+    }
     
 
 }

@@ -184,20 +184,11 @@ public class VM {
     }
 
     /**
-     * Decides if SDC can interact with ChefServer or not.
+     * Decides if SDC can interact with Installators or not.
      * 
-     * @return <code>true</code> if Chef can work with the available information for this VM
+     * @return <code>true</code> if Installators can work with the available information for this VM
      */
-    public Boolean canWorkWithChefServer() {
-        return !StringUtils.isEmpty(hostname);
-    }
-    
-    /**
-     * Decides if SDC can interact with ChefServer or not.
-     * 
-     * @return <code>true</code> if Puppet can work with the available information for this VM
-     */
-    public Boolean canWorkWithPuppetServer() {
+    public Boolean canWorkWithInstallatorServer() {
         return !StringUtils.isEmpty(hostname);
     }
     

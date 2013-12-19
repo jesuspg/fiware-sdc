@@ -60,8 +60,7 @@ public interface SystemPropertiesProvider {
     public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
     
     public final static String PUPPET_MASTER_URL = "puppetMasterUrl";
-    
-    
+
     // WEBDAV
     public final static String WEBDAV_BASE_URL = "webdavBaseUrl";
     public final static String WEBDAV_FILE_URL = "webdavFileUrl";
@@ -101,6 +100,8 @@ public interface SystemPropertiesProvider {
  // Tells if the SDC works with sdc-client installed in the nodes
     public static final String SDCCLIENT_INSTALLED_IN_NODES = "sdcclient.installed.innodes";
 
+
+    
     /**
      * Get the property for a given key.
      * 

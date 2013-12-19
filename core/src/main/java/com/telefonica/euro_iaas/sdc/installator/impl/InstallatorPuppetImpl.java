@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.installator.Installator;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -96,6 +97,15 @@ public class InstallatorPuppetImpl implements Installator {
             NodeExecutionException {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException {
+        if (!vm.canWorkWithInstallatorServer()) {
+            String message = "The VM does not include the node hostname required to Install " +
+                            "software";
+            throw new InvalidInstallProductRequestException(message);
+        }
     }
 
 }
