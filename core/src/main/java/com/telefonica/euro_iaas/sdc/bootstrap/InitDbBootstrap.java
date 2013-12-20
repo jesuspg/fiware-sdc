@@ -97,6 +97,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("id_web_server", "default", "The id web server"));
+                tomcat.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
 
                 tomcat.addAttribute(new Attribute("sdcgroupid", "id_web_server", "sdcgroupid"));
 
@@ -114,6 +115,8 @@ public class InitDbBootstrap implements ServletContextListener {
                 nodejsr = productReleaseDao.create(nodejsr);
 
                 Product mysql = new Product("mysql", "mysql");
+                mysql.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
+
                 mysql = productDao.create(mysql);
                 mysql.addAttribute(new Attribute("aux", "aux", "aux"));
                 ProductRelease mysql124 = new ProductRelease("1.2.4", "mysql 1.2.4", mysql, supportedSSOO123,
@@ -121,30 +124,39 @@ public class InitDbBootstrap implements ServletContextListener {
                 nodejsr = productReleaseDao.create(mysql124);
 
                 Product git = new Product("git", "git");
+                git.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
+                
                 git = productDao.create(git);
                 ProductRelease git17 = new ProductRelease("1.7", "git 1.7", git, supportedSSOO123, null);
                 git17 = productReleaseDao.create(git17);
 
                 Product mongoshard = new Product("mongodbshard", "mongodbshard");
+                mongoshard.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
+                
                 mongoshard = productDao.create(mongoshard);
                 ProductRelease mongoshard223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", mongoshard,
                         supportedSSOO123, null);
                 mongoshard223 = productReleaseDao.create(mongoshard223);
 
                 Product mongos = new Product("mongos", "mongos");
+                mongos.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 mongos = productDao.create(mongos);
                 ProductRelease mongos223 = new ProductRelease("2.2.3", "mongos 2.2.3", mongos, supportedSSOO123,
                         null);
                 mongos223 = productReleaseDao.create(mongos223);
 
                 Product mongodbconfig = new Product("mongodbconfig", "mongodbconfig");
+                mongodbconfig.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
+                
                 mongodbconfig = productDao.create(mongodbconfig);
                 ProductRelease mongodbconfig223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3",
                         mongodbconfig, supportedSSOO123, null);
                 mongodbconfig223 = productReleaseDao.create(mongodbconfig223);
 
                 Product contextbroker = new Product("contextbroker", "contextbroker");
+                contextbroker.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 contextbroker = productDao.create(contextbroker);
+                
                 ProductRelease contextbroker100 = new ProductRelease("1.0.0", "contextbroker 1.0.0",
                         contextbroker, supportedSSOO123, null);
                 contextbroker100 = productReleaseDao.create(contextbroker100);
@@ -168,6 +180,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 Product postgresql = new Product("postgresql", "db manager");
                 postgresql.addAttribute(new Attribute("username", "postgres", "The administrator usename"));
                 postgresql.addAttribute(new Attribute("password", "postgres", "The administrator password"));
+                postgresql.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 postgresql = productDao.create(postgresql);
 
                 ProductRelease postgres84 = new ProductRelease("8.4", "postgresql 8.4", postgresql,
@@ -181,8 +194,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // haproxy Product Releases
                 Product haproxy = new Product("haproxy", "balancer");
-                haproxy.addAttribute(new Attribute("key1", "value1", "keyvaluedesc1"));
-                haproxy.addAttribute(new Attribute("key2", "value2", "keyvaluedesc2"));
+                haproxy.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 haproxy.addAttribute(new Attribute("sdccoregroupid", "app_server_role", "idcoregroup"));
 
                 haproxy = productDao.create(haproxy);
@@ -196,18 +208,27 @@ public class InitDbBootstrap implements ServletContextListener {
                  * null); haproxy09 = productReleaseDao.create(haproxy09);
                  */
 
-                // Postgresql Product Releases
+                // Test Product Release Chef
                 Product test = new Product("test", "test");
-
+                test.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));            
                 test = productDao.create(test);
 
                 ProductRelease test01 = new ProductRelease("0.1", "blah blah blah", test, supportedSSOO123, null);
                 test01 = productReleaseDao.create(test01);
 
+                // Test Product Release Puppet
+                Product testPuppet = new Product("testPuppet", "testPuppet");
+                testPuppet.addAttribute(new Attribute("installator", "puppet", "Puppet Manifest required"));            
+                testPuppet = productDao.create(test);
+
+                ProductRelease testPuppet01 = new ProductRelease("0.1", "blah blah blah", testPuppet, supportedSSOO123, null);
+                testPuppet01 = productReleaseDao.create(testPuppet01);
+
                 // Wiki Product Releases
                 Product mediawiki = new Product("mediawiki", "MediaWiki Product");
                 mediawiki.addAttribute(new Attribute("wikiname", "Wiki to be shown", "The name of the wiki"));
                 mediawiki.addAttribute(new Attribute("path", "/demo", "The url context to be displayed"));
+                mediawiki.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));            
                 // mediawiki.addAttribute(new Attribute("logogif", "",
                 // "The url context to be displayed"));
                 mediawiki = productDao.create(mediawiki);
