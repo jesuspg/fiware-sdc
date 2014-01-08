@@ -13,20 +13,20 @@ package com.telefonica.euro_iaas.sdc.exception;
  * @author Alberts 
  */
 @SuppressWarnings("serial")
-public class CanNotCallPuppetException extends Exception {
-    public CanNotCallPuppetException() {
+public class InstallatorException extends Exception {
+    public InstallatorException() {
         super();
     }
 
-    public CanNotCallPuppetException(String msg) {
+    public InstallatorException(String msg) {
         super(msg);
     }
 
-    public CanNotCallPuppetException(Throwable e) {
+    public InstallatorException(Throwable e) {
         super(e);
     }
 
-    public CanNotCallPuppetException(String msg, Throwable e) {
+    public InstallatorException(String msg, Throwable e) {
         super(msg, e);
     }
 

@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -29,7 +28,6 @@ import com.telefonica.euro_iaas.sdc.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.Task;
@@ -49,14 +47,9 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
     private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
     private ProductInstanceManager productInstanceManager;
-    private ProductInstanceManager productInstancePuppetManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
-    private ProductDao productDao;
-    
-    public final static String INSTALATOR_CHEF = "chef";
-    public final static String INSTALATOR_PUPPET = "puppet";
 
     /**
      * {@inheritDoc}
@@ -66,18 +59,12 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, Task task,
             String callback) {
         try {
-            
-            //TODO: MAKE SURE THIS CAN BE REFACTORED AVOIDING DUPLICATE CALL IN PUPPET AND CHEF MANAGERS CREATEPRODUCTINSTANCE METHOD 
-            Product product=productDao.load(productRelease.getProduct().getName());
-            
-            ProductInstance productInstance=null;
-            if(INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))){
-                productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
-            }else { //PUPPET
-                productInstance = productInstancePuppetManager.install(vm, vdc, productRelease, attributes);
-            }
+
+            ProductInstance productInstance = null;
+            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
             
             updateSuccessTask(task, productInstance);
+
             LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
@@ -176,6 +163,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     @Async
     @Override
     public void uninstall(ProductInstance productInstance, Task task, String callback) {
+
         try {
             productInstanceManager.uninstall(productInstance);
             updateSuccessTask(task, productInstance);
@@ -229,7 +217,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 productInstance.getName(), // the name
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the product
+                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
+                                                                                                       // product
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
@@ -237,7 +226,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     /*
-     * Update the task with necessary information when the task is wrong and the product instance exists in the system.
+     * Update the task with necessary information when the task is wrong and the
+     * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
         String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
@@ -245,7 +235,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 productInstance.getName(), // the id
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the product
+                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
+                                                                                                       // product
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }
@@ -293,14 +284,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
         this.productInstanceManager = productInstanceManager;
     }
-    
-    /**
-     * @param productInstancePuppetManager
-     *            the productInstancePuppetManager to set
-     */
-    public void setProductInstancePuppetManager(ProductInstanceManager productInstancePuppetManager) {
-        this.productInstancePuppetManager = productInstancePuppetManager;
-    }
 
     /**
      * @param taskManager
@@ -324,13 +307,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
-    }
-    /**
-     * @param productDao
-     *            the productDao to set
-     */
-    public void setProductDao(ProductDao productDao) {
-        this.productDao = productDao;
     }
 
 }

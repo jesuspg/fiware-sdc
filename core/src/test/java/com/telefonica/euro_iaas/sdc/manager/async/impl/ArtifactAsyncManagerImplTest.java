@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.ArtifactManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -52,7 +53,7 @@ public class ArtifactAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldDeployArtifact() throws NodeExecutionException, FSMViolationException {
+    public void shouldDeployArtifact() throws NodeExecutionException, FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
@@ -83,7 +84,7 @@ public class ArtifactAsyncManagerImplTest {
 
     @Test
     public void shouldUpdateErrorTaskWhenDeployArtifactAndProducesFMViolation() throws NodeExecutionException,
-            FSMViolationException {
+            FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
@@ -116,7 +117,7 @@ public class ArtifactAsyncManagerImplTest {
 
     @Test
     public void shouldUpdateErrorTaskWhenDeployArtifactAndProducesNodeExecutionError() throws NodeExecutionException,
-            FSMViolationException {
+            FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
@@ -148,7 +149,7 @@ public class ArtifactAsyncManagerImplTest {
     }
 
     @Test
-    public void shouldUnDeployArtifactAndTaskSuccess() throws NodeExecutionException, FSMViolationException {
+    public void shouldUnDeployArtifactAndTaskSuccess() throws NodeExecutionException, FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
@@ -180,7 +181,7 @@ public class ArtifactAsyncManagerImplTest {
 
     @Test
     public void shouldUpdateErrorTaskWhenUnDeployArtifactAndProducesNodeExecutionException()
-            throws NodeExecutionException, FSMViolationException {
+            throws NodeExecutionException, FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
@@ -215,7 +216,7 @@ public class ArtifactAsyncManagerImplTest {
 
     @Test
     public void shouldUpdateErrorTaskWhenUnDeployArtifactAndProducesFSMViaolation() throws NodeExecutionException,
-            FSMViolationException {
+            FSMViolationException, InstallatorException {
         // given
         ProductInstance productInstance = new ProductInstance();
         VM vm = new VM();
