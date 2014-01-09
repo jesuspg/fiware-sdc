@@ -21,5 +21,5 @@ public interface Installator {
 
     void callService(ProductInstance productInstance, String action) throws InstallatorException, NodeExecutionException;
     
-    void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException;
+    void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException, NodeExecutionException;
 }
