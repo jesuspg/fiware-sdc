@@ -196,15 +196,8 @@ public class BaseInstallableInstanceManagerChef {
 
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
 
-                long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time"))
-                        .longValue() * 1000;
-                // Comprobar si el node tiene el recipe y sino vuelta a hacer la
-                // peticion
-
-                if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    isExecuted = true;
-                }
-
+                isExecuted = hasRecipeBeenExecuted(node, fechaAhora);
+                time += time;
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
@@ -217,7 +210,7 @@ public class BaseInstallableInstanceManagerChef {
 
     /**
      * Checks if the Node is already registres in ChefServer.
-     * 
+     */
     
     private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
         
