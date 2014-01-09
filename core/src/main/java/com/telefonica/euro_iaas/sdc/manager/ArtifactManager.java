@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
@@ -37,10 +38,11 @@ public interface ArtifactManager {
      *             if the product has some applications which depend on it
      * @throws FSMViolationException
      *             if try to make a forbidden transition
+     * @throws InstallatorException 
      */
 
     ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact) throws NodeExecutionException,
-            FSMViolationException;
+            FSMViolationException, InstallatorException;
 
     /**
      * UnDeploy an artefact in a previously installed product.
@@ -55,10 +57,11 @@ public interface ArtifactManager {
      *             if the product has some applications which depend on it
      * @throws FSMViolationException
      *             if try to make a forbidden transition
+     * @throws InstallatorException 
      */
 
     ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName)
-            throws NodeExecutionException, FSMViolationException;
+            throws NodeExecutionException, FSMViolationException, InstallatorException;
 
     /**
      * Find the ProductInstance using the given id.
