@@ -219,7 +219,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 // Test Product Release Puppet
                 Product testPuppet = new Product("testPuppet", "testPuppet");
                 testPuppet.addAttribute(new Attribute("installator", "puppet", "Puppet Manifest required"));            
-                testPuppet = productDao.create(test);
+                testPuppet = productDao.create(testPuppet);
 
                 ProductRelease testPuppet01 = new ProductRelease("0.1", "blah blah blah", testPuppet, supportedSSOO123, null);
                 testPuppet01 = productReleaseDao.create(testPuppet01);
