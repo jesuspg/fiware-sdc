@@ -20,6 +20,7 @@ import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -210,7 +211,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // Test Product Release Chef
                 Product test = new Product("test", "test");
-                test.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));            
+                test.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 test = productDao.create(test);
 
                 ProductRelease test01 = new ProductRelease("0.1", "blah blah blah", test, supportedSSOO123, null);
@@ -218,7 +219,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // Test Product Release Puppet
                 Product testPuppet = new Product("testPuppet", "testPuppet");
-                testPuppet.addAttribute(new Attribute("installator", "puppet", "Puppet Manifest required"));            
+                testPuppet.addMetadata(new Metadata("installator", "puppet", "Puppet Manifest required"));
                 testPuppet = productDao.create(testPuppet);
 
                 ProductRelease testPuppet01 = new ProductRelease("0.1", "blah blah blah", testPuppet, supportedSSOO123, null);
