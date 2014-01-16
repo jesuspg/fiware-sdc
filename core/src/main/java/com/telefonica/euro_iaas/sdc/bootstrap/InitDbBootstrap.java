@@ -98,8 +98,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("id_web_server", "default", "The id web server"));
-                tomcat.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
-
+                
                 tomcat.addAttribute(new Attribute("sdcgroupid", "id_web_server", "sdcgroupid"));
                 
                 tomcat.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
@@ -121,7 +120,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 nodejsr = productReleaseDao.create(nodejsr);
 
                 Product mysql = new Product("mysql", "mysql");
-                mysql.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 mysql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 mysql = productDao.create(mysql);
@@ -139,7 +137,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 git17 = productReleaseDao.create(git17);
 
                 Product mongoshard = new Product("mongodbshard", "mongodbshard");
-                mongoshard.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 mongoshard.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 mongoshard = productDao.create(mongoshard);
@@ -148,7 +145,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 mongoshard223 = productReleaseDao.create(mongoshard223);
 
                 Product mongos = new Product("mongos", "mongos");
-                mongos.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 mongos.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 mongos = productDao.create(mongos);
@@ -157,7 +153,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 mongos223 = productReleaseDao.create(mongos223);
 
                 Product mongodbconfig = new Product("mongodbconfig", "mongodbconfig");
-                mongodbconfig.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 mongodbconfig.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 mongodbconfig = productDao.create(mongodbconfig);
@@ -166,7 +161,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 mongodbconfig223 = productReleaseDao.create(mongodbconfig223);
 
                 Product contextbroker = new Product("contextbroker", "contextbroker");
-                contextbroker.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 contextbroker.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 contextbroker = productDao.create(contextbroker);
@@ -194,7 +188,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 Product postgresql = new Product("postgresql", "db manager");
                 postgresql.addAttribute(new Attribute("username", "postgres", "The administrator usename"));
                 postgresql.addAttribute(new Attribute("password", "postgres", "The administrator password"));
-                postgresql.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 postgresql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 postgresql = productDao.create(postgresql);
 
@@ -209,7 +202,6 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // haproxy Product Releases
                 Product haproxy = new Product("haproxy", "balancer");
-                haproxy.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 haproxy.addAttribute(new Attribute("sdccoregroupid", "app_server_role", "idcoregroup"));
                 haproxy.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
@@ -244,7 +236,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 Product mediawiki = new Product("mediawiki", "MediaWiki Product");
                 mediawiki.addAttribute(new Attribute("wikiname", "Wiki to be shown", "The name of the wiki"));
                 mediawiki.addAttribute(new Attribute("path", "/demo", "The url context to be displayed"));
-                mediawiki.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));            
                 mediawiki.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 // mediawiki.addAttribute(new Attribute("logogif", "",
                 // "The url context to be displayed"));
