@@ -182,20 +182,14 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             System.out.println("Get VM");
             VM vm = productInstance.getVm();
 
-            // String backupRecipe = recipeNamingGenerator
-            // .getBackupRecipe(productInstance);
-            // callChef(backupRecipe, vm);
-
-            /*
-             * String uninstallRecipe = recipeNamingGenerator
-             * .getUninstallRecipe(productInstance); callChef(uninstallRecipe,
-             * vm);
-             */
             System.out.println("Load product " + productInstance.getProductRelease().getProduct().getName());
             Product product = productDao.load(productInstance.getProductRelease().getProduct().getName());
 
             if (configuration != null) {
-                product.setAttributes(configuration);
+                for (int j=0; j< configuration.size(); j++){
+                    Attribute attribute = configuration.get(j);
+                    product.addAttribute(attribute);
+                }
             }
             System.out.println("Update product " + productInstance.getProductRelease().getProduct().getName());
             productDao.update(product);
