@@ -132,7 +132,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 mysql124 = productReleaseDao.create(mysql124);
 
                 Product git = new Product("git", "git");
-                git.addAttribute(new Attribute("installator", "chef", "ChefServer Recipe required"));
                 git.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
                 
                 git = productDao.create(git);
