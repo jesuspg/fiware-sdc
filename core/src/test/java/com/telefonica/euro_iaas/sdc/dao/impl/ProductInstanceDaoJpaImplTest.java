@@ -7,7 +7,15 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
@@ -27,7 +35,11 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCr
  * 
  * @author Sergio Arroyo
  */
-public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductInstanceDaoJpaImplTest {
+
 
     private ProductInstanceDao productInstanceDao;
     private ArtifactDao artifactDao;
@@ -40,7 +52,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
     protected void createProductRelease() throws Exception {
         ProductReleaseDaoJpaImlTest productDaoTest = new ProductReleaseDaoJpaImlTest();
-        productDaoTest.setSoDao(soDao);
+        productDaoTest.setOsDao(soDao);
         productDaoTest.setProductDao(productDao);
         productDaoTest.setProductReleaseDao(productReleaseDao);
         productDaoTest.testCreateAndFindByCriteria();
@@ -49,6 +61,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
+    @Test
     public void testCreate() throws Exception {
         createProductRelease();
 
@@ -62,6 +75,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(1, productInstanceDao.findAll().size());
     }
 
+    @Test
     public void testFindByCriteria() throws Exception {
         createProductRelease();
         VM host = new VM(null, "hostname", "domain");
@@ -127,6 +141,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(pi1, productInstanceDao.findUniqueByCriteria(criteria));
     }
 
+    @Test
     public void testProductInstanceArtifact() throws Exception {
         createProductRelease();
         VM host = new VM("fqn", "hostname", "domain");
@@ -178,10 +193,6 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         this.productInstanceDao = productInstanceDao;
     }
 
-    /**
-     * @param productInstanceDao
-     *            the productInstanceDao to set
-     */
     public void setArtifactDao(ArtifactDao artifactDao) {
         this.artifactDao = artifactDao;
     }
@@ -196,7 +207,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
     /**
      * @param soDao
-     *            the soDao to set
+     *            the osDao to set
      */
     public void setSoDao(OSDao soDao) {
         this.soDao = soDao;

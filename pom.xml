@@ -62,9 +62,13 @@
 
         <jersey.version>1.17.1</jersey.version>
 
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <!-- hibernate -->
+        <hibernate.version>4.1.7.Final</hibernate.version>
+
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <copyright.year>2012</copyright.year>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
         <jvm.version>1.6</jvm.version>
         <tomcat.version>6</tomcat.version>
@@ -124,7 +128,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -156,7 +160,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1-SNAPSHOT</version>
             </dependency>
 
         </dependencies>

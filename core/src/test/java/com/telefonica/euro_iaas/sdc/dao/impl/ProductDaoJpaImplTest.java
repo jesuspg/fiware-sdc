@@ -7,6 +7,14 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -18,23 +26,30 @@ import com.telefonica.euro_iaas.sdc.model.Product;
  * 
  * @author Sergio Arroyo
  */
-public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
 
-    private ProductDao productDao;
-    private OSDao soDao;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductDaoJpaImplTest {
+
+    @Autowired
+    ProductDao productDao;
+
+    @Autowired
+    OSDao osDao;
 
     public final static String PRODUCT_NAME = "productName";
     public final static String PRODUCT_VERSION = "productVersion";
 
     protected void createSO() throws Exception {
         SODaoJpaImplTest soDaoTest = new SODaoJpaImplTest();
-        soDaoTest.setSoDao(soDao);
+        soDaoTest.setOsDao(osDao);
         soDaoTest.testCreate();
     }
 
     /**
      * Test the create and load method
      */
+    @Test
     public void testCreate() throws Exception {
         createSO();
 
@@ -53,6 +68,7 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the update and load method
      */
+    @Test
     public void testUpdate() throws Exception {
         Product product = new Product();
         product.setName(PRODUCT_NAME);
@@ -85,11 +101,11 @@ public class ProductDaoJpaImplTest extends AbstractJpaDaoTest {
     }
 
     /**
-     * @param soDao
-     *            the soDao to set
+     * @param osDao
+     *            the osDao to set
      */
-    public void setSoDao(OSDao soDao) {
-        this.soDao = soDao;
+    public void setOsDao(OSDao osDao) {
+        this.osDao = osDao;
     }
 
 }

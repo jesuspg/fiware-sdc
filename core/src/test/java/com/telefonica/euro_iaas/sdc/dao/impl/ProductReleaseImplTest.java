@@ -7,25 +7,31 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
-public class ProductReleaseImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductReleaseImplTest {
 
+    @Autowired
     private ProductReleaseDao productReleaseDao;
 
     private ProductRelease productRelease;
@@ -46,11 +52,11 @@ public class ProductReleaseImplTest extends AbstractJpaDaoTest {
         List<OS> supportedOOSS = Arrays.asList(os);
         productRelease.setSupportedOOSS(supportedOOSS);
 
-        /*Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
-        Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
-
-        List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productRelease.setPrivateAttributes(privateAttributes);*/
+        /*
+         * Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port"); Attribute
+         * privateAttributeII = new Attribute("port", "8080", "The listen port"); List<Attribute> privateAttributes =
+         * Arrays.asList(privateAttribute, privateAttributeII); productRelease.setPrivateAttributes(privateAttributes);
+         */
 
         /*
          * productReleaseDao = mock(ProductReleaseDao.class);
@@ -65,7 +71,7 @@ public class ProductReleaseImplTest extends AbstractJpaDaoTest {
         ProductRelease createdRelease;
         try {
             createdRelease = productReleaseDao.create(productRelease);
-            Assert.assertEquals(productRelease, createdRelease);
+            assertEquals(productRelease, createdRelease);
         } catch (InvalidEntityException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -77,7 +83,7 @@ public class ProductReleaseImplTest extends AbstractJpaDaoTest {
         ProductRelease loadedRelease;
         try {
             loadedRelease = productReleaseDao.load(product, "v1");
-            Assert.assertEquals(productRelease, loadedRelease);
+            assertEquals(productRelease, loadedRelease);
         } catch (EntityNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

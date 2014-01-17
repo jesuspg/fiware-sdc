@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Logger;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -23,8 +25,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class CompareDates {
 
     private static Long limit;
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CompareDates.class);
     private long offset;
+    private static Logger LOGGER = Logger.getLogger("CompareDates");
 
     /**
      * Constructor.
@@ -59,8 +61,8 @@ public class CompareDates {
 
         long diff = getTimeDiff(date, now) - offset;
 
-        log.info("Date1: " + dateString + "\tDate2: " + now.toString());
-        log.info("Diff: " + diff);
+        LOGGER.info("Date1: " + dateString + "\tDate2: " + now.toString());
+        LOGGER.info("Diff: " + diff);
 
         if (!now.before(date)) {
             result = true;
@@ -148,7 +150,7 @@ public class CompareDates {
 
                     date = c2.getTime();
                 } catch (DatatypeConfigurationException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -159,7 +161,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -170,7 +172,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -201,7 +203,7 @@ public class CompareDates {
         long timeDiff = dateLong1 - dateLong2;
 
         if (timeDiff != 86400000) {
-            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message");
+            LOGGER.warning("Date format incorrect between token.expires " + "and Header field in the HTTP message");
 
             dateLong1 += (86400000 - timeDiff);
         }
