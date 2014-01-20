@@ -46,14 +46,22 @@
         <repoSiteName>repo-site</repoSiteName>
         <repoSiteUrl>${ciURI}</repoSiteUrl>
 
+
+        <!-- encoding -->
+
+        <encoding>utf-8</encoding>
+        <encoding.build.source>${encoding}</encoding.build.source>
+        <encoding.report.out>${encoding}</encoding.report.out>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+
+
         <!-- plugins versions -->
 
         <maven-site-plugin.version>2.2</maven-site-plugin.version>
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <compilerInfoDebug>false</compilerInfoDebug>
         <compilerOptimize>false</compilerOptimize>
@@ -223,9 +231,8 @@
 
             <!-- modify compiler options -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <version>2.3.2</version>
                 <configuration>
                     <source>${jvm.version}</source>
                     <target>${jvm.version}</target>
