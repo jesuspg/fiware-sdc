@@ -35,9 +35,6 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCr
 public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpaIml<ProductInstance, Long> implements
         ProductInstanceDao {
 
-    @PersistenceContext(unitName = "sdc", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
-
     /** {@inheritDoc} */
     @Override
     public List<ProductInstance> findAll() {
@@ -115,7 +112,7 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
          */
         // Query query = entityManager.createQuery
         // ("select p from ProductInstance p left join fetch p.artifact where p.name = '"+productInstanceName+"'");
-        Query query = (Query) entityManager.createQuery("select p from ProductInstance p  where p.name = '"
+        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p  where p.name = '"
                 + productInstanceName + "'");
 
         // where p.name = '" + productInstanceName+"'");
@@ -143,7 +140,7 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     @Override
     public List<ProductInstance> findByHostname(String hostname) throws EntityNotFoundException {
 
-        Query query = (Query) entityManager.createQuery("select p from InstallableInstance p  where p.vm.hostname = '"
+        Query query = (Query) getEntityManager().createQuery("select p from InstallableInstance p  where p.vm.hostname = '"
                 + hostname + "'");
 
         List<ProductInstance> productInstances = null;
