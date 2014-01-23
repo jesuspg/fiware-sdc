@@ -172,14 +172,16 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         int time = 10000;
         Date fechaAhora = new Date();
         while (!isExecuted) {
+            System.out.println("MAX_TIME: " + MAX_TIME + " and time: " + time);
             try {
-                Thread.sleep(time);
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + recipe + " coub not be executed in " + vm.getChefClientName();
                     LOGGER.info(errorMesg);
                     throw new NodeExecutionException(errorMesg);
                 }
-
+               
+                Thread.sleep(time);
+               
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
 
                 long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time"))
@@ -190,7 +192,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
                     isExecuted = true;
                 }
-
+                time += time;
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
