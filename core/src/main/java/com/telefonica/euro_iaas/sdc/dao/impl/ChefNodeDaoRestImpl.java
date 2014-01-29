@@ -180,13 +180,13 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         while (!response.contains(hostname)) {
                       
             try {
-                Thread.sleep(time);
                 LOGGER.info("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
                     String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
                     LOGGER.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
+                Thread.sleep(time);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
                 WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
