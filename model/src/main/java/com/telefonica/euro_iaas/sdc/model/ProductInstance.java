@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.sdc.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,7 +57,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
     // fetch = FetchType.LAZY)
     @OneToMany(targetEntity = Artifact.class, mappedBy = "productInstance", fetch = FetchType.LAZY)
     // cascade = CascadeType.ALL
-    private List<Artifact> artifact;
+    private Set<Artifact> artifact;
 
     /**
      * <p>
@@ -105,7 +107,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      * @param status
      *            a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
      */
-    public ProductInstance(ProductRelease productRelease, List<Artifact> artifacts, Status status, VM vm, String vdc) {
+    public ProductInstance(ProductRelease productRelease, Set<Artifact> artifacts, Status status, VM vm, String vdc) {
         super(status);
         this.productRelease = productRelease;
         this.artifact = artifacts;
@@ -144,7 +146,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      * @return the list of artifact
      */
 
-    public List<Artifact> getArtifacts() {
+    public Set<Artifact> getArtifacts() {
         return artifact;
     }
 
@@ -156,7 +158,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      * @param the
      *            list of artifact
      */
-    public void setArtifacts(List<Artifact> artifacts) {
+    public void setArtifacts(Set<Artifact> artifacts) {
         this.artifact = artifacts;
     }
 
@@ -170,7 +172,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      */
     public void addArtifact(Artifact artifact) {
         if (this.artifact == null) {
-            this.artifact = new ArrayList<Artifact>();
+            this.artifact = new HashSet<Artifact>();
         }
 
         this.artifact.add(artifact);
