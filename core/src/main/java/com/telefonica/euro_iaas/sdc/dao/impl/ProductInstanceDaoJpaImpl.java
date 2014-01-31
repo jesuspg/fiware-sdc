@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -104,8 +105,38 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     @Override
     public ProductInstance findByProductInstanceName(String productInstanceName) throws EntityNotFoundException {
 
-        return super.loadByField(ProductInstance.class, "name", productInstanceName);
+        // alternative return super.loadByField(ProductInstance.class, "name", productInstanceName);
 
+        // Query query = entityManager.createQuery("select p from artifact " +
+
+        // p join fetch p.productinstance where p.name = :name" );
+        /*
+         * SELECT * FROM productinstance LEFT JOIN artifact ON productinstance.id=artifact.productinstance_id;
+         */
+        // Query query = entityManager.createQuery
+        // ("select p from ProductInstance p left join fetch p.artifact where p.name = '"+productInstanceName+"'");
+        Query query = (Query) getEntityManager().createQuery(
+                "select p from ProductInstance p  where p.name = '" + productInstanceName + "'");
+
+        // where p.name = '" + productInstanceName+"'");
+
+        // select claseA from A claseA left join fetch claseA.b claseB
+
+        // Query query =
+        // entityManager.createQuery("select p from EnvironmentInstance" +
+        // " p join fetch p.tierInstances where p.name = :name" );
+
+        // query.setParameter("name", productInstanceName);
+
+        ProductInstance productInstance = null;
+        try {
+            productInstance = (ProductInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No ProductInstance found in the database " + "with name: " + productInstanceName;
+            System.out.println(message);
+            throw new EntityNotFoundException(ProductInstance.class, "name", productInstanceName);
+        }
+        return productInstance;
     }
 
     @SuppressWarnings("unchecked")
