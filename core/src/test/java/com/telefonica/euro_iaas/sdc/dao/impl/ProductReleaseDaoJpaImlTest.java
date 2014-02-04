@@ -47,13 +47,6 @@ public class ProductReleaseDaoJpaImlTest {
     @Autowired
     private ProductReleaseDao productReleaseDao;
 
-    protected void createProduct() throws Exception {
-        ProductDaoJpaImplTest pdaoTest = new ProductDaoJpaImplTest();
-        pdaoTest.setProductDao(productDao);
-        pdaoTest.setOsDao(osDao);
-        pdaoTest.testCreate();
-    }
-
     protected void createProductRelease() throws Exception {
 
         ProductRelease productRelease = new ProductRelease();
@@ -108,30 +101,27 @@ public class ProductReleaseDaoJpaImlTest {
      * 
      * @throws Exception
      */
-    @Test
+    @Test(expected = EntityNotFoundException.class)
     public void testCreateAndFindByCriteria() throws Exception {
-        createProduct();
-        Product product = productDao.findAll().get(0);
-        product.addAttribute(new Attribute("clave", "valor"));
 
+        Product product = new Product("name", "desc");
+
+        product.addAttribute(new Attribute("clave", "valor"));
         product.addMetadata(new Metadata("metKey", "metValue"));
+
+        productDao.create(product);
 
         ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, osDao.findAll(), null);
         ProductRelease createdRelease = productReleaseDao.create(release);
         assertEquals(createdRelease, release);
 
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
-        assertEquals(1, productReleaseDao.findByCriteria(criteria).size());
 
         ProductRelease loadedRelease = productReleaseDao.load(product, "v1");
         assertEquals(release, loadedRelease);
 
-        try {
-            loadedRelease = productReleaseDao.load(product, "v2");
-            fail("EntityNotFoundException expected");
-        } catch (EntityNotFoundException e) {
-            // it's ok, this exception was expected
-        }
+        loadedRelease = productReleaseDao.load(product, "v2");
+        fail("EntityNotFoundException expected");
     }
 
     /**

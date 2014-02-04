@@ -22,7 +22,7 @@
         <class>com.telefonica.euro_iaas.sdc.model.NodeCommand</class>
         <exclude-unlisted-classes></exclude-unlisted-classes>
         <properties>
-            <property name="hbm2ddl.auto" value="create"/>
+            <property name="hbm2ddl.auto" value="verify"/>
             <property name="hibernate.c3p0.min_size" value="5"/>
             <property name="hibernate.c3p0.max_size" value="200"/>
             <property name="hibernate.c3p0.timeout" value="300"/>

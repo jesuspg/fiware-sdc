@@ -30,22 +30,17 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
-public class SODaoJpaImplTest {
+public class OSDaoJpaImplTest {
 
     @Autowired
     OSDao osDao;
-
-    public final static String SO_NAME = "TestSO";
-    public final static String SO_OSTYPE = "OSTypeSO";
-    public final static String SO_DESCRIPTION = "TestDescription";
-    public final static String SO_VERSION = "TestVersion";
 
     /**
      * Test the create and load method
      */
     @Test
     public void testCreate() throws Exception {
-        OS so = new OS(SO_OSTYPE, SO_NAME, SO_DESCRIPTION, SO_VERSION);
+        OS so = new OS("Win", "test", "desc", "1");
         assertNull(so.getId());
 
         OS createdSO = osDao.create(so);
@@ -63,16 +58,19 @@ public class SODaoJpaImplTest {
      */
     @Test
     public void testFindAllAndUpdate() throws Exception {
-        assertEquals(0, osDao.findAll().size());
-        testCreate();
+        // given
+        OS so = new OS("OSx", "test2", "desc", "2");
+        osDao.create(so);
+
+        // when
         List<OS> ssoo = osDao.findAll();
-        assertEquals(1, ssoo.size());
-        OS so = ssoo.get(0);
-        so.setName("newName");
-        osDao.update(so);
-        assertEquals("newName", osDao.load(so.getOsType()).getName());
-        osDao.remove(so);
-        assertEquals(0, osDao.findAll().size());
+        OS so0 = ssoo.get(0);
+        so0.setName("newName");
+        osDao.update(so0);
+        long updatedOS = so0.getId();
+
+        // then
+        assertEquals("newName", osDao.load(updatedOS).getName());
 
     }
 

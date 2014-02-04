@@ -81,6 +81,7 @@
         <jvm.version>1.6</jvm.version>
         <tomcat.version>6</tomcat.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
+        <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
@@ -169,6 +170,12 @@
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
                 <version>1.1.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>

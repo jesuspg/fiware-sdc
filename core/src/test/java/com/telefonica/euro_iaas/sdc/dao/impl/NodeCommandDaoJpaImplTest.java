@@ -36,7 +36,7 @@ public class NodeCommandDaoJpaImplTest {
     public void createNodeCommand() throws Exception {
 
         NodeCommand nodeCommand = new NodeCommand();
-        OS so = new OS("Prueba I", "1", "Prueba I Description", "Prueba I Version");
+        OS so = new OS("Pru", "1", "Prueba I Description", "Prueba I Version");
 
         try {
             so = osDao.load(so.getName());

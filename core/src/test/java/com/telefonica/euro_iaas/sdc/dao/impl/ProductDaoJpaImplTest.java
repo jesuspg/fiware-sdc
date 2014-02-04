@@ -40,18 +40,11 @@ public class ProductDaoJpaImplTest {
     public final static String PRODUCT_NAME = "productName";
     public final static String PRODUCT_VERSION = "productVersion";
 
-    protected void createSO() throws Exception {
-        SODaoJpaImplTest soDaoTest = new SODaoJpaImplTest();
-        soDaoTest.setOsDao(osDao);
-        soDaoTest.testCreate();
-    }
-
     /**
      * Test the create and load method
      */
     @Test
     public void testCreate() throws Exception {
-        createSO();
 
         Product product = new Product();
         product.setName(PRODUCT_NAME);
@@ -70,24 +63,24 @@ public class ProductDaoJpaImplTest {
      */
     @Test
     public void testUpdate() throws Exception {
+
+        // given
         Product product = new Product();
-        product.setName(PRODUCT_NAME);
-        product.addAttribute(new Attribute("key", "value"));
-        product.addMetadata(new Metadata("netkey", "metvalue"));
+        product.setName("myproduct");
+        product.addAttribute(new Attribute("key1", "value"));
+        product.addMetadata(new Metadata("netkey1", "metvalue"));
+        productDao.create(product);
 
-        assertEquals(0, productDao.findAll().size());
-        product = productDao.create(product);
+        Product loadedProduct = productDao.load("myproduct");
 
-        Product loadedProduct = productDao.load(PRODUCT_NAME);
-        assertEquals(loadedProduct.getName(), product.getName());
-
-        loadedProduct.addAttribute(new Attribute("key", "value"));
-
-        Product updatedProduct = productDao.update(loadedProduct);
-        assertEquals(updatedProduct.getAttributes().size(), 2);
-
+        loadedProduct.addAttribute(new Attribute("key2", "value"));
         loadedProduct.addMetadata(new Metadata("met_key2", "met_value2"));
-        updatedProduct = productDao.update(loadedProduct);
+
+        // when
+        Product updatedProduct = productDao.update(loadedProduct);
+
+        // then
+        assertEquals(updatedProduct.getAttributes().size(), 2);
         assertEquals(updatedProduct.getMetadatas().size(), 2);
 
     }

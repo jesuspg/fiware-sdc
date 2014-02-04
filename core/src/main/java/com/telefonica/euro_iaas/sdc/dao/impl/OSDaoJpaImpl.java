@@ -38,4 +38,8 @@ public class OSDaoJpaImpl extends AbstractBaseDao<OS, String> implements OSDao {
         return super.loadByField(OS.class, "osType", osType);
     }
 
+    public OS load(Long id) throws EntityNotFoundException {
+        return super.loadByField(OS.class, "id", id);
+    }
+
 }
