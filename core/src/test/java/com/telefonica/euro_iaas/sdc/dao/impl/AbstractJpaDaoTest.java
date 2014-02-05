@@ -7,10 +7,13 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jpa.AbstractJpaTests;
 
 public class AbstractJpaDaoTest extends AbstractJpaTests {
-
+    
     @Override
     protected String[] getConfigLocations() {
         return new String[] { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" };

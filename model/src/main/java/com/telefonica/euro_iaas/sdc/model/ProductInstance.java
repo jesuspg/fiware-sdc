@@ -66,6 +66,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      */
     public ProductInstance() {
         super();
+        this.artifact = new HashSet<Artifact>();
     }
 
     /**
@@ -95,6 +96,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
         this.productRelease = productRelease;
         setVm(vm);
         setVdc(vdc);
+        this.artifact = new HashSet<Artifact>();
     }
 
     /**
@@ -113,6 +115,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
         this.artifact = artifacts;
         setVm(vm);
         setVdc(vdc);
+        this.artifact = new HashSet<Artifact>();
     }
 
     /**
