@@ -2,15 +2,17 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
+
+
     <New id="sdc" class="org.mortbay.jetty.plus.naming.Resource">
         <Arg>jdbc/sdc</Arg>
         <Arg>
-            <New class="org.hsqldb.jdbc.jdbcDataSource">
-                <Set name="database">
-                    jdbc:hsqldb:file:target/hsqldb/sdc.hsqldb
-                </Set>
-                <Set name="user"/>
+            <New class="org.hsqldb.jdbc.JDBCDataSource">
+                <Set name="DatabaseName">jdbc:hsqldb:file:target/hsqldb/sdc.hsqldb</Set>
+                <Set name="User">sa</Set>
+                <Set name="Password">sa</Set>
             </New>
         </Arg>
     </New>
+
 </Configure>
