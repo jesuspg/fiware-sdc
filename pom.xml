@@ -70,9 +70,10 @@
 
         <jersey.version>1.17.1</jersey.version>
 
-        <spring.version>3.1.0.RELEASE</spring.version>
         <!-- hibernate -->
         <hibernate.version>4.1.7.Final</hibernate.version>
+        <hsqldb.version>2.2.9</hsqldb.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
 
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <copyright.year>2012</copyright.year>

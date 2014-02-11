@@ -47,6 +47,12 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>commons-properties</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>persistence-api</artifactId>
+                    <groupId>javax.persistence</groupId>
+                </exclusion>
+            </exclusions>
 
         </dependency>
 
@@ -226,7 +232,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.2.8</version>
+            <version>${hsqldb.version}</version>
             <scope>test</scope>
         </dependency>
 

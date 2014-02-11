@@ -1,28 +1,33 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <property name="int.type" value="int" dbms="hsqldb"/>
+    <property name="int.type" value="int8" dbms="postgresql"/>
+    <property name="int4.type" value="int4" dbms="postgresql"/>
+    <property name="int4.type" value="int" dbms="hsqldb"/>
 
+    <include file="db-initial.xml" relativeToChangelogFile="true"/>
 
     <changeSet author="jesuspg (generated)" id="1-1">
         <createTable tableName="installableinstance_attribute">
-            <column name="installableinstance_id" type="INT8">
+            <column name="installableinstance_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="attributes_id" type="INT8">
+            <column name="attributes_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="jesuspg (generated)" id="1-2">
         <createTable tableName="metadata">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(2048)"/>
             <column name="key" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="v" type="INT8"/>
+            <column name="v" type="${int.type}"/>
             <column name="value" type="VARCHAR(2048)">
                 <constraints nullable="false"/>
             </column>
@@ -30,10 +35,10 @@
     </changeSet>
     <changeSet author="jesuspg (generated)" id="1-3">
         <createTable tableName="product_metadata">
-            <column name="product_id" type="INT8">
+            <column name="product_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="metadatas_id" type="INT8">
+            <column name="metadatas_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>

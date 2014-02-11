@@ -1,53 +1,52 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
     <changeSet author="initial" id="1">
         <createSequence sequenceName="hibernate_sequence"/>
     </changeSet>
     <changeSet author="initial" id="2">
         <createTable tableName="application">
             <column name="type" type="VARCHAR(255)"/>
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="3">
         <createTable tableName="applicationinstance">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="application_id" type="INT8">
+            <column name="application_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="environmentinstance_id" type="INT8"/>
+            <column name="environmentinstance_id" type="${int.type}"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="4">
         <createTable tableName="applicationrelease">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="application_id" type="INT8">
+            <column name="application_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="environment_id" type="INT8"/>
+            <column name="environment_id" type="${int.type}"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="5">
         <createTable tableName="applicationrelease_applicationrelease">
-            <column name="applicationrelease_id" type="INT8">
+            <column name="applicationrelease_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="transitablereleases_id" type="INT8">
+            <column name="transitablereleases_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="6">
         <createTable tableName="artifact">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(256)">
@@ -56,31 +55,31 @@
             <column name="vdc" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="productinstance_id" type="INT8">
+            <column name="productinstance_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="7">
         <createTable tableName="artifact_attribute">
-            <column name="artifact_id" type="INT8">
+            <column name="artifact_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="attributes_id" type="INT8">
+            <column name="attributes_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="8">
         <createTable tableName="attribute">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(2048)"/>
             <column name="key" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="v" type="INT8"/>
+            <column name="v" type="${int.type}"/>
             <column name="value" type="VARCHAR(2048)">
                 <constraints nullable="false"/>
             </column>
@@ -99,7 +98,7 @@
     </changeSet>
     <changeSet author="initial" id="10">
         <createTable tableName="environment">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(64)"/>
@@ -110,37 +109,37 @@
     </changeSet>
     <changeSet author="initial" id="11">
         <createTable tableName="environment_productrelease">
-            <column name="environment_id" type="INT8">
+            <column name="environment_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="productreleases_id" type="INT8">
+            <column name="productreleases_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="12">
         <createTable tableName="environmentinstance">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="environment_id" type="INT8">
+            <column name="environment_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="13">
         <createTable tableName="environmentinstance_productinstance">
-            <column name="environmentinstance_id" type="INT8">
+            <column name="environmentinstance_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="productinstances_id" type="INT8">
+            <column name="productinstances_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="14">
         <createTable tableName="installableinstance">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="date" type="TIMESTAMP WITH TIME ZONE"/>
@@ -156,7 +155,7 @@
     </changeSet>
     <changeSet author="initial" id="15">
         <createTable tableName="installablerelease">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="releasenotes" type="VARCHAR(2048)"/>
@@ -165,32 +164,32 @@
     </changeSet>
     <changeSet author="initial" id="16">
         <createTable tableName="installablerelease_attribute">
-            <column name="installablerelease_id" type="INT8">
+            <column name="installablerelease_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="privateattributes_id" type="INT8">
+            <column name="privateattributes_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="17">
         <createTable tableName="nodecommand">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="key" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="v" type="INT8"/>
+            <column name="v" type="${int.type}"/>
             <column name="value" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="os_id" type="INT8"/>
+            <column name="os_id" type="${int.type}"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="18">
         <createTable tableName="os">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(2048)"/>
@@ -198,13 +197,13 @@
             <column name="ostype" type="VARCHAR(3)">
                 <constraints nullable="false"/>
             </column>
-            <column name="v" type="INT8"/>
+            <column name="v" type="${int.type}"/>
             <column name="version" type="VARCHAR(128)"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="19">
         <createTable tableName="product">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(2048)"/>
@@ -215,58 +214,58 @@
     </changeSet>
     <changeSet author="initial" id="20">
         <createTable tableName="product_attribute">
-            <column name="product_id" type="INT8">
+            <column name="product_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="attributes_id" type="INT8">
+            <column name="attributes_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="metadata_id" type="INT8"/>
+            <column name="metadata_id" type="${int.type}"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="21">
         <createTable tableName="productinstance">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="productrelease_id" type="INT8">
+            <column name="productrelease_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="22">
         <createTable tableName="productrelease">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="product_id" type="INT8">
+            <column name="product_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="23">
         <createTable tableName="productrelease_os">
-            <column name="productrelease_id" type="INT8">
+            <column name="productrelease_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="supportedooss_id" type="INT8">
+            <column name="supportedooss_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="24">
         <createTable tableName="productrelease_productrelease">
-            <column name="productrelease_id" type="INT8">
+            <column name="productrelease_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
-            <column name="transitablereleases_id" type="INT8">
+            <column name="transitablereleases_id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="25">
         <createTable tableName="task">
-            <column name="id" type="INT8">
+            <column name="id" type="${int.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(1024)"/>
@@ -275,7 +274,7 @@
             <column name="message" type="VARCHAR(1024)"/>
             <column name="minorerrorcode" type="VARCHAR(255)"/>
             <column name="venodrspecificerrorcode" type="VARCHAR(255)"/>
-            <column name="expiretime" type="INT8"/>
+            <column name="expiretime" type="${int.type}"/>
             <column name="owner_href" type="VARCHAR(255)"/>
             <column name="owner_name" type="VARCHAR(255)"/>
             <column name="owner_type" type="VARCHAR(255)"/>
@@ -283,7 +282,7 @@
             <column name="result_name" type="VARCHAR(255)"/>
             <column name="result_type" type="VARCHAR(255)"/>
             <column name="starttime" type="TIMESTAMP WITH TIME ZONE"/>
-            <column name="status" type="INT4"/>
+            <column name="status" type="${int4.type}"/>
             <column name="vdc" type="VARCHAR(1024)"/>
         </createTable>
     </changeSet>
@@ -638,4 +637,6 @@
                              deferrable="false" disabled="false" initiallyDeferred="false"
                              tableName="product"/>
     </changeSet>
+
+
 </databaseChangeLog>
