@@ -205,7 +205,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);
-        assertEquals("Result", expectedProduct.getArtifacts().size(), 2);
+        assertEquals("Result", expectedProduct.getArtifacts().size(), 1);
 
     }
 
