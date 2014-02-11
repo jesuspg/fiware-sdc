@@ -139,7 +139,7 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     
     public ProductInstance loadWithArtifacts(String productInstanceName) throws EntityNotFoundException {
 
-        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p join fetch p.artifact where p.name = '"
+        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p left join fetch p.artifact where p.name = '"
                 + productInstanceName + "'");
 
         ProductInstance productInstance = null;
