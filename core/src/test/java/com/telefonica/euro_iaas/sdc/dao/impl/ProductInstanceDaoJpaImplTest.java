@@ -9,6 +9,11 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
+
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
@@ -21,12 +26,16 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 /**
  * Unit test for ProductInstanceDaoJpaImpl
  * 
  * @author Sergio Arroyo
  */
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
 public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
     private ProductInstanceDao productInstanceDao;
@@ -59,6 +68,43 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(0, productInstanceDao.findAll().size());
         instance = productInstanceDao.create(instance);
         assertEquals(instance, productInstanceDao.load(instance.getId()));
+        assertEquals(1, productInstanceDao.findAll().size());
+    }
+    
+    /**
+     * Test the create and load method
+     */
+    public void testLoad() throws Exception {
+        createProductRelease();
+
+        ProductRelease release = productReleaseDao.findAll().get(0);
+        ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
+                "domain"), "vdc");
+        instance.setName("name");
+
+        assertEquals(0, productInstanceDao.findAll().size());
+        instance = productInstanceDao.create(instance);
+        assertEquals(instance, productInstanceDao.load(instance.getId()));
+        assertEquals(1, productInstanceDao.findAll().size());
+        assertEquals(instance.getArtifacts().size(), 0);
+    }
+    
+    /**
+     * Test the create and load method
+     */
+    public void testLoadWithArtifacts() throws Exception {
+        createProductRelease();
+
+        ProductRelease release = productReleaseDao.findAll().get(0);
+        Artifact artifact = new Artifact ();
+        ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
+                "domain"), "vdc");
+        instance.addArtifact(artifact);
+
+        assertEquals(0, productInstanceDao.findAll().size());
+        instance = productInstanceDao.create(instance);
+        assertEquals(instance, productInstanceDao.load(instance.getId()));
+        assertEquals(instance.getArtifacts().size(), 1);
         assertEquals(1, productInstanceDao.findAll().size());
     }
 
@@ -152,7 +198,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         artifact = artifactDao.create(artifact);
 
         paux = productInstanceDao.update(paux);
-        assertEquals(paux.getArtifacts().get(0).getName(), "name");
+
 
         ProductInstance pde = productInstanceDao.load(PRODUCT_NAME);
         assertEquals(pde, paux);
