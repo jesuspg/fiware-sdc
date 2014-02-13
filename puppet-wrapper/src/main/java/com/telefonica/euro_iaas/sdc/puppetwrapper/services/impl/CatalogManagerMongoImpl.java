@@ -69,10 +69,10 @@ public class CatalogManagerMongoImpl implements CatalogManager {
         StringBuffer sb = new StringBuffer();
 
         for (Node node : nodeList) {
-//            if (sb.indexOf("import '" +node.getGroupName() + "/*.pp'") != -1) {
+            if (sb.indexOf("import '" +node.getGroupName() + "/*.pp'") == -1) {
                 sb.append("import '" + node.getGroupName() + "/*.pp'");
                 sb.append(eol);
-//            }
+            }
         }
         return sb.toString();
 
