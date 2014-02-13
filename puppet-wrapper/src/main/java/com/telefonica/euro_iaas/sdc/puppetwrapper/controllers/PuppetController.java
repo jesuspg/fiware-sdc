@@ -16,16 +16,24 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.GitCloneService;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Controller
 public class PuppetController /* extends GenericController */{
@@ -41,7 +49,13 @@ public class PuppetController /* extends GenericController */{
     @Resource
     private CatalogManager catalogManager;
 
-    @RequestMapping("/install/{group}/{nodeName}/{softwareName}/{version}")
+    @Resource
+    private ModuleDownloader gitCloneService;
+
+    @Resource
+    private ModuleDownloader svnExporterService;
+
+    @RequestMapping(value = "/install/{group}/{nodeName}/{softwareName}/{version}", method = RequestMethod.POST)
     public @ResponseBody
     Node install(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
@@ -77,7 +91,7 @@ public class PuppetController /* extends GenericController */{
         return node;
     }
 
-    @RequestMapping("/generate/{nodeName}")
+    @RequestMapping(value = "/generate/{nodeName}", method = RequestMethod.POST)
     public @ResponseBody
     Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException,
             UnsupportedEncodingException, IOException {
@@ -96,7 +110,7 @@ public class PuppetController /* extends GenericController */{
         return node;
     }
 
-    @RequestMapping("/uninstall/{group}/{nodeName}/{softwareName}/{version}")
+    @RequestMapping(value = "/uninstall/{group}/{nodeName}/{softwareName}/{version}", method = RequestMethod.POST)
     public @ResponseBody
     Node uninstall(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
@@ -133,16 +147,30 @@ public class PuppetController /* extends GenericController */{
 
     }
 
-    @RequestMapping("/delete/node/{nodeName}")
+    @RequestMapping(value = "/delete/node/{nodeName}", method = RequestMethod.POST)
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         actionsService.deleteNode(nodeName);
     }
 
-    @RequestMapping("/delete/group/{groupName}")
+    @RequestMapping(value = "/delete/group/{groupName}", method = RequestMethod.POST)
     public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
 
         actionsService.deleteGroup(groupName);
+    }
+
+    @RequestMapping(value="/download/git/{softwareName}", method=RequestMethod.POST)
+    public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, 
+            @RequestParam(value = "url", required = true) String url) throws  ModuleDownloaderException {
+
+        gitCloneService.download(url, softwareName);
+    }
+    
+    @RequestMapping(value="/download/svn/{softwareName}", method=RequestMethod.POST)
+    public void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, 
+            @RequestParam(value = "url", required = true) String url) throws ModuleDownloaderException {
+
+        svnExporterService.download(url, softwareName);
     }
 
     @RequestMapping("/test")

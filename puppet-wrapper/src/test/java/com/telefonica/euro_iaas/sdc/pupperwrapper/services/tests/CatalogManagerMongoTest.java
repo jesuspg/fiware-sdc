@@ -51,7 +51,7 @@ public class CatalogManagerMongoTest {
         node2.setGroupName("group2");
         
         final Node node3 = new Node();
-        node3.setId("test2");
+        node3.setId("test3");
         node3.setGroupName("group2");
 
 //        Query query = mock(Query.class);
@@ -65,6 +65,7 @@ public class CatalogManagerMongoTest {
             {
                 add(node);
                 add(node2);
+                add(node3);
             }
         }).thenReturn(new ArrayList<Node>() {
             {
