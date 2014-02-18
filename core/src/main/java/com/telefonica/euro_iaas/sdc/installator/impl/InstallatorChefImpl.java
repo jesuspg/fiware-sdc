@@ -1,10 +1,13 @@
 package com.telefonica.euro_iaas.sdc.installator.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.ChefRecipeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -190,7 +193,14 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 // peticion
 
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    isExecuted = true;
+                    if (isRecipeExecutedOK(node))
+                        isExecuted = true;
+                    else{
+                        String message =" Recipe Execution failed";
+                        throw new NodeExecutionException( new ChefRecipeExecutionException(message));
+                    }
+                    
+                    
                 }
                 time += time;
             } catch (EntityNotFoundException e) {
@@ -223,6 +233,22 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
        }
     }
 
+    private boolean isRecipeExecutedOK(ChefNode node) {
+        //In attirbutes we should search for action=install
+        Iterator attributes = (Iterator) node.getAttributes().entrySet().iterator();
+        while (attributes.hasNext()) {
+            Entry attribute = (Entry)attributes.next();
+            String key = attribute.getKey().toString();
+            String value = attribute.getValue().toString();
+            
+            System.out.println("Clave :" + key);
+            System.out.println("Valor :" + value);
+                       
+            if (value.contains("install"))
+                return true;
+        }
+        return false;
+    }
     /**
      * @param ip2vm
      *            the ip2vm to set

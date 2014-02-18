@@ -85,6 +85,7 @@ public class InstallatorChefTest {
 
         chefNode.addAttribute("dd", "dd", "dd");
         chefNode.addAttribute(installRecipe, "dd", "dd");
+        chefNode.addAttribute("action","action", "install");
         chefNode.addRecipe(installRecipe);
         
         chefNodeDao = mock(ChefNodeDao.class);
