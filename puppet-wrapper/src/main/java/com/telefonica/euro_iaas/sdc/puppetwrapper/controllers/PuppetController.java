@@ -148,34 +148,31 @@ public class PuppetController /* extends GenericController */{
     }
 
     @RequestMapping(value = "/delete/node/{nodeName}", method = RequestMethod.POST)
-    public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
+    public @ResponseBody void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         actionsService.deleteNode(nodeName);
     }
 
     @RequestMapping(value = "/delete/group/{groupName}", method = RequestMethod.POST)
-    public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
+    public @ResponseBody void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
 
         actionsService.deleteGroup(groupName);
     }
 
     @RequestMapping(value="/download/git/{softwareName}", method=RequestMethod.POST)
-    public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, 
+    public @ResponseBody void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, 
             @RequestParam(value = "url", required = true) String url) throws  ModuleDownloaderException {
 
         gitCloneService.download(url, softwareName);
+        
     }
     
     @RequestMapping(value="/download/svn/{softwareName}", method=RequestMethod.POST)
-    public void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, 
+    public @ResponseBody void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, 
             @RequestParam(value = "url", required = true) String url) throws ModuleDownloaderException {
 
         svnExporterService.download(url, softwareName);
-    }
-
-    @RequestMapping("/test")
-    public String test() {
-        return "test";
+        
     }
 
 }
