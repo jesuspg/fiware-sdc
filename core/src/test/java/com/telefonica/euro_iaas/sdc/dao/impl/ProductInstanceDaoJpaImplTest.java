@@ -79,6 +79,41 @@ public class ProductInstanceDaoJpaImplTest {
         assertEquals(instance, productInstanceDao.load(instance.getId()));
     }
 
+    /**
+     * Test the create and load method
+     */
+    public void testLoad() throws Exception {
+
+        ProductRelease release = productReleaseDao.findAll().get(0);
+        ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
+                "domain"), "vdc");
+        instance.setName("name");
+
+        assertEquals(0, productInstanceDao.findAll().size());
+        instance = productInstanceDao.create(instance);
+        assertEquals(instance, productInstanceDao.load(instance.getId()));
+        assertEquals(1, productInstanceDao.findAll().size());
+        assertEquals(instance.getArtifacts().size(), 0);
+    }
+
+    /**
+     * Test the create and load method
+     */
+    public void testLoadWithArtifacts() throws Exception {
+
+        ProductRelease release = productReleaseDao.findAll().get(0);
+        Artifact artifact = new Artifact();
+        ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
+                "domain"), "vdc");
+        instance.addArtifact(artifact);
+
+        assertEquals(0, productInstanceDao.findAll().size());
+        instance = productInstanceDao.create(instance);
+        assertEquals(instance, productInstanceDao.load(instance.getId()));
+        assertEquals(instance.getArtifacts().size(), 1);
+        assertEquals(1, productInstanceDao.findAll().size());
+    }
+
     @Test
     public void testFindByCriteria() throws Exception {
 
@@ -186,7 +221,6 @@ public class ProductInstanceDaoJpaImplTest {
         artifact = artifactDao.create(artifact);
 
         paux = productInstanceDao.update(paux);
-        assertEquals(paux.getArtifacts().get(0).getName(), "name");
 
         ProductInstance pde = productInstanceDao.load("myp");
         assertEquals(pde, paux);

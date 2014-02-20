@@ -51,10 +51,11 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     /** {@inheritDoc} */
     @Override
     public ProductInstance load(String name) throws EntityNotFoundException {
+        return loadWithArtifacts (name);
         //
         // try
         // {
-        return findByProductInstanceName(name);
+    //    return findByProductInstanceName(name);
 
         /*
          * } catch (Exception e) { try { return super.loadByField(ProductInstance.class, "name", name); } catch
@@ -127,6 +128,22 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
         // " p join fetch p.tierInstances where p.name = :name" );
 
         // query.setParameter("name", productInstanceName);
+
+        ProductInstance productInstance = null;
+        try {
+            productInstance = (ProductInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No ProductInstance found in the database " + "with name: " + productInstanceName;
+            System.out.println(message);
+            throw new EntityNotFoundException(ProductInstance.class, "name", productInstanceName);
+        }
+        return productInstance;
+    }
+    
+    public ProductInstance loadWithArtifacts(String productInstanceName) throws EntityNotFoundException {
+
+        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p left join fetch p.artifact where p.name = '"
+                + productInstanceName + "'");
 
         ProductInstance productInstance = null;
         try {

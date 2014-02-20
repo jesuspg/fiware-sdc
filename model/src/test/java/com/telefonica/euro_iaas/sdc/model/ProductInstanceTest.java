@@ -55,6 +55,7 @@ public class ProductInstanceTest extends TestCase {
         Artifact artifact = new Artifact("artifact", atts);
 
         Artifact artifact2 = new Artifact();
+        artifact2.setName("artifact1");
         artifact2.addAttribute(att);
 
         ProductInstance productInstance = new ProductInstance();
@@ -64,7 +65,11 @@ public class ProductInstanceTest extends TestCase {
         productInstance.setProductRelease(pr1);
         productInstance.setVdc("vdc");
         assertEquals(productInstance.getArtifacts().size(), 2);
-        assertEquals(productInstance.getArtifacts().get(0).getName(), "artifact");
+        
+        for (Artifact art: productInstance.getArtifacts()) {
+            assertNotNull(art.getName());
+        }
+        
 
     }
 
