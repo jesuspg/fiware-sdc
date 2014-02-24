@@ -38,6 +38,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     private Installator puppetInstallator;
 
     private String INSTALATOR_CHEF = "chef";
+    private String INSTALATOR_PUPPET = "puppet";
 
     protected String INSTALL = "install";
     protected String UNINSTALL = "uninstall";
@@ -103,8 +104,13 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                 chefInstallator.validateInstalatorData(vm);
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
             } else {
-                puppetInstallator.validateInstalatorData(vm);
-                puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
+                if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
+                    puppetInstallator.validateInstalatorData(vm);
+                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
+                } else {
+                    chefInstallator.validateInstalatorData(vm);
+                    chefInstallator.callService(instance, vm, attributes, INSTALL);
+                }
             }
 
             instance.setStatus(Status.INSTALLED);
@@ -132,14 +138,11 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             Product product = productDao.load(productInstance.getProductRelease().getProduct().getName());
 
-            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-                // canviar aqui callChef(uninstallRecipe,
-                // productInstance.getVm());
-
-                chefInstallator.callService(productInstance, UNINSTALL);
-            } else {
+            if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 puppetInstallator.callService(productInstance.getVm(), productInstance.getVdc(),
                         productInstance.getProductRelease(), UNINSTALL);
+            } else {
+                chefInstallator.callService(productInstance, UNINSTALL);
             }
 
             productInstance.setStatus(Status.UNINSTALLED);
@@ -188,10 +191,10 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             ProductRelease productRelease = productInstance.getProductRelease();
             productRelease.setProduct(product);
 
-            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-                chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
-            } else {
+            if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 throw new InstallatorException("Product not configurable in Puppet");
+            } else {
+                chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
             }
 
             /*
@@ -261,10 +264,10 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             VM vm = productInstance.getVm();
             Product product = productDao.load(productInstance.getName());
 
-            if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-                chefInstallator.upgrade(productInstance, vm);
-            } else {
+            if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 throw new InstallatorException("Product not upgradeable in Puppet");
+            } else {
+                chefInstallator.upgrade(productInstance, vm);
             }
 
             productInstance.setStatus(Status.INSTALLED);
