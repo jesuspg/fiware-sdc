@@ -244,7 +244,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             System.out.println("Clave :" + key);
             System.out.println("Valor :" + value);
                        
-            if (value.contains("install"))
+            if (value.contains("\"action\":\"install\""))
                 return true;
         }
         return false;

@@ -117,9 +117,15 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         } catch (InstallatorException sce) {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
+        } catch (NodeExecutionException nee) {
+            restoreInstance(previousStatus, instance);
+            throw new NodeExecutionException(nee);
+        } catch (InvalidInstallProductRequestException iipre) {
+            restoreInstance(previousStatus, instance);
+            throw new InvalidInstallProductRequestException(iipre);
         } catch (InvalidEntityException e) {
+            restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(e);
-
         } catch (RuntimeException e) {
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
