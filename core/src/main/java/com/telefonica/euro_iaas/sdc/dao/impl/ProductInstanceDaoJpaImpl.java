@@ -16,8 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
@@ -32,7 +30,6 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCr
  * @author Sergio Arroyo
  */
 
-@Transactional(propagation = Propagation.REQUIRED)
 public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpaIml<ProductInstance, Long> implements
         ProductInstanceDao {
 
@@ -51,11 +48,11 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     /** {@inheritDoc} */
     @Override
     public ProductInstance load(String name) throws EntityNotFoundException {
-        return loadWithArtifacts (name);
+        return loadWithArtifacts(name);
         //
         // try
         // {
-    //    return findByProductInstanceName(name);
+        // return findByProductInstanceName(name);
 
         /*
          * } catch (Exception e) { try { return super.loadByField(ProductInstance.class, "name", name); } catch
@@ -139,11 +136,12 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
         }
         return productInstance;
     }
-    
+
     public ProductInstance loadWithArtifacts(String productInstanceName) throws EntityNotFoundException {
 
-        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p left join fetch p.artifact where p.name = '"
-                + productInstanceName + "'");
+        Query query = (Query) getEntityManager().createQuery(
+                "select p from ProductInstance p left join fetch p.artifact where p.name = '" + productInstanceName
+                        + "'");
 
         ProductInstance productInstance = null;
         try {

@@ -13,8 +13,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -28,7 +26,6 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriter
  * 
  * @author Jesus M. Movilla
  */
-@Transactional(propagation = Propagation.REQUIRED)
 public class NodeCommandDaoJpaImpl extends AbstractBaseDao<NodeCommand, Long> implements NodeCommandDao {
 
     /**

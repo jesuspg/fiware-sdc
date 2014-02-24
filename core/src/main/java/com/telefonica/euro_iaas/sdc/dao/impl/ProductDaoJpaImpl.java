@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -26,7 +24,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
  * @author Sergio Arroyo
  * @version $Id: $
  */
-@Transactional(propagation = Propagation.REQUIRED)
+
 public class ProductDaoJpaImpl extends AbstractBaseDao<Product, String> implements ProductDao {
 
     /** {@inheritDoc} */

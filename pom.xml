@@ -71,9 +71,12 @@
         <jersey.version>1.17.1</jersey.version>
 
         <!-- hibernate -->
-        <hibernate.version>4.1.7.Final</hibernate.version>
-        <hsqldb.version>2.2.9</hsqldb.version>
+        <hibernate.version>4.1.8.Final</hibernate.version>
+        <hibernate-jpa-api.version>1.0.1.Final</hibernate-jpa-api.version>
+        <hsqldb.version>2.2.8</hsqldb.version>
         <spring.version>3.1.0.RELEASE</spring.version>
+        <spring-data-jpa.version>1.4.3.RELEASE</spring-data-jpa.version>
+        <springdata.commons.version>1.6.3.RELEASE</springdata.commons.version>
 
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <copyright.year>2012</copyright.year>
@@ -165,7 +168,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.0-SNAPSHOT</version>
+                <version>1.2.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
@@ -227,7 +230,7 @@
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
-                    <pushChanges>true</pushChanges>
+                    <!-- <pushChanges>true</pushChanges> -->
                     <!-- rse: To keep release branch -->
                     <keepBranch>true</keepBranch>
                     <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
@@ -429,7 +432,7 @@
         <module>model</module>
         <module>core</module>
         <module>rest-api</module>
-        <module>integration-test</module>
+        <!--    <module>integration-test</module>    -->
         <module>puppet-wrapper</module>
         <module>client</module>
         <module>migrations</module>
