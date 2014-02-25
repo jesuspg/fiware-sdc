@@ -193,7 +193,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 // peticion
 
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    if (isRecipeExecutedOK(node))
+                    if (isRecipeExecutedOK(process, node))
                         isExecuted = true;
                     else{
                         String message =" Recipe Execution failed";
@@ -233,7 +233,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
        }
     }
 
-    private boolean isRecipeExecutedOK(ChefNode node) {
+    private boolean isRecipeExecutedOK(String process, ChefNode node) {
         //In attirbutes we should search for action=install
         Iterator attributes = (Iterator) node.getAttributes().entrySet().iterator();
         while (attributes.hasNext()) {
@@ -244,7 +244,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             System.out.println("Clave :" + key);
             System.out.println("Valor :" + value);
                        
-            if (value.contains("\"action\":\"install\""))
+            if (value.contains("\"action_" + process + "\":\"install\""))
                 return true;
         }
         return false;

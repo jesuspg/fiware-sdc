@@ -65,7 +65,7 @@ public class InstallatorChefTest {
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
         
-        product = new Product("Product::server", "description");
+        product = new Product("Product", "description");
         Metadata metadata=new Metadata("installator", "chef");
         List<Metadata>metadatas = new ArrayList<Metadata>();
         metadatas.add(metadata);
@@ -85,7 +85,7 @@ public class InstallatorChefTest {
 
         chefNode.addAttribute("dd", "dd", "dd");
         chefNode.addAttribute(installRecipe, "dd", "dd");
-        chefNode.addAttribute("action","action", "install");
+        chefNode.addAttribute("action","action_Product", "install");
         chefNode.addRecipe(installRecipe);
         
         chefNodeDao = mock(ChefNodeDao.class);
