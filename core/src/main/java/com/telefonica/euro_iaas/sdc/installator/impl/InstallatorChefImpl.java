@@ -65,7 +65,6 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 unassignRecipes(vm, recipe);
             }
         } catch (NodeExecutionException e) {
-            // unassignRecipes(vm, recipe);
             // even if execution fails want to unassign the recipe
             throw new NodeExecutionException(e.getMessage());
         }
@@ -180,6 +179,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + recipe + " coub not be executed in " + vm.getChefClientName();
                     LOGGER.info(errorMesg);
+                    unassignRecipes(vm, recipe);
                     throw new NodeExecutionException(errorMesg);
                 }
                
@@ -197,6 +197,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                         isExecuted = true;
                     else{
                         String message =" Recipe Execution failed";
+                        unassignRecipes(vm, recipe);
                         throw new NodeExecutionException( new ChefRecipeExecutionException(message));
                     }
                     
@@ -209,6 +210,8 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 throw new NodeExecutionException(e);
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
+            } catch (InstallatorException ie2){
+                throw new NodeExecutionException(ie2);
             }
         }
     }
