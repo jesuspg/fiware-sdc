@@ -187,7 +187,7 @@ CREATE TABLE task (
   result_href             VARCHAR(255),
   result_name             VARCHAR(255),
   result_type             VARCHAR(255),
-  startime                TIMESTAMP WITH TIME ZONE,
+  starttime               TIMESTAMP WITH TIME ZONE,
   status                  INT4,
   vdc                     VARCHAR(1024)
 );
