@@ -13,6 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Represents an available SO in the system. This entity does not provides any information about a concrete
@@ -22,6 +25,8 @@ import javax.persistence.Version;
  * @version $Id: $
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OS {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

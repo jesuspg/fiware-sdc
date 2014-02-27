@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>migrations</artifactId>
+    <name>migrations</name>
+
+    <parent>
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>sdc-server</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+
+            <id>create</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <configuration>
+
+                                    <changeLogFile>${basedir}/src/main/resources/db-initial.sql</changeLogFile>
+                                    <driver>org.postgresql.Driver</driver>
+                                    <url>jdbc:postgresql://localhost:5432/sdc_test</url>
+                                    <username>postgres</username>
+                                    <password>postgres</password>
+
+                                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                                    <tag>filab</tag>
+                                </configuration>
+                                <goals>
+                                    <goal>update</goal>
+                                    <goal>tag</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>update</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <configuration>
+
+                                    <changeLogFile>${basedir}/src/main/resources/db-changelog.sql</changeLogFile>
+                                    <driver>org.postgresql.Driver</driver>
+                                    <url>jdbc:postgresql://localhost:5432/sdc_test</url>
+                                    <username>postgres</username>
+                                    <password>postgres</password>
+
+                                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+
+                                    <tag>${project.version}</tag>
+                                </configuration>
+                                <goals>
+                                    <goal>update</goal>
+                                    <goal>tag</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <configuration>
+
+                                    <outputChangeLogFile>src/main/resources/db-initial.xml</outputChangeLogFile>
+                                    <driver>org.postgresql.Driver</driver>
+                                    <url>jdbc:postgresql://localhost:5432/sdc_filab</url>
+                                    <username>postgres</username>
+                                    <password>postgres</password>
+
+                                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                                </configuration>
+                                <goals>
+                                    <goal>generateChangeLog</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+    </profiles>
+
+
+    <build>
+        <plugins>
+            <!-- license plugin Do nothing -->
+
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>${maven-license-plugin.version}</version>
+                <configuration>
+                    <header>../src/license/fiware/header.txt</header>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

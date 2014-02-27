@@ -7,9 +7,9 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class StringReplaceUtilsTest {
         arguments.put("key2", "test");
         arguments.put("key3", "Nothing");
 
-        Assert.assertEquals(REPLACED, StringReplaceUtils.replace(TO_REPLACE, arguments));
+        assertEquals(REPLACED, StringReplaceUtils.replace(TO_REPLACE, arguments));
     }
 
 }

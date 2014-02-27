@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
@@ -25,7 +24,6 @@ import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseExcepti
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -133,13 +131,6 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         // deleteRecipe(releaseDto.getName(), releaseDto.getVersion());
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws AlreadyExistsApplicationReleaseException
-     * @throws InvalidApplicationReleaseException
-     * @throws ProductReleaseNotFoundException
-     */
     @Override
     @UseCase(traceTo = "UC_101.3", status = "implemented and tested")
     public ProductRelease update(ProductRelease productRelease, File cookbook, File installable)
@@ -241,16 +232,13 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
                     os = osDao.create(productRelease.getSupportedOOSS().get(i));
                     LOGGER.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " CREATED");
                     oss.add(os);
-                } catch (InvalidEntityException e1) {
+                } catch (Exception e1) {
                     String invalidOSMessageLog = "The supportedOS "
                             + productRelease.getSupportedOOSS().get(i).getName() + " in Product Release"
                             + productRelease.getProduct().getName() + productRelease.getVersion()
                             + " is invalid. Please Insert a valid OS";
                     LOGGER.log(Level.SEVERE, invalidOSMessageLog);
                     throw new InvalidProductReleaseException(invalidOSMessageLog, e1);
-                } catch (AlreadyExistsEntityException e1) {
-                    LOGGER.log(Level.SEVERE, e1.getMessage());
-                    throw new SdcRuntimeException(e1);
                 }
             }
         }
@@ -271,15 +259,12 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
             try {
                 product = productDao.create(productRelease.getProduct());
                 LOGGER.log(Level.INFO, "Product " + product.getName() + " CREATED");
-            } catch (InvalidEntityException e1) {
+            } catch (Exception e1) {
                 String messageLog = "The Product " + productRelease.getProduct().getName() + " in Product Release"
                         + productRelease.getProduct().getName() + productRelease.getVersion()
                         + " is invalid. Please Insert a valid Product ";
                 LOGGER.log(Level.SEVERE, messageLog);
                 throw new InvalidProductReleaseException(messageLog, e1);
-            } catch (AlreadyExistsEntityException e1) {
-                LOGGER.log(Level.SEVERE, e1.getMessage());
-                throw new SdcRuntimeException(e1);
             }
         }
         return product;
@@ -304,13 +289,6 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
                 LOGGER.log(Level.INFO,
                         "ProductRelease " + productRelease.getProduct().getName() + "-" + productRelease.getVersion()
                                 + " CREATED");
-            } catch (InvalidEntityException e1) {
-                String invalidEntityMessageLog = "The Product Release " + productRelease.getProduct().getName()
-                        + productRelease.getVersion() + " is invalid. Please Insert a valid Product Release "
-                        + e1.getMessage();
-
-                LOGGER.log(Level.SEVERE, invalidEntityMessageLog);
-                throw new InvalidProductReleaseException(invalidEntityMessageLog, e1);
             } catch (AlreadyExistsEntityException e1) {
                 String alreadyExistsMessageLog = "The Product Release " + productRelease.getProduct().getName()
                         + productRelease.getVersion() + " already exist " + e1.getMessage();
@@ -369,7 +347,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
                     + " has not been found in the System ";
             LOGGER.log(Level.SEVERE, entityNotFoundMessageLog);
             throw new ProductReleaseNotFoundException(entityNotFoundMessageLog, e);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             String invalidEntityException = "The Product " + productRelease.getProduct().getName()
                     + " to be updated is Invalid ";
             LOGGER.log(Level.SEVERE, invalidEntityException);
@@ -416,7 +394,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
                     + productRelease.getVersion() + " has not been found in the System ";
             LOGGER.log(Level.SEVERE, entityNotFoundMessageLog);
             throw new ProductReleaseNotFoundException(entityNotFoundMessageLog, e);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             String invalidEntityException = "The Product Release" + productRelease.getProduct().getName() + " version "
                     + productRelease.getVersion() + " is Invalid ";
             LOGGER.log(Level.SEVERE, invalidEntityException);
