@@ -19,6 +19,7 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Service("svnExporterService")
@@ -31,7 +32,7 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
     private String username="";
     private String password="";
 
-    public void download(String url, String moduleName) {
+    public void download(String url, String moduleName) throws ModuleDownloaderException {
         // final String url = "svn://cavcops01.global.local/skunkworks";
         // final String destPath = "c:/temp/svntest";
 
@@ -65,9 +66,9 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
                     SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
 
         } catch (SVNException e) {
-            e.printStackTrace();
+            throw new ModuleDownloaderException(e);
         }catch (Exception ex){
-            ex.printStackTrace();
+            throw new ModuleDownloaderException(ex);
         } finally {
             logger.debug("Done");
         }
