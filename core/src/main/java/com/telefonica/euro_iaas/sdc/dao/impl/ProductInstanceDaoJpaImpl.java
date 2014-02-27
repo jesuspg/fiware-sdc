@@ -9,10 +9,7 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +29,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCr
  * 
  * @author Sergio Arroyo
  */
+
 public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpaIml<ProductInstance, Long> implements
         ProductInstanceDao {
 
@@ -50,11 +48,11 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     /** {@inheritDoc} */
     @Override
     public ProductInstance load(String name) throws EntityNotFoundException {
-        return loadWithArtifacts (name);
+        return loadWithArtifacts(name);
         //
         // try
         // {
-    //    return findByProductInstanceName(name);
+        // return findByProductInstanceName(name);
 
         /*
          * } catch (Exception e) { try { return super.loadByField(ProductInstance.class, "name", name); } catch
@@ -105,6 +103,8 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     @Override
     public ProductInstance findByProductInstanceName(String productInstanceName) throws EntityNotFoundException {
 
+        // alternative return super.loadByField(ProductInstance.class, "name", productInstanceName);
+
         // Query query = entityManager.createQuery("select p from artifact " +
 
         // p join fetch p.productinstance where p.name = :name" );
@@ -113,8 +113,8 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
          */
         // Query query = entityManager.createQuery
         // ("select p from ProductInstance p left join fetch p.artifact where p.name = '"+productInstanceName+"'");
-        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p  where p.name = '"
-                + productInstanceName + "'");
+        Query query = (Query) getEntityManager().createQuery(
+                "select p from ProductInstance p  where p.name = '" + productInstanceName + "'");
 
         // where p.name = '" + productInstanceName+"'");
 
@@ -136,11 +136,12 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
         }
         return productInstance;
     }
-    
+
     public ProductInstance loadWithArtifacts(String productInstanceName) throws EntityNotFoundException {
 
-        Query query = (Query) getEntityManager().createQuery("select p from ProductInstance p left join fetch p.artifact where p.name = '"
-                + productInstanceName + "'");
+        Query query = (Query) getEntityManager().createQuery(
+                "select p from ProductInstance p left join fetch p.artifact where p.name = '" + productInstanceName
+                        + "'");
 
         ProductInstance productInstance = null;
         try {
@@ -157,8 +158,8 @@ public class ProductInstanceDaoJpaImpl extends AbstractInstallableInstanceDaoJpa
     @Override
     public List<ProductInstance> findByHostname(String hostname) throws EntityNotFoundException {
 
-        Query query = (Query) getEntityManager().createQuery("select p from InstallableInstance p  where p.vm.hostname = '"
-                + hostname + "'");
+        Query query = (Query) getEntityManager().createQuery(
+                "select p from InstallableInstance p  where p.vm.hostname = '" + hostname + "'");
 
         List<ProductInstance> productInstances = null;
 

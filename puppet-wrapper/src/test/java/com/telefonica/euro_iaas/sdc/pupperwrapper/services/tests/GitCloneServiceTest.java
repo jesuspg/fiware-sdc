@@ -1,11 +1,7 @@
 package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
-import java.io.IOException;
-
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +13,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.GitCloneServiceI
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:testContext.xml" })
+@Ignore
 public class GitCloneServiceTest {
     
     private GitCloneServiceImpl gitCloneServiceImpl;

@@ -7,10 +7,14 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
-
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,61 +25,64 @@ import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
+import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
+
 /**
  * Unit test for ProductInstanceDaoJpaImpl
  * 
  * @author Sergio Arroyo
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
-public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductInstanceDaoJpaImplTest {
+
+    @Autowired
     private ProductInstanceDao productInstanceDao;
+    @Autowired
     private ArtifactDao artifactDao;
+    @Autowired
     private ProductDao productDao;
-    private OSDao soDao;
+
+    @Autowired
+    private OSDao osDao;
+    @Autowired
     private ProductReleaseDao productReleaseDao;
-
-    public final static String PRODUCT_NAME = "productName";
-    public final static String PRODUCT_VERSION = "productVersion";
-
-    protected void createProductRelease() throws Exception {
-        ProductReleaseDaoJpaImlTest productDaoTest = new ProductReleaseDaoJpaImlTest();
-        productDaoTest.setSoDao(soDao);
-        productDaoTest.setProductDao(productDao);
-        productDaoTest.setProductReleaseDao(productReleaseDao);
-        productDaoTest.testCreateAndFindByCriteria();
-    }
 
     /**
      * Test the create and load method
      */
+    @Test
     public void testCreate() throws Exception {
-        createProductRelease();
 
-        ProductRelease release = productReleaseDao.findAll().get(0);
+        Product product = new Product("myp22", "desc");
+
+        product.addAttribute(new Attribute("clave", "valor"));
+        product.addMetadata(new Metadata("metKey", "metValue"));
+
+        productDao.create(product);
+
+        ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, osDao.findAll(), null);
+
+        productReleaseDao.create(release);
         ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
                 "domain"), "vdc");
 
-        assertEquals(0, productInstanceDao.findAll().size());
         instance = productInstanceDao.create(instance);
         assertEquals(instance, productInstanceDao.load(instance.getId()));
-        assertEquals(1, productInstanceDao.findAll().size());
     }
-    
+
     /**
      * Test the create and load method
      */
     public void testLoad() throws Exception {
-        createProductRelease();
 
         ProductRelease release = productReleaseDao.findAll().get(0);
         ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
@@ -88,15 +95,14 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(1, productInstanceDao.findAll().size());
         assertEquals(instance.getArtifacts().size(), 0);
     }
-    
+
     /**
      * Test the create and load method
      */
     public void testLoadWithArtifacts() throws Exception {
-        createProductRelease();
 
         ProductRelease release = productReleaseDao.findAll().get(0);
-        Artifact artifact = new Artifact ();
+        Artifact artifact = new Artifact();
         ProductInstance instance = new ProductInstance(release, Status.INSTALLED, new VM("fqn", "ip", "hostname",
                 "domain"), "vdc");
         instance.addArtifact(artifact);
@@ -108,12 +114,21 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(1, productInstanceDao.findAll().size());
     }
 
+    @Test
     public void testFindByCriteria() throws Exception {
-        createProductRelease();
+
+        Product product = new Product("p1", "desc");
+
+        product.addAttribute(new Attribute("clave", "valor"));
+        product.addMetadata(new Metadata("metKey", "metValue"));
+
+        productDao.create(product);
+
+        ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, osDao.findAll(), null);
+        ProductRelease createdRelease = productReleaseDao.create(release);
+
         VM host = new VM(null, "hostname", "domain");
         VM host2 = new VM("fqn");
-
-        ProductRelease release = productReleaseDao.findAll().get(0);
 
         ProductInstance pi1 = new ProductInstance(release, Status.INSTALLED, host, "vdc");
 
@@ -166,22 +181,30 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
             // it's ok, exception expected
         }
 
-        criteria.setProductName(PRODUCT_NAME);
+        criteria.setProductName("p1");
         instances = productInstanceDao.findByCriteria(criteria);
         assertEquals(1, instances.size());
         assertEquals(pi1, instances.get(0));
         assertEquals(pi1, productInstanceDao.findUniqueByCriteria(criteria));
     }
 
+    @Test
     public void testProductInstanceArtifact() throws Exception {
-        createProductRelease();
         VM host = new VM("fqn", "hostname", "domain");
         VM host2 = new VM("fqn");
 
-        ProductRelease release = productReleaseDao.findAll().get(0);
+        Product product = new Product("myp", "desc");
+
+        product.addAttribute(new Attribute("clave", "valor"));
+        product.addMetadata(new Metadata("metKey", "metValue"));
+
+        productDao.create(product);
+
+        ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, osDao.findAll(), null);
+        ProductRelease createdRelease = productReleaseDao.create(release);
 
         ProductInstance pi1 = new ProductInstance(release, Status.INSTALLED, host, "vdc");
-        pi1.setName(PRODUCT_NAME);
+        pi1.setName("myp");
 
         ProductInstance pi2 = new ProductInstance(release, Status.UNINSTALLED, host2, "vdc2");
 
@@ -189,7 +212,7 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         pi2 = productInstanceDao.create(pi2);
         pi2.setName("other");
 
-        ProductInstance paux = productInstanceDao.findByProductInstanceName(PRODUCT_NAME);
+        ProductInstance paux = productInstanceDao.findByProductInstanceName("myp");
 
         assertEquals(pi1, paux);
 
@@ -199,15 +222,14 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
         paux = productInstanceDao.update(paux);
 
-
-        ProductInstance pde = productInstanceDao.load(PRODUCT_NAME);
+        ProductInstance pde = productInstanceDao.load("myp");
         assertEquals(pde, paux);
         // assertEquals(pde.getArtifacts().get(0).getName(), "name");
 
         ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
         criteria.setProductRelease(release);
         criteria.setVm(host);
-        criteria.setProductName(PRODUCT_NAME);
+        criteria.setProductName("myp");
         criteria.setVdc("vdc");
         // instances = productInstanceDao.findByCriteria(criteria);
         // assertEquals(1, instances.size());
@@ -224,28 +246,16 @@ public class ProductInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         this.productInstanceDao = productInstanceDao;
     }
 
-    /**
-     * @param productInstanceDao
-     *            the productInstanceDao to set
-     */
     public void setArtifactDao(ArtifactDao artifactDao) {
         this.artifactDao = artifactDao;
     }
 
     /**
-     * @param productDao
-     *            the productDao to set
+     * @param osDao
+     *            the osDao to set
      */
-    public void setProductDao(ProductDao productDao) {
-        this.productDao = productDao;
-    }
-
-    /**
-     * @param soDao
-     *            the soDao to set
-     */
-    public void setSoDao(OSDao soDao) {
-        this.soDao = soDao;
+    public void setOSDao(OSDao osDao) {
+        this.osDao = osDao;
     }
 
     /**

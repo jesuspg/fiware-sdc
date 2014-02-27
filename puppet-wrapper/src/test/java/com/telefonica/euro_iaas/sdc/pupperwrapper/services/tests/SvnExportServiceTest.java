@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl.SvnExporterServi
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:testContext.xml" })
+@Ignore
 public class SvnExportServiceTest {
     
     private SvnExporterServiceImpl svnExporterService;
