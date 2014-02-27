@@ -35,7 +35,7 @@
                                 <phase>process-resources</phase>
                                 <configuration>
 
-                                    <changeLogFile>${basedir}/src/main/resources/db-initial.sql</changeLogFile>
+                                    <changeLogFile>src/main/resources/db-initial.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
                                     <url>jdbc:postgresql://localhost:5432/sdc_test</url>
                                     <username>postgres</username>
@@ -68,7 +68,7 @@
                                 <phase>process-resources</phase>
                                 <configuration>
 
-                                    <changeLogFile>${basedir}/src/main/resources/db-changelog.sql</changeLogFile>
+                                    <changeLogFile>src/main/resources/db-changelog.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
                                     <url>jdbc:postgresql://localhost:5432/sdc_test</url>
                                     <username>postgres</username>
