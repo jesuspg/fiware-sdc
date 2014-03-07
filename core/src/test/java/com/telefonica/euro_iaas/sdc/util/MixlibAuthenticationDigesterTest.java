@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.sdc.util;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -19,8 +20,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.Date;
 import java.util.Map;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +56,7 @@ public class MixlibAuthenticationDigesterTest {
         Map<String, String> headers = digester.digest("GET", "/nodes", "", new Date(), "serch", this.getClass()
                 .getResource("/private.pem").getPath());
         // make assertions
-        Assert.assertEquals(5, headers.size());
+        assertEquals(5, headers.size());
 
         verify(propertiesProvider, times(1)).getProperty(CHEF_DATE_FORMAT);
         verify(propertiesProvider, times(1)).getProperty(CHEF_TIME_ZONE);

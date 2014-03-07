@@ -7,9 +7,9 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.io.File;
 
 import org.junit.Test;
 
@@ -33,13 +33,13 @@ public class RsaSignerTest {
 
     @Test
     public void testSign() throws Exception {
-        Assert.assertEquals(SIGNED,
+        assertEquals(SIGNED,
                 new RSASignerImpl().sign(BODY, new File(this.getClass().getResource("/private.pem").toURI())));
     }
 
     @Test
     public void testUnsign() throws Exception {
-        Assert.assertEquals(BODY,
+        assertEquals(BODY,
                 new RSASignerImpl().unsign(SIGNED, new File(this.getClass().getResource("/public.pem").toURI())));
     }
 

@@ -56,6 +56,8 @@ public class InstallatorChefTest {
     private String jsonFilePath = "src/test/resources/Chefnode.js";
     private String jsonFromFile; 
    
+    private String initProbeRecipe = "probe::0.1_init";
+    private String installProbeRecipe = "probe::0.1_install";
     private String installRecipe ="Product::server";
     private String uninstallRecipe ="Product::uninstall-server";
     private String deployacrecipe ="Product::deployac";
@@ -85,8 +87,10 @@ public class InstallatorChefTest {
 
         chefNode.addAttribute("dd", "dd", "dd");
         chefNode.addAttribute(installRecipe, "dd", "dd");
-        chefNode.addAttribute("action","action_Product", "install");
+        chefNode.addAttribute("action","action_probe", "install");
+        chefNode.addRecipe(initProbeRecipe);
         chefNode.addRecipe(installRecipe);
+        chefNode.addRecipe(installProbeRecipe);
         
         chefNodeDao = mock(ChefNodeDao.class);
         when(chefNodeDao.loadNode(any(String.class))).thenReturn(chefNode);

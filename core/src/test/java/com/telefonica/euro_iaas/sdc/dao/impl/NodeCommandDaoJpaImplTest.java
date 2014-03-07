@@ -7,7 +7,13 @@
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
@@ -16,29 +22,28 @@ import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
 
-public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class NodeCommandDaoJpaImplTest {
     // Need to be revisited
 
-    private OSDao soDao;
-    private NodeCommandDao nodeCommandDao;
+    @Autowired
+    OSDao osDao;
 
-    protected void createSO() throws Exception {
-        SODaoJpaImplTest soDaoTest = new SODaoJpaImplTest();
-        soDaoTest.setSoDao(soDao);
-        soDaoTest.testCreate();
-    }
+    @Autowired
+    NodeCommandDao nodeCommandDao;
 
     public void createNodeCommand() throws Exception {
 
         NodeCommand nodeCommand = new NodeCommand();
-        OS so = new OS("Prueba I", "1", "Prueba I Description", "Prueba I Version");
+        OS so = new OS("Pru", "1", "Prueba I Description", "Prueba I Version");
 
         try {
-            so = soDao.load(so.getName());
+            so = osDao.load(so.getName());
             System.out.println("The OS " + so.getName() + " already exists");
         } catch (EntityNotFoundException e) {
             System.out.println("The Product " + so.getName() + " does not exist");
-            so = soDao.create(so);
+            so = osDao.create(so);
         }
 
         nodeCommand.setOS(so);
@@ -46,10 +51,11 @@ public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
         nodeCommand.setValue("hostname");
 
         NodeCommand creatednodeCommand = nodeCommandDao.create(nodeCommand);
-        Assert.assertEquals(creatednodeCommand, nodeCommand);
+        assertEquals(creatednodeCommand, nodeCommand);
 
     }
 
+    @Test
     public void testCreateAndFindByCriteria() throws Exception {
 
         System.out.println("testCreateAndFindByCriteria.Start");
@@ -64,20 +70,11 @@ public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
         // nodeCommand);
     }
 
-    /**
-     * @param soDao
-     *            the soDao to set
-     */
-    public void setSoDao(OSDao soDao) {
-        this.soDao = soDao;
+    public void setOsDao(OSDao osDao) {
+        this.osDao = osDao;
     }
 
-    /**
-     * @param nodeCommandDao
-     *            the nodeCommandDao to set
-     */
     public void setNodeCommandDao(NodeCommandDao nodeCommandDao) {
         this.nodeCommandDao = nodeCommandDao;
     }
-
 }

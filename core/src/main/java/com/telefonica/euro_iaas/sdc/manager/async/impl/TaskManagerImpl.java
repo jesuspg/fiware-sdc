@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.TaskDao;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -44,8 +43,6 @@ public class TaskManagerImpl implements TaskManager {
                     .toString(), task.getVdc()));
 
             return task;
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
         } catch (AlreadyExistsEntityException e) {
             throw new SdcRuntimeException(e);
         }
@@ -56,14 +53,10 @@ public class TaskManagerImpl implements TaskManager {
      */
     @Override
     public Task updateTask(Task task) {
-        try {
-            task = taskDao.update(task);
-            task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
-                    .toString(), task.getVdc()));
-            return task;
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
-        }
+        task = taskDao.update(task);
+        task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
+                .toString(), task.getVdc()));
+        return task;
     }
 
     /**

@@ -24,6 +24,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
  * @author Sergio Arroyo
  * @version $Id: $
  */
+
 public class ProductDaoJpaImpl extends AbstractBaseDao<Product, String> implements ProductDao {
 
     /** {@inheritDoc} */

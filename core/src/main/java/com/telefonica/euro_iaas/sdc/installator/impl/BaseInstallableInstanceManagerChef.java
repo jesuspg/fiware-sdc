@@ -49,7 +49,7 @@ public class BaseInstallableInstanceManagerChef {
 
     protected static Logger LOGGER = Logger.getLogger("BaseInstallableInstanceManager");
 
-    protected void callChef(String recipe, VM vm) throws InstallatorException, NodeExecutionException {
+    protected void callChefUpgrade(String recipe, VM vm) throws InstallatorException, NodeExecutionException {
         assignRecipes(vm, recipe);
         try {
             executeRecipes(vm);
@@ -61,7 +61,7 @@ public class BaseInstallableInstanceManagerChef {
         }
     }
 
-    protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
+    /*protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
             throws CanNotCallChefException, NodeExecutionException, InstallatorException {
         configureNode(vm, attributes, process, recipe);
         try {
@@ -78,7 +78,7 @@ public class BaseInstallableInstanceManagerChef {
             // even if execution fails want to unassign the recipe
             throw new NodeExecutionException(e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Tell Chef the previously assigned recipes are ready to be installed.
@@ -116,7 +116,7 @@ public class BaseInstallableInstanceManagerChef {
      * @throws InstallatorException
      * @throws ShellCommandException
      */
-    public void unassignRecipes(VM vm, String recipe) throws InstallatorException {
+    public void unassignRecipes(VM vm, List<String> recipes) throws InstallatorException {
         // tell Chef the assigned recipes shall be deleted:
         ChefNode node = null;
         try {
@@ -129,7 +129,9 @@ public class BaseInstallableInstanceManagerChef {
             throw new InstallatorException(e);
         }
         try {
-            node.removeRecipe(recipe);
+            for (int i=0; i < recipes.size(); i++){
+                node.removeRecipe(recipes.get(i));
+            }
             chefNodeDao.updateNode(node);
         } catch (CanNotCallChefException e) {
             throw new InstallatorException(e);
@@ -181,7 +183,7 @@ public class BaseInstallableInstanceManagerChef {
      * @throws
      * @throws ShellCommandException
      */
-    public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
+    /*public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
         boolean isExecuted = false;
         int time = 10000;
         Date fechaAhora = new Date();
@@ -206,13 +208,13 @@ public class BaseInstallableInstanceManagerChef {
                 throw new NodeExecutionException(ie);
             }
         }
-    }
+    }*/
 
     /**
      * Checks if the Node is already registres in ChefServer.
      */
     
-    private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
+    /*private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
         
         LOGGER.info("oha_time " + ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000);
         LOGGER.info("RecipeUploadedTime:" + fechaAhora.getTime());
@@ -225,7 +227,7 @@ public class BaseInstallableInstanceManagerChef {
         } else {
             return false;
         }
-    }
+    }*/
     
     /**
      * Checks if the Node is already registered in ChefServer.
