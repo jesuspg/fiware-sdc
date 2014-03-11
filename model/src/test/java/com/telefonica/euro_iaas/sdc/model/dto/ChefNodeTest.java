@@ -40,7 +40,7 @@ public class ChefNodeTest extends TestCase {
     ChefNode chefNode;
     String json;
 
-    public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+    public static String NAME = "nosdcclient.novalocal";
     
     private String jsonFilePath = "src/test/resources/Chefnode.js";
     private String jsonFromFile;
@@ -53,6 +53,10 @@ public class ChefNodeTest extends TestCase {
         json = "{\n"
                 + "\"chef-webui\": \"http://localhost:4000/nodes/chef-webui\"\n"
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/nodes/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
+                + "\"nosdcclient001\": \"http://localhost:4000/nodes/nosdcclient001\",\n"
+                + "\"nosdcclient001.novalocal\": \"http://localhost:4000/nodes/nosdcclient001.novalocal\",\n"
+                + "\"nosdcclient.novalocal\": \"http://localhost:4000/nodes/nosdcclient.novalocal\",\n"
+                + "\"nosdcclient\": \"http://localhost:4000/nodes/nosdcclient\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/nodes/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/nodes/adam.novalocal\"\n" + "}\"";
         
