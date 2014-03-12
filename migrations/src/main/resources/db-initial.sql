@@ -89,7 +89,7 @@ CREATE TABLE environmentinstance_productinstance (
 --changeset initial:14
 CREATE TABLE installableinstance (
   id       INT8 NOT NULL,
-  date     TIMESTAMP WITH TIME ZONE,
+  date     TIMESTAMP WITHOUT TIME ZONE,
   name     VARCHAR(255),
   status   VARCHAR(255),
   vdc      VARCHAR(255),
@@ -175,7 +175,7 @@ CREATE TABLE productrelease_productrelease (
 CREATE TABLE task (
   id                      INT8 NOT NULL,
   description             VARCHAR(1024),
-  endtime                 TIMESTAMP WITH TIME ZONE,
+  endtime                 TIMESTAMP WITHOUT TIME ZONE,
   majorerrorcode          VARCHAR(1024),
   message                 VARCHAR(1024),
   minorerrorcode          VARCHAR(255),
@@ -187,7 +187,7 @@ CREATE TABLE task (
   result_href             VARCHAR(255),
   result_name             VARCHAR(255),
   result_type             VARCHAR(255),
-  starttime               TIMESTAMP WITH TIME ZONE,
+  starttime               TIMESTAMP WITHOUT TIME ZONE,
   status                  INT4,
   vdc                     VARCHAR(1024)
 );
