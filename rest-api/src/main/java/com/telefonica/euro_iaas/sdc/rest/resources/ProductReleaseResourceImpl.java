@@ -30,6 +30,7 @@ import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
@@ -42,6 +43,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 
 /**
@@ -58,6 +60,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     private ProductManager productManager;
 
     private ProductResourceValidator validator;
+    private GeneralResourceValidator generalValidator;
     private static Logger LOGGER = Logger.getLogger("ProductReleaseResourceImpl");
 
     /**
@@ -71,6 +74,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
+        try {
+            generalValidator.validateName(pName);
+        } catch (InvalidNameException e) {
+            throw new InvalidProductReleaseException(e.getMessage());
+        }
         productReleaseDto.setProductName(pName);
 
         LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
@@ -326,6 +334,14 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public void setValidator(ProductResourceValidator validator) {
         this.validator = validator;
+    }
+    
+    /**
+     * @param generalValidator
+     *            the generalValidator to set
+     */
+    public void setGeneralValidator(GeneralResourceValidator generalValidator) {
+        this.generalValidator = generalValidator;
     }
 
     /**
