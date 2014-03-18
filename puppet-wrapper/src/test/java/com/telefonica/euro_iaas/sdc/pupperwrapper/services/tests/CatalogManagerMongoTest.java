@@ -3,20 +3,16 @@ package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyObject;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
@@ -51,7 +47,7 @@ public class CatalogManagerMongoTest {
         node2.setGroupName("group2");
         
         final Node node3 = new Node();
-        node3.setId("test2");
+        node3.setId("test3");
         node3.setGroupName("group2");
 
 //        Query query = mock(Query.class);
@@ -65,6 +61,7 @@ public class CatalogManagerMongoTest {
             {
                 add(node);
                 add(node2);
+                add(node3);
             }
         }).thenReturn(new ArrayList<Node>() {
             {
@@ -78,7 +75,7 @@ public class CatalogManagerMongoTest {
                 add(node2);
             }
         });
-
+        
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -100,7 +97,7 @@ public class CatalogManagerMongoTest {
     @Test
     public void testAddNode() {
         int length = catalogManagerMongo.getNodeLength();
-        assertTrue(length == 2);
+        assertTrue(length == 3);
         Node node = new Node();
         node.setId("test");
         node.setGroupName("group");
@@ -112,7 +109,7 @@ public class CatalogManagerMongoTest {
     @Test
     public void testRemoveNode() {
         int length = catalogManagerMongo.getNodeLength();
-        assertTrue(length == 2);
+        assertTrue(length == 3);
         Node node = new Node();
         node.setId("test");
         node.setGroupName("group");
@@ -167,7 +164,7 @@ public class CatalogManagerMongoTest {
 
         catalogManagerMongo.removeNodesByGroupName("group");
 
-        assertTrue(catalogManagerMongo.getNodeLength() == 2);
+        assertTrue(catalogManagerMongo.getNodeLength() == 3);
 
     }
 }
