@@ -21,20 +21,16 @@ public class GeneralResourceValidatorTest {
         generalResourceValidator = new GeneralResourceValidatorImpl();
     }
     
-    @Test
+    @Test(expected=InvalidNameException.class)
     public void testValidateNameWhenIsNull() throws Exception {
         String name=null;
-        try{
-            generalResourceValidator.validateName(name);
-        } catch (InvalidNameException e){}
+        generalResourceValidator.validateName(name);
     }
     
-    @Test
+    @Test(expected=InvalidNameException.class)
     public void testValidateNameWhenIsEmpty() throws Exception {
         String name="";
-        try{
-            generalResourceValidator.validateName(name);
-        } catch (InvalidNameException e){}
+       generalResourceValidator.validateName(name);
     }
     
     @Test

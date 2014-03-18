@@ -8,13 +8,18 @@
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
+import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
 public class ProductResourceValidatorImpl extends MultipartValidator implements ProductResourceValidator {
 
+    private GeneralResourceValidator generalValidator;
+    
     public void validateUpdate(ReleaseDto releaseDto, MultiPart multiPart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException {
 
@@ -34,5 +39,25 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
+    
+    public void validateInsert(Product product) throws InvalidEntityException {
+
+        try {
+            generalValidator.validateName(product.getName());
+        } catch (InvalidNameException e) {
+            throw new InvalidEntityException(e.getMessage());
+        }
+
+    }
+    
+    
+    /**
+     * @param generalValidator
+     *            the generalValidator to set
+     */
+    public void setGeneralValidator(GeneralResourceValidator generalValidator) {
+        this.generalValidator = generalValidator;
+    }
+    
 
 }
