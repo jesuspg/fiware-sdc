@@ -3,6 +3,7 @@
 .DS_Store
 target/
 .classpath
+automatization_scripts/*.*
 .project
 .settings
 
