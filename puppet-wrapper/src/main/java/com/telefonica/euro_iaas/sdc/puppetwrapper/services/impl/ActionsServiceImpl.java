@@ -7,7 +7,10 @@
 
 package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
@@ -34,6 +37,9 @@ public class ActionsServiceImpl implements ActionsService {
 
     @Resource
     protected FileAccessService fileAccessService;
+    
+    @Resource 
+    protected ProcessBuilderFactory processBuilderFactory;
 
     public Node action(Action action, String group, String nodeName, String softName, String version) {
 
@@ -75,12 +81,82 @@ public class ActionsServiceImpl implements ActionsService {
     public void deleteNode(String nodeName) throws IOException {
         fileAccessService.deleteNodeFiles(nodeName);
         catalogManager.removeNode(nodeName);
+        
+        uregisterNode(nodeName);
 
+    }
+
+    
+    private void uregisterNode(String nodeName) throws IOException {
+        
+        if(isNodeRegistered(nodeName)){
+        
+            Process shell = processBuilderFactory.createProcessBuilder("puppet","cert","clean", nodeName);
+    
+    
+            StringBuilder success=new StringBuilder();
+            StringBuilder error=new StringBuilder();
+            
+            executeSystemCommand(shell,success,error);
+    
+            if ("".equals(success) && !"".equals(error)) {
+                throw new IOException("Puppet cert clean has failed");   
+            }
+        }
+        
+    }
+
+    public boolean isNodeRegistered(String nodeName) throws IOException {
+        Process shell = processBuilderFactory.createProcessBuilder("puppet","cert","list", "--all");
+        
+        StringBuilder successResponse=new StringBuilder();
+        StringBuilder errorResponse=new StringBuilder();
+        
+        executeSystemCommand(shell,successResponse,errorResponse);
+        
+        String str= (successResponse.length()==0?"":successResponse.toString());
+        
+
+        if (!"".equals(str)) {
+            if (!successResponse.toString().contains(nodeName)){
+                return false;
+            }
+            
+        }else{
+            String msg="Puppet cert list command has failed";
+            logger.debug(msg);  
+            throw new IOException(msg);
+        }
+        return true;
+        
     }
 
     public void deleteGroup(String groupName) throws IOException {
         fileAccessService.deleteGoupFolder(groupName);
         catalogManager.removeNodesByGroupName(groupName);
+        
+    }
+    
+    private void executeSystemCommand(Process shell, StringBuilder successResponse, StringBuilder errorResponse) throws IOException{
+        
+        InputStream is = shell.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String line;
+        
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+            successResponse.append(line);
+        }
+
+        InputStream isEr = shell.getErrorStream();
+        InputStreamReader isrEr = new InputStreamReader(isEr);
+        BufferedReader brEr = new BufferedReader(isrEr);
+        String lineEr;
+        while ((lineEr = brEr.readLine()) != null) {
+            System.out.println(lineEr);
+            errorResponse.append(lineEr);
+        }
         
     }
 
