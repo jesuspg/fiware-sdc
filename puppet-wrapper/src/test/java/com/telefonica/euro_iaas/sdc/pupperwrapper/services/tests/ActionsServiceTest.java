@@ -1,12 +1,10 @@
 package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -14,7 +12,6 @@ import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
