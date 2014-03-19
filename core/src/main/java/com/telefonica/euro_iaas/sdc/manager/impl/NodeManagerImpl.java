@@ -1,0 +1,131 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
+/**
+ * 
+ */
+package com.telefonica.euro_iaas.sdc.manager.impl;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
+import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
+import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.manager.ChefClientManager;
+import com.telefonica.euro_iaas.sdc.manager.NodeManager;
+import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+
+/**
+ * @author jesus.movilla
+ */
+public class NodeManagerImpl implements NodeManager {
+
+    private ProductInstanceDao productInstanceDao;
+    private ChefClientDao chefClientDao;
+    private ChefNodeDao chefNodeDao;
+
+
+    private static Logger log = Logger.getLogger("NodeManagerImpl");
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete
+     * (java.lang.String, java.lang.String)
+     */
+    public void nodeDelete(String vdc, String nodeName) throws NodeExecutionException {
+
+        try {
+            chefClientDelete(vdc,nodeName);
+            puppetDelete(vdc,nodeName);
+        
+        } catch (ChefClientExecutionException e) {
+            throw new NodeExecutionException(e);
+        }
+        
+        
+        
+        List<ProductInstance> productInstances = null;
+
+        // eliminacion de los productos instalados en la maquina virtual
+        String hostname = nodeName.split("\\.")[0];
+        try {
+            productInstances = productInstanceDao.findByHostname(nodeName);
+
+            for (int i = 0; i < productInstances.size(); i++) {
+                productInstanceDao.remove(productInstances.get(i));
+            }
+        } catch (EntityNotFoundException enfe) {
+            String errorMsg = "The hostname " + hostname + " does not have products installed " + enfe.getMessage();
+            log.info(errorMsg);
+        }
+
+    }
+    
+    private void puppetDelete(String vdc, String nodeName) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void chefClientDelete(String vdc, String chefClientName) throws ChefClientExecutionException {
+        ChefNode node;
+        List<ProductInstance> productInstances = null;
+        String hostname = null;
+        try {
+            // Eliminacion del nodo
+            node = chefNodeDao.loadNode(chefClientName);
+            chefNodeDao.deleteNode(node);
+            log.info("Node " + chefClientName + " deleted from Chef Server");
+
+            // eliminacion del chefClient
+            chefClientDao.deleteChefClient(chefClientName);
+
+            
+        } catch (CanNotCallChefException e) {
+            String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
+                    + e.getMessage();
+            log.info(errorMsg);
+            throw new ChefClientExecutionException(errorMsg, e);
+        } catch (Exception e2) {
+            String errorMsg = "The ChefClient " + chefClientName + " was not found in the system " + e2.getMessage();
+            log.info(errorMsg);
+            throw new ChefClientExecutionException(errorMsg, e2);
+        }
+    }
+    
+    /**
+     * @param chefClientDao
+     *            the chefClientDao to set
+     */
+    public void setChefClientDao(ChefClientDao chefClientDao) {
+        this.chefClientDao = chefClientDao;
+    }
+
+    /**
+     * @param chefNodeDao
+     *            the chefNodeDao to set
+     */
+    public void setChefNodeDao(ChefNodeDao chefNodeDao) {
+        this.chefNodeDao = chefNodeDao;
+    }
+
+    /**
+     * @param productInstanceDao
+     *            the productInstanceDao to set
+     */
+    public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
+        this.productInstanceDao = productInstanceDao;
+    }
+
+}
