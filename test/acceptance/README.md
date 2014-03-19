@@ -1,6 +1,6 @@
-# PaaS Manager Acceptance Tests
+# SDC API Acceptance Tests
 
-Folder for acceptance tests of the Paas Manager.
+Folder for acceptance tests of SDC API.
 
 ## How to Run the Acceptance Tests
 

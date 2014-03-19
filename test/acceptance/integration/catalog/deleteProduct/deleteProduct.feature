@@ -20,7 +20,7 @@ Feature: Delete a product in the catalogue
     Scenario: Try to delete a product that does no exist in the catalogue
         Given the sdc is up and properly configured
         When I delete a product "gfhfgh" in the catalog
-        Then I receive an "Internal Server Error" response with an "Product does not exist" error messages
+        Then I receive an "Not Found" response with an "Product does not exist" error messages
 
     Scenario: Cause an Not Found path error when delete a product in the catalogue
         Given The "Product_test_0001" has been created and the sdc is up and properly configured

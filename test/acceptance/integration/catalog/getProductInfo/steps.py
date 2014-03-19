@@ -24,7 +24,8 @@ def the_Product_test_0001_has_been_created_and_the_sdc_is_up_and_properly_config
 
     :param step:
     """
-    world.env_requests.catalogue_addProduct(product, NOT_ERROR)
+    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR)
+
     pass
 
 #------------------------------------- getProductList ----------------------------------------------

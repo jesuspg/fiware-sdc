@@ -1,6 +1,4 @@
-from argparse import _ActionsContainer
-
-__author__ = 'ivanl@tid.es'
+__author__ = 'henar'
 
 import http
 import json
@@ -11,9 +9,9 @@ from tools import body_message
 
 class CatalogueRequest:
     """
-    Manage products and releases in a catalogue.
+    Manage products in a catalogue.
     """
-    catalogURL = "catalog/product"
+    provisioningURL = ""
 
     #Body types
     ADD_PRODUCT_BODY =  '<?xml version="1.0" encoding="UTF-8"?>' \
@@ -76,7 +74,7 @@ class CatalogueRequest:
     def __get__token(self):
         return http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
 
-    def __get__url (self, operation, product, version=None):
+    def __get__url (self, operation, product):
         if operation == "getProductList" or operation == "addProduct":
             return "%s/%s" % (self.sdc_url, self.catalogURL)
         elif operation == "getDetails" or operation == "deleteProduct":
@@ -85,19 +83,15 @@ class CatalogueRequest:
             return "%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "attributes")
         elif operation == "getMetadatas":
             return "%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "metadatas")
-        elif operation == "addProductRelease" or operation == "getProductReleaseList":
-            return "%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release")
-        elif operation == "deleteProductRelease":
-            return "%s/%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release", version)
 
     def __get__headers(self, operation):
-        if operation == "getProductList" or operation == "getProductReleaseList":
+        if operation == "getProductList":
             return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/json"}
-        elif operation == "addProduct" or operation == "addProductRelease":
+        elif operation == "addProduct":
             return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/xml", "Content-Type":"application/xml"}
         elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas":
             return {'X-Auth-Token': self.token, 'Accept': "application/xml"}
-        elif operation == "deleteProduct" or operation == "deleteProductRelease":
+        elif operation == "deleteProduct":
             return {'X-Auth-Token': self.token, 'Accept': "application/xml", "Content-Type":"application/json"}
 
     def __errorLabel (self, value, error):
@@ -167,7 +161,7 @@ class CatalogueRequest:
         if meta == "all": metadata = self.ALL_METADATAS
         self.ADD_PRODUCT_BODY = self.__insert_label(self.ADD_PRODUCT_BODY, label, metadata)
 
-    def __create_body_add (self, label,  product, metadataValue):
+    def __create_body (self, label,  product, metadataValue):
         self.__init_ADD_PRODUCT_Body()
         self.__set_body_name(product)
         if label == "attributes" or label == "attributes_and_all_metadatas":
@@ -177,13 +171,6 @@ class CatalogueRequest:
         elif label.find("metadata_") == 0:
             key = label [len ("metadata_"):]
             self.__set_body_metadata(key, metadataValue)
-
-    def __create_body_release (self, version, description):
-        return '<productReleaseDto>' \
-               '    <version>'+ version+'</version>' \
-               '<releaseNotes>'+description+'</releaseNotes>'\
-               '    <productDescription>'+ description+'</productDescription>' \
-               '</productReleaseDto>'
 
     def catalogue_getProductInfo(self, searchType, product, errorType):
         """
@@ -210,7 +197,7 @@ class CatalogueRequest:
         """
 
         if label != "Without Name Label":
-            self. __create_body_add(label, product, metadataValue)
+            self. __create_body(label, product, metadataValue)
 
         world.response = self.__request("POST", self.__get__url("addProduct", None),self.__get__headers("addProduct"), self.ADD_PRODUCT_BODY, errorType)
         #self.printResponse()
@@ -222,24 +209,11 @@ class CatalogueRequest:
         :param method: define which protocol method are using
         :param errorType: definition of several error caused. Ex: Not Found, bad Method, unauthorized, etc.
         """
-        world.response = self.__request("DELETE", self.__get__url("deleteProduct", product, None),self.__get__headers("deleteProduct"), None, errorType)
-        #self.printResponse()
-
-    def catalogue_addProductRelease (self, product,  version, description, errorType):
-
-        world.response = self.__request("POST", self.__get__url("addProductRelease", product),self.__get__headers("addProductRelease"), self.__create_body_release(version, description), errorType)
-        #self.printResponse()
-
-    def catalogue_deleteProductRelease (self, product, version, errorType):
-        world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers("deleteProductRelease"), None, errorType)
-        #self.printResponse()
-
-    def catalogue_getProductReleaseInfo(self, searchType, product, version = None, errorType=None):
-        world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType), None, errorType)
+        world.response = self.__request("DELETE", self.__get__url("deleteProduct", product),self.__get__headers("deleteProduct"), None, errorType)
         #self.printResponse()
 
     def printRequest(self, method, url, headers, body):
-        print "------------------------------ Request ----------------------------------------------"
+        print "----------------------------------------------------------------------------------------"
         print "url: "+ str(method) + "  "+str(url)
         print "\nHeader: "+ str (headers)+"\n"
         if body is not None:
@@ -247,7 +221,7 @@ class CatalogueRequest:
         print "----------------------------------------------------------------------------------------\n\n\n\n"
 
     def printResponse(self):
-        print "---------------------------------- Response ----------------------------------------------"
+        print "----------------------------------------------------------------------------------------"
         print "status code: "+str(world.response.status)
         print "\nHeader: "+ str(world.response.msg)
         print "\nBody: init("+str(world.response.read())+")end\n\n\n"
@@ -266,7 +240,7 @@ class CatalogueRequest:
         """
 
         assert response.status == expected_status_code, \
-        "Wrong status code received: %d. Expected: %d. \n\nBody content: %s" \
+        "Wrong status code received: %d. Expected: %d. Body content: %s" \
         % (response.status, expected_status_code, response.read())
 
     def check_response_body(self, response, expected_body):
@@ -275,15 +249,13 @@ class CatalogueRequest:
         :param response: Response to be checked.
         :param expected_body: Expected body of the response.
         """
-
-        resp = str(response.read())
-        #print "\n\n\n respuesta: "+ resp+ "\n\n\n"
+        #print "\n\n\n respuesta: "+ response.read()+ "\n\n\n"
         #print "\n  esperado: "+ expected_body + "\n\n\n"
-        print "\n\n------------------------------------------------------------------------------------------------------------------------------------------------- "+str(resp.find(expected_body))+"\n\n"
+        #print "\n\n------------------------------------------------------------------------------------------------------------------------------------------------- "+str(response.read().find(expected_body))+"\n\n"
 
-        assert resp.find(expected_body) >= 0,  \
+        assert str(response.read().find(expected_body)) >= 0,  \
             "Wrong body received: %s \n\n Expected: %s" \
-            % (resp, expected_body)
+            % (response.read(), expected_body)
 
 
 

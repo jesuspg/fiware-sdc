@@ -14,7 +14,7 @@ NOT_FOUND = "Not Found"
 @step(u'The "([^"]*)" has been created and the sdc is up and properly configured')
 def the_Product_test_0001_has_been_created_and_the_sdc_is_up_and_properly_configured(step, product):
     world.product = product
-    world.env_requests.catalogue_addProduct(product, NOT_ERROR)
+    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR)
     pass
 
 @step(u'the sdc is up and properly configured')
