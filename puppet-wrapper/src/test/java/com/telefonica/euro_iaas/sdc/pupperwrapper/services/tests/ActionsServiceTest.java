@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
