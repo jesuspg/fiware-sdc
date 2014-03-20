@@ -89,9 +89,12 @@ public class ActionsServiceImpl implements ActionsService {
     
     private void uregisterNode(String nodeName) throws IOException {
         
-        if(isNodeRegistered(nodeName)){
+        logger.debug("Unregirstering node: "+nodeName);
         
-            Process shell = processBuilderFactory.createProcessBuilder("puppet","cert","clean", nodeName);
+        if(isNodeRegistered(nodeName)){
+            logger.debug("Node "+nodeName+" is registered -> unregistering");
+        
+            Process shell = processBuilderFactory.createProcessBuilder("sudo","puppet","cert","clean", nodeName);
     
     
             StringBuilder success=new StringBuilder();
@@ -107,7 +110,9 @@ public class ActionsServiceImpl implements ActionsService {
     }
 
     public boolean isNodeRegistered(String nodeName) throws IOException {
-        Process shell = processBuilderFactory.createProcessBuilder("puppet","cert","list", "--all");
+        
+        logger.debug("isNodeRegistered node: "+nodeName);
+        Process shell = processBuilderFactory.createProcessBuilder("sudo","puppet","cert","list", "--all");
         
         StringBuilder successResponse=new StringBuilder();
         StringBuilder errorResponse=new StringBuilder();
@@ -119,6 +124,8 @@ public class ActionsServiceImpl implements ActionsService {
 
         if (!"".equals(str)) {
             if (!successResponse.toString().contains(nodeName)){
+//                logger.debug("registered nodes: ");
+//                logger.debug(str);
                 return false;
             }
             
@@ -159,5 +166,20 @@ public class ActionsServiceImpl implements ActionsService {
         }
         
     }
-
+    
+//    private void executeSystemCommand(Process shell, StringBuilder successResponse, StringBuilder errorResponse) throws IOException{
+//            
+//        try {  
+//            Process p = Runtime.getRuntime().exec("puppet cert list --all");  
+//            BufferedReader in = new BufferedReader(  
+//                                new InputStreamReader(p.getInputStream()));  
+//            String line = null;  
+//            while ((line = in.readLine()) != null) {  
+//                System.out.println(line);  
+//            }  
+//        } catch (IOException e) {  
+//            e.printStackTrace();  
+//        }   
+//    }
+    
 }

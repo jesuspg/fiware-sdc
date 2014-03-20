@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
@@ -183,13 +184,12 @@ public class ActionsServiceTest {
 
     }
     
-    
     @Test(expected = NoSuchElementException.class)
     public void deleteNodeTest_OK() throws IOException {
         
         Process shell = mock(Process.class);
         
-        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
         
         String str= "Node 1 is registered";
         String strdelete="Node 1 unregistered";
@@ -237,7 +237,7 @@ public class ActionsServiceTest {
         
         Process shell = mock(Process.class);
         
-        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
         
         String str= "";
         String strdelete="";
@@ -285,7 +285,7 @@ public class ActionsServiceTest {
         
         Process shell = mock(Process.class);
         
-        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
         
         String str= "Node 3 is registered";
         when(shell.getInputStream()).thenReturn(new ByteArrayInputStream(str.getBytes("UTF-8")));
@@ -303,7 +303,7 @@ public class ActionsServiceTest {
         
         Process shell = mock(Process.class);
         
-        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
         
         String str= "Node 1 is registered";
         when(shell.getInputStream()).thenReturn(new ByteArrayInputStream(str.getBytes("UTF-8")));
@@ -321,7 +321,7 @@ public class ActionsServiceTest {
         
         Process shell = mock(Process.class);
         
-        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(shell);
         
         String str= "";
         when(shell.getInputStream()).thenReturn(new ByteArrayInputStream(str.getBytes("UTF-8")));

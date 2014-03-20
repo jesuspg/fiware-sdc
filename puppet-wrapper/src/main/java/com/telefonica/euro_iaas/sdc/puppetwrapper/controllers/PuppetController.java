@@ -133,15 +133,18 @@ public class PuppetController /* extends GenericController */{
 
     }
 
-    @RequestMapping("/delete/node/{nodeName}")
-    public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
-
+    @RequestMapping("/delete/node/{nodeName:.+}")
+    public @ResponseBody String deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
+        
+        logger.info("Deleting node: "+ nodeName);
         actionsService.deleteNode(nodeName);
+        logger.info("Node: "+ nodeName+" deleted.");
+        return "Node "+nodeName + " deleted";
     }
 
     @RequestMapping("/delete/group/{groupName}")
     public void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
-
+        logger.info("Deleting group: "+ groupName);
         actionsService.deleteGroup(groupName);
     }
 
