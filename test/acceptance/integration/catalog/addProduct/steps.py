@@ -11,6 +11,8 @@ from tools import catalogue_request
 NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
+AcceptXML = "xml"
+
 #-----------------------------------------------------------------------------------
 @step(u'the sdc is up and properly configured')
 def the_sdc_is_up_and_properly_configured(step):
@@ -21,18 +23,20 @@ def the_sdc_is_up_and_properly_configured(step):
 
     pass  # Nothing to do here, the set up should be done by external means
 #---------------------------------- Add -------------------------------------------------
-@step(u'I add a new product "([^"]*)" with "([^"]*)" in the catalog')
-def i_add_a_new_product_in_the_catalog(step, product, label):
+@step(u'I add a new product "([^"]*)" with "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def i_add_a_new_product_in_the_catalog(step, product, label, Accept):
     world.product = product                                        # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct(product, label, None, NOT_ERROR, Accept)
 
-    world.env_requests.catalogue_addProduct(product, label, None, NOT_ERROR)
-
-@step(u'With metadatas I add a new product "([^"]*)" with "([^"]*)" and "([^"]*)" in the catalog')
-def with_metadatas_i_add_a_new_product_with_label_and_value_in_the_catalog(step, product, label, value):
+@step(u'With metadatas I add a new product "([^"]*)" with "([^"]*)" and "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def with_metadatas_i_add_a_new_product_with_label_and_value_in_the_catalog(step, product, label, value, Accept):
     world.product = product                                        # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct(product, label, value, NOT_ERROR, Accept)
 
-    world.env_requests.catalogue_addProduct(product, label, value, NOT_ERROR)
-
+@step(u'I request a wrong path when add a new product "([^"]*)" with "([^"]*)" in the catalog')
+def i_request_a_wrong_path_when_add_a_new_product_in_the_catalog(step, product, label):
+    world.product = product                                        # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct(product, label, None, NOT_FOUND, AcceptXML)
 
 @step(u'I receive an? "([^"]*)" response with an? "([^"]*)" [?]*')
 def i_receive_a_response_of_type(step, response_type, operation):
@@ -40,6 +44,8 @@ def i_receive_a_response_of_type(step, response_type, operation):
     body_expected = world.env_requests.get_body_expected(response_type, operation)        # Read from body_message.py
     world.env_requests.check_response_status(world.response, status_code)
     world.env_requests.check_response_body(world.response, body_expected)
+    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
     pass
+
 
 

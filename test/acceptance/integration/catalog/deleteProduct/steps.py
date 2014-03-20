@@ -10,11 +10,12 @@ from tools import catalogue_request
 NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
+AcceptXML= "xml"
 
 @step(u'The "([^"]*)" has been created and the sdc is up and properly configured')
 def the_Product_test_0001_has_been_created_and_the_sdc_is_up_and_properly_configured(step, product):
-    world.product = product
-    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR)
+    world.product = product                                                                # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR, AcceptXML)
     pass
 
 @step(u'the sdc is up and properly configured')
@@ -42,6 +43,8 @@ def i_receive_a_response_of_type(step, response_type, operation):
 
     world.env_requests.check_response_status(world.response, status_code)
     world.env_requests.check_response_body(world.response, str(body_expected))
+    print "-----------------------------------------------------------------------------------------------------------------------------------"+ world.product
+    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
     pass
 
 

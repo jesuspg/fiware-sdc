@@ -8,7 +8,7 @@ Feature: List Products releases in the catalogue
     Scenario: Get a release List of a Products in the catalogue
         Given A new product "Product_test_0001" with release "1.2.3" with description "version 1.2.3 for test" in the catalog
         When I request releases list associated to a product "Product_test_0001" in the catalog
-        Then I receive an "OK" response with a "Product release list" with one items
+        Then I receive an "OK" response with a "Product releases list" with one items
 
     @test
     Scenario: Cause an Not Found path error when list Products in the catalogue

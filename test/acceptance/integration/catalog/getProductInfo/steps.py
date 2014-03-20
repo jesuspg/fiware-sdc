@@ -9,6 +9,9 @@ NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
 
+AcceptXML= "xml"
+
+
 
 @step(u'the sdc is up and properly configured')
 def the_sdc_is_up_and_properly_configured(step):
@@ -21,86 +24,86 @@ def the_sdc_is_up_and_properly_configured(step):
 @step(u'The "([^"]*)" has been created and the sdc is up and properly configured')
 def the_Product_test_0001_has_been_created_and_the_sdc_is_up_and_properly_configured(step, product):
     """
-
     :param step:
     """
-    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR)
+    world.product = product                                                              # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR, AcceptXML)
 
     pass
 
 #------------------------------------- getProductList ----------------------------------------------
-@step(u'I request the list of existing products in the catalog')
-def i_request_the_list_of_existing_products_in_the_catalog(step):
-    world.env_requests.catalogue_getProductInfo("getProductList", None, NOT_ERROR)
+@step(u'I request the list of existing products in the catalog with "([^"]*)" content in the response')
+def i_request_the_list_of_existing_products_in_the_catalog(step, Accept):
+    world.env_requests.catalogue_getProductInfo("getProductList", None, NOT_ERROR, Accept)
 
 @step(u'I request a wrong path when list of existing products in the catalog')
 def i_request_a_wrong_path_when_list_of_existing_products_in_the_catalog(step):
-    world.env_requests.catalogue_getProductInfo("getProductList", None, NOT_FOUND)
+    world.env_requests.catalogue_getProductInfo("getProductList", None, NOT_FOUND, AcceptXML)
 
 @step(u'I request unauthorized errors "([^"]*)" when list of existing products in the catalog')
 def i_request_unauthorized_errors_when_list_of_existing_products_in_the_catalog(step, errorToken):
-    world.env_requests.catalogue_getProductInfo("getProductList", None, errorToken)
+    world.env_requests.catalogue_getProductInfo("getProductList", None, errorToken, AcceptXML)
 
 @step(u'I list existing products in the catalog with request method is "([^"]*)"')
 def i_list_existing_products_in_the_catalog_with_request_method_is_wrong (step, badMethod):
-    world.env_requests.catalogue_getProductInfo("getProductList", None, badMethod)
+    world.env_requests.catalogue_getProductInfo("getProductList", None, badMethod, AcceptXML)
 
 #------------------------------------- getDetails ----------------------------------------------
-@step(u'I get details of a product "([^"]*)" in the catalog')
-def i_get_details_of_a_product_in_the_catalog(step, product):
+@step(u'I get details of a product "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def i_get_details_of_a_product_in_the_catalog(step, product, Accept):
     """
     I get details of an existent product in the catalog
 
     :param step:
     :param product:
     """
-    world.env_requests.catalogue_getProductInfo("getDetails", product, NOT_ERROR)
+    world.env_requests.catalogue_getProductInfo("getDetails", product, NOT_ERROR, Accept)
 
 @step(u'I request a wrong path when get details of a product "([^"]*)" in the catalogue')
 def i_request_a_wrong_path_when_get_details_of_a_product_in_the_catalogue(step, product):
-    world.env_requests.catalogue_getProductInfo("getDetails", product, NOT_FOUND)
+    world.env_requests.catalogue_getProductInfo("getDetails", product, NOT_FOUND, AcceptXML)
 
 @step(u'I try to get details of a product "([^"]*)" in the catalog with request method is "([^"]*)"')
 def i_try_to_get_details_of_a_product_in_the_catalog_with_request_method(step, product, badMethod):
-    world.env_requests.catalogue_getProductInfo("getDetails", product, badMethod)
+    world.env_requests.catalogue_getProductInfo("getDetails", product, badMethod, AcceptXML)
 
 #------------------------------------- getAttributes ----------------------------------------------
-@step(u'I get attributes of a product "([^"]*)" in the catalog')
-def i_get_attributes_of_a_product_in_the_catalog(step, product):
+@step(u'I get attributes of a product "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def i_get_attributes_of_a_product_in_the_catalog(step, product, Accept):
     """
     I get attributes of an existent product in the catalog
 
     :param step:
     :param product:
     """
-    world.env_requests.catalogue_getProductInfo("getAttributes", product, NOT_ERROR)
+    world.env_requests.catalogue_getProductInfo("getAttributes", product, NOT_ERROR, Accept)
 
 @step(u'I request a wrong path when get attributes of a product "([^"]*)" in the catalogue')
 def i_request_a_wrong_path_when_get_attributes_of_a_product_in_the_catalogue(step, product):
-    world.env_requests.catalogue_getProductInfo("getAttributes", product, NOT_FOUND)
+    world.env_requests.catalogue_getProductInfo("getAttributes", product, NOT_FOUND, AcceptXML)
 
 @step(u'I try to get attributes of a product "([^"]*)" in the catalog with request method is "([^"]*)"')
 def i_try_to_get_attributes_of_a_product_in_the_catalog_with_request_method(step, product, badMethod):
-    world.env_requests.catalogue_getProductInfo("getAttributes", product, badMethod)
+    world.env_requests.catalogue_getProductInfo("getAttributes", product, badMethod, AcceptXML)
 
 #------------------------------------- getMetadatas ----------------------------------------------
-@step(u'I get metadatas of a product "([^"]*)" in the catalog')
-def i_get_metadatas_of_a_product_in_the_catalog(step, product):
+@step(u'I get metadatas of a product "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def i_get_metadatas_of_a_product_in_the_catalog(step, product, Accept):
     """
     I get metadatas of an existent product in the catalog
 
     :param step:
     :param product:
     """
-    world.env_requests.catalogue_getProductInfo("getMetadatas", product, NOT_ERROR)
+    world.env_requests.catalogue_getProductInfo("getMetadatas", product, NOT_ERROR, Accept)
 
 @step(u'I request a wrong path when get metadatas of a product "([^"]*)" in the catalogue')
 def i_request_a_wrong_path_when_get_metadatas_of_a_product_in_the_catalogue(step, product):
-    world.env_requests.catalogue_getProductInfo("getMetadatas", product, NOT_FOUND)
+    world.env_requests.catalogue_getProductInfo("getMetadatas", product, NOT_FOUND, AcceptXML)
 
 @step(u'I try to get metadatas of a product "([^"]*)" in the catalog with request method is "([^"]*)"')
 def i_try_to_get_metadatas_of_a_product_in_the_catalog_with_request_method(step, product, badMethod):
-    world.env_requests.catalogue_getProductInfo("getMetadatas", product, badMethod)
+    world.env_requests.catalogue_getProductInfo("getMetadatas", product, badMethod, AcceptXML)
 
 #------------------------------------- check ----------------------------------------------
 @step(u'I receive an? "([^"]*)" response with an? "([^"]*)" [?]*')

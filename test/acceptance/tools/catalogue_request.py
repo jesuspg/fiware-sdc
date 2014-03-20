@@ -90,15 +90,15 @@ class CatalogueRequest:
         elif operation == "deleteProductRelease":
             return "%s/%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release", version)
 
-    def __get__headers(self, operation):
+    def __get__headers(self, operation, Accept="xml"):
         if operation == "getProductList" or operation == "getProductReleaseList":
-            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/json"}
+            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept}
         elif operation == "addProduct" or operation == "addProductRelease":
-            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/xml", "Content-Type":"application/xml"}
+            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept, "Content-Type":"application/xml"}
         elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas":
-            return {'X-Auth-Token': self.token, 'Accept': "application/xml"}
+            return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept}
         elif operation == "deleteProduct" or operation == "deleteProductRelease":
-            return {'X-Auth-Token': self.token, 'Accept': "application/xml", "Content-Type":"application/json"}
+            return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept, "Content-Type":"application/json"}
 
     def __errorLabel (self, value, error):
         if error == "wrong":
@@ -185,7 +185,7 @@ class CatalogueRequest:
                '    <productDescription>'+ description+'</productDescription>' \
                '</productReleaseDto>'
 
-    def catalogue_getProductInfo(self, searchType, product, errorType):
+    def catalogue_getProductInfo(self, searchType, product, errorType, Accept):
         """
         List all products in catalogue
         Returns all details of a Product
@@ -196,10 +196,10 @@ class CatalogueRequest:
         :param product: define the product used
         :param errorType: definition of several error caused. Ex: Not Found, bad Method, unauthorized, etc.
         """
-        world.response = self.__request("GET", self.__get__url(searchType,product),self.__get__headers(searchType), None, errorType)
+        world.response = self.__request("GET", self.__get__url(searchType,product),self.__get__headers(searchType, Accept), None, errorType)
         #self.printResponse()
 
-    def catalogue_addProduct(self, product, label, metadataValue,  errorType):
+    def catalogue_addProduct(self, product, label, metadataValue,  errorType, Accept):
         """
         Add a new product in catalogue
 
@@ -212,7 +212,7 @@ class CatalogueRequest:
         if label != "Without Name Label":
             self. __create_body_add(label, product, metadataValue)
 
-        world.response = self.__request("POST", self.__get__url("addProduct", None),self.__get__headers("addProduct"), self.ADD_PRODUCT_BODY, errorType)
+        world.response = self.__request("POST", self.__get__url("addProduct", None),self.__get__headers("addProduct", Accept), self.ADD_PRODUCT_BODY, errorType)
         #self.printResponse()
 
     def catalogue_deleteProduct(self, product, errorType):
@@ -225,17 +225,17 @@ class CatalogueRequest:
         world.response = self.__request("DELETE", self.__get__url("deleteProduct", product, None),self.__get__headers("deleteProduct"), None, errorType)
         #self.printResponse()
 
-    def catalogue_addProductRelease (self, product,  version, description, errorType):
+    def catalogue_addProductRelease (self, product,  version, description, errorType, Accept):
 
-        world.response = self.__request("POST", self.__get__url("addProductRelease", product),self.__get__headers("addProductRelease"), self.__create_body_release(version, description), errorType)
+        world.response = self.__request("POST", self.__get__url("addProductRelease", product),self.__get__headers("addProductRelease", Accept), self.__create_body_release(version, description), errorType)
         #self.printResponse()
 
     def catalogue_deleteProductRelease (self, product, version, errorType):
         world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers("deleteProductRelease"), None, errorType)
         #self.printResponse()
 
-    def catalogue_getProductReleaseInfo(self, searchType, product, version = None, errorType=None):
-        world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType), None, errorType)
+    def catalogue_getProductReleaseInfo(self, searchType, product, version = None, errorType=None, Accept=None):
+        world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType, Accept), None, errorType)
         #self.printResponse()
 
     def printRequest(self, method, url, headers, body):
@@ -279,7 +279,7 @@ class CatalogueRequest:
         resp = str(response.read())
         #print "\n\n\n respuesta: "+ resp+ "\n\n\n"
         #print "\n  esperado: "+ expected_body + "\n\n\n"
-        print "\n\n------------------------------------------------------------------------------------------------------------------------------------------------- "+str(resp.find(expected_body))+"\n\n"
+        #print "\n\n------------------------------------------------------------------------------------------------------------------------------------------------- "+str(resp.find(expected_body))+"\n\n"
 
         assert resp.find(expected_body) >= 0,  \
             "Wrong body received: %s \n\n Expected: %s" \

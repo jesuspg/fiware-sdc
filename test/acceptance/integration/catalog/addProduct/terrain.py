@@ -13,10 +13,10 @@ def before_each_scenario(scenario):
                                             world.config['paas']['password'],
                                             world.config['paas']['vdc'],
                                             world.config['paas']['sdc_url'])
-
+NOT_ERROR = ""
 
 @after.each_scenario
 def after_each_scenario(scenario):
     #Delete the product created in the catalogue.
-    world.env_requests.catalogue_deleteProduct(world.product, None)
+    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
     pass

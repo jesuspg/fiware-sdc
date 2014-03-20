@@ -13,7 +13,8 @@ status_codes = {"OK": 200,
                 "Bad Request": 400,
                 "unauthorized": 401,
                 "Not Found": 404,
-                "bad Method": 405,
+                "Bad Method": 405,
+                "Not Acceptable":406,
                 "Conflict": 409,
                 "Internal Server Error": 500 }
 

@@ -11,20 +11,20 @@ from tools import catalogue_request
 NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
-
+AcceptXML = "xml"
 
 #--------------------------------------------------------------------------------------------------------
 @step(u'The "([^"]*)" has been created and the sdc is up and properly configured')
 def the_Product_test_0001_has_been_created_and_the_sdc_is_up_and_properly_configured(step, product):
     world.product = product
-    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR)
+    world.env_requests.catalogue_addProduct(product, "attributes_and_all_metadatas", None, NOT_ERROR, AcceptXML)
     pass
 
 #---------------------------------- Add product release -------------------------------------------------
-@step(u'I add a new release "([^"]*)" with description "([^"]*)" associated to product "([^"]*)" in the catalog')
-def i_add_a_new_release_with_description_associated_to_product_in_the_catalog(step, version, description, product):
+@step(u'I add a new release "([^"]*)" with description "([^"]*)" associated to product "([^"]*)" in the catalog with "([^"]*)" content in the response')
+def i_add_a_new_release_with_description_associated_to_product_in_the_catalog(step, version, description, product, Accept):
     world.version = version                                                                       # used in terrain.py for delete the product
-    world.env_requests.catalogue_addProductRelease (product, version, description, NOT_ERROR)
+    world.env_requests.catalogue_addProductRelease (product, version, description, NOT_ERROR, Accept)
 
 #--------------------------------------------------------------------------------------------------------
 
