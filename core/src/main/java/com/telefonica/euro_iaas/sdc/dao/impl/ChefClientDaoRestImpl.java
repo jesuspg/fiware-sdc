@@ -102,7 +102,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      */
     public void deleteChefClient(String chefClientName) throws CanNotCallChefException {
         try {
-            String path = "/clients/"+ chefClientName;
+        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
             // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
             LOGGER.info("getChefClient " + path);
@@ -131,7 +131,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
         
         try {
-        	String path = "/clients/"+ chefClientName;
+        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
         	LOGGER.info("getChefClient " + path);
         	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
 
@@ -150,7 +150,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             if (stringChefClient == null)
                 throw new EntityNotFoundException(ChefClient.class, null, "ChefClient " + chefClientName
                         + " is not in the ChefServer");
-             System.out.println (stringChefClient);
+
             JSONObject jsonChefClient = JSONObject.fromObject(stringChefClient);
             ChefClient chefClient = new ChefClient();
             chefClient.fromJson(jsonChefClient);
@@ -164,10 +164,8 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     private Map<String, String> getHeaders(String method, String path, String payload) {
 
-      //  return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
-        //        propertiesProvider.getProperty(CHEF_CLIENT_PASS));
-        return digester.digest(method, path, payload, new Date(), "sdc",
-                "sdc.pem");
+        return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
+                propertiesProvider.getProperty(CHEF_CLIENT_PASS));
     }
 
     /**
