@@ -106,9 +106,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
         	LOGGER.info("Loading node" + chefNodename );
-           String path = "/nodes"+ chefNodename;
-           LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
-
+            String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
+            LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
@@ -295,7 +294,6 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      *            the client to set
      */
     public void setClient(Client client) {
-        this.client = client;
         this.client = client.create(getClientConfig());
     }
 
