@@ -5,10 +5,32 @@ Feature: List Products releases in the catalogue
     so that they become more functional and useful
 
     @happy_path
-    Scenario: Get a release List of a Products in the catalogue
-        Given A new product "Product_test_0001" with release "1.2.3" with description "version 1.2.3 for test" in the catalog
-        When I request releases list associated to a product "Product_test_0001" in the catalog
-        Then I receive an "OK" response with a "Product releases list" with one items
+    Scenario Outline: Get a release List of a Products in the catalogue with xml content in the response
+       Given I add a new release "<release>" with description "version for test" associated to product "Product_test_0001" in the catalog with "xml" content in the response
+        When I request releases list associated to a product "Product_test_0001" in the catalog with "xml" content in the response
+        Then I receive an "OK" response with a "Product releases list XML" with "<release>" items with "xml" content
+    Examples:
+      | release |
+      |1.1.1    |
+      |2.2.2    |
+      |3.3.3    |
+      |4.4.4    |
+      |5.5.5    |
+      |6.6.6    |
+
+    @happy_path
+    Scenario Outline: Get a release List of a Products in the catalogue with json content in the response
+       Given I add a new release "<release>" with description "version for test" associated to product "Product_test_0001" in the catalog with "json" content in the response
+        When I request releases list associated to a product "Product_test_0001" in the catalog with "json" content in the response
+        Then I receive an "OK" response with a "Product releases list JSON" with "<release>" items with "json" content
+    Examples:
+      | release |
+      |1.1.1    |
+      |2.2.2    |
+      |3.3.3    |
+      |4.4.4    |
+      |5.5.5    |
+      |6.6.6    |
 
     @test
     Scenario: Cause an Not Found path error when list Products in the catalogue

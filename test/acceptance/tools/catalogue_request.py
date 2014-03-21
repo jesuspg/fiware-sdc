@@ -92,7 +92,7 @@ class CatalogueRequest:
 
     def __get__headers(self, operation, Accept="xml"):
         if operation == "getProductList" or operation == "getProductReleaseList":
-            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept}
+            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+str(Accept)}
         elif operation == "addProduct" or operation == "addProductRelease":
             return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept, "Content-Type":"application/xml"}
         elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas":
@@ -234,7 +234,9 @@ class CatalogueRequest:
         world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers("deleteProductRelease"), None, errorType)
         #self.printResponse()
 
-    def catalogue_getProductReleaseInfo(self, searchType, product, version = None, errorType=None, Accept=None):
+
+
+    def catalogue_getProductReleaseInfo(self, searchType, product, version, errorType, Accept):
         world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType, Accept), None, errorType)
         #self.printResponse()
 
@@ -257,6 +259,13 @@ class CatalogueRequest:
         for ID in body_message.Catalog_body:
             if ID["operation"] == operation and ID["code"] == response_type:
                 return ID["body"]
+
+    def change_version (self, body_expected, version, Accept):
+        if Accept == "xml":
+            label = '</version>'
+        else:
+            label = '","product"'
+        return  self.__insert_label (body_expected, label, version)
 
     def check_response_status(self, response, expected_status_code):
         """

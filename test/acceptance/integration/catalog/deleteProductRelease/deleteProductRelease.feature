@@ -15,12 +15,19 @@ Feature: Delete a product in the catalogue
         When I delete a product "Product_test_0001" with release "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567" in the catalog
         Then I receive an "No Content" response with a "delete Product release" with any item
 
+    @404_error
     Scenario: Try to delete a product release that does no exist in the catalogue
        Given A new product "Product_test_0001" with release "1.2.3" with description "version 1.2.3 for test" in the catalog
         When I delete a product "Product_test_0001" with release "fdgdfgdfg" in the catalog
         Then I receive an "Not Found" response with a "Product does not exist" with any item
 
-    @test
+    @404_error
+    Scenario: Try to delete a product release with a product that does no exist in the catalogue
+       Given A new product "Product_test_0001" with release "1.2.3" with description "version 1.2.3 for test" in the catalog
+        When I delete a product "Product_test_0001_error" with release "fdgdfgdfg" in the catalog
+        Then I receive an "Not Found" response with a "Product does not exist" with any item
+
+    @404_error
     Scenario: Cause an Not Found path error when delete a product release in the catalogue
        Given A new product "Product_test_0001" with release "1.2.3" with description "version 1.2.3 for test" in the catalog
         When I request a wrong path when delete a product "Product_test_0001" with release "1.2.3" in the catalogue

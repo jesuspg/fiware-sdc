@@ -7,12 +7,12 @@ from tools.catalogue_request import CatalogueRequest
 @before.each_scenario
 def before_each_scenario(scenario):
     world.env_requests = CatalogueRequest(world.config['paas']['keystone_url'],
-                                            world.config['paas']['paasmanager_url'],
-                                            world.config['paas']['tenant'],
-                                            world.config['paas']['user'],
-                                            world.config['paas']['password'],
-                                            world.config['paas']['vdc'],
-                                            world.config['paas']['sdc_url'])
+                                          world.config['paas']['paasmanager_url'],
+                                          world.config['paas']['tenant'],
+                                          world.config['paas']['user'],
+                                          world.config['paas']['password'],
+                                          world.config['paas']['vdc'],
+                                          world.config['paas']['sdc_url'])
 NOT_ERROR = ""
 
 @after.each_scenario

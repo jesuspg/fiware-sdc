@@ -10,12 +10,13 @@ from tools import catalogue_request
 NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
+AcceptXML = "xml"
 
 @step(u'A new product "([^"]*)" with release "([^"]*)" with description "([^"]*)" in the catalog')
 def a_new_product_release_with_description_in_the_catalog(step, product, version, description):
     world.product = product                                                                       # used in terrain.py for delete the product
     world.version = version                                                                       # used in terrain.py for delete the product
-    world.env_requests.catalogue_addProductRelease (product, version, description, NOT_ERROR)
+    world.env_requests.catalogue_addProductRelease (product, version, description, NOT_ERROR, AcceptXML)
 
 @step(u'I delete a product "([^"]*)" with release "([^"]*)" in the catalog')
 def i_delete_a_product_with_release_in_the_catalog(step, product, version):
