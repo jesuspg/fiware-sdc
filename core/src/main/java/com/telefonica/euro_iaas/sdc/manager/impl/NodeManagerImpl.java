@@ -10,20 +10,31 @@
  */
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
+import static java.text.MessageFormat.format;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.util.EntityUtils;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.properties.PropertiesProvider;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.manager.ChefClientManager;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -33,6 +44,8 @@ public class NodeManagerImpl implements NodeManager {
     private ProductInstanceDao productInstanceDao;
     private ChefClientDao chefClientDao;
     private ChefNodeDao chefNodeDao;
+    private SystemPropertiesProvider propertiesProvider;
+    private HttpClient client;
 
 
     private static Logger log = Logger.getLogger("NodeManagerImpl");
@@ -46,14 +59,15 @@ public class NodeManagerImpl implements NodeManager {
      */
     public void nodeDelete(String vdc, String nodeName) throws NodeExecutionException {
 
-        try {
-            chefClientDelete(vdc,nodeName);
+//        try {
+            
             puppetDelete(vdc,nodeName);
+//            chefClientDelete(vdc,nodeName);
         
-        } catch (ChefClientExecutionException e) {
-            throw new NodeExecutionException(e);
-        }
-        
+//        } catch (ChefClientExecutionException e) {
+//            throw new NodeExecutionException(e);
+//        }
+//        
         
         
         List<ProductInstance> productInstances = null;
@@ -73,8 +87,30 @@ public class NodeManagerImpl implements NodeManager {
 
     }
     
-    private void puppetDelete(String vdc, String nodeName) {
-        // TODO Auto-generated method stub
+    private void puppetDelete(String vdc, String nodeName) throws NodeExecutionException {
+        
+        HttpPost postInstall = new HttpPost(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+                + "delete/node/"+nodeName);
+        
+        System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+                + "delete/node/"+nodeName);
+
+        HttpResponse response;
+
+        try {
+            response = client.execute(postInstall);
+            int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            EntityUtils.consume(entity);
+
+            if (statusCode != 200) {
+                throw new NodeExecutionException(format("[puppet delete node] response code was: {0}", statusCode));
+            }
+        } catch (IOException e) {
+            throw new NodeExecutionException(e);
+        } catch (IllegalStateException e1) {
+            throw new NodeExecutionException(e1);
+        }
         
     }
 
@@ -126,6 +162,22 @@ public class NodeManagerImpl implements NodeManager {
      */
     public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
         this.productInstanceDao = productInstanceDao;
+    }
+
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
+        this.propertiesProvider = propertiesProvider;
+    }
+    
+    /**
+     * @param client
+     *            the client to set
+     */
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
 
 }
