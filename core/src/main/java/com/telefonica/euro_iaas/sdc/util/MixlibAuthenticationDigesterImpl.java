@@ -7,6 +7,8 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_ID;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_PASS;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
 
@@ -49,9 +51,11 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
      */
     public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl) {
         try {
-            DateFormat df = new SimpleDateFormat(propertiesProvider.getProperty(CHEF_DATE_FORMAT));
-            df.setTimeZone(TimeZone.getTimeZone(propertiesProvider.getProperty(CHEF_TIME_ZONE)));
-
+         //   DateFormat df = new SimpleDateFormat(propertiesProvider.getProperty(CHEF_DATE_FORMAT));
+          //  df.setTimeZone(TimeZone.getTimeZone(propertiesProvider.getProperty(CHEF_TIME_ZONE)));
+       	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            df.setTimeZone(TimeZone.getTimeZone("GMT")); 
+        
             Map<String, String> headers = new HashMap<String, String>();
             headers.put(CONTENT_HASH_HEADER, getHash(body));
             headers.put(TIMESTAMP_HEADER, df.format(timestamp));

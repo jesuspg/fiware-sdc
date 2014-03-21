@@ -59,8 +59,6 @@ public class MixlibAuthenticationDigesterTest {
         // make assertions
         Assert.assertEquals(5, headers.size());
 
-        verify(propertiesProvider, times(1)).getProperty(CHEF_DATE_FORMAT);
-        verify(propertiesProvider, times(1)).getProperty(CHEF_TIME_ZONE);
 
     }
 
