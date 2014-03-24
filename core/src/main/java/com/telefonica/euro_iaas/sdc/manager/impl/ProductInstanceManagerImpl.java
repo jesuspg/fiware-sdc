@@ -97,14 +97,18 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.validateInstalatorData(vm);
+                chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
+                chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm);
                     puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
                 } else {
                     chefInstallator.validateInstalatorData(vm);
+                    chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL);
+                    chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 

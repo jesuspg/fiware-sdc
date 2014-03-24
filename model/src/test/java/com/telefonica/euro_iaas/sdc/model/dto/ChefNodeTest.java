@@ -68,11 +68,20 @@ public class ChefNodeTest extends TestCase {
     }
 
     @Test
+    public void testGetChefClientURL2() throws Exception {
+        String json2 =  json = "{\n"
+                        + "\"chef-webui\": \"http:\\/\\/localhost:4000\\/nodes\\/chef-webui\"\n"
+                        + "\"adam.novalocal\": \"http:\\/\\/localhost:4000\\/nodes\\/adam.novalocal\"\n" + "}\"";
+        System.out.println("json: " + json2);
+        String name = chefNode.getChefNodeName(json2, "chef-webui");
+        assertEquals(name, "chef-webui");
+    }
+    
+    @Test
     public void testGetChefClientURL() throws Exception {
         String name = chefNode.getChefNodeName(json, NAME);
         assertEquals(name, NAME);
     }
-    
     @Test
     public void testHasRecipe() throws Exception {
          assertEquals(chefNode.hasRecipe("recipe"), false);

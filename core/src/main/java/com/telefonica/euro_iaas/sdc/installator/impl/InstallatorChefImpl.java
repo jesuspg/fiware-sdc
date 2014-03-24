@@ -32,6 +32,29 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         
     }
    
+    public void installProbe (ProductInstance productInstance, VM vm, List<Attribute> attributes, 
+                    String recipe) throws InstallatorException, NodeExecutionException {
+        List<String> recipes = new ArrayList<String>();
+        recipes.add(recipe);
+        
+        String process = productInstance.getProductRelease().getProduct().getName();
+        configureNode(vm, attributes, process, recipes);
+        try {
+            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
+            if (isSdcClientInstalled()) {
+                executeRecipes(vm);
+                // unassignRecipes(vm, recipe);
+            } else {
+                isRecipeExecuted(vm, process, recipes);
+                unassignRecipes(vm, recipes);              
+            }
+        } catch (NodeExecutionException e) {
+            // even if execution fails want to unassign the recipe
+            throw new NodeExecutionException(e.getMessage());
+        }
+        
+    }
+    
     @Override
     public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
             throws InstallatorException, NodeExecutionException {
@@ -40,7 +63,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         String recipe = "";
         List<String> recipes = new ArrayList<String>();
-        recipes.add("probe::0.1_init");
+        
         if ("install".equals(action)) {
             recipe = recipeNamingGenerator.getInstallRecipe(productInstance);
         } else if ("uninstall".equals(action)) {
@@ -55,9 +78,6 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             throw new InstallatorException("Missing Action");
         }
         recipes.add(recipe);
-        recipes.add("probe::0.1_install");
-        
-        System.out.println("recipe " + recipe);
         
         configureNode(vm, attributes, process, recipes);
         try {

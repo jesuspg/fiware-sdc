@@ -108,4 +108,14 @@ public class InstallatorPuppetImpl implements Installator {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#installProbe(com.telefonica.euro_iaas.sdc.model.ProductInstance, com.telefonica.euro_iaas.sdc.model.dto.VM, java.util.List, java.lang.String)
+     */
+    @Override
+    public void installProbe(ProductInstance productInstance, VM vm, List<Attribute> attributes, String recipe)
+                    throws InstallatorException, NodeExecutionException {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

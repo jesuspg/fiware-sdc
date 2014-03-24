@@ -13,7 +13,9 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 public interface Installator {
 
     void callService(VM vm, String vdc, ProductRelease productRelease, String action) throws InstallatorException;
-
+    
+    void installProbe (ProductInstance productInstance, VM vm, List<Attribute> attributes, String recipe)
+                    throws InstallatorException, NodeExecutionException;
     void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
             throws InstallatorException, NodeExecutionException;
 

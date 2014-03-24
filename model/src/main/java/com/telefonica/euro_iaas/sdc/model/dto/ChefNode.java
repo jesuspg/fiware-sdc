@@ -288,12 +288,18 @@ public class ChefNode {
             if (output[i].startsWith("\"") && name.isEmpty()) {
                 String url = output[i].split("\"")[2];
                 String nameAux = url.split("nodes")[1];
-                name = nameAux.substring(1, nameAux.length());
+                if (nameAux.startsWith("\\"))
+                    name = nameAux.substring(2, nameAux.length());
+                else
+                    name = nameAux.substring(1, nameAux.length());
             }
             if (output[i].startsWith(".") && name.isEmpty()){
                 String url = output[i].split("\"")[2];
                 String nameAux = url.split("nodes")[1];
-                name = nameAux.substring(1, nameAux.length());
+                if (nameAux.startsWith("\\"))
+                    name = nameAux.substring(2, nameAux.length());
+                else
+                    name = nameAux.substring(1, nameAux.length());
             }
         }
         

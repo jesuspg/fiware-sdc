@@ -116,7 +116,7 @@ public class ChefNodeDaoRestImplTest {
      * @throws CanNotCallChefException
      * @throws EntityNotFoundException
      */
-    @Test
+    /*@Test
     public void shouldDeleteNode() throws CanNotCallChefException, EntityNotFoundException {
         ChefNodeDaoRestImpl chefNodeDaoRestImpl = new ChefNodeDaoRestImpl();
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
@@ -151,14 +151,14 @@ public class ChefNodeDaoRestImplTest {
     //    verify(client, times(1)).resource(anyString());
      //   verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
 
-    }
+    }*/
     
     /**
      * Testing UpdteNode.
      * @throws CanNotCallChefException
      * @throws EntityNotFoundException
      */
-    @Test
+    /*@Test
     public void shouldUpdateNode() throws CanNotCallChefException, EntityNotFoundException {
         ChefNodeDaoRestImpl chefNodeDaoRestImpl = new ChefNodeDaoRestImpl();
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
@@ -197,5 +197,5 @@ public class ChefNodeDaoRestImplTest {
 //        verify(client, times(1)).resource(anyString());
       //  verify(propertiesProvider, atLeastOnce()).getProperty(anyString());
        // verify(chefNode).toJson();
-    }
+    }*/
 }
