@@ -34,7 +34,7 @@ Feature: Get details a product in the catalogue
         When I try to get details of a product "Product_test_0001" in the catalog with request method is "<method>"
             |method|
             |<method>|
-        Then I receive an "bad Method" response with an "exception" error messages
+        Then I receive an "Bad Method" response with an "exception" error messages
     Examples:
         | method |
         |PUT|

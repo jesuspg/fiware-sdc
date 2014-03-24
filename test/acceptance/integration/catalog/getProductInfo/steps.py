@@ -106,6 +106,7 @@ def i_try_to_get_metadatas_of_a_product_in_the_catalog_with_request_method(step,
     world.env_requests.catalogue_getProductInfo("getMetadatas", product, badMethod, AcceptXML)
 
 #------------------------------------- check ----------------------------------------------
+
 @step(u'I receive an? "([^"]*)" response with an? "([^"]*)" [?]*')
 def i_receive_a_response_of_type(step, response_type, operation):
     status_code = http.status_codes[response_type]
@@ -116,4 +117,21 @@ def i_receive_a_response_of_type(step, response_type, operation):
     pass
 
 
+@step(u'I check a.? "([^"]*)" response with a.? "([^"]*)" with "([^"]*)" with "([^"]*)" content')
+def i_receive_a_response_of_type(step, response_type, operation, product, Accept):
+    """
+    Check Code status and body response against body_message.py
+    :param step:
+    :param response_type: code status
+    :param operation: String to use in body_message.py
+    :param Accept:
+    """
+    status_code = http.status_codes[response_type]
+    body_expected = world.env_requests.get_body_expected(response_type, operation)        # Read from body_message.py
+    body_expected = world.env_requests.change_product (body_expected, product, Accept)
+
+    world.env_requests.check_response_status(world.response, status_code)
+    world.env_requests.check_response_body(world.response, body_expected)
+    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
+    pass
 

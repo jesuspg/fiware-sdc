@@ -5,16 +5,32 @@ Feature: List Products in the catalogue
     so that they become more functional and useful
 
     @happy_path
-    Scenario: Get a List of Products in the catalogue with xml content in the response
-        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+    Scenario Outline: Get a List of Products in the catalogue with xml content in the response
+       Given The "<product>" has been created and the sdc is up and properly configured
         When I request the list of existing products in the catalog with "xml" content in the response
-        Then I receive an "OK" response with a "Products list XML" with some items
+        Then I check an "OK" response with a "Products list XML" with "<product>" with "xml" content
+    Examples:
+      | product         |
+      |Product_test_0001|
+      |Product_test_0002|
+      |Product_test_0003|
+      |Product_test_0004|
+      |Product_test_0005|
+      |Product_test_0006|
 
-    @happy_path
-    Scenario: Get a List of Products in the catalogue with json content in the response
-        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+    Scenario Outline: Get a List of Products in the catalogue with json content in the response
+       Given The "<product>" has been created and the sdc is up and properly configured
         When I request the list of existing products in the catalog with "json" content in the response
-        Then I receive an "OK" response with a "Products list JSON" with some items
+        Then I check an "OK" response with a "Products list JSON" with "<product>" with "json" content
+    Examples:
+      | product         |
+      |Product_test_0001|
+      |Product_test_0002|
+      |Product_test_0003|
+      |Product_test_0004|
+      |Product_test_0005|
+      |Product_test_0006|
+
 
     @404_error
     Scenario: Cause an Not Found path error when list Products in the catalogue

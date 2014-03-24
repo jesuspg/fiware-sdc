@@ -87,7 +87,7 @@ class CatalogueRequest:
             return "%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "metadatas")
         elif operation == "addProductRelease" or operation == "getProductReleaseList":
             return "%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release")
-        elif operation == "deleteProductRelease":
+        elif operation == "deleteProductRelease" or operation == "getProductReleaseDetails":
             return "%s/%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release", version)
 
     def __get__headers(self, operation, Accept="xml"):
@@ -95,7 +95,7 @@ class CatalogueRequest:
             return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+str(Accept)}
         elif operation == "addProduct" or operation == "addProductRelease":
             return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept, "Content-Type":"application/xml"}
-        elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas":
+        elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas" or operation == "getProductReleaseDetails":
             return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept}
         elif operation == "deleteProduct" or operation == "deleteProductRelease":
             return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept, "Content-Type":"application/json"}
@@ -111,7 +111,7 @@ class CatalogueRequest:
     def __errorUrl (self, value, error):
         if error == "Not Found":
            pos = value.find("catalog")
-           value = value[:pos] + "error_" + value[pos:]    # ex: http://130.206.80.119:8082/sdc/rest/error_catalog/product/Product_test_0001
+           value = value[:pos] + "error_" + value[pos:]    # ex: http://130.206.80.119:8082/error_sdc/rest/catalog/product/Product_test_0001
         return value
 
     def __request(self, method, url,  headers, body,  error):
@@ -234,8 +234,6 @@ class CatalogueRequest:
         world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers("deleteProductRelease"), None, errorType)
         #self.printResponse()
 
-
-
     def catalogue_getProductReleaseInfo(self, searchType, product, version, errorType, Accept):
         world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType, Accept), None, errorType)
         #self.printResponse()
@@ -263,9 +261,20 @@ class CatalogueRequest:
     def change_version (self, body_expected, version, Accept):
         if Accept == "xml":
             label = '</version>'
-        else:
+        elif Accept == "json":
             label = '","product"'
-        return  self.__insert_label (body_expected, label, version)
+        else:
+            return body_expected
+        return self.__insert_label (body_expected, label, version)
+
+    def change_product (self, body_expected, product, Accept):
+        if Accept == "xml":
+            label = '</name>'
+        elif Accept == "json":
+            label = '","description"'
+        else:
+            return body_expected
+        return self.__insert_label (body_expected, label, product)
 
     def check_response_status(self, response, expected_status_code):
         """
