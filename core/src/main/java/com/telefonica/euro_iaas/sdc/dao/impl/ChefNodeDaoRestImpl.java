@@ -14,12 +14,19 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SE
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 
 import net.sf.json.JSONObject;
@@ -39,7 +46,14 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
+
+import javax.net.ssl.TrustManager;
 /**
  * Default implementation of ChefNodeManager.
  * 
@@ -57,7 +71,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     private static final int MAX_TIME = 90000;
     
     public ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
+    
         CanNotCallChefException {
+    	LOGGER.info ("Loading nodes" + hostname );
         try {
             String path = "/nodes";
 
@@ -86,10 +102,12 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     /**
      * {@inheritDoc}
      */
-    @Override
+  
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
-           String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
+        	LOGGER.info("Loading node" + chefNodename );
+            String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
+            LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
@@ -104,13 +122,16 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             //LOGGER.info(stringNode);
             System.out.println(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
+            System.out.println (stringNode);
         
             ChefNode node = new ChefNode();
             node.fromJson(jsonNode);
             return node;
         } catch (UniformInterfaceException e) {
+        	LOGGER.info(e.getMessage());
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
+        	LOGGER.info(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
@@ -118,8 +139,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     /**
      * {@inheritDoc}
      */
-    @Override
+  
     public ChefNode updateNode(ChefNode node) throws CanNotCallChefException {
+    	LOGGER.info("Update node " + node.getName() );
         try {
             String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
             String payload = node.toJson();
@@ -190,6 +212,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 Thread.sleep(time);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
+                LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
                 WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {
@@ -200,11 +223,15 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 LOGGER.info("List of nodes : " + response);
                 time += time;
             } catch (UniformInterfaceException e) {
+            	LOGGER.info(e.getMessage());
                 throw new CanNotCallChefException(e);
             } catch (IOException e) {
+            	LOGGER.info(e.getMessage());
                 throw new CanNotCallChefException(e);
+                
             } catch (InterruptedException e) {
                 String errorMsg = e.getMessage();
+                LOGGER.info(e.getMessage());
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }
@@ -212,8 +239,39 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     
     private Map<String, String> getHeaders(String method, String path, String payload) {
 
-        return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
+    	return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
                 propertiesProvider.getProperty(CHEF_CLIENT_PASS));
+    }
+    
+    private ClientConfig getClientConfig() {
+
+    	HostnameVerifier hostnameVerifier =     new HostnameVerifier() {
+
+    		public boolean verify(String arg0, SSLSession arg1) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+	     };
+	     
+	     javax.net.ssl.TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+	    	    public X509Certificate[] getAcceptedIssuers(){return null;}
+	    	    public void checkClientTrusted(X509Certificate[] certs, String authType){}
+	    	    public void checkServerTrusted(X509Certificate[] certs, String authType){}
+	    	}};
+	 
+	     SSLContext stx = null;
+	    	try {
+	    		stx = SSLContext.getInstance("TLS");
+	    		stx.init(null, trustAllCerts, new SecureRandom());
+	    	    HttpsURLConnection.setDefaultSSLSocketFactory(stx.getSocketFactory());
+	    	} catch (Exception e) {
+	    	    ;
+	    	}
+
+	 
+    	ClientConfig config=new DefaultClientConfig();
+    	config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier,stx));
+        return config;
     }
 
     /**
@@ -237,7 +295,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      *            the client to set
      */
     public void setClient(Client client) {
-        this.client = client;
+        this.client = client.create(getClientConfig());
     }
 
 }

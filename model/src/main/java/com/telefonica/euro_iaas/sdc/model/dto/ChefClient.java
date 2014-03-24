@@ -146,7 +146,7 @@ public class ChefClient {
     public void fromJson(JSONObject jsonNode) {
         name = jsonNode.getString("name");
         publickey = jsonNode.getString("public_key");
-        _rev = jsonNode.getString("_rev");
+     //   _rev = jsonNode.getString("_rev");
         admin = jsonNode.getString("admin");
     }
 
