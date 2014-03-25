@@ -107,14 +107,14 @@
 	</bean>
 
 
-	<bean id="restClient" class="com.sun.jersey.api.client.Client"
+	<bean id="clientConfig" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientConfigImpl"
 		factory-method="create" />
 
 	<bean id="chefNodeDao" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.dao.impl.ChefNodeDaoRestImpl">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="digester" ref="mixlibAuthenticationDigester"></property>
-		<property name="client" ref="restClient"></property>
+		<property name="clientConfig" ref="clientConfig"></property>
 	</bean>
 
 	<!-- <bean id="chefClientDao" lazy-init="true" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoCommandImpl"> 
