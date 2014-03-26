@@ -104,7 +104,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
   
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
-        	LOGGER.info("Loading node" + chefNodename );
+
+        	if (chefNodename.indexOf("/") ==-1) {
+        		chefNodename = "/"+chefNodename;
+        	}
             String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
@@ -120,7 +123,6 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             //LOGGER.info("Node " + chefNodename + "in Json");
             //LOGGER.info(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
-            System.out.println (stringNode);
         
             ChefNode node = new ChefNode();
             node.fromJson(jsonNode);
@@ -141,7 +143,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode updateNode(ChefNode node) throws CanNotCallChefException {
     	LOGGER.info("Update node " + node.getName() );
         try {
-            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
+            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), "/"+node.getName());
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             String payload = node.toJson();
             Map<String, String> header = getHeaders("PUT", path, payload);
@@ -172,8 +174,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     }
 
     public void deleteNode(ChefNode node) throws CanNotCallChefException {
+    	
         try {
-            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
+            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), "/"+node.getName());
             Map<String, String> header = getHeaders("DELETE", path, "");
 
             WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);

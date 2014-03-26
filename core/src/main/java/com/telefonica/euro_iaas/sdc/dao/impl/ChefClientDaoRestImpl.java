@@ -102,11 +102,13 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
      */
     public void deleteChefClient(String chefClientName) throws CanNotCallChefException {
+    	if (chefClientName.indexOf("/") ==-1) {
+    		chefClientName = "/"+chefClientName;
+    	}
         try {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
             // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
-            LOGGER.info("getChefClient " + path);
         	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
         	
         	LOGGER.info(chefServerUrl + path);
@@ -130,10 +132,13 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
     public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
+    	if (chefClientName.indexOf("/") ==-1) {
+    		chefClientName = "/"+chefClientName;
+    	}
         
         try {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
-        	LOGGER.info("getChefClient " + path);
+ 
         	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
 
         	LOGGER.info(chefServerUrl + path);
