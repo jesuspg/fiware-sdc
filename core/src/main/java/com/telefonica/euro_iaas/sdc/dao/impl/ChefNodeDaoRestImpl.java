@@ -66,6 +66,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     private static Logger LOGGER = Logger.getLogger("ChefNodeDaoRestImpl");
     
     private String NODE_NOT_FOUND_PATTERN ="404";
+    private String NODES_PATH ="/nodes";
     private static final int MAX_TIME = 90000;
     
     public ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
@@ -73,7 +74,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         CanNotCallChefException {
     	LOGGER.info ("Loading nodes" + hostname );
         try {
-            String path = "/nodes";
+            String path = NODES_PATH;
 
             Map<String, String> header = getHeaders("GET", path, "");
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
