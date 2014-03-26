@@ -38,6 +38,7 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -59,7 +60,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
-    ClientConfig clientConfig;
+    ChefClientConfig clientConfig;
 
     
     private static Logger LOGGER = Logger.getLogger("ChefNodeDaoRestImpl");
@@ -75,7 +76,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             String path = "/nodes";
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = Client.create(clientConfig).resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -107,7 +109,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = Client.create(clientConfig).resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -140,10 +142,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     	LOGGER.info("Update node " + node.getName() );
         try {
             String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
+            LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             String payload = node.toJson();
             Map<String, String> header = getHeaders("PUT", path, payload);
 
-            WebResource webResource = Client.create(clientConfig).resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             wr = wr.type(MediaType.APPLICATION_JSON);
@@ -173,7 +176,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
             Map<String, String> header = getHeaders("DELETE", path, "");
 
-            WebResource webResource = Client.create(clientConfig).resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             wr = wr.type(MediaType.APPLICATION_JSON);
@@ -192,6 +195,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      * Checks if ChefNode is already registered in ChefServer.
      */
     public void isNodeRegistered (String hostname) throws CanNotCallChefException {
+    	
         String path = "/nodes";
 
         String response = "RESPONSE";
@@ -209,14 +213,15 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 
                 Map<String, String> header = getHeaders("GET", path, "");
                 LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
-                WebResource webResource = Client.create(clientConfig).resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+
+ 
+                WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {
                     wr = wr.header(key, header.get(key));
                 }
                 
                 response = IOUtils.toString(wr.get(InputStream.class));
-                LOGGER.info("List of nodes : " + response);
                 time += time;
             } catch (UniformInterfaceException e) {
             	LOGGER.info(e.getMessage());
@@ -260,7 +265,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      * @param client
      *            the client to set
      */
-    public void setClientConfig(ClientConfig clientConfig) {
+    public void setClientConfig(ChefClientConfig clientConfig) {
         this.clientConfig = clientConfig;
     }
 

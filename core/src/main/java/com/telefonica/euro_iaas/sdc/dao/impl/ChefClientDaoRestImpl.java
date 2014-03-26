@@ -44,6 +44,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -58,7 +59,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
-    Client client;
+    ChefClientConfig clientConfig;
     private static Logger LOGGER = Logger.getLogger("ChefClientDaoRestImpl");
 
     /*
@@ -72,7 +73,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -109,7 +110,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
         	
         	LOGGER.info(chefServerUrl + path);
-            WebResource webResource = client.resource(chefServerUrl + path);
+            WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
@@ -138,7 +139,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         	LOGGER.info(chefServerUrl + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = client.resource(chefServerUrl + path);
+            WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -188,39 +189,10 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @param client
      *            the client to set
      */
-    public void setClient(Client client) {
-        this.client = client.create(getClientConfig());
+    public void setClientConfig(ChefClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
     
-    private ClientConfig getClientConfig() {
-
-    	HostnameVerifier hostnameVerifier =     new HostnameVerifier() {
-
-			public boolean verify(String arg0, SSLSession arg1) {
-				// TODO Auto-generated method stub
-				return true;
-			}
-	     };
-	     
-	     javax.net.ssl.TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
-	    	    public X509Certificate[] getAcceptedIssuers(){return null;}
-	    	    public void checkClientTrusted(X509Certificate[] certs, String authType){}
-	    	    public void checkServerTrusted(X509Certificate[] certs, String authType){}
-	    	}};
-	 
-	     SSLContext stx = null;
-	    	try {
-	    		stx = SSLContext.getInstance("TLS");
-	    		stx.init(null, trustAllCerts, new SecureRandom());
-	    	    HttpsURLConnection.setDefaultSSLSocketFactory(stx.getSocketFactory());
-	    	} catch (Exception e) {
-	    	    ;
-	    	}
-
-	 
-    	ClientConfig config=new DefaultClientConfig();
-    	config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hostnameVerifier,stx));
-        return config;
-    }
+   
 
 }

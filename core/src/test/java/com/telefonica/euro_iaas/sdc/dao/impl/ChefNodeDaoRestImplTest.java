@@ -29,6 +29,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
@@ -53,7 +54,7 @@ public class ChefNodeDaoRestImplTest {
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
         MixlibAuthenticationDigester mixlibAuthenticationDigester = mock(MixlibAuthenticationDigester.class);
         Client client = mock(Client.class);
-        ClientConfig clientConfig = mock(ClientConfig.class);
+        ChefClientConfig clientConfig = mock(ChefClientConfig.class);
 
         chefNodeDaoRestImpl.setPropertiesProvider(propertiesProvider);
         chefNodeDaoRestImpl.setDigester(mixlibAuthenticationDigester);
@@ -102,9 +103,9 @@ public class ChefNodeDaoRestImplTest {
         when(propertiesProvider.getProperty(SystemPropertiesProvider.CHEF_SERVER_NODES_PATH)).thenReturn("nodes");
         when(propertiesProvider.getProperty(SystemPropertiesProvider.CHEF_SERVER_URL)).thenReturn("http://localhost/");
         
-     any(Client.class);
+
 		//   when(Client.create(clientConfig)).thenReturn(value);
-        when(Client.create(clientConfig)).thenReturn(client);
+        when(clientConfig.getClient()).thenReturn(client);
         when(client.resource(anyString())).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
       //  when(webResource.header(anyString(), anyObject())).thenReturn(builder);
@@ -126,7 +127,7 @@ public class ChefNodeDaoRestImplTest {
         ChefNodeDaoRestImpl chefNodeDaoRestImpl = new ChefNodeDaoRestImpl();
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
         MixlibAuthenticationDigester mixlibAuthenticationDigester = mock(MixlibAuthenticationDigester.class);
-        ClientConfig clientConfig = mock(ClientConfig.class);
+        ChefClientConfig clientConfig = mock(ChefClientConfig.class);
     
         Client client = mock (Client.class);
         
@@ -143,8 +144,7 @@ public class ChefNodeDaoRestImplTest {
         // when
         when(propertiesProvider.getProperty(anyString())).thenReturn("http://localhost");
         
-       
-        when(Client.create(any(ClientConfig.class))).thenReturn(client);
+        when(clientConfig.getClient()).thenReturn(client);
         when(client.resource(anyString())).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
@@ -171,7 +171,7 @@ public class ChefNodeDaoRestImplTest {
         SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
         MixlibAuthenticationDigester mixlibAuthenticationDigester = mock(MixlibAuthenticationDigester.class);
         Client client = mock(Client.class);
-        ClientConfig clientConfig = mock(ClientConfig.class);
+        ChefClientConfig clientConfig = mock(ChefClientConfig.class);
 
         ChefNode chefNode = mock(ChefNode.class);
         String payload = "{\"json_class\":\"Chef::Node\",\"override\":{},\"chef_environment\":\"_default\"," +
@@ -189,8 +189,9 @@ public class ChefNodeDaoRestImplTest {
         // when
         when(chefNode.toJson()).thenReturn(payload);
         when(propertiesProvider.getProperty(anyString())).thenReturn("http://localhost");
+        when(clientConfig.getClient()).thenReturn(client);
         when(client.resource(anyString())).thenReturn(webResource);
-        when(client.create(any(ClientConfig.class))).thenReturn(client);
+        
         
  
         when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);

@@ -74,7 +74,7 @@ public class ChefTest {
         chefNodeDaoRestImpl.setPropertiesProvider(null);
         chefNodeDaoRestImpl.setDigester(mixlibAuthenticationDigester);
      //   chefNodeDaoRestImpl.setClient(client);
-        chefClientDaoRestImpl.setClient(client);
+     //   chefClientDaoRestImpl.setClient(client);
         chefClientDaoRestImpl.setDigester(mixlibAuthenticationDigester);
         
       //  chefClientDaoRestImpl.getChefClient("d22d34d-tiername45-1");
