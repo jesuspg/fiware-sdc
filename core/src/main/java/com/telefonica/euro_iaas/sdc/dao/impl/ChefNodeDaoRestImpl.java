@@ -70,7 +70,6 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     private static final int MAX_TIME = 90000;
     
     public ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
-    
         CanNotCallChefException {
     	LOGGER.info ("Loading nodes" + hostname );
         try {
@@ -105,10 +104,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
   
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
-
-        	if (chefNodename.indexOf("/") ==-1) {
+        	
+        	if (!chefNodename.startsWith("/")) {
         		chefNodename = "/"+chefNodename;
         	}
+        	
             String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
@@ -129,10 +129,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             node.fromJson(jsonNode);
             return node;
         } catch (UniformInterfaceException e) {
-        	LOGGER.info(e.getMessage());
+        	LOGGER.warning(e.getMessage());
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
-        	LOGGER.info(e.getMessage());
+        	LOGGER.warning(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
@@ -228,15 +228,15 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 response = IOUtils.toString(wr.get(InputStream.class));
                 time += time;
             } catch (UniformInterfaceException e) {
-            	LOGGER.info(e.getMessage());
+            	LOGGER.warning(e.getMessage());
                 throw new CanNotCallChefException(e);
             } catch (IOException e) {
-            	LOGGER.info(e.getMessage());
+            	LOGGER.warning(e.getMessage());
                 throw new CanNotCallChefException(e);
                 
             } catch (InterruptedException e) {
                 String errorMsg = e.getMessage();
-                LOGGER.info(e.getMessage());
+                LOGGER.warning(e.getMessage());
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }

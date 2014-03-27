@@ -102,7 +102,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
      */
     public void deleteChefClient(String chefClientName) throws CanNotCallChefException {
-    	if (chefClientName.indexOf("/") ==-1) {
+    	if (!chefClientName.startsWith("/")) {
     		chefClientName = "/"+chefClientName;
     	}
         try {
@@ -132,7 +132,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
     public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
-    	if (chefClientName.indexOf("/") ==-1) {
+    	if (!chefClientName.startsWith("/")) {
     		chefClientName = "/"+chefClientName;
     	}
         
