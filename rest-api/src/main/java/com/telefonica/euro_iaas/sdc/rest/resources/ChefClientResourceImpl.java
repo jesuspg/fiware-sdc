@@ -31,7 +31,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 /**
  * @author jesus.movilla
  */
-@Path("/vdc/{vdc}/chefClient")
+@Path("/vdc/{vdc}/chefClient/deprecated")
 @Component
 @Scope("request")
 public class ChefClientResourceImpl implements ChefClientResource {

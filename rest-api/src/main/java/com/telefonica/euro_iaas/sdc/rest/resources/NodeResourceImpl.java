@@ -28,7 +28,7 @@ import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 /**
  * @author jesus.movilla
  */
-@Path("/vdc/{vdc}/node")
+@Path("/vdc/{vdc}/chefClient")
 @Component
 @Scope("request")
 public class NodeResourceImpl implements NodeResource {

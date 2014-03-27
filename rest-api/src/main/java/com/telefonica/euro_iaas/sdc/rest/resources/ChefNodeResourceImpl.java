@@ -27,7 +27,7 @@ import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
  * @author Jesus M. Movilla
  */
 
-@Path("/vdc/{vdc}/chefNode")
+@Path("/vdc/{vdc}/chefNode/deprecated")
 @Component
 @Scope("request")
 public class ChefNodeResourceImpl implements ChefNodeResource {

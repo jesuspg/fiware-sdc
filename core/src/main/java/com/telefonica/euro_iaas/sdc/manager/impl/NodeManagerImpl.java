@@ -37,7 +37,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
- * @author jesus.movilla
+ * @author alberts
  */
 public class NodeManagerImpl implements NodeManager {
 
@@ -59,15 +59,15 @@ public class NodeManagerImpl implements NodeManager {
      */
     public void nodeDelete(String vdc, String nodeName) throws NodeExecutionException {
 
-//        try {
+        try {
             
             puppetDelete(vdc,nodeName);
-//            chefClientDelete(vdc,nodeName);
+            chefClientDelete(vdc,nodeName);
         
-//        } catch (ChefClientExecutionException e) {
-//            throw new NodeExecutionException(e);
-//        }
-//        
+        } catch (ChefClientExecutionException e) {
+            throw new NodeExecutionException(e);
+        }
+        
         
         
         List<ProductInstance> productInstances = null;
@@ -104,11 +104,16 @@ public class NodeManagerImpl implements NodeManager {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                throw new NodeExecutionException(format("[puppet delete node] response code was: {0}", statusCode));
+                String msg=format("[puppet delete node] response code was: {0}", statusCode);
+                log.info(msg);
+                throw new NodeExecutionException(msg);
             }
+            log.info("Node succesfully deleted from pupper master");
         } catch (IOException e) {
+            log.info(e.getMessage());
             throw new NodeExecutionException(e);
         } catch (IllegalStateException e1) {
+            log.info(e1.getMessage());
             throw new NodeExecutionException(e1);
         }
         
