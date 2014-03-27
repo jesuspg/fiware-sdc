@@ -17,10 +17,19 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SE
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 
 import net.sf.json.JSONObject;
@@ -31,7 +40,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -46,7 +59,8 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
-    Client client;
+    ChefClientConfig clientConfig;
+    private static Logger LOGGER = Logger.getLogger("ChefClientDaoRestImpl");
 
     /*
      * (non-Javadoc)
@@ -56,9 +70,10 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
         try {
             String path = "/clients";
+            LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -87,13 +102,17 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
      */
     public void deleteChefClient(String chefClientName) throws CanNotCallChefException {
+    	if (!chefClientName.startsWith("/")) {
+    		chefClientName = "/"+chefClientName;
+    	}
         try {
-            String path = MessageFormat
-                    .format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
+        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
             // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
-
-            WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+        	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
+        	
+        	LOGGER.info(chefServerUrl + path);
+            WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
@@ -113,13 +132,19 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
     public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
-
+    	if (!chefClientName.startsWith("/")) {
+    		chefClientName = "/"+chefClientName;
+    	}
+        
         try {
-            String path = MessageFormat
-                    .format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
+        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
+ 
+        	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
+
+        	LOGGER.info(chefServerUrl + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = client.resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -169,8 +194,10 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * @param client
      *            the client to set
      */
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientConfig(ChefClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
+    
+   
 
 }
