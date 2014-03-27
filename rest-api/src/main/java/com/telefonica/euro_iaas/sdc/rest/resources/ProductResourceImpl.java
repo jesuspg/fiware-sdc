@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,6 +15,7 @@ import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -25,7 +27,10 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * default ProductResource implementation.
@@ -38,7 +43,13 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 public class ProductResourceImpl implements ProductResource {
 
     // @InjectParam("productManager")
+	
+	public static String PUBLIC_METADATA = "public";
+	public static String TENANT_METADATA = "tenant_id";
+		
     private ProductManager productManager;
+    
+    private SystemPropertiesProvider systemPropertiesProvider;
 
     private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
 
@@ -69,7 +80,45 @@ public class ProductResourceImpl implements ProductResource {
         if (!StringUtils.isEmpty(orderType)) {
             criteria.setOrderBy(orderType);
         }
-        return productManager.findByCriteria(criteria);
+        return filterProducts(productManager.findByCriteria(criteria));
+    }
+    
+    private List<Product> filterProducts (List<Product> products) {
+    	List<Product> filterProducts = new ArrayList<Product> ();
+
+    	for (Product product: products) {
+   		
+    		if (product.getMapMetadata().get(PUBLIC_METADATA) != null && 
+    				product.getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
+    			if (checkProduct (product)) {
+    				filterProducts.add(product);
+    			}    			
+    		}
+    		else {
+    			filterProducts.add(product);
+    		}
+    	}
+    	
+    	return filterProducts;
+    	
+    }
+    
+    private boolean checkProduct (Product product) {
+    	PaasManagerUser credentials = this.getCredentials();
+    	
+    	if (product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
+
     }
 
     /**
@@ -119,6 +168,10 @@ public class ProductResourceImpl implements ProductResource {
      */
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
+    }
+    
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
 }
