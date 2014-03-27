@@ -44,6 +44,12 @@
             <artifactId>sdc-server-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+	            <dependency>
+                <groupId>com.telefonica.euro_iaas</groupId>
+                <artifactId>openstack-tcloud-schemas</artifactId>
+                <version>2.3.3</version>
+                <type>jar</type>
+            </dependency>
 
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
