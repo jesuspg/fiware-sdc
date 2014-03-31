@@ -59,8 +59,12 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, Task task,
             String callback) {
         try {
-            ProductInstance productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
+
+            ProductInstance productInstance = null;
+            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
+            
             updateSuccessTask(task, productInstance);
+
             LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
@@ -159,6 +163,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     @Async
     @Override
     public void uninstall(ProductInstance productInstance, Task task, String callback) {
+
         try {
             productInstanceManager.uninstall(productInstance);
             updateSuccessTask(task, productInstance);
@@ -212,7 +217,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 productInstance.getName(), // the name
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the product
+                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
+                                                                                                       // product
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
@@ -220,7 +226,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     /*
-     * Update the task with necessary information when the task is wrong and the product instance exists in the system.
+     * Update the task with necessary information when the task is wrong and the
+     * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
         String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
@@ -228,7 +235,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 productInstance.getName(), // the id
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the product
+                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
+                                                                                                       // product
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }

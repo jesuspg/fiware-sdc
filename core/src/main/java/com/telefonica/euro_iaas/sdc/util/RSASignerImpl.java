@@ -41,7 +41,7 @@ public class RSASignerImpl implements Signer {
     /**
      * {@inheritDoc}
      */
-    @Override
+  
     public String sign(String message, File pemFile) {
         try {
             Security.addProvider(new BouncyCastleProvider());

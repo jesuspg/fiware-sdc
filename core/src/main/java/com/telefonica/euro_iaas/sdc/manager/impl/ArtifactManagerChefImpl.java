@@ -11,14 +11,15 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
-import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
+import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.BaseInstallableInstanceManagerChef;
 import com.telefonica.euro_iaas.sdc.manager.ArtifactManager;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
@@ -36,31 +37,33 @@ import com.xmlsolutions.annotation.UseCase;
  */
 @UseCase(traceTo = "UC_001", status = "implemented")
 @Requirement(traceTo = "BR001", status = "implemented")
-public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager implements ArtifactManager {
+public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef implements ArtifactManager {
 
     private ProductInstanceDao productInstanceDao;
     private ArtifactDao artifactDao;
     // private ProductDao productDao;
     // private IpToVM ip2vm;
     private ProductInstanceValidator validator;
+    private Installator installator;
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws InstallatorException
      */
 
     public ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact)
-            throws NodeExecutionException, FSMViolationException {
+            throws NodeExecutionException, FSMViolationException, InstallatorException {
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateDeployArtifact(productInstance);
 
             productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
 
-            VM vm = productInstance.getVm();
+            // VM vm = productInstance.getVm();
 
-            String recipe = recipeNamingGenerator.getDeployArtifactRecipe(productInstance);
-            callChef(productInstance.getProductRelease().getProduct().getName(), recipe, productInstance.getVm(),
-                    artifact.getAttributes());
+            installator
+                    .callService(productInstance, productInstance.getVm(), artifact.getAttributes(), DEPLOY_ARTIFACT);
 
             productInstance.setStatus(Status.INSTALLED);
 
@@ -76,7 +79,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
 
             return productInstance;
 
-        } catch (CanNotCallChefException e) {
+        } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
@@ -86,8 +89,6 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
         } catch (NodeExecutionException e) {
             restoreInstance(Status.ERROR, productInstance);
             throw e;
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
         } catch (AlreadyExistsEntityException e) {
             throw new SdcRuntimeException(e);
         }
@@ -95,7 +96,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
     }
 
     public ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName)
-            throws NodeExecutionException, FSMViolationException {
+            throws NodeExecutionException, FSMViolationException, InstallatorException {
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateDeployArtifact(productInstance);
@@ -105,9 +106,8 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
 
             VM vm = productInstance.getVm();
 
-            String recipe = recipeNamingGenerator.getUnDeployArtifactRecipe(productInstance);
-            callChef(productInstance.getProductRelease().getProduct().getName(), recipe, productInstance.getVm(),
-                    artifact.getAttributes());
+            installator.callService(productInstance, productInstance.getVm(), artifact.getAttributes(),
+                    UNDEPLOY_ARTIFACT);
 
             productInstance.setStatus(Status.INSTALLED);
 
@@ -124,7 +124,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
             productInstance = productInstanceDao.update(productInstance);
             return productInstance;
 
-        } catch (CanNotCallChefException e) {
+        } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
@@ -134,10 +134,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
         } catch (NodeExecutionException e) {
             restoreInstance(Status.ERROR, productInstance);
             throw e;
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
         }
-
     }
 
     /**
@@ -188,19 +185,11 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
     }
 
     public ProductInstance update(ProductInstance productInstance) {
-        try {
-            return productInstanceDao.update(productInstance);
-        } catch (InvalidEntityException e) {
-            throw new SdcRuntimeException(e);
-        }
+        return productInstanceDao.update(productInstance);
     }
 
     /**
      * Creates or find the product instance in installation operation.
-     * 
-     * @param product
-     * @param vm
-     * @return
      */
     private Artifact getArtefactToUninstall(ProductInstance productInstance, String artifactName) {
         for (Artifact artifact : productInstance.getArtifacts()) {
@@ -233,6 +222,10 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManager impl
      */
     public void setValidator(ProductInstanceValidator validator) {
         this.validator = validator;
+    }
+
+    public void setInstallator(Installator installator) {
+        this.installator = installator;
     }
 
 }

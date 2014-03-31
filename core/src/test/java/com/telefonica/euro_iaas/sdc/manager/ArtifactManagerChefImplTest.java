@@ -14,18 +14,29 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import net.sf.json.JSONObject;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
 import com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -59,24 +70,35 @@ public class ArtifactManagerChefImplTest extends TestCase {
     private SDCClientUtils sdcClientUtils;
     private ProductInstanceValidator piValidator;
     private Artifact artifact;
+    private Installator installator;
 
     private Product product;
     private ProductInstance expectedProduct;
     private ProductRelease productRelease;
     private OS os;
     private VM host = new VM("fqn", "ip", "hostname", "domain");
-
+    
+    private String installRecipe ="Product::server";
+    private String uninstallRecipe ="Product::uninstall-server";
+    private String deployacrecipe ="Product::deployac";
+    private String undeployacrecipe ="Product::test";
+    
     public final static String EXECUTE_COMMAND = "/opt/sdc/scripts/executeRecipes.sh root@hostnamedomain";
     public final static String ASSIGN_UNINSTALL_COMMAND = "/opt/sdc/scripts/assignRecipes.sh hostnamedomain Product::uninstall-server";
 
+    private String jsonFilePath = "src/test/resources/Chefnode.js";
+    private String jsonFromFile;
+    
     @Before
     public void setUp() throws Exception {
+        jsonFromFile = getFile(jsonFilePath);
+        
         recipeNamingGenerator = mock(RecipeNamingGenerator.class);
-        when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn("Product::server");
-        when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(
-                "Product::uninstall-server");
-        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn("Product::deployac");
-
+        when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn(installRecipe);
+        when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(uninstallRecipe);
+        when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(deployacrecipe);
+        when(recipeNamingGenerator.getUnDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(undeployacrecipe);
+        
         propertiesProvider = mock(SystemPropertiesProvider.class);
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
@@ -87,12 +109,21 @@ public class ArtifactManagerChefImplTest extends TestCase {
         chefNodeDao = mock(ChefNodeDao.class);
         artifactDao = mock(ArtifactDao.class);
 
-        ChefNode cheNode = new ChefNode();
-        cheNode.addAttribute("dd", "dd", "dd");
-        when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(cheNode);
-
-        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(cheNode);
-
+        ChefNode chefNode = new ChefNode();
+        chefNode.fromJson(JSONObject.fromObject(jsonFromFile));
+        
+        chefNode.addAttribute("dd", "dd", "dd");
+        chefNode.addAttribute(deployacrecipe, "dd", "dd");
+        chefNode.addAttribute(undeployacrecipe, "dd", "dd");
+        
+        chefNode.addRecipe(deployacrecipe);
+        chefNode.addRecipe(undeployacrecipe);
+        
+        when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(chefNode);
+        when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
+        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
+        
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
 
@@ -114,6 +145,8 @@ public class ArtifactManagerChefImplTest extends TestCase {
          * NotUniqueResultException());
          */
         piValidator = mock(ProductInstanceValidator.class);
+        
+        installator=mock(InstallatorChefImpl.class);
 
         artifact = new Artifact();
         artifact.setName("artifact");
@@ -134,6 +167,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 
@@ -150,14 +184,13 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
 
-        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
+        //verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
 
         // verify(chefNodeDao, times(1)).loadNode(host.getChefClientName());
         // verify(chefNodeDao, times(1)).updateNode((ChefNode) anyObject());
-        verify(sdcClientUtils, times(2)).execute(host);
         verify(piValidator, times(1)).validateDeployArtifact(expectedProduct);
 
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);
@@ -172,7 +205,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);
-        assertEquals("Result", expectedProduct.getArtifacts().size(), 2);
+        assertEquals("Result", expectedProduct.getArtifacts().size(), 1);
 
     }
 
@@ -186,6 +219,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 
@@ -198,7 +232,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
 
         manager.deployArtifact(expectedProduct, artifact);
 
-        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
+//        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
         verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
         verify(piValidator, times(1)).validateDeployArtifact(expectedProduct);
@@ -218,6 +252,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         manager.setSdcClientUtils(sdcClientUtils);
         manager.setValidator(piValidator);
         manager.setArtifactDao(artifactDao);
+        manager.setInstallator(installator);
 
         product = new Product("Product::test", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, 
@@ -235,4 +270,20 @@ public class ArtifactManagerChefImplTest extends TestCase {
         assertEquals("Result", expectedProduct.getArtifacts().size(), 0);
 
     }
+    
+    private String getFile(String file) throws IOException {
+        File f = new File(file);
+        System.out.println(f.isFile() + " " + f.getAbsolutePath());
+
+        InputStream dd = new FileInputStream(f);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        StringBuffer ruleFile = new StringBuffer();
+        String actualString;
+
+        while ((actualString = reader.readLine()) != null) {
+          ruleFile.append(actualString).append("\n");
+        }
+        return ruleFile.toString();
+      }
 }

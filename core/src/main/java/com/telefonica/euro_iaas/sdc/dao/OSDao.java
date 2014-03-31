@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.sdc.dao;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.OS;
 
 /**
@@ -18,4 +19,5 @@ import com.telefonica.euro_iaas.sdc.model.OS;
  */
 public interface OSDao extends BaseDAO<OS, String> {
 
+    public OS load(Long id) throws EntityNotFoundException;
 }

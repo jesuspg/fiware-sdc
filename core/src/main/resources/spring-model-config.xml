@@ -2,148 +2,169 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-       default-autowire="no">
+http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="commandExecutor" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
-    </bean>
-
-
-    <bean id="baseInstallableInstanceManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableInstanceManager">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="sdcClientUtils" ref="sdcClientUtils"/>
-        <property name="recipeNamingGenerator" ref="recipeNamingGenerator"/>
-        <property name="chefNodeDao" ref="chefNodeDao"/>
-    </bean>
-
-    <bean id="productInstanceManager" lazy-init="true" parent="baseInstallableInstanceManager"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerChefImpl">
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-        <property name="productDao" ref="productDao"/>
-        <property name="validator" ref="productInstanceValidator"/>
-        <property name="ip2vm" ref="ip2vm"/>
-    </bean>
-
-    <bean id="artifactManager" lazy-init="true" parent="baseInstallableInstanceManager"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl">
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-        <property name="validator" ref="productInstanceValidator"/>
-        <property name="artifactDao" ref="artifactDao"/>
-    </bean>
-
-    <!-- CATALOG MANAGER -->
-
-    <bean id="productManager" lazy-init="true" parent="baseInstallableManager"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
-        <property name="productDao" ref="productDao"/>
-    </bean>
-    <bean id="productReleaseManager" lazy-init="true" parent="baseInstallableManager"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ProductReleaseManagerImpl">
-        <property name="osDao" ref="osDao"/>
-        <property name="productDao" ref="productDao"/>
-        <property name="productReleaseDao" ref="productReleaseDao"/>
-        <property name="validator" ref="productReleaseValidator"/>
-    </bean>
-
-    <bean id="baseInstallableManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
-        <property name="commandExecutor" ref="commandExecutor"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"/>
-        <property name="fileDao" ref="fileDao"/>
-    </bean>
-
-    <bean id="chefNodeManager" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
-        <property name="chefNodeDao" ref="chefNodeDao"/>
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-    </bean>
-    <bean id="chefClientManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.impl.ChefClientManagerImpl">
-        <property name="chefClientDao" ref="chefClientDao"/>
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-        <property name="chefNodeDao" ref="chefNodeDao"/>
-    </bean>
-
-    <!-- UTILS CLASSES -->
-    <bean id="recipeNamingGenerator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.RecipeNamingGeneratorImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-    </bean>
-
-    <bean id="rsaSigner" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.RSASignerImpl">
-    </bean>
-
-    <bean id="mixlibAuthenticationDigester" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigesterImpl">
-        <property name="signer" ref="rsaSigner"></property>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-    </bean>
+	<bean id="commandExecutor" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
+	</bean>
 
 
-    <bean id="restClient" class="com.sun.jersey.api.client.Client"
-          factory-method="create"/>
+	<bean id="baseInstallableInstanceManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.installator.impl.BaseInstallableInstanceManagerChef">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="sdcClientUtils" ref="sdcClientUtils" />
+		<property name="recipeNamingGenerator" ref="recipeNamingGenerator" />
+		<property name="chefNodeDao" ref="chefNodeDao" />
+	</bean>
 
-    <bean id="chefNodeDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ChefNodeDaoRestImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="digester" ref="mixlibAuthenticationDigester"></property>
-        <property name="client" ref="restClient"></property>
-    </bean>
-
-    <!-- <bean id="chefClientDao" lazy-init="true"
-        class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoCommandImpl">
-        <property name="commandExecutor" ref="commandExecutor"></property>
-    </bean>-->
-
-    <bean id="chefClientDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoRestImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="digester" ref="mixlibAuthenticationDigester"></property>
-        <property name="client" ref="restClient"></property>
-    </bean>
-
-    <bean id="fileDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.FileDaoWebDavImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="client" ref="restClient"/>
-    </bean>
-
-    <bean id="sdcClientUtils" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="client" ref="restClient"/>
-        <property name="nodeCommandDao" ref="nodeCommandDao"/>
-        <property name="osDao" ref="osDao"/>
-    </bean>
-
-    <bean id="ip2vm" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
-        <property name="sdcClientUtils" ref="sdcClientUtils"/>
-    </bean>
-
-    <bean id="taskNotificator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.util.TaskNotificatorImpl">
-        <property name="client" ref="restClient"/>
-    </bean>
+	<bean id="productInstanceManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductInstanceManagerImpl">
+		<property name="productInstanceDao" ref="productInstanceDao" />
+		<property name="productDao" ref="productDao" />
+		<property name="validator" ref="productInstanceValidator" />
+		<property name="chefInstallator" ref="chefInstallator" />
+		<property name="puppetInstallator" ref="puppetInstallator" />
+	</bean>
 
 
-    <!-- ===========
-    == VALIDATORS ==
-    ================ -->
+	<bean id="chefInstallator" lazy-init="true"
+		parent="baseInstallableInstanceManager" 
+		class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="sdcClientUtils" ref="sdcClientUtils" />
+		<property name="recipeNamingGenerator" ref="recipeNamingGenerator" />
+		<property name="chefNodeDao" ref="chefNodeDao" />
+		<property name="ip2vm" ref="ip2vm"/>
+	</bean>
 
-    <bean id="fsmValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.validation.FSMValidatorImpl">
-    </bean>
-    <bean id="productInstanceValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidatorImpl">
-        <property name="fsmValidator" ref="fsmValidator"/>
-    </bean>
+	<bean id="puppetInstallator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="client" ref="httpClient" />
+	</bean>
 
-    <bean id="productReleaseValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
-        <property name="productInstanceDao" ref="productInstanceDao"/>
-    </bean>
+	<bean id="httpClient" lazy-init="true"
+		class="org.apache.http.impl.client.DefaultHttpClient" />
+
+	<bean id="artifactManager" lazy-init="true"
+		parent="baseInstallableInstanceManager"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ArtifactManagerChefImpl">
+		<property name="productInstanceDao" ref="productInstanceDao" />
+		<property name="validator" ref="productInstanceValidator" />
+		<property name="artifactDao" ref="artifactDao" />
+		<property name="installator" ref="chefInstallator" />
+	</bean>
+
+	<!-- CATALOG MANAGER -->
+
+	<bean id="productManager" lazy-init="true" parent="baseInstallableManager"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
+		<property name="productDao" ref="productDao" />
+	</bean>
+	<bean id="productReleaseManager" lazy-init="true"
+		parent="baseInstallableManager"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductReleaseManagerImpl">
+		<property name="osDao" ref="osDao" />
+		<property name="productDao" ref="productDao" />
+		<property name="productReleaseDao" ref="productReleaseDao" />
+		<property name="validator" ref="productReleaseValidator" />
+	</bean>
+
+	<bean id="baseInstallableManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
+		<property name="commandExecutor" ref="commandExecutor" />
+		<property name="propertiesProvider" ref="systemPropertiesProvider" />
+		<property name="fileDao" ref="fileDao" />
+	</bean>
+
+	<bean id="chefNodeManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
+		<property name="chefNodeDao" ref="chefNodeDao" />
+		<property name="productInstanceDao" ref="productInstanceDao" />
+	</bean>
+	<bean id="chefClientManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ChefClientManagerImpl">
+		<property name="chefClientDao" ref="chefClientDao" />
+		<property name="productInstanceDao" ref="productInstanceDao" />
+		<property name="chefNodeDao" ref="chefNodeDao" />
+	</bean>
+
+	<!-- UTILS CLASSES -->
+	<bean id="recipeNamingGenerator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.RecipeNamingGeneratorImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+	</bean>
+
+	<bean id="rsaSigner" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.RSASignerImpl">
+	</bean>
+
+	<bean id="mixlibAuthenticationDigester" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigesterImpl">
+		<property name="signer" ref="rsaSigner"></property>
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+	</bean>
+
+
+	<bean id="clientConfig" lazy-init="true" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientConfigImp"	/>
+
+	<bean id="chefNodeDao" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.dao.impl.ChefNodeDaoRestImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="digester" ref="mixlibAuthenticationDigester"></property>
+		<property name="clientConfig" ref="clientConfig"></property>
+	</bean>
+	
+	<bean id="restClient" class="com.sun.jersey.api.client.Client"
+		factory-method="create" />
+
+	<!-- <bean id="chefClientDao" lazy-init="true" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoCommandImpl"> 
+		<property name="commandExecutor" ref="commandExecutor"></property> </bean> -->
+
+	<bean id="chefClientDao" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoRestImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="digester" ref="mixlibAuthenticationDigester"></property>
+		<property name="clientConfig" ref="clientConfig"></property>
+	</bean>
+
+	<bean id="fileDao" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.dao.impl.FileDaoWebDavImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="client" ref="restClient" />
+	</bean>
+
+	<bean id="sdcClientUtils" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
+		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+		<property name="client" ref="restClient" />
+		<property name="nodeCommandDao" ref="nodeCommandDao" />
+		<property name="osDao" ref="osDao" />
+	</bean>
+
+	<bean id="ip2vm" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.IpToVMRestClientImpl">
+		<property name="sdcClientUtils" ref="sdcClientUtils" />
+	</bean>
+
+	<bean id="taskNotificator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.TaskNotificatorImpl">
+		<property name="client" ref="restClient" />
+	</bean>
+
+
+	<!-- =========== == VALIDATORS == ================ -->
+
+	<bean id="fsmValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.validation.FSMValidatorImpl">
+	</bean>
+	<bean id="productInstanceValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidatorImpl">
+		<property name="fsmValidator" ref="fsmValidator" />
+	</bean>
+
+	<bean id="productReleaseValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.validation.ProductReleaseValidatorImpl">
+		<property name="productInstanceDao" ref="productInstanceDao" />
+	</bean>
 </beans>
