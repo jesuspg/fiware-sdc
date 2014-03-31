@@ -29,7 +29,7 @@ public interface BaseInstallableSyncService<T extends InstallableInstance> {
      * @throws InvalidExecutionException
      *             if the return of the task is not success
      */
-    T upgrade(String vdc, String name, String version) throws MaxTimeWaitingExceedException, InvalidExecutionException;
+    T upgrade(String vdc, String name, String version, String token) throws MaxTimeWaitingExceedException, InvalidExecutionException;
 
     /**
      * Configure the selected instance.
@@ -47,7 +47,7 @@ public interface BaseInstallableSyncService<T extends InstallableInstance> {
     // T configure(String vdc, Long id, List<Attribute> arguments)
     // throws MaxTimeWaitingExceedException, InvalidExecutionException;
 
-    T configure(String vdc, String name, List<Attribute> arguments) throws MaxTimeWaitingExceedException,
+    T configure(String vdc, String name, List<Attribute> arguments,String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException;
 
     /**
@@ -66,7 +66,7 @@ public interface BaseInstallableSyncService<T extends InstallableInstance> {
     // T uninstall(String vdc, Long id)
     // throws MaxTimeWaitingExceedException, InvalidExecutionException;
 
-    T uninstall(String vdc, String name) throws MaxTimeWaitingExceedException, InvalidExecutionException;
+    T uninstall(String vdc, String name, String token) throws MaxTimeWaitingExceedException, InvalidExecutionException;
 
     /**
      * Retrieve the selected application instance.
@@ -80,7 +80,7 @@ public interface BaseInstallableSyncService<T extends InstallableInstance> {
      *             if the resource does not found
      */
     // T load(String vdc, Long id) throws ResourceNotFoundException;
-    T load(String vdc, String name) throws ResourceNotFoundException;
+    T load(String vdc, String name, String token) throws ResourceNotFoundException;
 
     /**
      * Retrieve the selected application instance.
@@ -91,6 +91,6 @@ public interface BaseInstallableSyncService<T extends InstallableInstance> {
      * @throws ResourceNotFoundException
      *             if the resource does not found
      */
-    T load(String url) throws ResourceNotFoundException;
+    T loadUrl(String url, String token, String tenant) throws ResourceNotFoundException;
 
 }

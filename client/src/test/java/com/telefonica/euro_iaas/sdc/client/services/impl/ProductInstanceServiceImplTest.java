@@ -12,7 +12,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import static org.mockito.Matchers.any;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -43,6 +43,7 @@ public class ProductInstanceServiceImplTest {
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
 
         String vdc = "vdc";
+        String token = "token";
         ProductInstanceDto productDto = new ProductInstanceDto();
         String urlCallback = "http://localhost";
 
@@ -59,7 +60,7 @@ public class ProductInstanceServiceImplTest {
         when(builder.header("callback", urlCallback)).thenReturn(builder);
         when(builder.post(Task.class)).thenReturn(task);
 
-        Task resultTask = productInstanceService.install(vdc, productDto, urlCallback);
+        Task resultTask = productInstanceService.install(vdc, productDto, urlCallback, token);
 
         // then
         assertNotNull(resultTask);
@@ -80,6 +81,7 @@ public class ProductInstanceServiceImplTest {
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
 
         String vdc = "vdc";
+        String token = "token";
         String urlCallback = "http://localhost";
         Artifact artifact = new Artifact();
         String productInstanceId = "id";
@@ -96,7 +98,7 @@ public class ProductInstanceServiceImplTest {
         when(builder.entity(artifact)).thenReturn(builder);
         when(builder.header("callback", urlCallback)).thenReturn(builder);
         when(builder.post(Task.class)).thenReturn(expectedTask);
-        Task task = productInstanceService.installArtifact(vdc, productInstanceId, artifact, urlCallback);
+        Task task = productInstanceService.installArtifact(vdc, productInstanceId, artifact, urlCallback, token);
 
         // then
         assertNotNull(task);
@@ -117,6 +119,7 @@ public class ProductInstanceServiceImplTest {
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
 
         String vdc = "vdc";
+        String token = "token";
         String urlCallback = "http://localhost";
         Artifact artifact = new Artifact();
         artifact.setName("name");
@@ -132,7 +135,7 @@ public class ProductInstanceServiceImplTest {
         when(builder.entity(artifact)).thenReturn(builder);
         when(builder.header("callback", urlCallback)).thenReturn(builder);
         when(builder.delete(Task.class)).thenReturn(expectedTask);
-        Task task = productInstanceService.uninstallArtifact(vdc, productInstanceId, artifact, urlCallback);
+        Task task = productInstanceService.uninstallArtifact(vdc, productInstanceId, artifact, urlCallback, token);
 
         // then
         assertNotNull(task);
@@ -162,6 +165,7 @@ public class ProductInstanceServiceImplTest {
         String orderType = "desc";
         String vdc = "1312321312";
         String productName = "productName";
+        String token = "token";
 
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams.add("hostname", hostname);
@@ -184,10 +188,12 @@ public class ProductInstanceServiceImplTest {
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.queryParams(searchParams)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
+        when(builder.type(type)).thenReturn(builder);
+
         when(builder.get(ProductInstances.class)).thenReturn(expectedList);
 
         List<ProductInstance> list = productInstanceService.findAll(hostname, domain, ip, fqn, page, pageSize, orderBy,
-                orderType, status, vdc, productName);
+                orderType, status, vdc, productName, token);
 
         // then
         assertNotNull(list);
@@ -203,6 +209,7 @@ public class ProductInstanceServiceImplTest {
         String type = "application/json";
         String vdc = "my_vdc";
         String name = "name";
+        String token = "token";
 
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
 
@@ -214,11 +221,13 @@ public class ProductInstanceServiceImplTest {
         // when
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
+        when(builder.type(type)).thenReturn(builder);
+
         when(builder.get(ProductInstance.class)).thenReturn(expectedProductInstance);
 
         ProductInstance productInstance = null;
         try {
-            productInstance = productInstanceService.load(vdc, name);
+            productInstance = productInstanceService.load(vdc, name, token);
         } catch (ResourceNotFoundException e) {
             fail();
         }
@@ -238,6 +247,7 @@ public class ProductInstanceServiceImplTest {
         String type = "application/json";
         String vdc = "my_vdc";
         String name = "name";
+        String token = "token";
 
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
 
@@ -249,11 +259,14 @@ public class ProductInstanceServiceImplTest {
         // when
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
+        when(builder.type(type)).thenReturn(builder);
+        when(builder.header(any(String.class), any(Object.class))).thenReturn(builder);
+        
         when(builder.get(ProductInstance.class)).thenReturn(expectedProductInstance);
 
         ProductInstance productInstance = null;
         try {
-            productInstance = productInstanceService.load(url);
+            productInstance = productInstanceService.loadUrl(url, vdc , token);
         } catch (ResourceNotFoundException e) {
             fail();
         }

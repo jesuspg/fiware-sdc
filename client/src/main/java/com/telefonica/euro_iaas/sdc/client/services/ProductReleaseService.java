@@ -30,13 +30,13 @@ public interface ProductReleaseService {
      *            the file containing the binaries.
      * @return the created product.
      */
-    ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files);
+    ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token, String tenant);
 
     /**
      * @param releaseDto
      * @return the created product release
      */
-    ProductRelease add(ProductReleaseDto releaseDto);
+    ProductRelease add(ProductReleaseDto releaseDto,String token, String tenant);
 
     /**
      * Update to the catalog the product release.
@@ -49,7 +49,7 @@ public interface ProductReleaseService {
      *            the file containing the binaries.
      * @return the created product.
      */
-    ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files);
+    ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token, String tenant);
 
     /**
      * Delete the product release from the catalogue
@@ -60,7 +60,7 @@ public interface ProductReleaseService {
      *            version product
      * @return void.
      */
-    void delete(String pname, String version);
+    void delete(String pname, String version, String token, String tenant);
 
     /**
      * Retrieve the product release from the SDC catalog
@@ -73,7 +73,7 @@ public interface ProductReleaseService {
      * @throws ResourceNotFoundException
      *             if the selected product does not exists.
      */
-    ProductRelease load(String product, String version) throws ResourceNotFoundException;
+    ProductRelease load(String product, String version,String token, String tenant) throws ResourceNotFoundException;
 
     /**
      * Retrieve all ProductReleases available in SDC catalog.
@@ -93,5 +93,5 @@ public interface ProductReleaseService {
      * @return the product instances that match with the criteria.
      */
     List<ProductRelease> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String productName,
-            String osType);
+            String osType, String token, String tenant);
 }

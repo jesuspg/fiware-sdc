@@ -30,7 +30,7 @@ public interface ProductService {
      * @throws InsertResourceException
      * @return the created product.
      */
-    Product add(Product product) throws InsertResourceException;
+    Product add(Product product, String token, String tenant) throws InsertResourceException;
 
      /**
      * Delete the product from the catalogue.
@@ -39,7 +39,7 @@ public interface ProductService {
      *            product name
      * @return void.
      */
-    void delete(String pname);
+    void delete(String pname,  String token, String tenant);
 
     /**
      * Retrieve the product from the SDC catalog
@@ -50,7 +50,7 @@ public interface ProductService {
      * @throws ResourceNotFoundException
      *             if the selected product does not exists.
      */
-    Product load(String pname) throws ResourceNotFoundException;
+    Product load(String pname,  String token, String tenant) throws ResourceNotFoundException;
 
     /**
      * Retrieve all ProductReleases available in SDC catalog.
@@ -65,7 +65,7 @@ public interface ProductService {
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
      * @return the product that match with the criteria.
      */
-    List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType);
+    List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType,  String token, String tenant);
     
     /**
      * Retrieve the attributes of a product.
@@ -73,7 +73,7 @@ public interface ProductService {
      *                 the product Name
      * @return list of attributes
      */
-    List<Attribute> loadAttributes(String pname) throws ResourceNotFoundException;
+    List<Attribute> loadAttributes(String pname,  String token, String tenant) throws ResourceNotFoundException;
     
     /**
      * Retrieve the metadatas of a product.
@@ -81,5 +81,5 @@ public interface ProductService {
      *                 the product Name
      * @return list of metadatas
      */
-    List<Metadata> loadMetadatas(String pname)  throws ResourceNotFoundException;
+    List<Metadata> loadMetadatas(String pname,  String token, String tenant)  throws ResourceNotFoundException;
 }

@@ -30,7 +30,7 @@ public interface TaskService {
      *            the task's id
      * @return the task
      */
-    Task load(String vdc, Long id);
+    Task load(String vdc, Long id, String tenant, String token);
 
     /**
      * Find a task for a given id.
@@ -39,7 +39,7 @@ public interface TaskService {
      *            the url where the task is
      * @return the task
      */
-    Task load(String url);
+     Task load(String url, String tenant, String token);
 
     /**
      * Retrieve the tasks that match with the given criteria
@@ -65,7 +65,7 @@ public interface TaskService {
      * @return the tasks that match with the criteria.
      */
     List<Task> findAll(Integer page, Integer pageSize, String orderBy, String orderType, List<TaskStates> states,
-            String resource, String owner, Date fromDate, Date toDate, String vdc);
+            String resource, String owner, Date fromDate, Date toDate, String vdc, String token);
 
     /**
      * Retrieve all task for a given product.
@@ -74,7 +74,7 @@ public interface TaskService {
      * @param productName
      * @return
      */
-    List<Task> findAllByProduct(String vdc, String productName);
+    List<Task> findAllByProduct(String vdc, String productName, String token);
 
     /**
      * Wait while the task is running.
@@ -84,5 +84,5 @@ public interface TaskService {
      * @throws MaxTimeWaitingExceedException
      *             if the waiting takes more time than expected
      */
-    Task waitForTask(String url) throws MaxTimeWaitingExceedException;
+    Task waitForTask(String url, String tenant, String token) throws MaxTimeWaitingExceedException;
 }

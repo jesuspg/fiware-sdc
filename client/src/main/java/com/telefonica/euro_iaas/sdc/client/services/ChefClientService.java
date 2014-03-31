@@ -27,7 +27,7 @@ public interface ChefClientService {
      *            to be deleted
      * @return the task
      */
-    Task delete(String vdc, String chefClientName) throws InvalidExecutionException;
+    Task delete(String vdc, String chefClientName, String token) throws InvalidExecutionException;
 
     /**
      * Load the ChefClient.
@@ -35,7 +35,7 @@ public interface ChefClientService {
      * @param vdc
      * @return
      */
-    ChefClient load(String vdc, String chefClientName) throws ResourceNotFoundException;
+    ChefClient load(String vdc, String chefClientName, String token) throws ResourceNotFoundException;
 
     /**
      * Load by hostname the ChefClient.
@@ -43,5 +43,5 @@ public interface ChefClientService {
      * @param vdc
      * @return
      */
-    ChefClient loadByHostname(String vdc, String hostname) throws ResourceNotFoundException;
+    ChefClient loadByHostname(String vdc, String hostname, String token) throws ResourceNotFoundException;
 }

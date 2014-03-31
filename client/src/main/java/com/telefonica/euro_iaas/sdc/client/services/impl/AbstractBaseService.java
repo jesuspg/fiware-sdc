@@ -10,6 +10,8 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 
 /**
  * Provides common functionallity and fields to every service.
@@ -72,5 +74,21 @@ public class AbstractBaseService {
             queryparams.add(key, value.toString());
         }
         return queryparams;
+    }
+    
+    protected Builder createWebResource (String url, String token, String tenant) {        
+    	WebResource webResource = getClient().resource(url);
+    	Builder builder = webResource.accept(getType()).type(getType());
+    	 System.out.println (url);
+    	 System.out.println ("token  " + token);
+    	 System.out.println ("tenant " + tenant);
+    	 
+    	
+    	 builder.header("X-Auth-Token", token);
+    	 builder.header("Tenant-Id", tenant);
+ 
+    	return builder;
+    	
+
     }
 }

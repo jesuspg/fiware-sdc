@@ -26,7 +26,7 @@ public interface BaseInstallableService<T extends InstallableInstance> {
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the task
      */
-    Task upgrade(String vdc, String name, String version, String callback);
+    Task upgrade(String vdc, String name, String version, String callback, String token);
 
     /**
      * Configure the selected instance.
@@ -39,7 +39,7 @@ public interface BaseInstallableService<T extends InstallableInstance> {
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the task.
      */
-    Task configure(String vdc, String name, String callback, List<Attribute> arguments);
+    Task configure(String vdc, String name, String callback, List<Attribute> arguments, String token);
 
     /**
      * Uninstall a previously installed instance.
@@ -50,7 +50,7 @@ public interface BaseInstallableService<T extends InstallableInstance> {
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the task.
      */
-    Task uninstall(String vdc, String name, String callback);
+    Task uninstall(String vdc, String name, String callback, String token);
 
     /**
      * Retrieve the selected application instance.
@@ -63,7 +63,7 @@ public interface BaseInstallableService<T extends InstallableInstance> {
      * @throws ResourceNotFoundException
      *             if the resource does not found
      */
-    T load(String vdc, String name) throws ResourceNotFoundException;
+    T load(String vdc, String name, String token) throws ResourceNotFoundException;
 
     /**
      * Retrieve the selected application instance.
@@ -74,5 +74,5 @@ public interface BaseInstallableService<T extends InstallableInstance> {
      * @throws ResourceNotFoundException
      *             if the resource does not found
      */
-    T load(String url) throws ResourceNotFoundException;
+    T loadUrl(String url, String token, String tenant) throws ResourceNotFoundException;
 }
