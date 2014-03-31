@@ -64,7 +64,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                 throw new AlreadyInstalledException(instance);
             } else if (!(instance.getStatus().equals(Status.UNINSTALLED))
                     && !(instance.getStatus().equals(Status.ERROR)))
-                //restoreInstance(Status.ERROR, instance);
+                //restoreInstance(Status.UNINSTALLED, instance);
                 throw new InvalidInstallProductRequestException("Product " + productRelease.getProduct().getName()
                         + " " + productRelease.getVersion() + " cannot be installed in the VM " + vm.getFqn()
                         + " strage status:  " + instance.getStatus());
@@ -97,18 +97,18 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.validateInstalatorData(vm);
-                chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_init");
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
-                chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm);
                     puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
                 } else {
                     chefInstallator.validateInstalatorData(vm);
-                    chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL);
-                    chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 
@@ -215,7 +215,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
         } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
-            throw new SdcRuntimeException(e);
+            throw new InstallatorException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
             // restore the status
             restoreInstance(previousStatus, productInstance);

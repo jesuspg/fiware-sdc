@@ -53,7 +53,7 @@ public class InstallatorChefTest {
     private SDCClientUtils sdcClientUtils;
     
     
-    private String jsonFilePath = "src/test/resources/Chefnode.js";
+    private String jsonFilePath = "src/test/resources/chefNodeOhaiTimeDate.js";
     private String jsonFromFile; 
    
     private String initProbeRecipe = "probe::0.1_init";
@@ -61,7 +61,9 @@ public class InstallatorChefTest {
     private String installRecipe ="Product::server";
     private String uninstallRecipe ="Product::uninstall-server";
     private String deployacrecipe ="Product::deployac";
-
+    private String configurerecipe ="Product::configure";
+    private String undeployacrecipe = "Product::undeployac";
+    
     @Before
     public void setup() throws CanNotCallChefException, EntityNotFoundException, IOException, NodeExecutionException {
         os = new OS("os1", "1", "os1 description", "v1");
@@ -87,10 +89,10 @@ public class InstallatorChefTest {
 
         chefNode.addAttribute("dd", "dd", "dd");
         chefNode.addAttribute(installRecipe, "dd", "dd");
-        chefNode.addAttribute("action","action_probe", "install");
-        chefNode.addRecipe(initProbeRecipe);
+        chefNode.addAttribute("action","action_probe", "init");
+        //chefNode.addRecipe(initProbeRecipe);
         chefNode.addRecipe(installRecipe);
-        chefNode.addRecipe(installProbeRecipe);
+        //chefNode.addRecipe(installProbeRecipe);
         
         chefNodeDao = mock(ChefNodeDao.class);
         when(chefNodeDao.loadNode(any(String.class))).thenReturn(chefNode);
@@ -102,6 +104,8 @@ public class InstallatorChefTest {
         when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn(installRecipe);
         when(recipeNamingGenerator.getUninstallRecipe(any(ProductInstance.class))).thenReturn(uninstallRecipe);
         when(recipeNamingGenerator.getDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(deployacrecipe);
+        when(recipeNamingGenerator.getConfigureRecipe(any(ProductInstance.class))).thenReturn(configurerecipe);
+        when(recipeNamingGenerator.getUnDeployArtifactRecipe(any(ProductInstance.class))).thenReturn(undeployacrecipe);
         
         propertiesProvider = mock(SystemPropertiesProvider.class);
         

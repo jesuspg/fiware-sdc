@@ -116,7 +116,7 @@ public class BaseInstallableInstanceManagerChef {
      * @throws InstallatorException
      * @throws ShellCommandException
      */
-    public void unassignRecipes(VM vm, List<String> recipes) throws InstallatorException {
+    public void unassignRecipes(VM vm, String recipe) throws InstallatorException {
         // tell Chef the assigned recipes shall be deleted:
         ChefNode node = null;
         try {
@@ -129,9 +129,7 @@ public class BaseInstallableInstanceManagerChef {
             throw new InstallatorException(e);
         }
         try {
-            for (int i=0; i < recipes.size(); i++){
-                node.removeRecipe(recipes.get(i));
-            }
+            node.removeRecipe(recipe);
             chefNodeDao.updateNode(node);
         } catch (CanNotCallChefException e) {
             throw new InstallatorException(e);
@@ -157,6 +155,14 @@ public class BaseInstallableInstanceManagerChef {
         try {
             node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
             node.addRecipe(recipe);
+            
+            /*if (!(recipe.equals("probe::0.1_init")) && !(recipe.equals("probe::0.1_install")))
+                node.addAttribute(process, "action_" + process, "install");
+            else if (recipe.equals("probe::0.1_init")){
+                node.addAttribute(process, "action_" + process, "init");
+            } else if (recipe.equals("probe::0.1_install")) { 
+                node.addAttribute(process, "action_" + process, "installed");
+            }*/
             if (attributes != null) {
                 for (Attribute attr : attributes) {
                     node.addAttribute(process, attr.getKey(), attr.getValue());

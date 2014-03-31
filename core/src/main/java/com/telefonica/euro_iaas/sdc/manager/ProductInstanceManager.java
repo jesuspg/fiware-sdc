@@ -10,6 +10,7 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
@@ -67,8 +68,9 @@ public interface ProductInstanceManager {
      * @param productInstance
      *            the product instance to modify
      * @return the product instance updated
+     * @throws InvalidEntityException
      */
-    ProductInstance update(ProductInstance productInstance);
+    ProductInstance update(ProductInstance productInstance) throws InvalidEntityException;
 
     /**
      * Configure an installed product.
