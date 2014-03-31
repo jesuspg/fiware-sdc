@@ -1,0 +1,1 @@
+/Users/jesuspg/Devel/liquibase-3/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://localhost:5432/sdc --username=postgres --password=postgres diffChangeLog --referenceUrl=jdbc:postgresql://localhost:5432/sdc_filab --referenceUsername=postgres --referencePassword=postgres
