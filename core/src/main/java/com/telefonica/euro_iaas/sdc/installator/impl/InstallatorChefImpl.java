@@ -251,8 +251,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             df = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy", Locale.US);
         } else if (platform.equals("centos") && platform_version.equals("6.3")) {
             df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
+        } else if (platform.equals("ubuntu") && platform_version.equals("12.04")){
+            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
         } else {
-            df = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy", Locale.US);
+            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
         }
         
         long last_recipeexecution_timestamp =0;
