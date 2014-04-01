@@ -33,6 +33,10 @@ public class ProductIT {
     SDCClient client;
     String baseUrl;
     String mediaType;
+    
+    public static String TOKEN ="token";
+    public static String TENANT ="vdc";
+
 
     @Before
     public void setUp() {
@@ -50,7 +54,7 @@ public class ProductIT {
 
         Product product = null;
         try {
-            product = productService.load("kk");
+            product = productService.load("kk",TOKEN,TENANT );
             fail("The product kk should not exist");
         } catch (ResourceNotFoundException e) {
             // then
@@ -67,7 +71,7 @@ public class ProductIT {
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
 
-        Product product = productService.load("tomcat");
+        Product product = productService.load("tomcat", TOKEN, TENANT);
         // then
         assertNotNull(productService);
         assertNotNull(product);
@@ -81,7 +85,7 @@ public class ProductIT {
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
 
-        Product product = productService.load("tomcat");
+        Product product = productService.load("tomcat", TOKEN, TENANT);
         // then
         assertNotNull(productService);
         assertNotNull(product);
@@ -95,7 +99,7 @@ public class ProductIT {
 
         // when
 
-        List<Product> list = productService.findAll(null, null, null, null);
+        List<Product> list = productService.findAll(null, null, null, null, TOKEN, TENANT);
 
         // then
         assertNotNull(list);
@@ -122,7 +126,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            Product createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -150,7 +154,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            Product createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -176,7 +180,7 @@ public class ProductIT {
         // when
         Product createdProduct = null;
         try {
-            createdProduct = productService.add(product);
+            createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -194,15 +198,15 @@ public class ProductIT {
         produtToDelete.setName("productToDelete");
         produtToDelete.setDescription("test product");
 
-        productService.add(produtToDelete);
+        productService.add(produtToDelete, TOKEN, TENANT);
 
         // when
 
-        productService.delete("productToDelete");
+        productService.delete("productToDelete", TOKEN, TENANT);
 
         // then
         try {
-            productService.load("productToDelete");
+            productService.load("productToDelete", TOKEN, TENANT);
             fail();
         } catch (ResourceNotFoundException e) {
             assertTrue(true);
@@ -218,7 +222,7 @@ public class ProductIT {
         // when
 
         try {
-            productService.loadAttributes("kk1");
+            productService.loadAttributes("kk1", TOKEN, TENANT);
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
             fail("ResourceNotFoundException " + e.getMessage());
@@ -235,7 +239,7 @@ public class ProductIT {
         // when
 
         try {
-            productService.loadMetadatas("kk2");
+            productService.loadMetadatas("kk2", TOKEN, TENANT);
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
             fail("ResourceNotFoundException " + e.getMessage());
@@ -266,7 +270,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            return productService.add(product);
+            return productService.add(product, TOKEN, TENANT);
         } catch (InsertResourceException e) {
             fail("InsertResourceException:" + e);
         }

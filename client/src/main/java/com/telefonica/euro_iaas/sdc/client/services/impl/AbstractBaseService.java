@@ -79,16 +79,8 @@ public class AbstractBaseService {
     protected Builder createWebResource (String url, String token, String tenant) {        
     	WebResource webResource = getClient().resource(url);
     	Builder builder = webResource.accept(getType()).type(getType());
-    	 System.out.println (url);
-    	 System.out.println ("token  " + token);
-    	 System.out.println ("tenant " + tenant);
-    	 
-    	
-    	 builder.header("X-Auth-Token", token);
-    	 builder.header("Tenant-Id", tenant);
- 
-    	return builder;
-    	
-
+    	builder.header("X-Auth-Token", token);
+    	builder.header("Tenant-Id", tenant);
+        return builder;
     }
 }

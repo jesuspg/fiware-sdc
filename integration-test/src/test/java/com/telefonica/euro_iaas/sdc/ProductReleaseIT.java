@@ -44,6 +44,9 @@ public class ProductReleaseIT {
     SDCClient client;
     String baseUrl;
     String mediaType;
+    
+    public static String TOKEN ="token";
+    public static String TENANT ="vdc";
 
     @Before
     public void setUp() {
@@ -61,7 +64,7 @@ public class ProductReleaseIT {
 
         ProductRelease productRelease = null;
         try {
-            productRelease = productReleaseService.load("kk", "");
+            productRelease = productReleaseService.load("kk", "",TOKEN,TENANT );
             fail("The product kk should not exist");
         } catch (ResourceNotFoundException e) {
             // then
@@ -79,7 +82,7 @@ public class ProductReleaseIT {
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
         // when
 
-        ProductRelease productRelease = productReleaseService.load("tomcat", "6");
+        ProductRelease productRelease = productReleaseService.load("tomcat", "6",TOKEN,TENANT );
         // then
         assertNotNull(productReleaseService);
         assertNotNull(productRelease);
@@ -96,7 +99,7 @@ public class ProductReleaseIT {
         // when
         try {
 
-            productReleaseService.findAll(null, null, null, null, null, null);
+            productReleaseService.findAll(null, null, null, null, null, null, TOKEN, TENANT);
             fail();
         } catch (com.sun.jersey.api.client.UniformInterfaceException ex) {
             // then
@@ -112,7 +115,7 @@ public class ProductReleaseIT {
         // when
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
 
-        List<ProductRelease> list = productReleaseService.findAll(null, null, null, null, "tomcat", null);
+        List<ProductRelease> list = productReleaseService.findAll(null, null, null, null, "tomcat", null,TOKEN,TENANT );
         // then
         assertNotNull(list);
         assertFalse(list.isEmpty());
@@ -127,7 +130,7 @@ public class ProductReleaseIT {
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
         // when
         try {
-            productReleaseService.findAll(null, null, null, null, "kk", null);
+            productReleaseService.findAll(null, null, null, null, "kk", null,TOKEN,TENANT );
             fail();
         } catch (com.sun.jersey.api.client.UniformInterfaceException ex) {
             // then
@@ -154,7 +157,7 @@ public class ProductReleaseIT {
 
         // when
         try {
-            client.getProductService(baseUrl, mediaType).add(product);
+            client.getProductService(baseUrl, mediaType).add(product,TOKEN,TENANT );
         } catch (InsertResourceException e) {
             fail();
         }
@@ -196,11 +199,11 @@ public class ProductReleaseIT {
 
         // when
         try {
-            client.getProductService(baseUrl, mediaType).add(product);
+            client.getProductService(baseUrl, mediaType).add(product,TOKEN,TENANT );
         } catch (InsertResourceException e) {
             fail();
         }
-        ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto);
+        ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto,TOKEN,TENANT );
 
         // then
         assertNotNull(productRelease);
@@ -239,7 +242,7 @@ public class ProductReleaseIT {
                 attributes, metadatas, supportedOS, transitableReleases);
         // when
         ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto,
-                cookbook, files);
+                cookbook, files,TOKEN,TENANT );
 
         // then
         assertNotNull(productRelease);
