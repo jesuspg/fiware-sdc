@@ -10,9 +10,9 @@
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,16 +63,16 @@ public class ProductInstanceResourceValidatorImplTest {
     public void testGetServerIds() throws Exception {
         ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
         List<String> serverids = validator.getServerIds(serversResponse);
-        Assert.assertEquals(2, serverids.size());
-        Assert.assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
-        Assert.assertEquals("4df2d4ff-233d-42ca-b7fb-c2d7787f1ee5", serverids.get(1));
+        assertEquals(2, serverids.size());
+        assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
+        assertEquals("4df2d4ff-233d-42ca-b7fb-c2d7787f1ee5", serverids.get(1));
     }
 
     @Test
     public void testGetServerIP() throws Exception {
         ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
         String ip = validator.getServerPublicIP(serverResponse);
-        Assert.assertEquals("130.206.82.66", ip);
+        assertEquals("130.206.82.66", ip);
     }
 
 }

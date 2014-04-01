@@ -7,18 +7,19 @@
 
 package com.telefonica.euro_iaas.sdc.model.dto;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sf.json.JSONObject;
 
-public class ChefNodeTest extends TestCase {
+import org.junit.Test;
+
+public class ChefNodeTest {
 
     private final static String JSON_STRING = "{\"normal\":{\"tags\":[],\"postgresql\":"
             + "{\"dir\":\"/etc/postgresql/8.4/main\"}},"
-            + "\"name\":\"flexichefnode3.flexiscale.com\",\"override\":{},"
-            + "\"ohai_time\":\"123456789\","
+            + "\"name\":\"flexichefnode3.flexiscale.com\",\"override\":{}," + "\"ohai_time\":\"123456789\","
             + "\"default\":{},\"json_class\":\"Chef::Node\"," + "\"run_list\": [ \"recipe[apache::2_install]\" ]}";
 
+    @Test
     public void testChefFromJSon() {
         JSONObject jsonObject = JSONObject.fromObject(JSON_STRING);
         ChefNode node = new ChefNode();
@@ -26,10 +27,11 @@ public class ChefNodeTest extends TestCase {
         node.addOverride("war", "application_context", "sdc");
         node.addOverride("war", "application_context", "app-conf");
         node.addAttribute("postgresql", "application_context", "app-conf");
-        Assert.assertEquals(node.getName(), "flexichefnode3.flexiscale.com");
-        Assert.assertEquals(node.getRunlList().get(0), "recipe[apache::2_install]");
+        assertEquals(node.getName(), "flexichefnode3.flexiscale.com");
+        assertEquals(node.getRunlList().get(0), "recipe[apache::2_install]");
     }
 
+    @Test
     public void testChefToJSon() {
         JSONObject jsonObject = JSONObject.fromObject(JSON_STRING);
         ChefNode node = new ChefNode();

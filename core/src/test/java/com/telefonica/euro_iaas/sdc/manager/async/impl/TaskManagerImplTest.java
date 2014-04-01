@@ -78,23 +78,8 @@ public class TaskManagerImplTest {
 
     }
 
-    @Test(expected = SdcRuntimeException.class)
-    public void shouldThrowExceptionInCreatesTaskWhenInvalidEntity() throws AlreadyExistsEntityException,
-            InvalidEntityException {
-        // given
-        Task task = new Task();
-
-        // when
-
-        when(taskDao.create(task)).thenThrow(new InvalidEntityException("invalid entity"));
-        taskManager.createTask(task);
-
-        // then
-
-    }
-
     @Test
-    public void shouldUpdateTask() throws AlreadyExistsEntityException, InvalidEntityException {
+    public void shouldUpdateTask() throws AlreadyExistsEntityException {
         // given
         Task task = new Task();
         Task updatedTask = new Task();
@@ -110,20 +95,6 @@ public class TaskManagerImplTest {
         assertNotNull(resultTask);
         verify(taskDao).update(task);
         verify(propertiesProvider).getProperty(SystemPropertiesProvider.TASK_BASE_URL);
-    }
-
-    @Test(expected = SdcRuntimeException.class)
-    public void shouldThrowExceptionInUpdatesTaskWhenInvalidEntity() throws InvalidEntityException {
-        // given
-        Task task = new Task();
-
-        // when
-
-        when(taskDao.update(task)).thenThrow(new InvalidEntityException("invalid entity"));
-        taskManager.updateTask(task);
-
-        // then
-
     }
 
     @Test

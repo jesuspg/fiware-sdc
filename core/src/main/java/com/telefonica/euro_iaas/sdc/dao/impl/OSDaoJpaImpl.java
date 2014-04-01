@@ -20,6 +20,7 @@ import com.telefonica.euro_iaas.sdc.model.OS;
  * @author Sergio Arroyo
  * @version $Id: $
  */
+
 public class OSDaoJpaImpl extends AbstractBaseDao<OS, String> implements OSDao {
 
     /** {@inheritDoc} */
@@ -32,6 +33,10 @@ public class OSDaoJpaImpl extends AbstractBaseDao<OS, String> implements OSDao {
     @Override
     public OS load(String osType) throws EntityNotFoundException {
         return super.loadByField(OS.class, "osType", osType);
+    }
+
+    public OS load(Long id) throws EntityNotFoundException {
+        return super.loadByField(OS.class, "id", id);
     }
 
 }

@@ -7,13 +7,13 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +50,10 @@ public class MultipartValidatorTest extends ValidatorUtils {
         Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
         Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
 
-        /*List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productReleaseDto.setPrivateAttributes(privateAttributes);*/
+        /*
+         * List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
+         * productReleaseDto.setPrivateAttributes(privateAttributes);
+         */
 
         System.out.println("Fin setUp() ");
     }
@@ -62,7 +64,7 @@ public class MultipartValidatorTest extends ValidatorUtils {
 
         try {
             multipartValidator.validateMultipart(multiPart, String.class);
-            Assert.fail();
+            fail();
         } catch (InvalidMultiPartRequestException e) {
             // Expected Exception
         }
@@ -75,7 +77,7 @@ public class MultipartValidatorTest extends ValidatorUtils {
 
         try {
             multipartValidator.validateMultipart(multiPart, String.class);
-            Assert.fail();
+            fail();
         } catch (InvalidMultiPartRequestException e) {
             // Expected Exception
         }
@@ -92,7 +94,7 @@ public class MultipartValidatorTest extends ValidatorUtils {
         System.out.println("Clase of type " + productReleaseDto.getClass() + " " + productReleaseDto.getProductName());
         try {
             multipartValidator.validateMultipart(multiPart, productReleaseDto.getClass());
-            Assert.fail();
+            fail();
         } catch (InvalidMultiPartRequestException e) {
             // Expected Exception
         }
@@ -108,7 +110,7 @@ public class MultipartValidatorTest extends ValidatorUtils {
 
         try {
             multipartValidator.validateMultipart(multiPart, productReleaseDto.getClass());
-            Assert.fail();
+            fail();
         } catch (InvalidMultiPartRequestException e) {
             // Expected Exception
         }
@@ -127,7 +129,7 @@ public class MultipartValidatorTest extends ValidatorUtils {
 
         try {
             multipartValidator.validateMultipart(multiPart, productReleaseDto.getClass());
-            Assert.fail();
+            fail();
         } catch (InvalidMultiPartRequestException e) {
             // Expected Exception
         }

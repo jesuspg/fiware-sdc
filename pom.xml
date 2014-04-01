@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>2.1.1-SNAPSHOT</version>
 
 
     <properties>
@@ -46,14 +45,22 @@
         <repoSiteName>repo-site</repoSiteName>
         <repoSiteUrl>${ciURI}</repoSiteUrl>
 
+
+        <!-- encoding -->
+
+        <encoding>utf-8</encoding>
+        <encoding.build.source>${encoding}</encoding.build.source>
+        <encoding.report.out>${encoding}</encoding.report.out>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+
+
         <!-- plugins versions -->
 
         <maven-site-plugin.version>2.2</maven-site-plugin.version>
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <compilerInfoDebug>false</compilerInfoDebug>
         <compilerOptimize>false</compilerOptimize>
@@ -62,13 +69,22 @@
 
         <jersey.version>1.17.1</jersey.version>
 
+        <!-- hibernate -->
+        <hibernate.version>4.1.8.Final</hibernate.version>
+        <hibernate-jpa-api.version>1.0.1.Final</hibernate-jpa-api.version>
+        <hsqldb.version>2.2.8</hsqldb.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <spring-data-jpa.version>1.4.3.RELEASE</spring-data-jpa.version>
+        <springdata.commons.version>1.6.3.RELEASE</springdata.commons.version>
+
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <copyright.year>2012</copyright.year>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
         <jvm.version>1.6</jvm.version>
         <tomcat.version>6</tomcat.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
+        <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
@@ -124,7 +140,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -151,12 +167,18 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.0-SNAPSHOT</version>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>
@@ -207,7 +229,7 @@
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
-                    <pushChanges>true</pushChanges>
+                    <!-- <pushChanges>true</pushChanges> -->
                     <!-- rse: To keep release branch -->
                     <keepBranch>true</keepBranch>
                     <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
@@ -219,9 +241,8 @@
 
             <!-- modify compiler options -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <version>2.3.2</version>
                 <configuration>
                     <source>${jvm.version}</source>
                     <target>${jvm.version}</target>
@@ -410,8 +431,9 @@
         <module>model</module>
         <module>core</module>
         <module>rest-api</module>
-        <module>integration-test</module>
+        <!--    <module>integration-test</module>    -->
         <module>puppet-wrapper</module>
         <module>client</module>
+        <module>migrations</module>
     </modules>
 </project>
