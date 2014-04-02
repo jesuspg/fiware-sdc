@@ -22,6 +22,18 @@ Feature: Get metadatas of a product in the catalogue
         When I get metadatas of a product "gfhfgh" in the catalog with "xml" content in the response
         Then I receive an "Bad Request" response with an "exception" error messages
 
+    @401_error
+    Scenario Outline: When list Products in the catalogue the token is not used
+        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+        When I request unauthorized errors "<errorType>" when "getMetadatas" in the catalog
+               |errorType|
+              |<errorType>|
+        Then I receive an "unauthorized" response with an "exception" error messages
+    Examples:
+      | errorType |
+      |wrong|
+      |empty|
+
     @404_error
     Scenario: Cause an Not Found path error when get metadatas of a product in the catalogue
         Given The "Product_test_0001" has been created and the sdc is up and properly configured

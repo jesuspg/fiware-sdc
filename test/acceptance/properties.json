@@ -9,14 +9,9 @@
         "paasmanager_url": "http://130.206.80.112:8082/paasmanager/rest",
         "vdc": "a68737887e5c453c8754ddb18315f961",
         "tenant": "QA",
-        "user": "pge354",
-        "password": "pge354",
-        "tier_image": "e6c5b19e-f655-4da8-86ea-6dd05be673ef",
-        "tier_num_min": "1",
-        "tier_num_max": "1",
-        "tier_num_initial": "1",
-        "tier_flavour": "2",
-        "tier_keypair": "pge354_keypair",
-        "tier_floatingip": "false"
+        "user": "testQA",
+        "password": "testQA",
+        "VM_IP": "130.206.81.135",
+        "VM_hostname": "testingIvanQA-ivan0001tier-1"
     }
 }

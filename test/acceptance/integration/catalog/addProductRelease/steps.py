@@ -55,6 +55,22 @@ def i_add_a_new_release_with_description_associated_to_product_in_the_catalog(st
 def i_request_a_wrong_path_when_i_add_a_new_product_release_in_the_catalog(step):
     world.env_requests.catalogue_addProductRelease (world.product, "version_error", "description_error", NOT_FOUND, AcceptXML)
 
+@step(u'I request unauthorized errors "([^"]*)" when add a new product "([^"]*)" with release "([^"]*)" in the catalog with xml content in the response')
+def  i_request_unauthorized_errors_when_add_a_new_product_with_release_in_the_catalog_with_xml_content_in_the_response(step, error, product, version):
+    """
+    Add a new release associated to a Product into the catalogue
+    :param step:
+    :param version: new release
+    :param description: release Notes
+    :param product:  product name
+    :param Accept: specify media types which are acceptable for the response, ex:
+                     "xml", "json"
+    """
+    world.product = product                                                                        # used in terrain.py for delete the product
+    world.version = version                                                                        # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProductRelease (product, version, "description for token error", error, AcceptXML)
+
+
 
 #--------------------------------------------------------------------------------------------------------
 

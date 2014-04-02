@@ -10,7 +10,7 @@ Feature: Get details a product in the catalogue
         When I get details of a product "Product_test_0001" in the catalog with "xml" content in the response
         Then I receive an "OK" response with a "Product details XML" with some items
 
-    @happy_path
+
     Scenario: Get details of a product in the catalogue with json content in the response
         Given The "Product_test_0001" has been created and the sdc is up and properly configured
         When I get details of a product "Product_test_0001" in the catalog with "json" content in the response
@@ -21,6 +21,18 @@ Feature: Get details a product in the catalogue
         Given the sdc is up and properly configured
         When I get details of a product "gfhfgh" in the catalog with "xml" content in the response
         Then I receive an "Bad Request" response with an "exception" error messages
+
+    @401_error
+    Scenario Outline: When list Products in the catalogue the token is not used
+        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+        When I request unauthorized errors "<errorType>" when "getDetails" in the catalog
+               |errorType|
+              |<errorType>|
+        Then I receive an "unauthorized" response with an "exception" error messages
+    Examples:
+      | errorType |
+      |wrong|
+      |empty|
 
     @404_error
     Scenario: Cause an Not Found path error when get details of a product in the catalogue

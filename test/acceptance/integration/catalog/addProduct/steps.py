@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from lettuce import step, world
-from time import sleep
-import random
-from tdaf_lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
-#from tools.environment_request import EnvironmentRequest
-from tools import catalogue_request
+from tools import utils
 
-## errorTypes constants
+
+# constants
 NOT_ERROR = ""
 NOT_FOUND = "Not Found"
 
@@ -64,6 +61,21 @@ def i_request_a_wrong_path_when_add_a_new_product_in_the_catalog(step, product, 
     world.product = product                                        # used in terrain.py for delete the product
     world.env_requests.catalogue_addProduct(product, label, None, NOT_FOUND, AcceptXML)
 
+
+@step(u'I request unauthorized errors "([^"]*)" when add a new product Product_test_0001 Without Name Label in the catalog with xml content in the response')
+def i_request_unauthorized_error(step, error):
+    """
+    Add a new product
+    :param step:
+    :param product: It is the product name that it will be created
+    :param label: configuration of values into the new product, ex:
+                   "only name",  "attributes", "attributes_and_all_metadatas", "metadata_installator", etc.
+    :param Accept: specify media types which are acceptable for the response, ex:
+                     "xml", "json"
+    """
+    world.product = "Product_test_0001"                                       # used in terrain.py for delete the product
+    world.env_requests.catalogue_addProduct("Product_test_0001", "Without Name Label", None, error, AcceptXML)
+
 @step(u'I receive an? "([^"]*)" response with an? "([^"]*)" [?]*')
 def i_receive_a_response_of_type(step, response_type, operation):
     """
@@ -74,11 +86,10 @@ def i_receive_a_response_of_type(step, response_type, operation):
                         "add Product only name XML", "add Product only name JSON", etc
     """
     status_code = http.status_codes[response_type]
-    body_expected = world.env_requests.get_body_expected(response_type, operation)        # Read from body_message.py
+    body_expected = utils.get_body_expected(response_type, operation)        # Read from body_message.py
     world.env_requests.check_response_status(world.response, status_code)
     world.env_requests.check_response_body(world.response, body_expected)
-    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
+    world.env_requests.catalogue_deleteProduct(world.product, AcceptXML, NOT_ERROR)
     pass
-
 
 

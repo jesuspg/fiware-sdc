@@ -16,9 +16,10 @@ def before_each_scenario(scenario):
 
 
 NOT_ERROR = ""
+AcceptXML = "xml"
 
 @after.each_scenario
 def after_each_scenario(scenario):
     #Delete the product created in the catalogue.
-    world.env_requests.catalogue_deleteProduct(world.product, NOT_ERROR)
+    world.env_requests.catalogue_deleteProduct(world.product, AcceptXML, NOT_ERROR)
     pass

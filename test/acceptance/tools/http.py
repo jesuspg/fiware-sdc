@@ -16,7 +16,8 @@ status_codes = {"OK": 200,
                 "Bad Method": 405,
                 "Not Acceptable":406,
                 "Conflict": 409,
-                "Internal Server Error": 500 }
+                "Unsupported Media Type": 415,
+                "Internal Server Error": 500}
 
 methodAllowed  = ['GET',
                   'POST',
@@ -106,7 +107,8 @@ def get_token(keystone_url, tenant, user, password):
                'Accept': "application/xml"}
     payload = {"auth": {"tenantName": tenant, "passwordCredentials": {"username": user, "password": password}}}
 
-    #print json.dumps(payload)
+    #print "\n\n\n url: "+str(keystone_url)+"\n header:"+str(headers)+"\nbody:\n"+str(json.dumps(payload))+"\n\n"
+
     response = post(keystone_url, headers, json.dumps(payload))
     data = response.read()
 
@@ -119,7 +121,6 @@ def get_token(keystone_url, tenant, user, password):
         try:
             result = (dom.getElementsByTagName('token'))[0]
             var = result.attributes["id"].value
-
             return var
         except:
             print ("Error in the processing environment")

@@ -1,12 +1,10 @@
-from argparse import _ActionsContainer
-
+# -*- coding: utf-8 -*-
 __author__ = 'ivanl@tid.es'
 
-import http
-import json
-from xml.etree.ElementTree import tostring
 from lettuce import world
 from tools import body_message
+import utils
+import http
 
 
 class CatalogueRequest:
@@ -15,44 +13,9 @@ class CatalogueRequest:
     """
     catalogURL = "catalog/product"
 
-    #Body types
-    ADD_PRODUCT_BODY =  '<?xml version="1.0" encoding="UTF-8"?>' \
-                    '<product>  </product>'
-
-    ALL_METADATAS = ' <metadatas>' \
-                    '   <key>image</key>' \
-                    '   <value>e6c5b19e-f655-4da8-86ea-6dd05be673ef</value>' \
-                    ' </metadatas>' \
-                    '  <metadatas>' \
-                    '   <key>cookbook_url</key>' \
-                    '   <value>https://forge.fi-ware.eu/scmrepos/svn/testbed/trunk/cookbooks/GESoftware/beatest</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>cloud</key>' \
-                    '   <value>yes</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>installator</key>' \
-                    '   <value>chef</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>open_ports</key>' \
-                    '   <value>22</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>repository</key>' \
-                    '   <value>svn</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>public</key>' \
-                    '   <value>no</value>' \
-                    ' </metadatas>' \
-                    ' <metadatas>' \
-                    '   <key>dependencies</key>' \
-                    '   <value>tomcat nodejs mysql</value>' \
-                    ' </metadatas>'
-
-    #ADD_PRODUCT = "<?xml version='1.0' encoding='UTF-8'?> <product></product>"
+    #Bodies
+    ADD_PRODUCT_BODY         = ""
+    ADD_PRODUCT_RELEASE_BODY = ""
 
     def __init__(self, keystone_url, paas_manager_url, tenant, user, password, vdc, sdc_url):
         """
@@ -69,14 +32,41 @@ class CatalogueRequest:
 
         self.token = self.__get__token()
 
-    def __init_ADD_PRODUCT_Body(self):
-        self.ADD_PRODUCT_BODY =  '<?xml version="1.0" encoding="UTF-8"?>' \
-                    '<product>  </product>'
+    def __init_ADD_PRODUCT_Body(self, content):
+        """
+        initializes add product body
+        :param content: "xml" or "json"
+        """
+        if content == 'xml':
+            self.ADD_PRODUCT_BODY = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>  <product>  </product>'
+        elif content == 'json':
+            self.ADD_PRODUCT_BODY = '{}'
+
+    def __init_ADD_PRODUCT_RELEASE_Body(self, content):
+        """
+        initializes add product release body
+        :param content: "xml" or "json"
+        """
+        if content == 'xml':
+            self.ADD_PRODUCT_RELEASE_BODY = '<productReleaseDto></productReleaseDto>'
+        elif content == 'json':
+            self.ADD_PRODUCT_RELEASE_BODY = '{}'
 
     def __get__token(self):
+        """
+        get token
+        :return: token
+        """
         return http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
 
     def __get__url (self, operation, product, version=None):
+        """
+        return URL for each operation
+        :param operation:
+        :param product:
+        :param version:
+        :return:
+        """
         if operation == "getProductList" or operation == "addProduct":
             return "%s/%s" % (self.sdc_url, self.catalogURL)
         elif operation == "getDetails" or operation == "deleteProduct":
@@ -90,33 +80,34 @@ class CatalogueRequest:
         elif operation == "deleteProductRelease" or operation == "getProductReleaseDetails":
             return "%s/%s/%s/%s/%s" % (self.sdc_url, self.catalogURL, product, "release", version)
 
-    def __get__headers(self, operation, Accept="xml"):
-        if operation == "getProductList" or operation == "getProductReleaseList":
-            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+str(Accept)}
-        elif operation == "addProduct" or operation == "addProductRelease":
-            return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+Accept, "Content-Type":"application/xml"}
-        elif operation == "getDetails" or operation == "getAttributes" or operation == "getMetadatas" or operation == "getProductReleaseDetails":
-            return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept}
-        elif operation == "deleteProduct" or operation == "deleteProductRelease":
-            return {'X-Auth-Token': self.token, 'Accept': "application/"+Accept, "Content-Type":"application/json"}
-
-    def __errorLabel (self, value, error):
-        if error == "wrong":
-            return '1234567890'
-        elif error == "empty":
-            return ''
-        else:
-            return value
-
-    def __errorUrl (self, value, error):
-        if error == "Not Found":
-           pos = value.find("catalog")
-           value = value[:pos] + "error_" + value[pos:]    # ex: http://130.206.80.119:8082/error_sdc/rest/catalog/product/Product_test_0001
-        return value
+    def __get__headers(self,  content="xml"):
+        """
+         return header
+        :param Accept: :param content: "xml" or "json"
+        :return:
+        """
+        contentAccept = content
+        contentType = content
+        if content == "error in Accept":
+            contentAccept = "sdfdfsdf"
+            contentType = "xml"
+        if content == "error in Content-Type":
+            contentType = "sdfdfsdf"
+            contentAccept = "xml"
+        return {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Accept': "application/"+contentAccept, "Content-Type":"application/"+contentType}
 
     def __request(self, method, url,  headers, body,  error):
-        headers['X-Auth-Token'] = self.__errorLabel (headers['X-Auth-Token'], error)
-        url = self.__errorUrl(url, error)
+        """
+        Launch a request and returns its response
+        :param method: method used ex: POST, GET, DELETE, etc
+        :param url: <IP>:<port>/<path>
+        :param headers: headers used
+        :param body: body in case of POST method
+        :param error: error types
+        :return: response
+        """
+        headers['X-Auth-Token'] = utils.errorLabel (headers['X-Auth-Token'], error)
+        url = utils.errorUrl(url, error)
 
         if error == "GET" or error == "PUT" or error == "POST" or error == "DELETE":
             method = error
@@ -130,62 +121,73 @@ class CatalogueRequest:
         elif method == "DELETE":
             response = http.delete(url, headers)
 
-        #self.printRequest(method,url,headers,body)
+        #utils.printRequest(method,url,headers,body)                 # show request
+        #utils.printResponse(response)                               # show response
         return response
 
-    def __insert_label (self, string, stringBeforeToInsert, newSubString):
-        pos = string.find(stringBeforeToInsert)
-        return string[:pos] + newSubString + string[pos:]
+    def __set_body_name (self, product, content):
+        """
+         add name and description before the end marker of request
+        :param product: product name
+        :param content:
+        """
+        element_1 = {'label': 'name',        'value': product}
+        element_2 = {'label': 'description', 'value': "Product only for test"}
+        self.ADD_PRODUCT_BODY = utils.body_oneElement (self.ADD_PRODUCT_BODY, element_1, 'addProduct', content)
+        self.ADD_PRODUCT_BODY = utils.body_oneElement (self.ADD_PRODUCT_BODY, element_2, 'addProduct', content)
 
-    def __set_body_name (self, product):
-        label = "</product>"
-        product = "<name>"+str(product)+"</name> " \
-                  " <description>Product only for test</description>"
-        self.ADD_PRODUCT_BODY = self.__insert_label(self.ADD_PRODUCT_BODY, label, product)
+    def __set_body_attributes (self, content):
+        """
+        add attribute before the end marker of request
+        :param content: "xml" or "json"
+        """
+        for id in range(0, len(body_message.ATTRIBUTES)):
+            self.ADD_PRODUCT_BODY = utils.body_elements(self.ADD_PRODUCT_BODY, body_message.ATTRIBUTES[id], "attributes", "addProduct", content)
 
-    def __set_body_attributes (self):
-        label = "</product>"
-        attributes = "<attributes>" \
-                     "     <key>username</key>" \
-                     "     <value>postgres</value>" \
-                     "     <description>The administrator usename</description>" \
-                     "</attributes>" \
-                     "<attributes>" \
-                     "     <key>password</key>" \
-                     "     <value>postgres</value>" \
-                     "     <description>The administrator password</description>" \
-                     "</attributes>"
+    def __set_body_metadata (self, meta, value, content):
+        """
+        add metadata before the end marker of request
+        :param meta: label for metadata (key)
+        :param value: value for metadata
+        :param content: "xml" or "json"
+        """
+        if meta == "all": metadata = body_message.ALL_METADATAS
+        else:
+            key = meta[len("metadata_"):]
+            metadata = [[{'label': 'key', 'value': key}, {'label': 'value', 'value': value}]]
+        for id in range(0, len(metadata)):
+            self.ADD_PRODUCT_BODY = utils.body_elements(self.ADD_PRODUCT_BODY, metadata[id], "metadatas", "addProduct", content)
 
-        self.ADD_PRODUCT_BODY = self.__insert_label(self.ADD_PRODUCT_BODY, label, attributes)
-
-    def __set_body_metadata (self, meta, value):
-        label = "</product>"
-        metadata = " <metadatas> " \
-                     "    <key>"+meta+"</key> " \
-                     "    <value>"+str(value)+"</value> " \
-                     " </metadatas>"
-        if meta == "all": metadata = self.ALL_METADATAS
-        self.ADD_PRODUCT_BODY = self.__insert_label(self.ADD_PRODUCT_BODY, label, metadata)
-
-    def __create_body_add (self, label,  product, metadataValue):
-        self.__init_ADD_PRODUCT_Body()
-        self.__set_body_name(product)
+    def __create_body_add (self, product, label, metadataValue, content):
+        """
+        Create body to Add request
+        :param product:
+        :param label:
+        :param metadataValue:
+        :param content:
+        """
+        self.__set_body_name(product, content)
         if label == "attributes" or label == "attributes_and_all_metadatas":
-            self.__set_body_attributes()
+            self.__set_body_attributes(content)
             if label == "attributes_and_all_metadatas":
-                self.__set_body_metadata("all", None)
+                self.__set_body_metadata("all", None, content)
         elif label.find("metadata_") == 0:
-            key = label [len ("metadata_"):]
-            self.__set_body_metadata(key, metadataValue)
+            self.__set_body_metadata(label, metadataValue, content)
 
-    def __create_body_release (self, version, description):
-        return '<productReleaseDto>' \
-               '    <version>'+ version+'</version>' \
-               '<releaseNotes>'+description+'</releaseNotes>'\
-               '    <productDescription>'+ description+'</productDescription>' \
-               '</productReleaseDto>'
+    def __create_body_release (self, version, description, content):
+        """
+        Create body to release request
+        :param version:
+        :param description:
+        :param content:
+        """
+        element_1 = {'label': 'version',     'value': version}
+        element_2 = {'label': 'releaseNotes', 'value': "version only for test"}
 
-    def catalogue_getProductInfo(self, searchType, product, errorType, Accept):
+        self.ADD_PRODUCT_RELEASE_BODY = utils.body_oneElement (self.ADD_PRODUCT_RELEASE_BODY, element_1, 'addProductRelease', content)
+        self.ADD_PRODUCT_RELEASE_BODY = utils.body_oneElement (self.ADD_PRODUCT_RELEASE_BODY, element_2, 'addProductRelease', content)
+
+    def catalogue_getProductInfo(self, searchType, product, errorType, content):
         """
         List all products in catalogue
         Returns all details of a Product
@@ -196,62 +198,65 @@ class CatalogueRequest:
         :param product: define the product used
         :param errorType: definition of several error caused. Ex: Not Found, bad Method, unauthorized, etc.
         """
-        world.response = self.__request("GET", self.__get__url(searchType,product),self.__get__headers(searchType, Accept), None, errorType)
-        #self.printResponse()
+        world.response = self.__request("GET", self.__get__url(searchType,product),self.__get__headers(content), None, errorType)
 
-    def catalogue_addProduct(self, product, label, metadataValue,  errorType, Accept):
+    def catalogue_addProduct(self, product, label, metadataValue,  errorType, content):
         """
         Add a new product in catalogue
-
         :param method: define which protocol method are using
         :param product: product name that it will created
         :param metadataValue: In case that you are adding metadatas, it is for the value metadata
         :param errorType: definition of several error caused. Ex: Not Found, bad Method, unauthorized, etc.
         """
-
+        self.__init_ADD_PRODUCT_Body(content)
         if label != "Without Name Label":
-            self. __create_body_add(label, product, metadataValue)
+            self. __create_body_add(product, label,  metadataValue, content)
 
-        world.response = self.__request("POST", self.__get__url("addProduct", None),self.__get__headers("addProduct", Accept), self.ADD_PRODUCT_BODY, errorType)
-        #self.printResponse()
+        world.response = self.__request("POST", self.__get__url("addProduct", None),self.__get__headers(content), self.ADD_PRODUCT_BODY, errorType)
 
-    def catalogue_deleteProduct(self, product, errorType):
+    def catalogue_deleteProduct(self, product, content, errorType):
         """
         Delete a product in catalogue
 
         :param method: define which protocol method are using
         :param errorType: definition of several error caused. Ex: Not Found, bad Method, unauthorized, etc.
         """
-        world.response = self.__request("DELETE", self.__get__url("deleteProduct", product, None),self.__get__headers("deleteProduct"), None, errorType)
-        #self.printResponse()
+        world.response = self.__request("DELETE", self.__get__url("deleteProduct", product, None),self.__get__headers(content), None, errorType)
 
-    def catalogue_addProductRelease (self, product,  version, description, errorType, Accept):
+    def catalogue_addProductRelease (self, product,  version, description, errorType, content):
+        """
+        add a new release to product
+        :param product:
+        :param version:
+        :param description:
+        :param errorType:
+        :param content:
+        """
+        self.__init_ADD_PRODUCT_RELEASE_Body(content)
+        if version is not None:
+            self.__create_body_release(version, description, content)
 
-        world.response = self.__request("POST", self.__get__url("addProductRelease", product),self.__get__headers("addProductRelease", Accept), self.__create_body_release(version, description), errorType)
-        #self.printResponse()
+        world.response = self.__request("POST", self.__get__url("addProductRelease", product),self.__get__headers(content), self.ADD_PRODUCT_RELEASE_BODY, errorType)
 
     def catalogue_deleteProductRelease (self, product, version, errorType):
-        world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers("deleteProductRelease"), None, errorType)
-        #self.printResponse()
+        """
+        launch a request to delete a product releases
+        :param product:
+        :param version:
+        :param errorType:
+        """
+        world.response = self.__request("DELETE", self.__get__url("deleteProductRelease", product, version),self.__get__headers(), None, errorType)
 
     def catalogue_getProductReleaseInfo(self, searchType, product, version, errorType, Accept):
+        """
+        launch a request to list all product releases or only one product release
+        :param searchType:
+        :param product:
+        :param version:
+        :param errorType:
+        :param Accept:
+        """
         world.response = self.__request("GET", self.__get__url(searchType,product, version),self.__get__headers(searchType, Accept), None, errorType)
-        #self.printResponse()
-
-    def printRequest(self, method, url, headers, body):
-        print "------------------------------ Request ----------------------------------------------"
-        print "url: "+ str(method) + "  "+str(url)
-        print "\nHeader: "+ str (headers)+"\n"
-        if body is not None:
-            print "\nBody: init("+str (body)+")end\n\n"
-        print "----------------------------------------------------------------------------------------\n\n\n\n"
-
-    def printResponse(self):
-        print "---------------------------------- Response ----------------------------------------------"
-        print "status code: "+str(world.response.status)
-        print "\nHeader: "+ str(world.response.msg)
-        print "\nBody: init("+str(world.response.read())+")end\n\n\n"
-        print "----------------------------------------------------------------------------------------"
 
     def get_body_expected(self, response_type, operation):
         for ID in body_message.Catalog_body:
@@ -259,22 +264,36 @@ class CatalogueRequest:
                 return ID["body"]
 
     def change_version (self, body_expected, version, Accept):
+        """
+        Add version name in response for verify in body
+        :param body_expected:
+        :param version:
+        :param Accept:
+        :return:
+        """
         if Accept == "xml":
             label = '</version>'
         elif Accept == "json":
             label = '","product"'
         else:
             return body_expected
-        return self.__insert_label (body_expected, label, version)
+        return utils.insert_label (body_expected, label, version)
 
     def change_product (self, body_expected, product, Accept):
+        """
+        Add product name in response for verify in body
+        :param body_expected:
+        :param product:
+        :param Accept:
+        :return:
+        """
         if Accept == "xml":
             label = '</name>'
         elif Accept == "json":
             label = '","description"'
         else:
             return body_expected
-        return self.__insert_label (body_expected, label, product)
+        return utils.insert_label (body_expected, label, product)
 
     def check_response_status(self, response, expected_status_code):
         """
@@ -282,7 +301,6 @@ class CatalogueRequest:
         :param response: Response to be checked.
         :param expected_status_code: Expected status code of the response.
         """
-
         assert response.status == expected_status_code, \
         "Wrong status code received: %d. Expected: %d. \n\nBody content: %s" \
         % (response.status, expected_status_code, response.read())

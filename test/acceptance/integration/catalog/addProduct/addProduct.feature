@@ -16,7 +16,7 @@ Feature: Add a new product in the catalogue
         When I add a new product "Product_test_0001" with "only name" in the catalog with "json" content in the response
         Then I receive an "OK" response with a "add Product only name JSON" with one item
 
-    @happy_path_2
+    @happy_path
     Scenario Outline: add a new product in the catalogue
         Given the sdc is up and properly configured
         When I add a new product "Product_test_0001" with "<label>" in the catalog with "<content>" content in the response
@@ -28,7 +28,6 @@ Feature: Add a new product in the catalogue
       |attributes_and_all_metadatas|add Product attr and metadatas XML|xml|
       |attributes_and_all_metadatas|add Product attr and metadatas JSON|json|
 
-    @happy_path_2 @metadatas
     Scenario Outline:  add a new product with metadatas
           Given the sdc is up and properly configured
           When With metadatas I add a new product "Product_test_0001" with "<name>" and "<value>" in the catalog with "xml" content in the response
@@ -49,7 +48,7 @@ Feature: Add a new product in the catalogue
         |metadata_dependencies|tomcat|metadata dependencies - one value|
         |metadata_dependencies|tomcat mysql nodejs|metadata dependencies - several values|
 
-    @400_error @skip @CLAUDIA-3742
+    @400_error @CLAUDIA-3742
     Scenario: try to add a new product in the catalogue without name label (mandatory)
         Given the sdc is up and properly configured
         When I add a new product "Product_test_0001" with "Without Name Label" in the catalog with "xml" content in the response
@@ -59,17 +58,17 @@ Feature: Add a new product in the catalogue
     Scenario Outline: try to add a new product with name errors into of the catalog
         Given the sdc is up and properly configured
         When I add a new product "<name>" with "<error>" in the catalog with "xml" content in the response
-        Then  I receive an "Not Found" response with an "exception" error messages
+        Then  I receive an "Bad Request" response with an "exception" error messages
     Examples:
       | error | name |
       | length major than 256 characters |12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567|
       |  empty name | |
 
-    @400_error @metadatas_errors
+    @400_error @CLAUDIA-3747 @CLAUDIA-3746
     Scenario Outline:  try to add a new product with wrong metadatas
           Given the sdc is up and properly configured
           When With metadatas I add a new product "Product_test_0001" with "<name>" and "<value>" in the catalog with "xml" content in the response
-          Then I receive an "Not Found" response with an "exception" error messages
+          Then I receive an "Bad Request" response with an "exception" error messages
     Examples:
         | name | value |
         |metadata_cloud|ty|
@@ -81,7 +80,19 @@ Feature: Add a new product in the catalogue
         |metadata_public||
         |metadata_dependencies|gdfgdfgdfg|
 
-    @404_error
+    @401_error
+    Scenario Outline: When add Products in the catalogue the token is not used or it is wrong
+        Given the sdc is up and properly configured
+        When I request unauthorized errors "<errorType>" when add a new product Product_test_0001 Without Name Label in the catalog with xml content in the response
+               |errorType|
+              |<errorType>|
+        Then I receive an "unauthorized" response with an "exception" error messages
+    Examples:
+      | errorType |
+      |wrong|
+      |empty|
+
+     @404_error
     Scenario: Cause a Not Found path error when add a Products in the catalogue
        Given the sdc is up and properly configured
         When I request a wrong path when add a new product "Product_test_0001" with "only name" in the catalog
@@ -90,8 +101,14 @@ Feature: Add a new product in the catalogue
     @406_error
     Scenario: Cause a Not acceptable error when I add a product into the catalogue with Accept header invalid
         Given The "Product_test_0001" has been created and the sdc is up and properly configured
-        When I add a new product "Product_test_0001" with "only name" in the catalog with "sdfdsf" content in the response
+        When I add a new product "Product_test_0001" with "only name" in the catalog with "error in Accept" content in the response
         Then I receive an "Not Acceptable" response with an "exception" error messages
+
+    @415_error
+    Scenario: Cause a Not acceptable error when I add a product into the catalogue with Content-Type header invalid
+        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+        When I add a new product "Product_test_0001" with "only name" in the catalog with "error in Content-Type" content in the response
+        Then I receive an "Unsupported Media Type" response with an "exception" error messages
 
 
 

@@ -18,6 +18,7 @@ Feature: List Products in the catalogue
       |Product_test_0005|
       |Product_test_0006|
 
+    @happy_path
     Scenario Outline: Get a List of Products in the catalogue with json content in the response
        Given The "<product>" has been created and the sdc is up and properly configured
         When I request the list of existing products in the catalog with "json" content in the response
@@ -31,24 +32,23 @@ Feature: List Products in the catalogue
       |Product_test_0005|
       |Product_test_0006|
 
+    @401_error
+    Scenario Outline: When list Products in the catalogue the token is not used
+        Given The "Product_test_0001" has been created and the sdc is up and properly configured
+        When I request unauthorized errors "<errorType>" when "getProductList" in the catalog
+               |errorType|
+              |<errorType>|
+        Then I receive an "unauthorized" response with an "exception" error messages
+    Examples:
+      | errorType |
+      |wrong|
+      |empty|
 
     @404_error
     Scenario: Cause an Not Found path error when list Products in the catalogue
         Given The "Product_test_0001" has been created and the sdc is up and properly configured
         When I request a wrong path when list of existing products in the catalog
         Then I receive an "Not Found" response with an "exception" error messages
-
-    #@401_error
-    #Scenario Outline: When list Products in the catalogue the token is not used
-    #    Given The "Product_test_0001" has been created and the sdc is up and properly configured
-    #    When I request unauthorized errors "<errorType>" when list of existing products in the catalog
-    #           |errorType|
-    #           |<errorType>|
-    #    Then I receive an "unauthorized" response with an "exception" error messages
-    #Examples:
-    #  | errorType |
-    #  |wrong|
-    #  |empty|
 
     @405_error
     Scenario Outline: launch a bad method error when I show products of the catalogue
@@ -65,8 +65,10 @@ Feature: List Products in the catalogue
     @406_error
     Scenario: launch a Not acceptable error when I show  products of the catalogue with Accept header invalid
         Given The "Product_test_0001" has been created and the sdc is up and properly configured
-        When I request the list of existing products in the catalog with "werwer" content in the response
+        When I request the list of existing products in the catalog with "error in Accept" content in the response
         Then I receive an "Not Acceptable" response with an "exception" error messages
+
+
 
 
 
