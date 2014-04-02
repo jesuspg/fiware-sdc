@@ -67,6 +67,9 @@ public class CatalogManagerMongoImpl implements CatalogManager {
         List<Node> nodeList = mongoTemplate.findAll(Node.class);
 
         StringBuffer sb = new StringBuffer();
+        
+        sb.append("include puppet");
+        sb.append(eol);
 
         for (Node node : nodeList) {
             if (sb.indexOf("import '" +node.getGroupName() + "/*.pp'") == -1) {
