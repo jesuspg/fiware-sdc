@@ -82,6 +82,9 @@ public class ActionsServiceImpl implements ActionsService {
         fileAccessService.deleteNodeFiles(nodeName);
         catalogManager.removeNode(nodeName);
         
+        //generate the file again to make sure there are no empty directories 
+        fileAccessService.generateSiteFile();
+        
         uregisterNode(nodeName);
 
     }

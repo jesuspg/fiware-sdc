@@ -97,11 +97,11 @@ public class PuppetController /* extends GenericController */{
         }
         logger.info("generating files for node:" + nodeName);
 
-        fileAccessService.generateSiteFile();
-        logger.debug("site.pp OK");
-
         Node node = fileAccessService.generateManifestFile(nodeName);
         logger.debug("nodes pp files OK");
+        
+        fileAccessService.generateSiteFile();
+        logger.debug("site.pp OK");
 
         return node;
     }

@@ -57,7 +57,11 @@ public class CatalogManagerMongoImpl implements CatalogManager {
 
     public String generateManifestStr(String nodeName) {
         StringBuffer sb = new StringBuffer();
+
         Node node = getNode(nodeName);
+        node.setManifestGenerated(true);
+        addNode(node);
+
         sb.append(node.generateFileStr());
         return sb.toString();
     }
@@ -67,12 +71,12 @@ public class CatalogManagerMongoImpl implements CatalogManager {
         List<Node> nodeList = mongoTemplate.findAll(Node.class);
 
         StringBuffer sb = new StringBuffer();
-        
+
         sb.append("include puppet");
         sb.append(eol);
 
         for (Node node : nodeList) {
-            if (sb.indexOf("import '" +node.getGroupName() + "/*.pp'") == -1) {
+            if (node.isManifestGenerated() && sb.indexOf("import '" + node.getGroupName() + "/*.pp'") == -1) {
                 sb.append("import '" + node.getGroupName() + "/*.pp'");
                 sb.append(eol);
             }

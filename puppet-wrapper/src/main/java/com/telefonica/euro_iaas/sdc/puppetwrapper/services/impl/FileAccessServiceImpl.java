@@ -66,6 +66,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
         logger.debug("Manifest file created");
 
+        node.setManifestGenerated(true);
         return node;
 
     }

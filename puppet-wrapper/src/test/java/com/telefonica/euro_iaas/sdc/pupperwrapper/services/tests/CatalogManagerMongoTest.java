@@ -35,6 +35,7 @@ public class CatalogManagerMongoTest {
         final Node node = new Node();
         node.setId("test");
         node.setGroupName("group");
+        node.setManifestGenerated(true);
         
         Software soft=new Software();
         soft.setName("test");
@@ -45,10 +46,12 @@ public class CatalogManagerMongoTest {
         final Node node2 = new Node();
         node2.setId("test2");
         node2.setGroupName("group2");
+        node2.setManifestGenerated(true);
         
         final Node node3 = new Node();
         node3.setId("test3");
         node3.setGroupName("group2");
+        node3.setManifestGenerated(true);
 
 //        Query query = mock(Query.class);
         Query query = new Query(Criteria.where("id").is("test"));
@@ -153,7 +156,7 @@ public class CatalogManagerMongoTest {
 
         String str = catalogManagerMongo.generateSiteStr();
 
-        assertTrue(str.length() > 0);
+        assertTrue(str.length() > 1);
         assertTrue(str.contains("import 'group/*.pp'"));
         assertTrue(str.contains("import 'group2/*.pp'"));
         
