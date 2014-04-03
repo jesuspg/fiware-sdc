@@ -156,13 +156,6 @@ public class BaseInstallableInstanceManagerChef {
             node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
             node.addRecipe(recipe);
             
-            /*if (!(recipe.equals("probe::0.1_init")) && !(recipe.equals("probe::0.1_install")))
-                node.addAttribute(process, "action_" + process, "install");
-            else if (recipe.equals("probe::0.1_init")){
-                node.addAttribute(process, "action_" + process, "init");
-            } else if (recipe.equals("probe::0.1_install")) { 
-                node.addAttribute(process, "action_" + process, "installed");
-            }*/
             if (attributes != null) {
                 for (Attribute attr : attributes) {
                     node.addAttribute(process, attr.getKey(), attr.getValue());
@@ -182,59 +175,7 @@ public class BaseInstallableInstanceManagerChef {
         }
     }
 
-    /**
-     * Tell Chef the previously assigned recipes are ready to be installed.
-     * 
-     * @param osInstance
-     * @throws
-     * @throws ShellCommandException
-     */
-    /*public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
-        boolean isExecuted = false;
-        int time = 10000;
-        Date fechaAhora = new Date();
-        while (!isExecuted) {
-            try {
-                Thread.sleep(time);
-                if (time > MAX_TIME) {
-                    String errorMesg = "Recipe " + recipe + " coub not be executed in " + vm.getChefClientName();
-                    LOGGER.info(errorMesg);
-                    throw new NodeExecutionException(errorMesg);
-                }
-
-                ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
-
-                isExecuted = hasRecipeBeenExecuted(node, fechaAhora);
-                time += time;
-            } catch (EntityNotFoundException e) {
-                throw new NodeExecutionException(e);
-            } catch (CanNotCallChefException e) {
-                throw new NodeExecutionException(e);
-            } catch (InterruptedException ie) {
-                throw new NodeExecutionException(ie);
-            }
-        }
-    }*/
-
-    /**
-     * Checks if the Node is already registres in ChefServer.
-     */
-    
-    /*private boolean hasRecipeBeenExecuted (ChefNode node, Date fechaAhora) {
-        
-        LOGGER.info("oha_time " + ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000);
-        LOGGER.info("RecipeUploadedTime:" + fechaAhora.getTime());
-        
-        long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time")).longValue()*1000;
-        //Comprobar si el node tiene el recipe y sino vuelta a hacer la peticion
-        
-        if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
-    
+ 
     /**
      * Checks if the Node is already registered in ChefServer.
      * @param hostname
