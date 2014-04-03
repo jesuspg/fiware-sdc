@@ -89,13 +89,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 // unassignRecipes(vm, recipe);
             } else {
                 isRecipeExecuted(vm, process, recipe);
-<<<<<<< HEAD
-              //  unassignRecipes(vm, recipe);
-=======
                 unassignRecipes(vm, recipe);
                 //eliminate the attribute
-                
->>>>>>> c1a8f4134ff9a61c099ee069ca1b3111d8195485
+
             }
         } catch (NodeExecutionException e) {
             // even if execution fails want to unassign the recipe
