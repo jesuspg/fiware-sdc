@@ -60,26 +60,7 @@ public class BaseInstallableInstanceManagerChef {
             throw new NodeExecutionException(e.getMessage());
         }
     }
-
-    /*protected void callChef(String process, String recipe, VM vm, List<Attribute> attributes)
-            throws CanNotCallChefException, NodeExecutionException, InstallatorException {
-        configureNode(vm, attributes, process, recipe);
-        try {
-            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
-            if (isSdcClientInstalled())  {
-                executeRecipes(vm);
-                // unassignRecipes(vm, recipe);
-            } else {
-                isRecipeExecuted(vm, process, recipe);
-                unassignRecipes(vm, recipe);
-            }           
-        } catch (NodeExecutionException e) {
-            // unassignRecipes(vm, recipe);
-            // even if execution fails want to unassign the recipe
-            throw new NodeExecutionException(e.getMessage());
-        }
-    }*/
-
+    
     /**
      * Tell Chef the previously assigned recipes are ready to be installed.
      * 
