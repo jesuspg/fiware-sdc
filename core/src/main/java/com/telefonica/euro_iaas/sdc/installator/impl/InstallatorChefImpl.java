@@ -184,21 +184,13 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         String platform = node.getAutomaticAttributes().get("platform").toString();
         String platform_version = node.getAutomaticAttributes().get("platform_version").toString();
         LOGGER.info("platform:" + platform + " platform_version:" + platform_version);
-        DateFormat df = null;
-        //Identifying os
-        if (platform.equals("centos") && platform_version.equals("6.2")){
-            df = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy", Locale.US);
-        } else if (platform.equals("centos") && platform_version.equals("6.3")) {
-            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
-        } else if (platform.equals("ubuntu") && platform_version.equals("12.04")){
-            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
-        } else {
-            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
-        }
-        
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
         long last_recipeexecution_timestamp =0;
+
         String ohai_time_format = node.getAutomaticAttributes().get("ohai_time").toString();
         LOGGER.info("ohai_time_format:[" + ohai_time_format +"]");
+
         try {
             Date ohai_time_date = df.parse(ohai_time_format);
             last_recipeexecution_timestamp = ohai_time_date.getTime();
