@@ -35,8 +35,10 @@ import org.junit.Test;
 
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
@@ -44,14 +46,20 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
     private ProductResourceValidatorImpl productResourceValidator;
     private ProductReleaseDto productReleaseDto;
-
+    private Product product;
+    private GeneralResourceValidatorImpl generalValidator;
+    
     ReleaseDto releaseDto;
 
     @Before
     public void setUp() throws Exception {
 
+        product = new Product();
         productResourceValidator = new ProductResourceValidatorImpl();
-
+        generalValidator = new GeneralResourceValidatorImpl();
+        
+        productResourceValidator.setGeneralValidator(generalValidator);
+        
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
         releaseDto.setVersion("0.1.1");
@@ -113,5 +121,29 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
                 .bodyPart(new BodyPart(bytesInstallable, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
         // productResourceValidator.validateUpdate(releaseDto,multiPart);
+    }
+    
+    @Test(expected=InvalidEntityException.class)
+    public void testValidateNameWhenIsNull() throws Exception {
+        String name=null;
+        productResourceValidator.validateInsert(product);
+    }
+    
+    @Test(expected=InvalidEntityException.class)
+    public void testValidateNameWhenIsEmpty() throws Exception {
+        String name="";
+        product.setName(name);
+        productResourceValidator.validateInsert(product);
+    }
+    
+    @Test(expected=InvalidEntityException.class)
+    public void testValidateNameWhenIsLOngerThan256Characters() throws Exception {
+        String name=
+             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+             "12345678901234567";
+        product.setName(name);
+        productResourceValidator.validateInsert(product);
     }
 }

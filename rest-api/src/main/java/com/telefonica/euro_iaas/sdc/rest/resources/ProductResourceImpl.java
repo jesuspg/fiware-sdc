@@ -36,6 +36,8 @@ import org.springframework.stereotype.Component;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
@@ -43,6 +45,7 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 
 /**
  * default ProductResource implementation.
@@ -56,7 +59,7 @@ public class ProductResourceImpl implements ProductResource {
 
     // @InjectParam("productManager")
     private ProductManager productManager;
-
+    
     private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
 
     /**
@@ -66,6 +69,7 @@ public class ProductResourceImpl implements ProductResource {
      * @return product
      */
     public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+        
         return productManager.insert(product);
     }
 
@@ -137,5 +141,4 @@ public class ProductResourceImpl implements ProductResource {
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
-
 }
