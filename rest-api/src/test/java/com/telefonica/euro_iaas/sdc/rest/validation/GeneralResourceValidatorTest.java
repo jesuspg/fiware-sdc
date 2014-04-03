@@ -33,15 +33,13 @@ public class GeneralResourceValidatorTest {
        generalResourceValidator.validateName(name);
     }
     
-    @Test
+    @Test(expected=InvalidNameException.class)
     public void testValidateNameWhenIsLOngerThan256Characters() throws Exception {
         String name=
              "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
              "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
              "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
              "12345678901234567";
-        try{
-            generalResourceValidator.validateName(name);
-        } catch (InvalidNameException e){}
+        generalResourceValidator.validateName(name);
     }
 }
