@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.model.dto;
@@ -40,7 +57,7 @@ public class ChefNodeTest extends TestCase {
     ChefNode chefNode;
     String json;
 
-    public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+    public static String NAME = "nosdcclient.novalocal";
     
     private String jsonFilePath = "src/test/resources/Chefnode.js";
     private String jsonFromFile;
@@ -53,6 +70,10 @@ public class ChefNodeTest extends TestCase {
         json = "{\n"
                 + "\"chef-webui\": \"http://localhost:4000/nodes/chef-webui\"\n"
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/nodes/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
+                + "\"nosdcclient001\": \"http://localhost:4000/nodes/nosdcclient001\",\n"
+                + "\"nosdcclient001.novalocal\": \"http://localhost:4000/nodes/nosdcclient001.novalocal\",\n"
+                + "\"nosdcclient.novalocal\": \"http://localhost:4000/nodes/nosdcclient.novalocal\",\n"
+                + "\"nosdcclient\": \"http://localhost:4000/nodes/nosdcclient\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/nodes/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/nodes/adam.novalocal\"\n" + "}\"";
         
@@ -64,11 +85,20 @@ public class ChefNodeTest extends TestCase {
     }
 
     @Test
+    public void testGetChefClientURL2() throws Exception {
+        String json2 =  json = "{\n"
+                        + "\"chef-webui\": \"http:\\/\\/localhost:4000\\/nodes\\/chef-webui\"\n"
+                        + "\"adam.novalocal\": \"http:\\/\\/localhost:4000\\/nodes\\/adam.novalocal\"\n" + "}\"";
+        System.out.println("json: " + json2);
+        String name = chefNode.getChefNodeName(json2, "chef-webui");
+        assertEquals(name, "chef-webui");
+    }
+    
+    @Test
     public void testGetChefClientURL() throws Exception {
         String name = chefNode.getChefNodeName(json, NAME);
         assertEquals(name, NAME);
     }
-    
     @Test
     public void testHasRecipe() throws Exception {
          assertEquals(chefNode.hasRecipe("recipe"), false);

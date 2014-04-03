@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
@@ -19,6 +36,8 @@ import org.springframework.stereotype.Component;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
@@ -26,6 +45,7 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 
 /**
  * default ProductResource implementation.
@@ -39,7 +59,7 @@ public class ProductResourceImpl implements ProductResource {
 
     // @InjectParam("productManager")
     private ProductManager productManager;
-
+    
     private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
 
     /**
@@ -49,6 +69,7 @@ public class ProductResourceImpl implements ProductResource {
      * @return product
      */
     public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+        
         return productManager.insert(product);
     }
 
@@ -120,5 +141,4 @@ public class ProductResourceImpl implements ProductResource {
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
-
 }

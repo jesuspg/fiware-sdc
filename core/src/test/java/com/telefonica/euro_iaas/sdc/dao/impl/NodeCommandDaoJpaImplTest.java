@@ -1,13 +1,36 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
@@ -16,29 +39,28 @@ import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
 
-public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class NodeCommandDaoJpaImplTest {
     // Need to be revisited
 
-    private OSDao soDao;
-    private NodeCommandDao nodeCommandDao;
+    @Autowired
+    OSDao osDao;
 
-    protected void createSO() throws Exception {
-        SODaoJpaImplTest soDaoTest = new SODaoJpaImplTest();
-        soDaoTest.setSoDao(soDao);
-        soDaoTest.testCreate();
-    }
+    @Autowired
+    NodeCommandDao nodeCommandDao;
 
     public void createNodeCommand() throws Exception {
 
         NodeCommand nodeCommand = new NodeCommand();
-        OS so = new OS("Prueba I", "1", "Prueba I Description", "Prueba I Version");
+        OS so = new OS("Pru", "1", "Prueba I Description", "Prueba I Version");
 
         try {
-            so = soDao.load(so.getName());
+            so = osDao.load(so.getName());
             System.out.println("The OS " + so.getName() + " already exists");
         } catch (EntityNotFoundException e) {
             System.out.println("The Product " + so.getName() + " does not exist");
-            so = soDao.create(so);
+            so = osDao.create(so);
         }
 
         nodeCommand.setOS(so);
@@ -46,10 +68,11 @@ public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
         nodeCommand.setValue("hostname");
 
         NodeCommand creatednodeCommand = nodeCommandDao.create(nodeCommand);
-        Assert.assertEquals(creatednodeCommand, nodeCommand);
+        assertEquals(creatednodeCommand, nodeCommand);
 
     }
 
+    @Test
     public void testCreateAndFindByCriteria() throws Exception {
 
         System.out.println("testCreateAndFindByCriteria.Start");
@@ -64,20 +87,11 @@ public class NodeCommandDaoJpaImplTest extends AbstractJpaDaoTest {
         // nodeCommand);
     }
 
-    /**
-     * @param soDao
-     *            the soDao to set
-     */
-    public void setSoDao(OSDao soDao) {
-        this.soDao = soDao;
+    public void setOsDao(OSDao osDao) {
+        this.osDao = osDao;
     }
 
-    /**
-     * @param nodeCommandDao
-     *            the nodeCommandDao to set
-     */
     public void setNodeCommandDao(NodeCommandDao nodeCommandDao) {
         this.nodeCommandDao = nodeCommandDao;
     }
-
 }

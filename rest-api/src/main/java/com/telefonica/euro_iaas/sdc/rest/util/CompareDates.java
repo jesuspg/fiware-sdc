@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.rest.util;
@@ -12,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Logger;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -23,8 +42,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class CompareDates {
 
     private static Long limit;
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CompareDates.class);
     private long offset;
+    private static Logger LOGGER = Logger.getLogger("CompareDates");
 
     /**
      * Constructor.
@@ -59,8 +78,8 @@ public class CompareDates {
 
         long diff = getTimeDiff(date, now) - offset;
 
-        log.info("Date1: " + dateString + "\tDate2: " + now.toString());
-        log.info("Diff: " + diff);
+        LOGGER.info("Date1: " + dateString + "\tDate2: " + now.toString());
+        LOGGER.info("Diff: " + diff);
 
         if (!now.before(date)) {
             result = true;
@@ -148,7 +167,7 @@ public class CompareDates {
 
                     date = c2.getTime();
                 } catch (DatatypeConfigurationException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -159,7 +178,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -170,7 +189,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    log.error("Cannot parse correctly the date: " + date);
+                    LOGGER.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -201,7 +220,7 @@ public class CompareDates {
         long timeDiff = dateLong1 - dateLong2;
 
         if (timeDiff != 86400000) {
-            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message");
+            LOGGER.warning("Date format incorrect between token.expires " + "and Header field in the HTTP message");
 
             dateLong1 += (86400000 - timeDiff);
         }

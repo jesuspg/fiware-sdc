@@ -1,20 +1,39 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.bootstrap;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
@@ -25,8 +44,6 @@ import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Populates data base with synthetic data to emulate the preconditions of SO management, Image deployable management
@@ -98,75 +115,71 @@ public class InitDbBootstrap implements ServletContextListener {
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("ssl_port", "8443", "The ssl listen port"));
                 tomcat.addAttribute(new Attribute("id_web_server", "default", "The id web server"));
-                
+
                 tomcat.addAttribute(new Attribute("sdcgroupid", "id_web_server", "sdcgroupid"));
-                
-                tomcat.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+
+                tomcat.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 tomcat = productDao.create(tomcat);
 
-                ProductRelease tomcat7 = new ProductRelease("6", "Tomcat server 6", tomcat, supportedSSOO123,
-                        null);
+                ProductRelease tomcat7 = new ProductRelease("6", "Tomcat server 6", tomcat, supportedSSOO123, null);
                 tomcat7 = productReleaseDao.create(tomcat7);
 
                 Product nodejs = new Product("nodejs", "nodejs");
                 nodejs.addAttribute(new Attribute("aux", "aux", "aux"));
-                nodejs.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                nodejs.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 nodejs = productDao.create(nodejs);
 
-                ProductRelease nodejsr = new ProductRelease("0.6.15", "Nodejs 0.6.15", nodejs, supportedSSOO123,
-                        null);
+                ProductRelease nodejsr = new ProductRelease("0.6.15", "Nodejs 0.6.15", nodejs, supportedSSOO123, null);
                 nodejsr = productReleaseDao.create(nodejsr);
 
                 Product mysql = new Product("mysql", "mysql");
-                mysql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                mysql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 mysql = productDao.create(mysql);
                 mysql.addAttribute(new Attribute("aux", "aux", "aux"));
-                
-                ProductRelease mysql124 = new ProductRelease("1.2.4", "mysql 1.2.4", mysql, supportedSSOO123,
-                        null);
+
+                ProductRelease mysql124 = new ProductRelease("1.2.4", "mysql 1.2.4", mysql, supportedSSOO123, null);
                 mysql124 = productReleaseDao.create(mysql124);
 
                 Product git = new Product("git", "git");
-                git.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                git.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 git = productDao.create(git);
                 ProductRelease git17 = new ProductRelease("1.7", "git 1.7", git, supportedSSOO123, null);
                 git17 = productReleaseDao.create(git17);
 
                 Product mongoshard = new Product("mongodbshard", "mongodbshard");
-                mongoshard.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                mongoshard.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 mongoshard = productDao.create(mongoshard);
                 ProductRelease mongoshard223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", mongoshard,
                         supportedSSOO123, null);
                 mongoshard223 = productReleaseDao.create(mongoshard223);
 
                 Product mongos = new Product("mongos", "mongos");
-                mongos.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                mongos.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 mongos = productDao.create(mongos);
-                ProductRelease mongos223 = new ProductRelease("2.2.3", "mongos 2.2.3", mongos, supportedSSOO123,
-                        null);
+                ProductRelease mongos223 = new ProductRelease("2.2.3", "mongos 2.2.3", mongos, supportedSSOO123, null);
                 mongos223 = productReleaseDao.create(mongos223);
 
                 Product mongodbconfig = new Product("mongodbconfig", "mongodbconfig");
-                mongodbconfig.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                mongodbconfig.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 mongodbconfig = productDao.create(mongodbconfig);
-                ProductRelease mongodbconfig223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3",
-                        mongodbconfig, supportedSSOO123, null);
+                ProductRelease mongodbconfig223 = new ProductRelease("2.2.3", "mongodb shard 2.2.3", mongodbconfig,
+                        supportedSSOO123, null);
                 mongodbconfig223 = productReleaseDao.create(mongodbconfig223);
 
                 Product contextbroker = new Product("contextbroker", "contextbroker");
-                contextbroker.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                contextbroker.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 contextbroker = productDao.create(contextbroker);
-                
-                ProductRelease contextbroker100 = new ProductRelease("1.0.0", "contextbroker 1.0.0",
-                        contextbroker, supportedSSOO123, null);
+
+                ProductRelease contextbroker100 = new ProductRelease("1.0.0", "contextbroker 1.0.0", contextbroker,
+                        supportedSSOO123, null);
                 contextbroker100 = productReleaseDao.create(contextbroker100);
 
                 /*
@@ -188,11 +201,11 @@ public class InitDbBootstrap implements ServletContextListener {
                 Product postgresql = new Product("postgresql", "db manager");
                 postgresql.addAttribute(new Attribute("username", "postgres", "The administrator usename"));
                 postgresql.addAttribute(new Attribute("password", "postgres", "The administrator password"));
-                postgresql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
+                postgresql.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
                 postgresql = productDao.create(postgresql);
 
-                ProductRelease postgres84 = new ProductRelease("8.4", "postgresql 8.4", postgresql,
-                        supportedSSOO123, null);
+                ProductRelease postgres84 = new ProductRelease("8.4", "postgresql 8.4", postgresql, supportedSSOO123,
+                        null);
                 postgres84 = productReleaseDao.create(postgres84);
 
                 /*
@@ -203,12 +216,11 @@ public class InitDbBootstrap implements ServletContextListener {
                 // haproxy Product Releases
                 Product haproxy = new Product("haproxy", "balancer");
                 haproxy.addAttribute(new Attribute("sdccoregroupid", "app_server_role", "idcoregroup"));
-                haproxy.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
-                
+                haproxy.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
+
                 haproxy = productDao.create(haproxy);
 
-                ProductRelease haproxy10 = new ProductRelease("1.0", "haproxy 1.0", haproxy, supportedSSOO123,
-                        null);
+                ProductRelease haproxy10 = new ProductRelease("1.0", "haproxy 1.0", haproxy, supportedSSOO123, null);
                 haproxy10 = productReleaseDao.create(haproxy10);
 
                 /*
@@ -218,7 +230,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // Test Product Release Chef
                 Product test = new Product("test", "test");
-                test.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
+                test.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
                 test = productDao.create(test);
 
                 ProductRelease test01 = new ProductRelease("0.1", "blah blah blah", test, supportedSSOO123, null);
@@ -229,14 +241,15 @@ public class InitDbBootstrap implements ServletContextListener {
                 testPuppet.addMetadata(new Metadata("installator", "puppet", "Puppet Manifest required"));
                 testPuppet = productDao.create(testPuppet);
 
-                ProductRelease testPuppet01 = new ProductRelease("0.1", "blah blah blah", testPuppet, supportedSSOO123, null);
+                ProductRelease testPuppet01 = new ProductRelease("0.1", "blah blah blah", testPuppet, supportedSSOO123,
+                        null);
                 testPuppet01 = productReleaseDao.create(testPuppet01);
 
                 // Wiki Product Releases
                 Product mediawiki = new Product("mediawiki", "MediaWiki Product");
                 mediawiki.addAttribute(new Attribute("wikiname", "Wiki to be shown", "The name of the wiki"));
                 mediawiki.addAttribute(new Attribute("path", "/demo", "The url context to be displayed"));
-                mediawiki.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));            
+                mediawiki.addMetadata(new Metadata("installator", "chef", "ChefServer Recipe required"));
                 // mediawiki.addAttribute(new Attribute("logogif", "",
                 // "The url context to be displayed"));
                 mediawiki = productDao.create(mediawiki);
@@ -245,63 +258,8 @@ public class InitDbBootstrap implements ServletContextListener {
                         supportedSSOO123, null);
                 mediawiki1 = productReleaseDao.create(mediawiki1);
 
-                // War Product Releases
-                /*
-                 * Product war = new Product("war", "War Product"); war.addAttribute(new Attribute("warattribute",
-                 * "warattribute", "example of war attribute")); war = productDao.create(war); ProductRelease war1 = new
-                 * ProductRelease("1.0", "War 1.0", null, war, supportedSSOO123, null); war1 =
-                 * productReleaseDao.create(war1);
-                 */
-
-                // Enviroments
-                /*
-                 * Environment t5Env = new Environment(Arrays.asList(tomcat5)); t5Env = environmentDao.create(t5Env);
-                 * Environment t6Env = new Environment(Arrays.asList(tomcat6)); t6Env = environmentDao.create(t6Env);
-                 * Environment t7Env = new Environment(Arrays.asList(tomcat7)); t7Env = environmentDao.create(t7Env);
-                 * Environment p84Env = new Environment(Arrays.asList(postgres84)); p84Env =
-                 * environmentDao.create(p84Env); Environment p83Env = new Environment(Arrays.asList(postgres83));
-                 * p83Env = environmentDao.create(p83Env); Environment mw1Env = new
-                 * Environment(Arrays.asList(mediawiki1)); mw1Env = environmentDao.create(mw1Env); Environment t7_p84Env
-                 * = new Environment(Arrays.asList(tomcat7, postgres84)); t7_p84Env = environmentDao.create(t7_p84Env);
-                 * Environment t7_p83Env = new Environment(Arrays.asList(tomcat7, postgres83)); t7_p83Env =
-                 * environmentDao.create(t7_p83Env); Environment t6_p84Env = new Environment(Arrays.asList(tomcat6,
-                 * postgres84)); t6_p84Env = environmentDao.create(t6_p84Env); Environment t6_p83Env = new
-                 * Environment(Arrays.asList(tomcat6, postgres83)); t6_p83Env = environmentDao.create(t6_p83Env);
-                 * Environment t5_p84Env = new Environment(Arrays.asList(tomcat5, postgres84)); t5_p84Env =
-                 * environmentDao.create(t5_p84Env); Environment t5_p83Env = new Environment(Arrays.asList(tomcat5,
-                 * postgres83)); t5_p83Env = environmentDao.create(t5_p83Env);
-                 */
-
-                // sdc Application
-                /*
-                 * Application sdc = new Application("sdc", "this application", "war"); // sdc.addAttribute(new
-                 * Attribute("tomcat_home", // "/opt/apache-tomcat", // "the url where CATALINA is installed"));
-                 * sdc.addAttribute(new Attribute("application_context", "sdc",
-                 * "the context where the application will be deployed")); sdc.addAttribute(new
-                 * Attribute("sdc_home_scripts", "/opt/sdc/scripts", "the location where the scripts will be stored"));
-                 * sdc.addAttribute(new Attribute("sdc_war_name", "sdc-server-rest-api-0.1.2-SNAPSHOT.war",
-                 * "the war file")); sdc.addAttribute(new Attribute("driver_class_name", "org.postgresql.Driver",
-                 * "The db driver to determine the" + "concrete DB manager")); sdc.addAttribute(new
-                 * Attribute("postgresql_url", "jdbc:postgresql://localhost:5432/sdc",
-                 * "The URL wher the database is.")); sdc.addAttribute(new Attribute("postgresql_db_user", "postgres",
-                 * "The administrator usename")); sdc.addAttribute(new Attribute("postgresql_db_password", "postgres",
-                 * "The administrator password")); sdc = applicationDao.create(sdc); ApplicationRelease sdc030 = new
-                 * ApplicationRelease("1.0.0", "Add configuration functionallity", null, sdc, t6_p84Env, null); sdc030 =
-                 * applicationReleaseDao.create(sdc030);
-                 */
-
-                /*
-                 * ApplicationRelease sdc040 = new ApplicationRelease( "1.1.0", "Add update functionallity", null, sdc,
-                 * Arrays.asList(postgres84, tomcat5), Arrays.asList(sdc030)); sdc040 =
-                 * applicationReleaseDao.create(sdc040);
-                 */
-
-                // sdc030.addTransitableRelease(sdc040);
-                // sdc030 = applicationReleaseDao.update(sdc030);
-
-            } catch (AlreadyExistsEntityException e1) {
-                throw new RuntimeException(e1);
-            } catch (InvalidEntityException e1) {
+            } catch (Exception e1) {
+                e1.printStackTrace();
                 throw new RuntimeException(e1);
             }
         }

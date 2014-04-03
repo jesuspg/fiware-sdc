@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 /**
@@ -10,9 +27,9 @@
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,16 +80,16 @@ public class ProductInstanceResourceValidatorImplTest {
     public void testGetServerIds() throws Exception {
         ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
         List<String> serverids = validator.getServerIds(serversResponse);
-        Assert.assertEquals(2, serverids.size());
-        Assert.assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
-        Assert.assertEquals("4df2d4ff-233d-42ca-b7fb-c2d7787f1ee5", serverids.get(1));
+        assertEquals(2, serverids.size());
+        assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
+        assertEquals("4df2d4ff-233d-42ca-b7fb-c2d7787f1ee5", serverids.get(1));
     }
 
     @Test
     public void testGetServerIP() throws Exception {
         ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
         String ip = validator.getServerPublicIP(serverResponse);
-        Assert.assertEquals("130.206.82.66", ip);
+        assertEquals("130.206.82.66", ip);
     }
 
 }

@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.model;
@@ -25,9 +42,10 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 public class ChefClientTest extends TestCase {
 
     ChefClient chefClient;
-    String json;
+    String json, json2;
 
     public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+    public static String NAME2 = "new-chef-client2.novalocal";
     public static String KEY = "key";
     public static String VALUE = "value";
     public static String KEY1 = "key1";
@@ -43,6 +61,10 @@ public class ChefClientTest extends TestCase {
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/clients/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/clients/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/clients/adam.novalocal\"\n" + "}\"";
+        json2 = "{\n"
+                + "\"dhcp-17-155.imdeass\":\"https:\\/\\/130.206.81.105\\/clients\\/dhcp-17-155.imdeass\",\n"
+                + "\"new-chef-client2.novalocal\":\"https:\\/\\/130.206.81.105\\/clients\\/new-chef-client2.novalocal\",\n"
+                + "\"henarcentos-6\":\"https:\\/\\/130.206.81.105\\/clients\\/henarcentos-6\"\n" + "}\"";
     }
 
     @Test
@@ -50,6 +72,14 @@ public class ChefClientTest extends TestCase {
         String name = chefClient.getChefClientName(json, NAME);
         assertEquals(name, NAME);
     }
+    
+    @Test
+    public void testGetChefClientUR2L() throws Exception {
+        String name2 = chefClient.getChefClientName(json2, NAME2);
+        assertEquals(name2, NAME2);
+    }
+    
+   
 
     @Test
     public void testNodeCommand() throws Exception {
