@@ -42,9 +42,10 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 public class ChefClientTest extends TestCase {
 
     ChefClient chefClient;
-    String json;
+    String json, json2;
 
     public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+    public static String NAME2 = "new-chef-client2.novalocal";
     public static String KEY = "key";
     public static String VALUE = "value";
     public static String KEY1 = "key1";
@@ -60,6 +61,10 @@ public class ChefClientTest extends TestCase {
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/clients/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/clients/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/clients/adam.novalocal\"\n" + "}\"";
+        json2 = "{\n"
+                + "\"dhcp-17-155.imdeass\":\"https:\\/\\/130.206.81.105\\/clients\\/dhcp-17-155.imdeass\",\n"
+                + "\"new-chef-client2.novalocal\":\"https:\\/\\/130.206.81.105\\/clients\\/new-chef-client2.novalocal\",\n"
+                + "\"henarcentos-6\":\"https:\\/\\/130.206.81.105\\/clients\\/henarcentos-6\"\n" + "}\"";
     }
 
     @Test
@@ -67,6 +72,14 @@ public class ChefClientTest extends TestCase {
         String name = chefClient.getChefClientName(json, NAME);
         assertEquals(name, NAME);
     }
+    
+    @Test
+    public void testGetChefClientUR2L() throws Exception {
+        String name2 = chefClient.getChefClientName(json2, NAME2);
+        assertEquals(name2, NAME2);
+    }
+    
+   
 
     @Test
     public void testNodeCommand() throws Exception {

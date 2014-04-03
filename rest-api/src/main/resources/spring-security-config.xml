@@ -1,11 +1,10 @@
-<beans:beans
-        xmlns:beans="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/security
+<beans xmlns="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/security
    http://www.springframework.org/schema/security/spring-security-3.1.xsd
    http://www.springframework.org/schema/beans 
    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-
+   
     <!--
         <http auto-config="false" create-session="stateless"
             entry-point-ref="http401EntryPoint">-->
@@ -38,4 +37,4 @@
         <beans:property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
     </beans:bean>-->
 
-</beans:beans>
+</beans>

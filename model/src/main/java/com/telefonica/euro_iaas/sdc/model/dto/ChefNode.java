@@ -300,10 +300,44 @@ public class ChefNode {
     public String getChefNodeName(String stringChefNodes, String hostname) {
 
         String[] output = stringChefNodes.split("\"" + hostname);
-        String url = output[1].split("\"")[2];
-        String nameAux = url.split("nodes")[1];
-        String name = nameAux.substring(1, nameAux.length());
+        String name = "";
+        for (int i =1; i < output.length; i++){
+            if (output[i].startsWith("\"") && name.isEmpty()) {
+                String url = output[i].split("\"")[2];
+                String nameAux = url.split("nodes")[1];
+                if (nameAux.startsWith("\\"))
+                    name = nameAux.substring(2, nameAux.length());
+                else
+                    name = nameAux.substring(1, nameAux.length());
+            }
+            if (output[i].startsWith(".") && name.isEmpty()){
+                String url = output[i].split("\"")[2];
+                String nameAux = url.split("nodes")[1];
+                if (nameAux.startsWith("\\"))
+                    name = nameAux.substring(2, nameAux.length());
+                else
+                    name = nameAux.substring(1, nameAux.length());
+            }
+        }
+        
         return name;
+        
+        /*if (output[1].startsWith("\\.")){
+            String url = output[1].split("\"")[2];
+            String nameAux = url.split("nodes")[1];
+            String name = nameAux.substring(1, nameAux.length());
+            return name;
+        } else  if (output[1].startsWith("\"")) {
+            String url = output[1].split("\"")[2];
+            String nameAux = url.split("nodes")[1];
+            String name = nameAux.substring(1, nameAux.length());
+            return name;
+        } else {
+            String url = output[1].split("\"")[2];
+            String nameAux = url.split("nodes")[1];
+            String name = nameAux.substring(1, nameAux.length());
+            return name;
+        }*/
     }
 
 }

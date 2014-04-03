@@ -196,8 +196,14 @@ public class ChefClient {
 
         String[] output = stringChefClients.split("\"" + hostname);
         String url = output[1].split("\"")[2];
+        System.out.println("url:" + url);
         String nameAux = url.split("clients")[1];
-        String name = nameAux.substring(1, nameAux.length());
-        return name;
+        System.out.println("nameAux:" + nameAux);
+        if (nameAux.startsWith("\\"))
+            //String name = nameAux.substring(1, nameAux.length());
+            return nameAux.substring(2, nameAux.length());
+        else
+            //String name = nameAux.substring(1, nameAux.length());
+            return nameAux.substring(1, nameAux.length());
     }
 }

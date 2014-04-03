@@ -107,6 +107,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     "The ChefServer is empty of ChefNodes");
             }           
             ChefNode node = new ChefNode();
+            LOGGER.info (stringNodes);
             String nodeName = node.getChefNodeName(stringNodes, hostname);
             return loadNode(nodeName);
          } catch (UniformInterfaceException e) {
@@ -122,9 +123,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
         	
-        	if (!chefNodename.startsWith("/")) {
+        	/*if (!chefNodename.startsWith("/")) {
         		chefNodename = "/"+chefNodename;
-        	}
+        	}*/
         	
             String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
@@ -138,10 +139,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
             stringNode = IOUtils.toString(inputStream);
-            //LOGGER.info("Node " + chefNodename + "in Json");
-            //LOGGER.info(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
-        
+            LOGGER.info (stringNode);
+    
             ChefNode node = new ChefNode();
             node.fromJson(jsonNode);
             return node;
@@ -161,7 +161,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode updateNode(ChefNode node) throws CanNotCallChefException {
     	LOGGER.info("Update node " + node.getName() );
         try {
-            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), "/"+node.getName());
+            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             String payload = node.toJson();
             Map<String, String> header = getHeaders("PUT", path, payload);
