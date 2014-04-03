@@ -1,9 +1,10 @@
-*.pyc
 *.class
+*.pyc
+acceptance/logs/
+acceptance/testreport/
 .DS_Store
 target/
 .classpath
-automatization_scripts/*.*
 .project
 .settings
 
