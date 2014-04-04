@@ -18,6 +18,7 @@
     <bean id="productResource" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
         <property name="productManager" ref="productManager"/>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     
     <bean id="productReleaseResource" lazy-init="true"

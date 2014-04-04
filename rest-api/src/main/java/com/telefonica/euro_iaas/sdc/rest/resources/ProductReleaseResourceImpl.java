@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
@@ -57,11 +58,13 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -75,6 +78,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     private ProductReleaseManager productReleaseManager;
     @InjectParam("productManager")
     private ProductManager productManager;
+    
+
 
     private ProductResourceValidator validator;
     private GeneralResourceValidator generalValidator;
@@ -165,6 +170,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     public List<ProductRelease> findAll(String pName, String osType, Integer page, Integer pageSize, String orderBy,
             String orderType) {
+    	
+    	
+    	
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
         if (!StringUtils.isEmpty(pName)) {
@@ -192,6 +200,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return productReleaseManager.findReleasesByCriteria(criteria);
     }
+    
+   
 
     /**
      * {@inheritDoc}
@@ -344,6 +354,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return file;
     }
+    
+
+    
+
 
     /**
      * @param validator

@@ -46,6 +46,9 @@ public class ProductInstanceIT {
     SDCClient client;
     String baseUrl;
     String mediaType;
+    
+    public static String TOKEN ="token";
+    public static String TENANT ="vdc";
 
     @Before
     public void setUp() {
@@ -74,7 +77,7 @@ public class ProductInstanceIT {
         String callback = "http://localhost";
         // when
 
-        Task task = productInstanceService.install(vdc, productInstanceDto, callback);
+        Task task = productInstanceService.install(vdc, productInstanceDto, callback, TOKEN);
 
         // then
         assertNotNull(task);
@@ -99,7 +102,7 @@ public class ProductInstanceIT {
 
         // when
         List<ProductInstance> productInstances = productInstanceService.findAll(null, null, null, null, null, null,
-                null, null, null, null, null);
+                null, null, null, null, null, TOKEN);
 
         // then
         assertNotNull(productInstances);

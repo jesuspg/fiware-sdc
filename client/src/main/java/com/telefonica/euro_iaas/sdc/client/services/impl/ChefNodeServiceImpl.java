@@ -26,9 +26,12 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 
+import javax.ws.rs.core.MediaType;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
@@ -47,12 +50,11 @@ public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNode
         setType(type);
     }
 
-    public Task delete(String vdc, String chefNodeName) throws InvalidExecutionException {
+    public Task delete(String vdc, String chefNodeName, String token) throws InvalidExecutionException {
         try {
 
             String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFNODE_PATH, vdc, chefNodeName);
-            WebResource wr = getClient().resource(url);
-            WebResource.Builder builder = wr.accept(getType()).type(getType());
+            WebResource.Builder builder= createWebResource (url, token, vdc);
             return builder.delete(Task.class);
 
         } catch (UniformInterfaceException e) {

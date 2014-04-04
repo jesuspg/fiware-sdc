@@ -1,27 +1,10 @@
-<<<<<<< HEAD
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
-=======
-<beans xmlns="http://www.springframework.org/schema/beans"
->>>>>>> c1a8f4134ff9a61c099ee069ca1b3111d8195485
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.springframework.org/schema/security
    http://www.springframework.org/schema/security/spring-security-3.1.xsd
-   http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans
    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-<<<<<<< HEAD
 
-=======
-   
-    <!--
-        <http auto-config="false" create-session="stateless"
-            entry-point-ref="http401EntryPoint">-->
-    <!-- <intercept-url pattern="/**" access="ROLE_USER" /> -->
-    <!-- <intercept-url pattern="/**" />
-     <custom-filter position="BASIC_AUTH_FILTER" ref="openStackFilter" />
- </http> -->
->>>>>>> c1a8f4134ff9a61c099ee069ca1b3111d8195485
 
-   
-
-</beans>
+</beans:beans>
