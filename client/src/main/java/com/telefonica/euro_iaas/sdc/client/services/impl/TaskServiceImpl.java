@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
+import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +43,6 @@ import com.telefonica.euro_iaas.sdc.client.model.Tasks;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
-
-
-import static com.telefonica.euro_iaas.sdc.client.ClientConstants.PRODUCT_INSTANCE_PATH;
 
 /**
  * Default TaskService implementation.
@@ -87,14 +86,14 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
 
     public Task load(String vdc, Long id, String tenant, String token) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.TASK_PATH, vdc, id);
-        return this.load(url, tenant,token);
+        return this.load(url, tenant, token);
     }
 
     /**
      * {@inheritDoc}
      */
     public Task load(String url, String tenant, String token) {
-    	Builder wr = createWebResource (url, token, tenant);
+        Builder wr = createWebResource(url, token, tenant);
         return wr.accept(getType()).get(Task.class);
     }
 
@@ -105,12 +104,9 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
             List<TaskStates> states, String resource, String owner, Date fromDate, Date toDate, String vdc, String token) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_TASK_PATH, vdc);
         WebResource wr = getClient().resource(url);
-    	Builder builder = wr.accept(MediaType.APPLICATION_JSON);
-    	System.out.println (url);
-    	System.out.println ("token  " + token);
-    	System.out.println ("tenant " + vdc);
-    	builder.header("X-Auth-Token", token);
-    	builder.header("Tenant-Id", vdc);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", vdc);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
@@ -156,11 +152,9 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
         return (new Date().getTime() - startedDate.getTime()) > maxWaiting;
     }
 
-
     public List<Task> findAllByProduct(String vdc, String productName, String token) {
         String resource = MessageFormat.format(getBaseHost() + PRODUCT_INSTANCE_PATH, vdc, productName);
         return findAll(null, null, null, null, null, resource, null, null, null, vdc, token);
     }
-
 
 }
