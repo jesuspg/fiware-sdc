@@ -6,7 +6,6 @@
     <packaging>jar</packaging>
     <name>sdc-server-core</name>
 
-
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>sdc-server</artifactId>

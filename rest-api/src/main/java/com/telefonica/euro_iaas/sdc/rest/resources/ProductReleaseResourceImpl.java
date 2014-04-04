@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
@@ -31,6 +48,7 @@ import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
@@ -44,6 +62,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -63,6 +82,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
 
     private ProductResourceValidator validator;
+    private GeneralResourceValidator generalValidator;
     private static Logger LOGGER = Logger.getLogger("ProductReleaseResourceImpl");
 
     /**
@@ -76,6 +96,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
+        try {
+            generalValidator.validateName(pName);
+        } catch (InvalidNameException e) {
+            throw new InvalidProductReleaseException(e.getMessage());
+        }
         productReleaseDto.setProductName(pName);
 
         LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
@@ -340,6 +365,14 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public void setValidator(ProductResourceValidator validator) {
         this.validator = validator;
+    }
+    
+    /**
+     * @param generalValidator
+     *            the generalValidator to set
+     */
+    public void setGeneralValidator(GeneralResourceValidator generalValidator) {
+        this.generalValidator = generalValidator;
     }
 
     /**
