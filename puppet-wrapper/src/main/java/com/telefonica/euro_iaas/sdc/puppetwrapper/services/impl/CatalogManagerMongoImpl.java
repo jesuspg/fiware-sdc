@@ -72,9 +72,6 @@ public class CatalogManagerMongoImpl implements CatalogManager {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("include puppet");
-        sb.append(eol);
-
         for (Node node : nodeList) {
             if (node.isManifestGenerated() && sb.indexOf("import '" + node.getGroupName() + "/*.pp'") == -1) {
                 sb.append("import '" + node.getGroupName() + "/*.pp'");

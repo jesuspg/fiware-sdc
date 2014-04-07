@@ -143,7 +143,7 @@ public class PuppetController /* extends GenericController */{
 
     }
 
-    @RequestMapping(value = "/delete/node/{nodeName:.+}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/node/{nodeName:.+}", method = RequestMethod.DELETE)
     public @ResponseBody String deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         logger.info("Deleting node: "+ nodeName);
@@ -153,12 +153,12 @@ public class PuppetController /* extends GenericController */{
     }
 
         
-    @RequestMapping(value = "/delete/group/{groupName}", method = RequestMethod.POST)
-    public @ResponseBody void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
-
-        logger.info("Deleting group: "+ groupName);
-        actionsService.deleteGroup(groupName);
-    }
+//    @RequestMapping(value = "/delete/group/{groupName}", method = RequestMethod.POST)
+//    public @ResponseBody void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
+//
+//        logger.info("Deleting group: "+ groupName);
+//        actionsService.deleteGroup(groupName);
+//    }
 
     @RequestMapping(value="/download/git/{softwareName}", method=RequestMethod.POST)
     public @ResponseBody void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, 
