@@ -60,10 +60,10 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     /**
      * {@inheritDoc}
      */
-    public Product add(Product product,  String token, String tenant) throws InsertResourceException {
+    public Product add(Product product, String token, String tenant) throws InsertResourceException {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
         try {
-        	Builder wr = createWebResource (url, token, tenant);
+            Builder wr = createWebResource(url, token, tenant);
             return wr.accept(getType()).type(getType()).entity(product).post(Product.class);
         } catch (Exception e) {
             throw new InsertResourceException(Product.class, url);
@@ -78,7 +78,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pname);
 
-        Builder wr = createWebResource (url, token, tenant);
+        Builder wr = createWebResource(url, token, tenant);
 
         wr.accept(getType()).type(getType()).delete(ClientResponse.class);
     }
@@ -89,7 +89,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
     public Product load(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pName);
-        Builder wr = createWebResource (url, token, tenant);
+        Builder wr = createWebResource(url, token, tenant);
         try {
             return wr.accept(getType()).get(Product.class);
         } catch (Exception e) {
@@ -100,16 +100,14 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     /**
      * {@inheritDoc}
      */
-    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String token, String tenant) {
+    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String token,
+            String tenant) {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
 
         WebResource wr = getClient().resource(url);
-    	Builder builder = wr.accept(MediaType.APPLICATION_JSON);
-    	 System.out.println (url);
-    	 System.out.println ("token  " + token);
-    	 System.out.println ("tenant " + tenant);
-    	 builder.header("X-Auth-Token", token);
-    	 builder.header("Tenant-Id", tenant);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", tenant);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams = addParam(searchParams, "page", page);
         searchParams = addParam(searchParams, "pageSize", pageSize);
@@ -124,7 +122,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      */
     public List<Attribute> loadAttributes(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_ATTRIBUTES, pName);
-        Builder wr = createWebResource (url, token, tenant);
+        Builder wr = createWebResource(url, token, tenant);
         try {
             return wr.accept(getType()).get(Product.class).getAttributes();
         } catch (Exception e) {
@@ -138,14 +136,13 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
     public List<Metadata> loadMetadatas(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_METADATAS, pName);
-        Builder wr = createWebResource (url, token, tenant);
-        
+        Builder wr = createWebResource(url, token, tenant);
+
         try {
             return wr.accept(getType()).get(Product.class).getMetadatas();
         } catch (Exception e) {
             throw new ResourceNotFoundException(Product.class, url);
         }
     }
-
 
 }

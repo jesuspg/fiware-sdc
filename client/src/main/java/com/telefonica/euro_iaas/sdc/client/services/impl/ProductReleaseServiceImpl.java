@@ -64,7 +64,8 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     /**
      * {@inheritDoc}
      */
-    public ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token, String tenant) {
+    public ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token,
+            String tenant) {
         try {
 
             MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
@@ -73,7 +74,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
 
             String url = getBaseHost()
                     + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, releaseDto.getProductName());
-            Builder wr = createWebResource(url, token,tenant);
+            Builder wr = createWebResource(url, token, tenant);
             return wr.accept(getType()).type(MultiPartMediaTypes.MULTIPART_MIXED_TYPE)
                     .post(ProductRelease.class, payload);
         } catch (FileNotFoundException e) {
@@ -86,7 +87,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     public ProductRelease add(ProductReleaseDto productReleaseDto, String token, String tenant) {
         String url = getBaseHost()
                 + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, productReleaseDto.getProductName());
-        Builder wr = createWebResource(url, token,tenant);
+        Builder wr = createWebResource(url, token, tenant);
         return wr.post(ProductRelease.class, productReleaseDto);
 
     }
@@ -94,7 +95,8 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     /**
      * {@inheritDoc}
      */
-    public ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token, String tenant) {
+    public ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token,
+            String tenant) {
         try {
 
             MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
@@ -104,7 +106,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
             String url = getBaseHost()
                     + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, releaseDto.getProductName(),
                             releaseDto.getVersion());
-            Builder wr = createWebResource(url, token,tenant);
+            Builder wr = createWebResource(url, token, tenant);
             return wr.accept(getType()).type("multipart/mixed").entity(payload).put(ProductRelease.class);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -116,11 +118,11 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     /**
      * {@inheritDoc}
      */
-    
+
     public void delete(String pname, String version, String token, String tenant) {
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, pname, version);
-        Builder wr = createWebResource(url, token,tenant);
+        Builder wr = createWebResource(url, token, tenant);
 
         wr.accept(getType()).type(getType()).delete(ClientResponse.class);
     }
@@ -128,9 +130,10 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     /**
      * {@inheritDoc}
      */
-    public ProductRelease load(String product, String version, String token, String tenant) throws ResourceNotFoundException {
+    public ProductRelease load(String product, String version, String token, String tenant)
+            throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, product, version);
-        Builder wr = createWebResource(url, token,tenant);
+        Builder wr = createWebResource(url, token, tenant);
         try {
             return wr.accept(getType()).get(ProductRelease.class);
         } catch (Exception e) {
@@ -146,12 +149,9 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
         String url;
         url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, productName);
         WebResource wr = getClient().resource(url);
-    	Builder builder = wr.accept(MediaType.APPLICATION_JSON);
-    	 System.out.println (url);
-    	 System.out.println ("token  " + token);
-    	 System.out.println ("tenant " + tenant);
-    	 builder.header("X-Auth-Token", token);
-    	 builder.header("Tenant-Id", tenant);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", tenant);
         MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
         searchParams = addParam(searchParams, "osType", osType);
         searchParams = addParam(searchParams, "page", page);

@@ -57,7 +57,7 @@ public class ChefNodeTest extends TestCase {
     ChefNode chefNode;
     String json;
 
-    public static String NAME = "henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal";
+    public static String NAME = "nosdcclient.novalocal";
     
     private String jsonFilePath = "src/test/resources/Chefnode.js";
     private String jsonFromFile;
@@ -70,6 +70,10 @@ public class ChefNodeTest extends TestCase {
         json = "{\n"
                 + "\"chef-webui\": \"http://localhost:4000/nodes/chef-webui\"\n"
                 + "\"henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\": \"http://localhost:4000/nodes/henartmactmysqlInstance2-tomcat7postgres8Tier-1.novalocal\",\n"
+                + "\"nosdcclient001\": \"http://localhost:4000/nodes/nosdcclient001\",\n"
+                + "\"nosdcclient001.novalocal\": \"http://localhost:4000/nodes/nosdcclient001.novalocal\",\n"
+                + "\"nosdcclient.novalocal\": \"http://localhost:4000/nodes/nosdcclient.novalocal\",\n"
+                + "\"nosdcclient\": \"http://localhost:4000/nodes/nosdcclient\",\n"
                 + "\"chef-validator\": \"http://localhost:4000/nodes/chef-validator\",\n"
                 + "\"adam.novalocal\": \"http://localhost:4000/nodes/adam.novalocal\"\n" + "}\"";
         
@@ -81,11 +85,20 @@ public class ChefNodeTest extends TestCase {
     }
 
     @Test
+    public void testGetChefClientURL2() throws Exception {
+        String json2 =  json = "{\n"
+                        + "\"chef-webui\": \"http:\\/\\/localhost:4000\\/nodes\\/chef-webui\"\n"
+                        + "\"adam.novalocal\": \"http:\\/\\/localhost:4000\\/nodes\\/adam.novalocal\"\n" + "}\"";
+        System.out.println("json: " + json2);
+        String name = chefNode.getChefNodeName(json2, "chef-webui");
+        assertEquals(name, "chef-webui");
+    }
+    
+    @Test
     public void testGetChefClientURL() throws Exception {
         String name = chefNode.getChefNodeName(json, NAME);
         assertEquals(name, NAME);
     }
-    
     @Test
     public void testHasRecipe() throws Exception {
          assertEquals(chefNode.hasRecipe("recipe"), false);

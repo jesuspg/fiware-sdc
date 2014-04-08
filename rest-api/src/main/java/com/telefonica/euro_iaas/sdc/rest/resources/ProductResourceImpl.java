@@ -44,7 +44,6 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
@@ -60,12 +59,12 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class ProductResourceImpl implements ProductResource {
 
     // @InjectParam("productManager")
-	
-	public static String PUBLIC_METADATA = "public";
-	public static String TENANT_METADATA = "tenant_id";
-		
+
+    public static String PUBLIC_METADATA = "public";
+    public static String TENANT_METADATA = "tenant_id";
+
     private ProductManager productManager;
-    
+
     private SystemPropertiesProvider systemPropertiesProvider;
 
     private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
@@ -77,6 +76,7 @@ public class ProductResourceImpl implements ProductResource {
      * @return product
      */
     public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+
         return productManager.insert(product);
     }
 
@@ -99,41 +99,40 @@ public class ProductResourceImpl implements ProductResource {
         }
         return filterProducts(productManager.findByCriteria(criteria));
     }
-    
-    private List<Product> filterProducts (List<Product> products) {
-    	List<Product> filterProducts = new ArrayList<Product> ();
 
-    	for (Product product: products) {
-    		
-    		LOGGER.info("Product get public metadata " + product.getMapMetadata().get(PUBLIC_METADATA));
-   		
-    		if (product.getMapMetadata().get(PUBLIC_METADATA) != null && 
-    				product.getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
-    			if (checkProduct (product)) {
-    				LOGGER.info("ADding product " + product.getName());
-    				filterProducts.add(product);
-    			}    			
-    		}
-    		else {
-    			LOGGER.info("ADding product " + product.getName());
-    			filterProducts.add(product);
-    		}
-    	}
-    	
-    	return filterProducts;
-    	
+    private List<Product> filterProducts(List<Product> products) {
+        List<Product> filterProducts = new ArrayList<Product>();
+
+        for (Product product : products) {
+
+            LOGGER.info("Product get public metadata " + product.getMapMetadata().get(PUBLIC_METADATA));
+
+            if (product.getMapMetadata().get(PUBLIC_METADATA) != null
+                    && product.getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
+                if (checkProduct(product)) {
+                    LOGGER.info("ADding product " + product.getName());
+                    filterProducts.add(product);
+                }
+            } else {
+                LOGGER.info("ADding product " + product.getName());
+                filterProducts.add(product);
+            }
+        }
+
+        return filterProducts;
+
     }
-    
-    private boolean checkProduct (Product product) {
-    	PaasManagerUser credentials = this.getCredentials();
-    	LOGGER.info (product.getMapMetadata().get(TENANT_METADATA) + " " + credentials.getTenantId());
-    	if (product.getMapMetadata().get(TENANT_METADATA)!= null && 
-    			product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
-    		return true;
-    	}
-    	return false;
+
+    private boolean checkProduct(Product product) {
+        PaasManagerUser credentials = this.getCredentials();
+        LOGGER.info(product.getMapMetadata().get(TENANT_METADATA) + " " + credentials.getTenantId());
+        if (product.getMapMetadata().get(TENANT_METADATA) != null
+                && product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
+            return true;
+        }
+        return false;
     }
-    
+
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -191,7 +190,7 @@ public class ProductResourceImpl implements ProductResource {
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
-    
+
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }

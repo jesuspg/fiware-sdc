@@ -57,9 +57,11 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
     public final static String CONTENT_HASH_HEADER = "X-Ops-Content-Hash";
     public final static String TIMESTAMP_HEADER = "X-Ops-Timestamp";
     public final static String USER_HEADER = "X-Ops-Userid";
+    //public final static String CHEFSERVER_VERSION_HEADER = "X-chef-version";
+    //public final static String CHEFSERVER_VERSION_VALUE = "0.10.8";
     public final static String SIGN_VERSION_HEADER = "X-Ops-Sign";
     public final static String SIGN_VERSION_VALUE = "version=1.0";
-
+    
     private final static String BODY_TEMPLATE = "Method:{0}\nHashed Path:{1}\nX-Ops-Content-Hash:{2}\n"
             + "X-Ops-Timestamp:{3}\nX-Ops-UserId:{4}";
 
@@ -76,7 +78,9 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
             headers.put(TIMESTAMP_HEADER, df.format(timestamp));
             headers.put(USER_HEADER, id);
             headers.put(SIGN_VERSION_HEADER, SIGN_VERSION_VALUE);
-
+            //headers.put(CHEFSERVER_VERSION_HEADER, CHEFSERVER_VERSION_VALUE);
+            //headers.put("Accept", "application/json");
+            
             String digest = MessageFormat.format(BODY_TEMPLATE, method.toUpperCase(), getHash(path), getHash(body),
                     df.format(timestamp), id);
             digest = signer.sign(digest, new File(pkUrl));
