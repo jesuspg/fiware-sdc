@@ -11,5 +11,5 @@
     <import resource="classpath:/spring-properties-config.xml"/>
     <import resource="classpath:/spring-tx-config.xml"/>
     <import resource="classpath:/spring-task-config.xml"/>
-<!--   <import resource="classpath:/spring-security-config.xml"/>-->
+   <import resource="classpath:/spring-security-config.xml"/>
 </beans>
