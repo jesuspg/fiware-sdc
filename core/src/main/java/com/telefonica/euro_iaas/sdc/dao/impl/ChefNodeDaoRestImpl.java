@@ -123,19 +123,21 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode loadNode(String chefNodename) throws CanNotCallChefException {
         try {
         	
-        	/*if (!chefNodename.startsWith("/")) {
+        	if (!chefNodename.startsWith("/")) {
         		chefNodename = "/"+chefNodename;
-        	}*/
+        	}
         	
             String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
-
+            LOGGER.info("getting hedares");
             Map<String, String> header = getHeaders("GET", path, "");
+            LOGGER.info("obtainaing webresource");
             WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
+            LOGGER.info("getting input string");
             InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
             stringNode = IOUtils.toString(inputStream);
@@ -161,7 +163,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public ChefNode updateNode(ChefNode node) throws CanNotCallChefException {
     	LOGGER.info("Update node " + node.getName() );
         try {
-            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), node.getName());
+            String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), "/"+node.getName());
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             String payload = node.toJson();
             Map<String, String> header = getHeaders("PUT", path, payload);
@@ -235,7 +237,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 Map<String, String> header = getHeaders("GET", path, "");
                 LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
- 
+                LOGGER.info("web resource");
                 WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {
@@ -243,8 +245,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     wr = wr.header(key, header.get(key));
                 }
                 
-                System.out.println (wr.entity(String.class));
+                LOGGER.info("geting");
                 response = IOUtils.toString(wr.get(InputStream.class));
+                LOGGER.info(response);
                 time += time;
             } catch (UniformInterfaceException e) {
             	LOGGER.warning(e.getMessage());
