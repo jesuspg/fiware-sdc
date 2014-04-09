@@ -36,6 +36,11 @@
         <property name="productManager" ref="productManager"/>
         <property name="productInstanceAsyncManager" ref="productInstanceAsyncManager"/>
     </bean>
+    
+     <bean id="taskResource" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.rest.resources.TaskResourceImpl">
+        <property name="taskManager" ref="taskManager"/>
+    </bean>
 
     <!-- ===========
     == VALIDATORS ==
