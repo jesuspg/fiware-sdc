@@ -10,8 +10,10 @@
  */
 package com.telefonica.euro_iaas.sdc.manager;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
 /**
  * @author jesus.movilla
@@ -26,5 +28,23 @@ public interface NodeManager {
      * @throws ChefClientExecutionException
      */
     void nodeDelete(String vdc, String nodeName) throws NodeExecutionException;
+    
+    /**
+     * Load a ChefClient from ChefServer
+     * 
+     * @param chefClientname
+     *            the name of the chefclient to be deleted from chef server
+     * @throws ChefClientExecutionException
+     * @throws EntityNotFoundException
+     */
+    ChefClient chefClientload(String chefClientname) throws ChefClientExecutionException, EntityNotFoundException;
+
+    /**
+     * Loads the chefclient whose hostname is hostname
+     * 
+     * @param hostname
+     * @return ChefClient
+     */
+    ChefClient chefClientfindByHostname(String hostname) throws ChefClientExecutionException, EntityNotFoundException;
 
 }

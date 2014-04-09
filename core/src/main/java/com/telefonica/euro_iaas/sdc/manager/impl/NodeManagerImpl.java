@@ -33,6 +33,7 @@ import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -144,6 +145,51 @@ public class NodeManagerImpl implements NodeManager {
             throw new ChefClientExecutionException(errorMsg, e2);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll()
+     */
+    public ChefClient chefClientfindByHostname(String hostname) throws EntityNotFoundException,
+            ChefClientExecutionException {
+
+        ChefClient chefClient = new ChefClient();
+        try {
+            chefClient = chefClientDao.chefClientfindByHostname(hostname);
+        } catch (EntityNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            String message = " An error ocurred invoing the Chef server to load " + "ChefClient whose hostname is  "
+                    + hostname;
+            log.info(message);
+            throw new ChefClientExecutionException(message, e);
+        }
+        return chefClient;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientload(java.lang.String, java.lang.String)
+     */
+    public ChefClient chefClientload(String chefClientName) throws ChefClientExecutionException,
+            EntityNotFoundException {
+
+        ChefClient chefClient = new ChefClient();
+        try {
+            chefClient = chefClientDao.getChefClient(chefClientName);
+        } catch (EntityNotFoundException e) {
+            // String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
+            // log.info(message);
+            throw e;
+        } catch (Exception e) {
+            String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
+            log.info(message);
+            throw new ChefClientExecutionException(message, e);
+        }
+        return chefClient;
+    }
+    
+    
     
     /**
      * @param chefClientDao
