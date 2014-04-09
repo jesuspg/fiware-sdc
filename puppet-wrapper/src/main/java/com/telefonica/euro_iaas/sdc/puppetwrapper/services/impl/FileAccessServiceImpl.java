@@ -53,6 +53,8 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     private String defaultManifestsPath;
 
+    private String modulesCodeDownloadPath;
+
     public Node generateManifestFile(String nodeName) throws IOException {
 
         logger.info("creating Manifest file for node: " + nodeName);
@@ -114,6 +116,11 @@ public class FileAccessServiceImpl implements FileAccessService {
         this.defaultManifestsPath = defaultManifestsPath;
     }
 
+    @Value(value = "${modulesCodeDownloadPath}")
+    public void setDefaultModulesPath(String modulesCodeDownloadPath) {
+        this.modulesCodeDownloadPath = modulesCodeDownloadPath;
+    }
+
     public void deleteNodeFiles(String nodeName) throws IOException {
 
         Node node = catalogManager.getNode(nodeName);
@@ -123,16 +130,28 @@ public class FileAccessServiceImpl implements FileAccessService {
         File file = new File(path + "/" + node.getId() + ".pp");
 
         if (!file.delete()) {
-            logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" +node.getId() + ".pp"));
+            logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
         }
 
     }
 
     public void deleteGoupFolder(String groupName) throws IOException {
-        
+
         File path = new File(defaultManifestsPath + groupName);
+
+        FileUtils.deleteDirectory(path);
+    }
+
+    @Override
+    public void deleteModuleFiles(String moduleName) throws IOException {
+
+        File file = new File(modulesCodeDownloadPath + "/" + moduleName);
+
+        FileUtils.deleteDirectory(file);
         
-        FileUtils.deleteDirectory(path);        
+        logger.info(format("File {0} could not be deleted. Did it exist?", modulesCodeDownloadPath + "/" + moduleName
+                + ".pp"));
+
     }
 
 }

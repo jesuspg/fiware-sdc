@@ -214,6 +214,12 @@ public class ActionsServiceImpl implements ActionsService {
 
     }
 
+    @Override
+    public void deleteModule(String moduleName) throws IOException {
+        fileAccessService.deleteModuleFiles(moduleName);
+
+    }
+
     // private void executeSystemCommand(Process shell, StringBuilder
     // successResponse, StringBuilder errorResponse) throws IOException{
     //

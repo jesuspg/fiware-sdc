@@ -41,4 +41,6 @@ public interface FileAccessService {
 
     public void deleteGoupFolder(String groupName) throws IOException;
 
+    public void deleteModuleFiles(String moduleName) throws IOException;
+
 }

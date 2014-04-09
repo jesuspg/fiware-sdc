@@ -36,4 +36,6 @@ public interface ActionsService {
     public void deleteNode(String nodeName) throws IOException;
 
     public void deleteGroup(String groupName) throws IOException;
+
+    public void deleteModule(String moduleName) throws IOException;
 }
