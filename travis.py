@@ -65,7 +65,7 @@ class Config():
         mirror.appendChild(mirror_mirrorOf)
         mirror.appendChild(mirror_url)
 
-    def configure_server(self, server=True, mirrors=True home_dir=os.path.expanduser("~")):
+    def configure_server(self, server=True, mirrors=True, home_dir=os.path.expanduser("~")):
 
         m2 = xml.dom.minidom.parse(home_dir + '/.m2/settings.xml')
         settings = m2.getElementsByTagName("settings")[0]
