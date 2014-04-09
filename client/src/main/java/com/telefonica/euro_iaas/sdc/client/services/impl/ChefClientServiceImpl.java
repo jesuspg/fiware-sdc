@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 /**
@@ -13,10 +30,12 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 
 import javax.persistence.EntityNotFoundException;
+import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -40,12 +59,11 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         setType(type);
     }
 
-    public Task delete(String vdc, String chefClientName) throws InvalidExecutionException {
+    public Task delete(String vdc, String chefClientName, String token) throws InvalidExecutionException {
         try {
 
             String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
-            WebResource wr = getClient().resource(url);
-            WebResource.Builder builder = wr.accept(getType()).type(getType());
+            Builder builder = createWebResource (url, token, vdc);
             // builder = addCallback(builder, callback);
             return builder.delete(Task.class);
 
@@ -56,13 +74,13 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         }
     }
 
-    public ChefClient load(String vdc, String chefClientName) throws ResourceNotFoundException {
+    public ChefClient load(String vdc, String chefClientName, String token) throws ResourceNotFoundException {
 
         String url = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
 
-            WebResource wr = getClient().resource(url);
+            Builder wr = createWebResource (url, token, vdc);
 
             return wr.accept(getType()).get(ChefClient.class);
 
@@ -73,13 +91,13 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         }
     }
 
-    public ChefClient loadByHostname(String vdc, String hostname) throws ResourceNotFoundException {
+    public ChefClient loadByHostname(String vdc, String hostname, String token) throws ResourceNotFoundException {
 
         String url = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENTHOSTNAME_PATH, vdc, hostname);
 
-            WebResource wr = getClient().resource(url);
+            Builder wr = createWebResource (url, token, vdc);
 
             return wr.accept(getType()).get(ChefClient.class);
 

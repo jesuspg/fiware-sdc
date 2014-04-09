@@ -1,3 +1,27 @@
+/**
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
+ */
+
 package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import java.io.File;
@@ -24,13 +48,13 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Service("svnExporterService")
 public class SvnExporterServiceImpl implements ModuleDownloader {
-    
+
     private static final Log logger = LogFactory.getLog(SvnExporterServiceImpl.class);
 
     private String modulesCodeDownloadPath;
-    
-    private String username="";
-    private String password="";
+
+    private String username = "";
+    private String password = "";
 
     public void download(String url, String moduleName) throws ModuleDownloaderException {
         // final String url = "svn://cavcops01.global.local/skunkworks";
@@ -62,18 +86,18 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
             // use SVNUpdateClient to do the export
             SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
             updateClient.setIgnoreExternals(false);
-            updateClient.doExport(repository.getLocation(), new File(modulesCodeDownloadPath+moduleName), SVNRevision.create(latestRevision),
-                    SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
+            updateClient.doExport(repository.getLocation(), new File(modulesCodeDownloadPath + moduleName),
+                    SVNRevision.create(latestRevision), SVNRevision.create(latestRevision), null, true,
+                    SVNDepth.INFINITY);
 
         } catch (SVNException e) {
             throw new ModuleDownloaderException(e);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new ModuleDownloaderException(ex);
-        } finally {
-            logger.debug("Done");
         }
+        logger.debug("Done");
     }
-    
+
     @Value(value = "${modulesCodeDownloadPath}")
     public void setModulesCodeDownloadPath(String modulesCodeDownloadPath) {
         this.modulesCodeDownloadPath = modulesCodeDownloadPath;

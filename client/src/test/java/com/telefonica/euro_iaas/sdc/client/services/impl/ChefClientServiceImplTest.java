@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.client.services.impl;
@@ -29,6 +46,7 @@ public class ChefClientServiceImplTest {
     ChefClientService chefClientService;
     String type = "application/json";
     String baseHost = "baseHost";
+    String token = "token";
     Client client = mock(Client.class);
 
     @Before
@@ -53,9 +71,10 @@ public class ChefClientServiceImplTest {
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
-        ChefClient resultChefClient = chefClientService.load(vdc, chefClientName);
+        ChefClient resultChefClient = chefClientService.load(vdc, chefClientName, token);
 
         // then
         assertNotNull(resultChefClient);
@@ -82,9 +101,10 @@ public class ChefClientServiceImplTest {
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
-        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName);
+        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName,token);
 
         // then
         assertNotNull(resultChefClient);
@@ -111,7 +131,7 @@ public class ChefClientServiceImplTest {
 
         Task task = null;
         try {
-            task = chefClientService.delete(vdc, chefClientName);
+            task = chefClientService.delete(vdc, chefClientName,token);
         } catch (InvalidExecutionException e) {
             fail();
         }

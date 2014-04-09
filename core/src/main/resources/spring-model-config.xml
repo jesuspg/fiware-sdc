@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	default-autowire="no">
 
 	<bean id="commandExecutor" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
@@ -115,15 +116,17 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 	</bean>
 
 
-	<bean id="restClient" class="com.sun.jersey.api.client.Client"
-		factory-method="create" />
+	<bean id="clientConfig" lazy-init="true" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientConfigImp"	/>
 
 	<bean id="chefNodeDao" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.dao.impl.ChefNodeDaoRestImpl">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="digester" ref="mixlibAuthenticationDigester"></property>
-		<property name="client" ref="restClient"></property>
+		<property name="clientConfig" ref="clientConfig"></property>
 	</bean>
+	
+	<bean id="restClient" class="com.sun.jersey.api.client.Client"
+		factory-method="create" />
 
 	<!-- <bean id="chefClientDao" lazy-init="true" class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoCommandImpl"> 
 		<property name="commandExecutor" ref="commandExecutor"></property> </bean> -->
@@ -132,7 +135,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 		class="com.telefonica.euro_iaas.sdc.dao.impl.ChefClientDaoRestImpl">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="digester" ref="mixlibAuthenticationDigester"></property>
-		<property name="client" ref="restClient"></property>
+		<property name="clientConfig" ref="clientConfig"></property>
 	</bean>
 
 	<bean id="fileDao" lazy-init="true"

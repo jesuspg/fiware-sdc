@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.client.services;
@@ -30,7 +47,7 @@ public interface ProductService {
      * @throws InsertResourceException
      * @return the created product.
      */
-    Product add(Product product) throws InsertResourceException;
+    Product add(Product product, String token, String tenant) throws InsertResourceException;
 
      /**
      * Delete the product from the catalogue.
@@ -39,7 +56,7 @@ public interface ProductService {
      *            product name
      * @return void.
      */
-    void delete(String pname);
+    void delete(String pname,  String token, String tenant);
 
     /**
      * Retrieve the product from the SDC catalog
@@ -50,7 +67,7 @@ public interface ProductService {
      * @throws ResourceNotFoundException
      *             if the selected product does not exists.
      */
-    Product load(String pname) throws ResourceNotFoundException;
+    Product load(String pname,  String token, String tenant) throws ResourceNotFoundException;
 
     /**
      * Retrieve all ProductReleases available in SDC catalog.
@@ -65,7 +82,7 @@ public interface ProductService {
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
      * @return the product that match with the criteria.
      */
-    List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType);
+    List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType,  String token, String tenant);
     
     /**
      * Retrieve the attributes of a product.
@@ -73,7 +90,7 @@ public interface ProductService {
      *                 the product Name
      * @return list of attributes
      */
-    List<Attribute> loadAttributes(String pname) throws ResourceNotFoundException;
+    List<Attribute> loadAttributes(String pname,  String token, String tenant) throws ResourceNotFoundException;
     
     /**
      * Retrieve the metadatas of a product.
@@ -81,5 +98,5 @@ public interface ProductService {
      *                 the product Name
      * @return list of metadatas
      */
-    List<Metadata> loadMetadatas(String pname)  throws ResourceNotFoundException;
+    List<Metadata> loadMetadatas(String pname,  String token, String tenant)  throws ResourceNotFoundException;
 }

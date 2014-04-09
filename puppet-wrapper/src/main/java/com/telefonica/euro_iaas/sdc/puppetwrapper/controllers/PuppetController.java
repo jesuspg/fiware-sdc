@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
@@ -16,14 +33,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.common.URLValue;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
@@ -51,7 +72,7 @@ public class PuppetController /* extends GenericController */{
     @Resource
     private ModuleDownloader svnExporterService;
 
-    @RequestMapping(value = "/install/{group}/{nodeName}/{softwareName}/{version}", method = RequestMethod.POST)
+    @RequestMapping(value = "/install/{group}/{nodeName}/{softwareName}/{version}", method = RequestMethod.POST,consumes="application/json",produces="application/json")
     public @ResponseBody
     Node install(@PathVariable("group") String group, @PathVariable("nodeName") String nodeName,
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
@@ -99,7 +120,7 @@ public class PuppetController /* extends GenericController */{
 
         Node node = fileAccessService.generateManifestFile(nodeName);
         logger.debug("nodes pp files OK");
-        
+
         fileAccessService.generateSiteFile();
         logger.debug("site.pp OK");
 
@@ -144,36 +165,40 @@ public class PuppetController /* extends GenericController */{
     }
 
     @RequestMapping(value = "/delete/node/{nodeName:.+}", method = RequestMethod.DELETE)
-    public @ResponseBody String deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
+    public @ResponseBody
+    String deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
-        logger.info("Deleting node: "+ nodeName);
+        logger.info("Deleting node: " + nodeName);
         actionsService.deleteNode(nodeName);
-        logger.info("Node: "+ nodeName+" deleted.");
-        return "Node "+nodeName + " deleted";
+        logger.info("Node: " + nodeName + " deleted.");
+        return "Node " + nodeName + " deleted";
     }
 
-        
-//    @RequestMapping(value = "/delete/group/{groupName}", method = RequestMethod.POST)
-//    public @ResponseBody void deleteGroup(@PathVariable("groupName") String groupName) throws IOException {
-//
-//        logger.info("Deleting group: "+ groupName);
-//        actionsService.deleteGroup(groupName);
-//    }
+    // @RequestMapping(value = "/delete/group/{groupName}", method =
+    // RequestMethod.POST)
+    // public @ResponseBody void deleteGroup(@PathVariable("groupName") String
+    // groupName) throws IOException {
+    //
+    // logger.info("Deleting group: "+ groupName);
+    // actionsService.deleteGroup(groupName);
+    // }
 
-    @RequestMapping(value="/download/git/{softwareName}", method=RequestMethod.POST)
-    public @ResponseBody void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, 
-            @RequestParam(value = "url", required = true) String url) throws  ModuleDownloaderException {
+    @RequestMapping(value = "/download/git/{softwareName}", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url)
+            throws ModuleDownloaderException {
 
-        gitCloneService.download(url, softwareName);
-        
+        gitCloneService.download(url.getUrl(), softwareName);
+
     }
-    
-    @RequestMapping(value="/download/svn/{softwareName}", method=RequestMethod.POST)
-    public @ResponseBody void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, 
-            @RequestParam(value = "url", required = true) String url) throws ModuleDownloaderException {
 
-        svnExporterService.download(url, softwareName);
-        
+    @RequestMapping(value = "/download/svn/{softwareName}", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url)
+            throws ModuleDownloaderException {
+
+        svnExporterService.download(url.getUrl(), softwareName);
+
     }
 
 }

@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc.util;
@@ -40,9 +57,11 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
     public final static String CONTENT_HASH_HEADER = "X-Ops-Content-Hash";
     public final static String TIMESTAMP_HEADER = "X-Ops-Timestamp";
     public final static String USER_HEADER = "X-Ops-Userid";
+    //public final static String CHEFSERVER_VERSION_HEADER = "X-chef-version";
+    //public final static String CHEFSERVER_VERSION_VALUE = "0.10.8";
     public final static String SIGN_VERSION_HEADER = "X-Ops-Sign";
     public final static String SIGN_VERSION_VALUE = "version=1.0";
-
+    
     private final static String BODY_TEMPLATE = "Method:{0}\nHashed Path:{1}\nX-Ops-Content-Hash:{2}\n"
             + "X-Ops-Timestamp:{3}\nX-Ops-UserId:{4}";
 
@@ -59,7 +78,9 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
             headers.put(TIMESTAMP_HEADER, df.format(timestamp));
             headers.put(USER_HEADER, id);
             headers.put(SIGN_VERSION_HEADER, SIGN_VERSION_VALUE);
-
+            //headers.put(CHEFSERVER_VERSION_HEADER, CHEFSERVER_VERSION_VALUE);
+            //headers.put("Accept", "application/json");
+            
             String digest = MessageFormat.format(BODY_TEMPLATE, method.toUpperCase(), getHash(path), getHash(body),
                     df.format(timestamp), id);
             digest = signer.sign(digest, new File(pkUrl));

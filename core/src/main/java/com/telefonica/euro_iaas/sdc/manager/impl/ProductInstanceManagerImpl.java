@@ -1,3 +1,27 @@
+/**
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
+ */
+
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
@@ -51,13 +75,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
             EntityNotFoundException {
 
-        // if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-        //
-        // }else{
-        //
-        // }
-
-        // Check that there is not another product installed
+       // Check that there is not another product installed
         ProductInstance instance = null;
         try {
 
@@ -70,6 +88,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                 throw new AlreadyInstalledException(instance);
             } else if (!(instance.getStatus().equals(Status.UNINSTALLED))
                     && !(instance.getStatus().equals(Status.ERROR)))
+                //restoreInstance(Status.UNINSTALLED, instance);
                 throw new InvalidInstallProductRequestException("Product " + productRelease.getProduct().getName()
                         + " " + productRelease.getVersion() + " cannot be installed in the VM " + vm.getFqn()
                         + " strage status:  " + instance.getStatus());
@@ -102,14 +121,18 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.validateInstalatorData(vm);
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_init");
                 chefInstallator.callService(instance, vm, attributes, INSTALL);
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm);
                     puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
                 } else {
                     chefInstallator.validateInstalatorData(vm);
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL);
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 
@@ -119,6 +142,12 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         } catch (InstallatorException sce) {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
+        } catch (NodeExecutionException nee) {
+           restoreInstance(previousStatus, instance);
+            throw new NodeExecutionException(nee);
+        } catch (InvalidInstallProductRequestException iipre) {
+            restoreInstance(previousStatus, instance);
+            throw new InvalidInstallProductRequestException(iipre);
         } catch (RuntimeException e) {
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
@@ -210,7 +239,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
         } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
-            throw new SdcRuntimeException(e);
+            throw new InstallatorException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
             // restore the status
             restoreInstance(previousStatus, productInstance);

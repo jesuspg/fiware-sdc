@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc;
@@ -44,6 +61,9 @@ public class ProductReleaseIT {
     SDCClient client;
     String baseUrl;
     String mediaType;
+    
+    public static String TOKEN ="token";
+    public static String TENANT ="vdc";
 
     @Before
     public void setUp() {
@@ -61,7 +81,7 @@ public class ProductReleaseIT {
 
         ProductRelease productRelease = null;
         try {
-            productRelease = productReleaseService.load("kk", "");
+            productRelease = productReleaseService.load("kk", "",TOKEN,TENANT );
             fail("The product kk should not exist");
         } catch (ResourceNotFoundException e) {
             // then
@@ -79,7 +99,7 @@ public class ProductReleaseIT {
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
         // when
 
-        ProductRelease productRelease = productReleaseService.load("tomcat", "6");
+        ProductRelease productRelease = productReleaseService.load("tomcat", "6",TOKEN,TENANT );
         // then
         assertNotNull(productReleaseService);
         assertNotNull(productRelease);
@@ -96,7 +116,7 @@ public class ProductReleaseIT {
         // when
         try {
 
-            productReleaseService.findAll(null, null, null, null, null, null);
+            productReleaseService.findAll(null, null, null, null, null, null, TOKEN, TENANT);
             fail();
         } catch (com.sun.jersey.api.client.UniformInterfaceException ex) {
             // then
@@ -112,7 +132,7 @@ public class ProductReleaseIT {
         // when
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
 
-        List<ProductRelease> list = productReleaseService.findAll(null, null, null, null, "tomcat", null);
+        List<ProductRelease> list = productReleaseService.findAll(null, null, null, null, "tomcat", null,TOKEN,TENANT );
         // then
         assertNotNull(list);
         assertFalse(list.isEmpty());
@@ -127,7 +147,7 @@ public class ProductReleaseIT {
         ProductReleaseService productReleaseService = client.getProductReleaseService(baseUrl, mediaType);
         // when
         try {
-            productReleaseService.findAll(null, null, null, null, "kk", null);
+            productReleaseService.findAll(null, null, null, null, "kk", null,TOKEN,TENANT );
             fail();
         } catch (com.sun.jersey.api.client.UniformInterfaceException ex) {
             // then
@@ -154,7 +174,7 @@ public class ProductReleaseIT {
 
         // when
         try {
-            client.getProductService(baseUrl, mediaType).add(product);
+            client.getProductService(baseUrl, mediaType).add(product,TOKEN,TENANT );
         } catch (InsertResourceException e) {
             fail();
         }
@@ -196,11 +216,11 @@ public class ProductReleaseIT {
 
         // when
         try {
-            client.getProductService(baseUrl, mediaType).add(product);
+            client.getProductService(baseUrl, mediaType).add(product,TOKEN,TENANT );
         } catch (InsertResourceException e) {
             fail();
         }
-        ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto);
+        ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto,TOKEN,TENANT );
 
         // then
         assertNotNull(productRelease);
@@ -239,7 +259,7 @@ public class ProductReleaseIT {
                 attributes, metadatas, supportedOS, transitableReleases);
         // when
         ProductRelease productRelease = client.getProductReleaseService(baseUrl, mediaType).add(productReleaseDto,
-                cookbook, files);
+                cookbook, files,TOKEN,TENANT );
 
         // then
         assertNotNull(productRelease);

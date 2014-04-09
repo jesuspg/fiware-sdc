@@ -1,1 +1,0 @@
-python get_software_catalogue.py
