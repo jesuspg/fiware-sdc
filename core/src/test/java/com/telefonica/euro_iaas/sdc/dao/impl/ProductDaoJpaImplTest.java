@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
  * Unit test for SODaoJpaImpl
- * 
+ *
  * @author Sergio Arroyo
  */
 
@@ -54,9 +55,6 @@ public class ProductDaoJpaImplTest {
     @Autowired
     OSDao osDao;
 
-    public final static String PRODUCT_NAME = "productName";
-    public final static String PRODUCT_VERSION = "productVersion";
-
     /**
      * Test the create and load method
      */
@@ -64,14 +62,13 @@ public class ProductDaoJpaImplTest {
     public void testCreate() throws Exception {
 
         Product product = new Product();
-        product.setName(PRODUCT_NAME);
+        product.setName("productName1");
         product.addAttribute(new Attribute("key", "value"));
         product.addMetadata(new Metadata("netkey", "metvalue"));
 
-        assertEquals(0, productDao.findAll().size());
         product = productDao.create(product);
-        assertEquals(product, productDao.load(PRODUCT_NAME));
-        assertEquals(1, productDao.findAll().size());
+        assertEquals(product, productDao.load("productName1"));
+        assertNotNull(product.getId());
 
     }
 
