@@ -145,7 +145,7 @@ public class FileAccessServiceImpl implements FileAccessService {
     @Override
     public void deleteModuleFiles(String moduleName) throws IOException {
 
-        File file = new File(modulesCodeDownloadPath + "/" + moduleName);
+        File file = new File(modulesCodeDownloadPath + moduleName);
 
         FileUtils.deleteDirectory(file);
         

@@ -200,6 +200,7 @@ public class PuppetController /* extends GenericController */{
     }
     
     @RequestMapping(value = "/delete/module/{moduleName:.*}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
     public void deleteModule(@PathVariable("moduleName") String moduleName) throws IOException{
     
         logger.info("Deleting module: " + moduleName);
