@@ -104,17 +104,12 @@ public class ProductResourceImpl implements ProductResource {
         List<Product> filterProducts = new ArrayList<Product>();
 
         for (Product product : products) {
-
-            LOGGER.info("Product get public metadata " + product.getMapMetadata().get(PUBLIC_METADATA));
-
             if (product.getMapMetadata().get(PUBLIC_METADATA) != null
                     && product.getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
                 if (checkProduct(product)) {
-                    LOGGER.info("ADding product " + product.getName());
                     filterProducts.add(product);
                 }
             } else {
-                LOGGER.info("ADding product " + product.getName());
                 filterProducts.add(product);
             }
         }
@@ -125,7 +120,6 @@ public class ProductResourceImpl implements ProductResource {
 
     private boolean checkProduct(Product product) {
         PaasManagerUser credentials = this.getCredentials();
-        LOGGER.info(product.getMapMetadata().get(TENANT_METADATA) + " " + credentials.getTenantId());
         if (product.getMapMetadata().get(TENANT_METADATA) != null
                 && product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
             return true;
