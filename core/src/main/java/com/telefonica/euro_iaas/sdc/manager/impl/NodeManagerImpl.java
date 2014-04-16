@@ -95,6 +95,8 @@ public class NodeManagerImpl implements NodeManager {
         
         System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + "delete/node/"+nodeName);
+        
+        postInstall.setHeader("Content-Type", "application/json");
 
         HttpResponse response;
 

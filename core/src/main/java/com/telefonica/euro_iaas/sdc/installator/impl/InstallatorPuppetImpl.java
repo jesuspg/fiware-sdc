@@ -28,6 +28,7 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,6 +47,8 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 public class InstallatorPuppetImpl implements Installator {
+    
+    private static Logger log = Logger.getLogger("InstallatorPuppetImpl");
 
     private HttpClient client;
     private SystemPropertiesProvider propertiesProvider;
@@ -56,6 +59,8 @@ public class InstallatorPuppetImpl implements Installator {
         HttpPost postInstall = new HttpPost(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
                 + product.getVersion());
+        
+        postInstall.addHeader("Content-Type", "application/json");
         
         System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
@@ -70,13 +75,17 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                throw new InstallatorException(format("[install] response code was: {0}", statusCode));
+                String msg=format("[puppet install] response code was: {0}", statusCode);
+                log.info(msg);
+                throw new InstallatorException(format(msg));
             }
 
             // generate files in puppet master
             HttpPost postGenerate = new HttpPost(
                     propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL) + "generate/"
                             + vm.getHostname());
+            
+            postGenerate.addHeader("Content-Type", "application/json");
 
             response = client.execute(postGenerate);
             statusCode = response.getStatusLine().getStatusCode();
