@@ -69,4 +69,16 @@ public class NodeResourceImpl implements NodeResource {
         return taskManager.createTask(task);
     }
 
+    public void setNodeAsyncManager(NodeAsyncManager nodeAsyncManager) {
+        this.nodeAsyncManager = nodeAsyncManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    public void setNodeManager(NodeManager nodeManager) {
+        this.nodeManager = nodeManager;
+    }
+
 }

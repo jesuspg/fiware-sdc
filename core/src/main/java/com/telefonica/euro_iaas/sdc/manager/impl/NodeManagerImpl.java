@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 
@@ -90,18 +91,18 @@ public class NodeManagerImpl implements NodeManager {
     
     private void puppetDelete(String vdc, String nodeName) throws NodeExecutionException {
         
-        HttpPost postInstall = new HttpPost(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+        HttpDelete delete = new HttpDelete(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + "delete/node/"+nodeName);
         
         System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
                 + "delete/node/"+nodeName);
         
-        postInstall.setHeader("Content-Type", "application/json");
+        delete.setHeader("Content-Type", "application/json");
 
         HttpResponse response;
 
         try {
-            response = client.execute(postInstall);
+            response = client.execute(delete);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             EntityUtils.consume(entity);

@@ -37,6 +37,13 @@
         <property name="productInstanceAsyncManager" ref="productInstanceAsyncManager"/>
     </bean>
     
+    <bean id="nodeResource" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.rest.resources.NodeResourceImpl">
+        <property name="taskManager" ref="taskManager"/>
+        <property name="nodeManager" ref="nodeManager"/>
+        <property name="nodeAsyncManager" ref="nodeAsyncManager"/>
+    </bean>
+    
      <bean id="taskResource" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.resources.TaskResourceImpl">
         <property name="taskManager" ref="taskManager"/>

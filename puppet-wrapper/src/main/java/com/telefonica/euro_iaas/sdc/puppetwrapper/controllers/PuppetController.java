@@ -163,7 +163,7 @@ public class PuppetController /* extends GenericController */{
 
     }
 
-    @RequestMapping(value = "/delete/node/{nodeName:.*}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/node/{nodeName}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
@@ -199,7 +199,7 @@ public class PuppetController /* extends GenericController */{
 
     }
     
-    @RequestMapping(value = "/delete/module/{moduleName:.*}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/module/{moduleName}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteModule(@PathVariable("moduleName") String moduleName) throws IOException{
     
