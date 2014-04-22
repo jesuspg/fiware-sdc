@@ -19,10 +19,10 @@
 
         <repoName>fiware-sdc</repoName>
 
-        <scmURI>git@pdihub.hi.inet:fiware</scmURI>
+        <scmURI>git@github.com:telefonicaid</scmURI>
         <ciURI>http://ci-fiware-01.hi.inet</ciURI>
-        <issueURI>https://jirapdi.tid.es/browse</issueURI>
-        <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
+        <nexusURI>http://130.206.80.169</nexusURI>
+        <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
 
@@ -40,10 +40,6 @@
         <repoMavenThirdpartyId>repo-third-party-release</repoMavenThirdpartyId>
         <repoMavenThirdpartyName>repo-third-party-release</repoMavenThirdpartyName>
         <repoMavenThirdpartyUrl>${nexusRepositories}/thirdparty</repoMavenThirdpartyUrl>
-        <!-- site -->
-        <repoSiteId>nexus-site-repository</repoSiteId>
-        <repoSiteName>repo-site</repoSiteName>
-        <repoSiteUrl>${ciURI}</repoSiteUrl>
 
 
         <!-- encoding -->
@@ -56,10 +52,6 @@
 
 
         <!-- plugins versions -->
-
-        <maven-site-plugin.version>2.2</maven-site-plugin.version>
-        <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 
 
         <compilerInfoDebug>false</compilerInfoDebug>
@@ -82,20 +74,16 @@
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
         <jvm.version>1.6</jvm.version>
-        <tomcat.version>6</tomcat.version>
-        <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
         <maven-license-plugin.version>1.2.5</maven-license-plugin.version>
 
+        <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <!-- sonar -->
         <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
-        <!--     <sonar.jacoco.reportPath>${project.build.directory}/jacoco-unit.exec</sonar.jacoco.reportPath>
-             <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
-             <sonar.jacoco.jar>${basedir}/lib/org.jacoco.agent-0.5.10.201208310627-runtime.jar</sonar.jacoco.jar>
-            -->
+        
 
     </properties>
 
@@ -106,31 +94,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <developers>
-        <developer>
-            <name>Jesus Movilla</name>
-            <timezone>+1</timezone>
-            <id>jmms392</id>
-            <roles>
-                <role>soft. developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Sergio Arroyo</name>
-            <email>sergio.arroyo@tic.alten.es</email>
-            <timezone>+1</timezone>
-            <id>sa245</id>
-            <roles>
-                <role>soft. developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-
-    <issueManagement>
-        <system>Jira</system>
-        <url>${issueURI}/CLAUDIA</url>
-    </issueManagement>
 
 
     <dependencyManagement>
@@ -167,18 +130,12 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
                 <version>1.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.9.5</version>
-                <scope>test</scope>
             </dependency>
 
         </dependencies>
@@ -188,34 +145,62 @@
     <build>
         <finalName>${project.artifactId}</finalName>
 
-        <pluginManagement>
-            <plugins>
-                <!-- license plugin -->
-
-                <plugin>
-                    <groupId>com.google.code.maven-license-plugin</groupId>
-                    <artifactId>maven-license-plugin</artifactId>
-                    <version>${maven-license-plugin.version}</version>
-                    <configuration>
-                        <header>src/license/fiware/header.txt</header>
-                        <includes>
-                            <include>src/main/**/*.java</include>
-                            <include>src/test/**/*.java</include>
-                        </includes>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
 
         <plugins>
+            <!-- license plugin -->
+
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>${maven-license-plugin.version}</version>
+                <configuration>
+                    <header>src/license/fiware/header.txt</header>
+                    <includes>
+                        <include>src/main/**/*.java</include>
+                        <include>src/test/**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
+                <configuration>
+                    <format>xml</format>
+                    <maxmem>256m</maxmem>
+                    <!-- aggregated reports for multi-module projects -->
+                    <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignores>
+                            <ignore>org.openstack.docs.common.api.v1.*</ignore>
+                        </ignores>
+                        <excludes>
+                            <exclude>**/*Test*.class</exclude>
+                            <exclude>**/model/**.class</exclude>
+                            <exclude>org/openstack/**/*</exclude>
+                            <exclude>org/w3/**/*</exclude>
+                        </excludes>
+                    </instrumentation>
+                </configuration>
+
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <configuration>
+                    <repoToken>udY6EhQuSfSatLQWMYC5kSYde7qWchS0z</repoToken>
+                    <sourceEncoding>UTF-8</sourceEncoding>
+                </configuration>
+            </plugin>
 
             <!-- jgitflow -->
             <plugin>
@@ -252,54 +237,6 @@
                     <showWarnings>${compilerShowWarnings}</showWarnings>
                     <showDeprecation>${compilerShowDeprecation}</showDeprecation>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-maven-plugin.version}</version>
-                <configuration>
-                    <check>
-                        <haltOnFailure>false</haltOnFailure>
-                    </check>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>**/main/Bootstrap.class</exclude>
-                        </excludes>
-                    </instrumentation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>clean</id>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>instrument</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                            <goal>cobertura</goal>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <artifactId>cobertura</artifactId>
-                        <groupId>net.sourceforge.cobertura</groupId>
-                        <version>2.0.3</version>
-                        <scope>compile</scope>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>com.sun</groupId>
-                                <artifactId>tools</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                </dependencies>
             </plugin>
 
         </plugins>
@@ -418,12 +355,6 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
 
-        <!-- Project Site -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/fiware/${project.artifactId}</url>
-        </site>
 
     </distributionManagement>
 
