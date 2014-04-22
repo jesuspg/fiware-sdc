@@ -131,10 +131,6 @@
             <artifactId>jersey-multipart</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -172,19 +168,7 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
+           
             <!-- Modulo de validacion de token -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -203,26 +187,7 @@
                     <schemaDirectory>${basedir}/src/main/resources/keystone/</schemaDirectory>
                 </configuration>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.codehaus.enunciate</groupId>
-                <artifactId>maven-enunciate-plugin</artifactId>
-                <version>1.23</version>
-                <configuration>
-                    <configFile>src/build/enunciate.xml</configFile>
-            <docsDir>${project.build.directory}/docs</docsDir>
-                    <exports>
-                        <jaxws.client.library.binaries>client.jar</jaxws.client.library.binaries>
-                    </exports>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-            <goal>docs</goal>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>  -->
+           
         </plugins>
     </build>
 
