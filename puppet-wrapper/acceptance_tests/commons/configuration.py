@@ -7,3 +7,4 @@ CONTENT_TYPE = 'application/json'
 HEADERS = {'content-type': CONTENT_TYPE}
 PUPPET_MASTER_USERNAME = 'root'
 PUPPET_MASTER_PWD = 'f1-cl0ud'
+

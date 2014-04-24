@@ -89,3 +89,4 @@ Scenario Outline: Delete a non existent node
   | group_name      | node_name | another_node_name |
   | incorrect_delete| node1     | not_existant_node |
   | incorrect_delete| node2     | NODE2             |
+

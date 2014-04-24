@@ -78,3 +78,4 @@ def then_i_obtain_an_group1(step, expected_status_code):
 
     world.software_to_generate = []
     Assertions.assert_error_code(response=world.response, error_code=expected_status_code)
+
