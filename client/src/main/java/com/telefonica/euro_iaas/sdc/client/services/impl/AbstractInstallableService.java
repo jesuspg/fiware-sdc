@@ -51,10 +51,9 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      * See {@link ApplicationInstanceService#upgrade(String, Long, String, String)} or
      * {@link ProductInstanceService#upgrade(String, Long, String, String)}
      */
-    public Task upgrade(String vdc, String name, String version, String callback) {
+    public Task upgrade(String vdc, String name, String version, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(upgradePath, vdc, name, version);
-        WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(getType());
+        Builder builder = createWebResource (url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.put(Task.class);
     }
@@ -63,10 +62,9 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      * See {@link ApplicationInstanceService#configure(String, Long, String, Attributes)} or
      * {@link ProductInstanceService#configure(String, Long, String, Attributes)}
      */
-    public Task configure(String vdc, String name, String callback, List<Attribute> arguments) {
+    public Task configure(String vdc, String name, String callback, List<Attribute> arguments, String token) {
         String url = getBaseHost() + MessageFormat.format(configPath, vdc, name);
-        WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(getType()).type(getType());
+        Builder builder = createWebResource (url, token, vdc);
         builder = addCallback(builder, callback);
         Attributes attributes = new Attributes();
         attributes.addAll(arguments);
@@ -79,10 +77,9 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      * See {@link ApplicationInstanceService#uninstall(String, Long, String)} or
      * {@link ProductInstanceService#uninstall(String, Long, String)}
      */
-    public Task uninstall(String vdc, String name, String callback) {
+    public Task uninstall(String vdc, String name, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(uninstallPath, vdc, name);
-        WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(getType());
+        Builder builder = createWebResource (url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.delete(Task.class);
     }
@@ -137,5 +134,17 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public void setUninstallPath(String uninstallPath) {
         this.uninstallPath = uninstallPath;
+    }
+    
+
+    
+    protected Builder createWebResource (String url, String token, String tenant) {        
+    	WebResource webResource = getClient().resource(url);
+    	Builder builder = webResource.accept(getType()).type(getType());
+     	builder.header("X-Auth-Token", token);
+    	builder.header("Tenant-Id", tenant);
+    	return builder;
+    	
+
     }
 }

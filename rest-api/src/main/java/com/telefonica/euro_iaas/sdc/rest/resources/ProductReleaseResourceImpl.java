@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
@@ -47,6 +48,7 @@ import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
@@ -56,10 +58,13 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -73,8 +78,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     private ProductReleaseManager productReleaseManager;
     @InjectParam("productManager")
     private ProductManager productManager;
+    
+
 
     private ProductResourceValidator validator;
+    private GeneralResourceValidator generalValidator;
     private static Logger LOGGER = Logger.getLogger("ProductReleaseResourceImpl");
 
     /**
@@ -88,6 +96,11 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
+        try {
+            generalValidator.validateName(pName);
+        } catch (InvalidNameException e) {
+            throw new InvalidProductReleaseException(e.getMessage());
+        }
         productReleaseDto.setProductName(pName);
 
         LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
@@ -157,6 +170,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     public List<ProductRelease> findAll(String pName, String osType, Integer page, Integer pageSize, String orderBy,
             String orderType) {
+    	
+    	
+    	
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
         if (!StringUtils.isEmpty(pName)) {
@@ -184,6 +200,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return productReleaseManager.findReleasesByCriteria(criteria);
     }
+    
+   
 
     /**
      * {@inheritDoc}
@@ -336,6 +354,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return file;
     }
+    
+
+    
+
 
     /**
      * @param validator
@@ -343,6 +365,14 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public void setValidator(ProductResourceValidator validator) {
         this.validator = validator;
+    }
+    
+    /**
+     * @param generalValidator
+     *            the generalValidator to set
+     */
+    public void setGeneralValidator(GeneralResourceValidator generalValidator) {
+        this.generalValidator = generalValidator;
     }
 
     /**

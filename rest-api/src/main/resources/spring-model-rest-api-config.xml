@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<!--<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-autowire="no">-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
        default-autowire="no">
-
+       
     <bean id="productInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
 
@@ -13,11 +18,13 @@
     <bean id="productResource" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
         <property name="productManager" ref="productManager"/>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     
     <bean id="productReleaseResource" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl">
         <property name="validator" ref="productResourceValidator"/>
+        <property name="generalValidator" ref="generalResourceValidator"/>
         <property name="productReleaseManager" ref="productReleaseManager"/>
         <property name="productManager" ref="productManager"/>
     </bean>
@@ -29,13 +36,22 @@
         <property name="productManager" ref="productManager"/>
         <property name="productInstanceAsyncManager" ref="productInstanceAsyncManager"/>
     </bean>
+    
+     <bean id="taskResource" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.rest.resources.TaskResourceImpl">
+        <property name="taskManager" ref="taskManager"/>
+    </bean>
 
     <!-- ===========
     == VALIDATORS ==
     ================ -->
 
+    <bean id="generalResourceValidator" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidatorImpl">
+    </bean>
     <bean id="productResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidatorImpl">
+        <property name="generalValidator" ref="generalResourceValidator"/>
     </bean>
     <bean id="productInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidatorImpl">

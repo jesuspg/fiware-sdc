@@ -44,11 +44,11 @@ public interface ProductInstanceService extends BaseInstallableService<ProductIn
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the installed product.
      */
-    Task install(String vdc, ProductInstanceDto product, String callback);
+    Task install(String vdc, ProductInstanceDto product, String callback, String token);
 
-    Task installArtifact(String vdc, String productInstanceId, Artifact artefact, String callback);
+    Task installArtifact(String vdc, String productInstanceId, Artifact artefact, String callback, String token);
 
-    Task uninstallArtifact(String vdc, String productInstanceId, Artifact artefact, String callback);
+    Task uninstallArtifact(String vdc, String productInstanceId, Artifact artefact, String callback, String token);
 
     /**
      * Retrieve all ProductInstance created in the system.
@@ -76,6 +76,6 @@ public interface ProductInstanceService extends BaseInstallableService<ProductIn
      * @return the product instances that match with the criteria.
      */
     List<ProductInstance> findAll(String hostname, String domain, String ip, String fqn, Integer page,
-            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName);
+            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName, String token);
 
 }

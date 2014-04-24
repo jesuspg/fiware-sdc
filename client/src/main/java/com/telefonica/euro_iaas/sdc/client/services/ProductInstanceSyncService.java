@@ -54,7 +54,7 @@ public interface ProductInstanceSyncService extends BaseInstallableSyncService<P
      * @throws InvalidExecutionException
      *             if the return of the task is not success
      */
-    ProductInstance install(String vdc, ProductInstanceDto product) throws MaxTimeWaitingExceedException,
+    ProductInstance install(String vdc, ProductInstanceDto product, String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException;
 
     /**
@@ -83,6 +83,6 @@ public interface ProductInstanceSyncService extends BaseInstallableSyncService<P
      * @return the product instances that match with the criteria.
      */
     List<ProductInstance> findAll(String hostname, String domain, String ip, String fqn, Integer page,
-            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName);
+            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName, String token);
 
 }

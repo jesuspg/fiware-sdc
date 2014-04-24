@@ -36,5 +36,5 @@ public interface ChefNodeService {
      *            Name to be deleted
      * @return the task
      */
-    Task delete(String vdc, String chefNodeName) throws InvalidExecutionException;
+    Task delete(String vdc, String chefNodeName, String token) throws InvalidExecutionException;
 }

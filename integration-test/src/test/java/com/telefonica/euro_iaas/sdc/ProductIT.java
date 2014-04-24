@@ -1,8 +1,25 @@
 /**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
+ * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U <br>
+ * This file is part of FI-WARE project.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
+ * </p>
+ * <p>
+ * You may obtain a copy of the License at:<br>
+ * <br>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * </p>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * </p>
+ * <p>
+ * See the License for the specific language governing permissions and limitations under the License.
+ * </p>
+ * <p>
+ * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
+ * </p>
  */
 
 package com.telefonica.euro_iaas.sdc;
@@ -33,6 +50,10 @@ public class ProductIT {
     SDCClient client;
     String baseUrl;
     String mediaType;
+    
+    public static String TOKEN ="token";
+    public static String TENANT ="vdc";
+
 
     @Before
     public void setUp() {
@@ -50,7 +71,7 @@ public class ProductIT {
 
         Product product = null;
         try {
-            product = productService.load("kk");
+            product = productService.load("kk",TOKEN,TENANT );
             fail("The product kk should not exist");
         } catch (ResourceNotFoundException e) {
             // then
@@ -67,7 +88,7 @@ public class ProductIT {
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
 
-        Product product = productService.load("tomcat");
+        Product product = productService.load("tomcat", TOKEN, TENANT);
         // then
         assertNotNull(productService);
         assertNotNull(product);
@@ -81,7 +102,7 @@ public class ProductIT {
         ProductService productService = client.getProductService(baseUrl, mediaType);
         // when
 
-        Product product = productService.load("tomcat");
+        Product product = productService.load("tomcat", TOKEN, TENANT);
         // then
         assertNotNull(productService);
         assertNotNull(product);
@@ -95,7 +116,7 @@ public class ProductIT {
 
         // when
 
-        List<Product> list = productService.findAll(null, null, null, null);
+        List<Product> list = productService.findAll(null, null, null, null, TOKEN, TENANT);
 
         // then
         assertNotNull(list);
@@ -122,7 +143,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            Product createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -150,7 +171,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            Product createdProduct = productService.add(product);
+            Product createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -176,7 +197,7 @@ public class ProductIT {
         // when
         Product createdProduct = null;
         try {
-            createdProduct = productService.add(product);
+            createdProduct = productService.add(product, TOKEN, TENANT);
             // then
             assertNotNull(createdProduct);
         } catch (InsertResourceException e) {
@@ -194,15 +215,15 @@ public class ProductIT {
         produtToDelete.setName("productToDelete");
         produtToDelete.setDescription("test product");
 
-        productService.add(produtToDelete);
+        productService.add(produtToDelete, TOKEN, TENANT);
 
         // when
 
-        productService.delete("productToDelete");
+        productService.delete("productToDelete", TOKEN, TENANT);
 
         // then
         try {
-            productService.load("productToDelete");
+            productService.load("productToDelete", TOKEN, TENANT);
             fail();
         } catch (ResourceNotFoundException e) {
             assertTrue(true);
@@ -218,7 +239,7 @@ public class ProductIT {
         // when
 
         try {
-            productService.loadAttributes("kk1");
+            productService.loadAttributes("kk1", TOKEN, TENANT);
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
             fail("ResourceNotFoundException " + e.getMessage());
@@ -235,7 +256,7 @@ public class ProductIT {
         // when
 
         try {
-            productService.loadMetadatas("kk2");
+            productService.loadMetadatas("kk2", TOKEN, TENANT);
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();  // To change body of catch statement use File | Settings | File Templates.
             fail("ResourceNotFoundException " + e.getMessage());
@@ -266,7 +287,7 @@ public class ProductIT {
         // when
         ProductService productService = client.getProductService(baseUrl, mediaType);
         try {
-            return productService.add(product);
+            return productService.add(product, TOKEN, TENANT);
         } catch (InsertResourceException e) {
             fail("InsertResourceException:" + e);
         }

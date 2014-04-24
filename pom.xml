@@ -6,7 +6,7 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>2.1.0</version>
+    <version>2.1.1-SNAPSHOT</version>
 
 
     <properties>
@@ -19,10 +19,11 @@
 
         <repoName>fiware-sdc</repoName>
 
-        <scmURI>git@pdihub.hi.inet:fiware</scmURI>
+        <scmURI>git@github.com:telefonicaid</scmURI>
         <ciURI>http://ci-fiware-01.hi.inet</ciURI>
+        <nexusURI>http://130.206.80.169</nexusURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
-        <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
+        <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
 
@@ -167,7 +168,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>

@@ -45,6 +45,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 
 /**
@@ -68,7 +69,9 @@ public class ProductReleaseResourceImplTest {
         ProductReleaseManager productReleaseManager = mock(ProductReleaseManager.class);
         ProductManager productManager = mock(ProductManager.class);
         ProductResourceValidator productResourceValidator = mock(ProductResourceValidator.class);
+        GeneralResourceValidator generalResourceValidator = mock(GeneralResourceValidator.class);
         productReleaseResource.setValidator(productResourceValidator);
+        productReleaseResource.setGeneralValidator(generalResourceValidator);
         productReleaseResource.setProductReleaseManager(productReleaseManager);
         productReleaseResource.setProductManager(productManager);
         Product product = new Product(PRODUCT_NAME, "description");

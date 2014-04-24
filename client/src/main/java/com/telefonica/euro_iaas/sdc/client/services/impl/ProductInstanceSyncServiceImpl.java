@@ -61,78 +61,79 @@ public class ProductInstanceSyncServiceImpl implements ProductInstanceSyncServic
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance upgrade(String vdc, String name, String version) throws MaxTimeWaitingExceedException,
+
+    public ProductInstance upgrade(String vdc, String name, String version, String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException {
-        Task task = productInstanceService.upgrade(vdc, name, version, null);
-        return this.waitForTask(task);
+        Task task = productInstanceService.upgrade(vdc, name, version, null, token);
+        return this.waitForTask(task, token);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance configure(String vdc, String name, List<Attribute> arguments)
+
+    public ProductInstance configure(String vdc, String name, List<Attribute> arguments, String token)
             throws MaxTimeWaitingExceedException, InvalidExecutionException {
-        Task task = productInstanceService.configure(vdc, name, null, arguments);
-        return this.waitForTask(task);
+        Task task = productInstanceService.configure(vdc, name, null, arguments, token);
+        return this.waitForTask(task, token);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance uninstall(String vdc, String name) throws MaxTimeWaitingExceedException,
+ 
+    public ProductInstance uninstall(String vdc, String name, String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException {
-        Task task = productInstanceService.uninstall(vdc, name, null);
-        return this.waitForTask(task);
+        Task task = productInstanceService.uninstall(vdc, name, null, token);
+        return this.waitForTask(task, token);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance load(String url) throws ResourceNotFoundException {
-        return productInstanceService.load(url);
+
+    public ProductInstance loadUrl(String url, String token, String tenant) throws ResourceNotFoundException {
+        return productInstanceService.loadUrl(url, token, tenant);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance install(String vdc, ProductInstanceDto product) throws MaxTimeWaitingExceedException,
+
+    public ProductInstance install(String vdc, ProductInstanceDto product, String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException {
-        Task task = productInstanceService.install(vdc, product, null);
-        return this.waitForTask(task);
+        Task task = productInstanceService.install(vdc, product, null, token);
+        return this.waitForTask(task, token);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
+
     public List<ProductInstance> findAll(String hostname, String domain, String ip, String fqn, Integer page,
-            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName) {
+            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName, String token) {
         return productInstanceService.findAll(hostname, domain, ip, fqn, page, pageSize, orderBy, orderType, status,
-                vdc, productName);
+                vdc, productName, token);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ProductInstance load(String vdc, String name) throws ResourceNotFoundException {
-        return productInstanceService.load(vdc, name);
+
+    public ProductInstance load(String vdc, String name, String token) throws ResourceNotFoundException {
+        return productInstanceService.loadUrl(vdc, name, token);
     }
 
-    private ProductInstance waitForTask(Task task) throws MaxTimeWaitingExceedException, InvalidExecutionException {
-        task = taskService.waitForTask(task.getHref());
+    private ProductInstance waitForTask(Task task, String token) throws MaxTimeWaitingExceedException, InvalidExecutionException {
+        task = taskService.waitForTask(task.getHref(), task.getVdc(), token);
         if (!task.getStatus().equals(TaskStates.SUCCESS)) {
             throw new InvalidExecutionException(task.getError().getMessage());
         }
         try {
-            return productInstanceService.load(task.getResult().getHref());
+            return productInstanceService.load(task.getResult().getHref(),task.getVdc(), token);
         } catch (ResourceNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

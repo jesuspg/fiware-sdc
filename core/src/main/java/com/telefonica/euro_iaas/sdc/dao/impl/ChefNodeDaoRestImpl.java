@@ -107,6 +107,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     "The ChefServer is empty of ChefNodes");
             }           
             ChefNode node = new ChefNode();
+            LOGGER.info (stringNodes);
             String nodeName = node.getChefNodeName(stringNodes, hostname);
             return loadNode(nodeName);
          } catch (UniformInterfaceException e) {
@@ -128,20 +129,21 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         	
             String  path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_NODES_PATH), chefNodename);
             LOGGER.info (propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
-
+            LOGGER.info("getting hedares");
             Map<String, String> header = getHeaders("GET", path, "");
+            LOGGER.info("obtainaing webresource");
             WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
+            LOGGER.info("getting input string");
             InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
             stringNode = IOUtils.toString(inputStream);
-            //LOGGER.info("Node " + chefNodename + "in Json");
-            //LOGGER.info(stringNode);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
-        
+            LOGGER.info (stringNode);
+    
             ChefNode node = new ChefNode();
             node.fromJson(jsonNode);
             return node;
@@ -235,14 +237,17 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 Map<String, String> header = getHeaders("GET", path, "");
                 LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
 
- 
+                LOGGER.info("web resource");
                 WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {
+                    System.out.println(key + ":" + header.get(key));
                     wr = wr.header(key, header.get(key));
                 }
                 
+                LOGGER.info("geting");
                 response = IOUtils.toString(wr.get(InputStream.class));
+                LOGGER.info(response);
                 time += time;
             } catch (UniformInterfaceException e) {
             	LOGGER.warning(e.getMessage());
@@ -259,7 +264,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         }
     }
     
-    private Map<String, String> getHeaders(String method, String path, String payload) {
+   private Map<String, String> getHeaders(String method, String path, String payload) {
 
     	return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
                 propertiesProvider.getProperty(CHEF_CLIENT_PASS));
