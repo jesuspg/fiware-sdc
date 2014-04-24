@@ -1,7 +1,6 @@
-## Software Deployment and Configuration for Fiware
+# FI-WARE SDC [![Build Status](https://travis-ci.org/telefonicaid/fiware-sdc.svg)](https://travis-ci.org/telefonicaid/fiware-sdc) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-sdc/badge.png)](https://coveralls.io/r/jesuspg/fiware-sdc)
+
+## Software Deployment and Configuration
 
 
-#### Builds:
-develop: [![Build Status](https://travis-ci.org/telefonicaid/fiware-sdc.svg?branch=develop)](https://travis-ci.org/telefonicaid/fiware-sdc)
-master: [![Build Status](https://travis-ci.org/telefonicaid/fiware-sdc.svg?branch=master)](https://travis-ci.org/telefonicaid/fiware-sdc)
 
