@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 
@@ -123,14 +124,20 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     public void deleteNodeFiles(String nodeName) throws IOException {
 
-        Node node = catalogManager.getNode(nodeName);
+        try {
+            
+            Node node = catalogManager.getNode(nodeName);
 
-        String path = defaultManifestsPath + node.getGroupName();
+            String path = defaultManifestsPath + node.getGroupName();
 
-        File file = new File(path + "/" + node.getId() + ".pp");
+            File file = new File(path + "/" + node.getId() + ".pp");
 
-        if (!file.delete()) {
-            logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
+            if (!file.delete()) {
+                logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
+            }
+            
+        } catch (NoSuchElementException e) {
+            logger.info(format("Node {0} was not registered in puppet master",nodeName));
         }
 
     }
@@ -148,7 +155,7 @@ public class FileAccessServiceImpl implements FileAccessService {
         File file = new File(modulesCodeDownloadPath + moduleName);
 
         FileUtils.deleteDirectory(file);
-        
+
         logger.info(format("File {0} could not be deleted. Did it exist?", modulesCodeDownloadPath + "/" + moduleName
                 + ".pp"));
 
