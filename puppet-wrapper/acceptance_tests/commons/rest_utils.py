@@ -22,8 +22,6 @@ class RestUtils(object):
         """
 
         self.api_url = PUPPET_WRAPPER_SERVER
-        print "Initialized API REST Utils"
-
         self.encoder = JSONEncoder()
 
     def _call_api(self, pattern, method, body=None, headers=HEADERS, payload=None, **kwargs):
@@ -41,8 +39,6 @@ class RestUtils(object):
         kwargs['url_root'] = self.api_url
 
         url = pattern.format(**kwargs)
-
-        print 'METHOD: {}\nURL: {} \nHEADERS: {} \nBODY: {}'.format(method, url, headers, self.encoder.encode(body))
 
         try:
             r = requests.request(method=method, url=url, data=self.encoder.encode(body), headers=headers,

@@ -1,5 +1,4 @@
 __author__ = 'arobres'
-
 # -*- coding: utf-8 -*-
 
 from commons.rest_utils import RestUtils

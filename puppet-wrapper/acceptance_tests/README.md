@@ -6,7 +6,7 @@ Folder for acceptance tests of the Puppet Wrapper.
 
 ### Prerequisites:
 
-- Python 2.6 or newer
+- Python 2.7 or newer
 
 - pip installed (http://docs.python-guide.org/en/latest/starting/install/linux/)
 
