@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
 
+import java.util.NoSuchElementException;
+
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 
 public interface CatalogManager {
@@ -31,7 +33,7 @@ public interface CatalogManager {
     
     public void addNode(Node node);
 
-    public Node getNode(String nodeName);
+    public Node getNode(String nodeName) throws NoSuchElementException;
 
     public void removeNode(String nodeName);
     
