@@ -41,7 +41,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
  * Unit test for SODaoJpaImpl
- * 
+ *
  * @author Sergio Arroyo
  */
 
