@@ -39,21 +39,11 @@ public class GenericController {
     @ExceptionHandler(NoSuchElementException.class)
     public ModelAndView handleNoSuchElementException(NoSuchElementException ex, HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        int i = 1;
-        Error error = new Error(i, ex.getMessage());
-        return handleModelAndView(error);
+        return handleModelAndView(ex.getMessage());
     }
 
-    @ExceptionHandler(IOException.class)
-    public ModelAndView handleIOException(IOException ex, HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        int i = 2;
-        Error error = new Error(i, ex.getMessage());
-        return handleModelAndView(error);
-    }
-
-    public ModelAndView handleModelAndView(Error error) {
-        ModelAndView model = new ModelAndView("jsonView");
+    public ModelAndView handleModelAndView(String error) {
+        ModelAndView model = new ModelAndView();
         model.addObject(error);
         return model;
 
