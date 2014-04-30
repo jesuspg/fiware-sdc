@@ -1,0 +1,13 @@
+*.pyc
+*.class
+.DS_Store
+target/
+.classpath
+automatization_scripts/*.*
+.project
+.settings
+
+# Package Files #
+*.jar
+*.war
+*.ear
