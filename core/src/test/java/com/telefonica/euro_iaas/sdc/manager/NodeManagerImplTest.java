@@ -27,7 +27,9 @@ package com.telefonica.euro_iaas.sdc.manager;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,7 +102,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testOk");
-
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
     }
 
     @Test
@@ -120,6 +124,9 @@ public class NodeManagerImplTest {
         when(productInstanceDao.findByHostname(anyString())).thenThrow(EntityNotFoundException.class);
         
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
 
@@ -143,6 +150,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
 
@@ -160,6 +170,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
     
@@ -175,6 +188,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
     
@@ -187,6 +203,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
     
@@ -199,6 +218,9 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
     
