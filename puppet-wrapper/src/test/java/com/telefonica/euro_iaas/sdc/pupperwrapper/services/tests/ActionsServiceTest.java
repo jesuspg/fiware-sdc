@@ -26,13 +26,17 @@ package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +57,9 @@ public class ActionsServiceTest {
     private CatalogManager catalogManagerMongo;
 
     private ProcessBuilderFactory processBuilderFactory;
+    
+    private Node node1;
+    private Node node1Modified;
 
     @Before
     public void setUpMock() throws Exception {
@@ -67,52 +74,30 @@ public class ActionsServiceTest {
         actionsService.setFileAccessService(fileAccessService);
         actionsService.setProcessBuilderFactory(processBuilderFactory);
 
-        Node nodeInstall = new Node();
-        nodeInstall.setGroupName("testGroup");
-        nodeInstall.setId("1");
-        Software soft = new Software();
-        soft.setName("testSoft");
-        soft.setAction(Action.INSTALL);
-        soft.setVersion("1.0.0");
-        nodeInstall.addSoftware(soft);
-
-        Node nodeInstall_2 = new Node();
-        nodeInstall_2.setGroupName("testGroup");
-        nodeInstall_2.setId("2");
-        Software soft_2 = new Software();
-        soft_2.setName("testSoft2");
-        soft_2.setAction(Action.INSTALL);
-        soft_2.setVersion("2.0.0");
-        nodeInstall_2.addSoftware(soft_2);
-
-        Node nodeUNInstall = new Node();
-        nodeUNInstall.setGroupName("testGroup");
-        nodeUNInstall.setId("3");
-        Software softUN = new Software();
-        softUN.setName("testSoft");
-        softUN.setAction(Action.UNINSTALL);
-        softUN.setVersion("1.0.0");
-        nodeUNInstall.addSoftware(softUN);
-
-        Node nodeUNInstall_2 = new Node();
-        nodeUNInstall_2.setGroupName("testGroup");
-        nodeUNInstall_2.setId("4");
-        Software softUN_2 = new Software();
-        softUN_2.setName("testSoft2");
-        softUN_2.setAction(Action.UNINSTALL);
-        softUN_2.setVersion("2.0.0");
-        nodeUNInstall_2.addSoftware(softUN_2);
-
-        when(catalogManagerMongo.getNode("1")).thenReturn(nodeInstall).thenReturn(nodeInstall)
-                .thenThrow(new NoSuchElementException());
-        when(catalogManagerMongo.getNode("2")).thenReturn(nodeInstall_2);
-        when(catalogManagerMongo.getNode("3")).thenReturn(nodeUNInstall);
-        when(catalogManagerMongo.getNode("4")).thenReturn(nodeUNInstall_2);
+        node1 = new Node();
+        node1.setGroupName("testGroup");
+        node1.setId("1");
+        Software soft1 = new Software();
+        soft1.setName("testSoft");
+        soft1.setAction(Action.INSTALL);
+        soft1.setVersion("1.0.0");
+        node1.addSoftware(soft1);
+        
+        node1Modified = new Node();
+        node1Modified.setGroupName("testGroup");
+        node1Modified.setId("1");
+        Software soft1Modified = new Software();
+        soft1Modified.setName("testSoft");
+        soft1Modified.setAction(Action.INSTALL);
+        soft1Modified.setVersion("2.0.0");
+        node1.addSoftware(soft1Modified);
 
     }
 
     @Test
     public void install() {
+        
+        when(catalogManagerMongo.getNode("1")).thenThrow(new NoSuchElementException()).thenReturn(node1);
 
         actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
@@ -125,52 +110,23 @@ public class ActionsServiceTest {
         assertTrue(node.getId().equals("1"));
         assertTrue(soft.getName().equals("testSoft"));
         assertTrue(soft.getVersion().equals("1.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-    }
-
-    @Test
-    public void install_Modification_Soft() {
-
-        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
-
-        Node node = catalogManagerMongo.getNode("1");
-        Software soft = node.getSoftware("testSoft");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("1"));
-        assertTrue(soft.getName().equals("testSoft"));
-        assertTrue(soft.getVersion().equals("1.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-        actionsService.action(Action.INSTALL, "testGroup", "2", "testSoft2", "2.0.0");
-        node = catalogManagerMongo.getNode("2");
-        soft = node.getSoftware("testSoft2");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("2"));
-        assertTrue(soft.getName().equals("testSoft2"));
-        assertTrue(soft.getVersion().equals("2.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
     }
 
     @Test
     public void uninstallTest() {
+        
+        when(catalogManagerMongo.getNode("1")).thenReturn(node1);
 
-        actionsService.action(Action.UNINSTALL, "testGroup", "3", "testSoft", "1.0.0");
+        Node node = actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
-        Node node = catalogManagerMongo.getNode("3");
         Software soft = node.getSoftware("testSoft");
 
         assertTrue(node != null);
         assertTrue(soft != null);
         assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("3"));
+        assertTrue(node.getId().equals("1"));
         assertTrue(soft.getName().equals("testSoft"));
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.UNINSTALL));
@@ -179,44 +135,28 @@ public class ActionsServiceTest {
 
     @Test
     public void uninstall_Modification_Soft() {
+        
+        when(catalogManagerMongo.getNode("1")).thenReturn(node1);
 
-        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft2", "2.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
 
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("1"));
-        assertTrue(soft.getName().equals("testSoft"));
-        assertTrue(soft.getVersion().equals("1.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-        actionsService.action(Action.UNINSTALL, "testGroup", "4", "testSoft2", "2.0.0");
-        node = catalogManagerMongo.getNode("4");
-        soft = node.getSoftware("testSoft2");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("4"));
-        assertTrue(soft.getName().equals("testSoft2"));
-        assertTrue(soft.getVersion().equals("2.0.0"));
-        assertTrue(soft.getAction().equals(Action.UNINSTALL));
+        verify(catalogManagerMongo, times(2)).addNode((Node) anyObject());
 
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void deleteNodeTest_OK() throws IOException {
 
         Process shell = mock(Process.class);
         Process shell2 = mock(Process.class);
 
-        String[] cmd={anyString()};
+        String[] cmd = { anyString() };
         // call to puppet cert list --all
-        when(
-                processBuilderFactory.createProcessBuilder(cmd)).thenReturn(shell);
+        when(processBuilderFactory.createProcessBuilder(cmd)).thenReturn(shell).thenReturn(shell2);
 
         String str = "Node 1 is registered";
         String strdelete = "Node 1 unregistered";
@@ -226,48 +166,20 @@ public class ActionsServiceTest {
         String strEr = " ";
         when(shell.getErrorStream()).thenReturn(new ByteArrayInputStream(strEr.getBytes("UTF-8")));
 
-        // call to puppet cert list --all |grep nodename|gawk. .
-        when(
-                processBuilderFactory.createProcessBuilder(cmd))
-                .thenReturn(shell2);
-
         String str2 = "Node1.novalocal";
         when(shell2.getInputStream()).thenReturn(new ByteArrayInputStream(str2.getBytes("UTF-8")));
 
         String strEr2 = " ";
         when(shell2.getErrorStream()).thenReturn(new ByteArrayInputStream(strEr2.getBytes("UTF-8")));
 
-        // install 2 nodes
-        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
-
-        Node node = catalogManagerMongo.getNode("1");
-        Software soft = node.getSoftware("testSoft");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("1"));
-        assertTrue(soft.getName().equals("testSoft"));
-        assertTrue(soft.getVersion().equals("1.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-        actionsService.action(Action.INSTALL, "testGroup", "2", "testSoft2", "2.0.0");
-        node = catalogManagerMongo.getNode("2");
-        soft = node.getSoftware("testSoft2");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("2"));
-        assertTrue(soft.getName().equals("testSoft2"));
-        assertTrue(soft.getVersion().equals("2.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-        // delete node 1
-
+        when(catalogManagerMongo.getNode("1")).thenThrow(new NoSuchElementException()).thenReturn(node1);
+        
         actionsService.deleteNode("1");
+        
+        verify(shell,times(1)).getInputStream();
+        verify(shell2,times(2)).getInputStream();
+        verify(processBuilderFactory,times(3)).createProcessBuilder((String[])anyObject());
 
-        catalogManagerMongo.getNode("1");
 
     }
 
@@ -276,9 +188,8 @@ public class ActionsServiceTest {
 
         Process shell = mock(Process.class);
 
-        String[] cmd={anyString()};
-        when(
-                processBuilderFactory.createProcessBuilder(cmd)).thenReturn(shell);
+        String[] cmd = { anyString() };
+        when(processBuilderFactory.createProcessBuilder(cmd)).thenReturn(shell);
 
         String str = "";
         String strdelete = "";
@@ -288,37 +199,15 @@ public class ActionsServiceTest {
         String strEr = " ";
         when(shell.getErrorStream()).thenReturn(new ByteArrayInputStream(strEr.getBytes("UTF-8")));
 
-        // install 2 nodes
-        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
-
-        Node node = catalogManagerMongo.getNode("1");
-        Software soft = node.getSoftware("testSoft");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("1"));
-        assertTrue(soft.getName().equals("testSoft"));
-        assertTrue(soft.getVersion().equals("1.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
-
-        actionsService.action(Action.INSTALL, "testGroup", "2", "testSoft2", "2.0.0");
-        node = catalogManagerMongo.getNode("2");
-        soft = node.getSoftware("testSoft2");
-
-        assertTrue(node != null);
-        assertTrue(soft != null);
-        assertTrue(node.getGroupName().equals("testGroup"));
-        assertTrue(node.getId().equals("2"));
-        assertTrue(soft.getName().equals("testSoft2"));
-        assertTrue(soft.getVersion().equals("2.0.0"));
-        assertTrue(soft.getAction().equals(Action.INSTALL));
+        when(catalogManagerMongo.getNode("1")).thenThrow(new NoSuchElementException()).thenReturn(node1);
 
         // delete node 1
 
         actionsService.deleteNode("1");
+        
+        verify(shell,times(1)).getInputStream();
+        verify(processBuilderFactory,times(3)).createProcessBuilder((String[])anyObject());
 
-        catalogManagerMongo.getNode("1");
 
     }
 
