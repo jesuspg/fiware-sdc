@@ -54,7 +54,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     private String defaultManifestsPath;
 
-    public Node generateManifestFile(String nodeName) throws IOException, NoSuchElementException {
+    public Node generateManifestFile(String nodeName) throws IOException{
 
         logger.info("creating Manifest file for node: " + nodeName);
 

@@ -33,7 +33,7 @@ public interface CatalogManager {
     
     public void addNode(Node node);
 
-    public Node getNode(String nodeName) throws NoSuchElementException;
+    public Node getNode(String nodeName);
 
     public void removeNode(String nodeName);
     
