@@ -172,15 +172,6 @@ public class PuppetController /* extends GenericController */{
         logger.info("Node: " + nodeName + " deleted.");
     }
 
-    // @RequestMapping(value = "/delete/group/{groupName}", method =
-    // RequestMethod.POST)
-    // public @ResponseBody void deleteGroup(@PathVariable("groupName") String
-    // groupName) throws IOException {
-    //
-    // logger.info("Deleting group: "+ groupName);
-    // actionsService.deleteGroup(groupName);
-    // }
-
     @RequestMapping(value = "/download/git/{softwareName}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url)
