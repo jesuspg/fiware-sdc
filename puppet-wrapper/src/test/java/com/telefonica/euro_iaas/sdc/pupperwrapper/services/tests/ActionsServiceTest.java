@@ -50,18 +50,18 @@ public class ActionsServiceTest {
     private ActionServiceImpl4Test actionsService;
 
     private CatalogManager catalogManagerMongo;
-    
+
     @Before
     public void setUpMock() throws Exception {
         catalogManagerMongo = mock(CatalogManagerMongoImpl.class);
-        
+
         FileAccessService fileAccessService = mock(FileAccessServiceImpl.class);
-        
-        actionsService=new ActionServiceImpl4Test();
+
+        actionsService = new ActionServiceImpl4Test();
         actionsService.setCatalogManager(catalogManagerMongo);
         actionsService.setFileAccessService(fileAccessService);
-        
-        Node nodeInstall=new Node();
+
+        Node nodeInstall = new Node();
         nodeInstall.setGroupName("testGroup");
         nodeInstall.setId("1");
         Software soft = new Software();
@@ -69,8 +69,8 @@ public class ActionsServiceTest {
         soft.setAction(Action.INSTALL);
         soft.setVersion("1.0.0");
         nodeInstall.addSoftware(soft);
-        
-        Node nodeInstall_2=new Node();
+
+        Node nodeInstall_2 = new Node();
         nodeInstall_2.setGroupName("testGroup");
         nodeInstall_2.setId("2");
         Software soft_2 = new Software();
@@ -78,8 +78,8 @@ public class ActionsServiceTest {
         soft_2.setAction(Action.INSTALL);
         soft_2.setVersion("2.0.0");
         nodeInstall_2.addSoftware(soft_2);
-        
-        Node nodeUNInstall=new Node();
+
+        Node nodeUNInstall = new Node();
         nodeUNInstall.setGroupName("testGroup");
         nodeUNInstall.setId("3");
         Software softUN = new Software();
@@ -87,8 +87,8 @@ public class ActionsServiceTest {
         softUN.setAction(Action.UNINSTALL);
         softUN.setVersion("1.0.0");
         nodeUNInstall.addSoftware(softUN);
-        
-        Node nodeUNInstall_2=new Node();
+
+        Node nodeUNInstall_2 = new Node();
         nodeUNInstall_2.setGroupName("testGroup");
         nodeUNInstall_2.setId("4");
         Software softUN_2 = new Software();
@@ -96,18 +96,19 @@ public class ActionsServiceTest {
         softUN_2.setAction(Action.UNINSTALL);
         softUN_2.setVersion("2.0.0");
         nodeUNInstall_2.addSoftware(softUN_2);
-        
-        when(catalogManagerMongo.getNode("1")).thenReturn(nodeInstall).thenReturn(nodeInstall).thenThrow(new NoSuchElementException());
+
+        when(catalogManagerMongo.getNode("1")).thenReturn(nodeInstall).thenReturn(nodeInstall)
+                .thenThrow(new NoSuchElementException());
         when(catalogManagerMongo.getNode("2")).thenReturn(nodeInstall_2);
         when(catalogManagerMongo.getNode("3")).thenReturn(nodeUNInstall);
         when(catalogManagerMongo.getNode("4")).thenReturn(nodeUNInstall_2);
-        
+
     }
 
     @Test
     public void install() {
 
-        actionsService.action(Action.INSTALL,"testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
@@ -125,7 +126,7 @@ public class ActionsServiceTest {
     @Test
     public void install_Modification_Soft() {
 
-        actionsService.action(Action.INSTALL,"testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
@@ -138,7 +139,7 @@ public class ActionsServiceTest {
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
-        actionsService.action(Action.INSTALL,"testGroup", "2", "testSoft2", "2.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "2", "testSoft2", "2.0.0");
         node = catalogManagerMongo.getNode("2");
         soft = node.getSoftware("testSoft2");
 
@@ -151,11 +152,11 @@ public class ActionsServiceTest {
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
     }
-    
+
     @Test
     public void uninstallTest() {
 
-        actionsService.action(Action.UNINSTALL,"testGroup", "3", "testSoft", "1.0.0");
+        actionsService.action(Action.UNINSTALL, "testGroup", "3", "testSoft", "1.0.0");
 
         Node node = catalogManagerMongo.getNode("3");
         Software soft = node.getSoftware("testSoft");
@@ -170,10 +171,26 @@ public class ActionsServiceTest {
 
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void uninstall_node_not_esxists() {
+
+        when(catalogManagerMongo.getNode("nodenoexists")).thenThrow(new NoSuchElementException());
+
+        actionsService.action(Action.UNINSTALL, "groupnoexists", "nodenoexists", "testSoft", "1.0.0");
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void uninstall_soft_not_esxists() {
+
+        when(catalogManagerMongo.getNode("nodenoexists")).thenThrow(new NoSuchElementException());
+
+        actionsService.action(Action.UNINSTALL, "testGroup", "1", "softnoexists", "1.0.0");
+    }
+
     @Test
     public void uninstall_Modification_Soft() {
 
-        actionsService.action(Action.INSTALL,"testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
@@ -186,7 +203,7 @@ public class ActionsServiceTest {
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
-        actionsService.action(Action.UNINSTALL,"testGroup", "4", "testSoft2", "2.0.0");
+        actionsService.action(Action.UNINSTALL, "testGroup", "4", "testSoft2", "2.0.0");
         node = catalogManagerMongo.getNode("4");
         soft = node.getSoftware("testSoft2");
 
@@ -204,7 +221,7 @@ public class ActionsServiceTest {
     public void deleteNodeTest() throws IOException {
 
         // install 2 nodes
-        actionsService.action(Action.INSTALL,"testGroup", "1", "testSoft", "1.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "1", "testSoft", "1.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
@@ -217,7 +234,7 @@ public class ActionsServiceTest {
         assertTrue(soft.getVersion().equals("1.0.0"));
         assertTrue(soft.getAction().equals(Action.INSTALL));
 
-        actionsService.action(Action.INSTALL,"testGroup", "2", "testSoft2", "2.0.0");
+        actionsService.action(Action.INSTALL, "testGroup", "2", "testSoft2", "2.0.0");
         node = catalogManagerMongo.getNode("2");
         soft = node.getSoftware("testSoft2");
 
