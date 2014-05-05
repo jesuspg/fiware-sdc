@@ -9,7 +9,6 @@
     <artifactId>sdc-puppet-wrapper</artifactId>
     <packaging>war</packaging>
     <version>2.1.1-SNAPSHOT</version>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -150,35 +149,29 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>mac</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <env>mac</env>
-                <compilerInfoDebug>true</compilerInfoDebug>
-                <compilerOptimize>false</compilerOptimize>
-            </properties>
-        </profile>
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <env>development</env>
-                <compilerInfoDebug>true</compilerInfoDebug>
-                <compilerOptimize>false</compilerOptimize>
-            </properties>
-        </profile>
-    </profiles>
-
-    <properties>
-        <logback.version>1.0.13</logback.version>
-        <slf4j.version>1.6.1</slf4j.version>
-    </properties>
+	<profiles>
+		<profile>
+			<id>mac</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<env>mac</env>
+				<compilerInfoDebug>true</compilerInfoDebug>
+				<compilerOptimize>false</compilerOptimize>
+			</properties>
+		</profile>
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>development</env>
+				<compilerInfoDebug>true</compilerInfoDebug>
+				<compilerOptimize>false</compilerOptimize>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

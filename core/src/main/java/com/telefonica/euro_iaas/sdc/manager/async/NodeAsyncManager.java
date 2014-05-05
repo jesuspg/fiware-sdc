@@ -22,25 +22,27 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
+/**
+ * 
+ */
+package com.telefonica.euro_iaas.sdc.manager.async;
 
-import java.awt.image.ImagingOpException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import com.telefonica.euro_iaas.sdc.model.Task;
 
-import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+/**
+ * @author alberts
+ */
+public interface NodeAsyncManager {
 
-public interface FileAccessService {
-
-    public Node generateManifestFile(String nodeName) throws ImagingOpException, IOException;
-
-    public void generateSiteFile() throws FileNotFoundException, UnsupportedEncodingException, IOException;
-
-    public void deleteNodeFiles(String nodeName) throws IOException;
-
-    public void deleteGoupFolder(String groupName) throws IOException;
-
-    public void deleteModuleFiles(String moduleName) throws IOException;
-
+    /**
+     * Delete a NodeClient from ChefServer / PuppetMaster
+     * 
+     * @param nodeName
+     *            the name of the node to be deleted from chef server / puppet master
+     * @param task
+     *            the task which contains the information about the async execution
+     * @param callback
+     *            if not empty, contains the url where the result of the execution will be sent
+     */
+    void nodeDelete(String vdc, String chefClientname, Task task, String callback);
 }

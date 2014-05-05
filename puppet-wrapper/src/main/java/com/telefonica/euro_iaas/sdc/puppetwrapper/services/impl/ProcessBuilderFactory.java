@@ -22,16 +22,26 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import java.io.IOException;
+import java.util.List;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 
-public interface GitCloneService {
+@Service("processBuilderFactory")
+public class ProcessBuilderFactory {
+
+    private static final Log logger = LogFactory.getLog(ProcessBuilderFactory.class);
+
     
-    public void download(String url,String repoName) throws IOException, InvalidRemoteException, TransportException, GitAPIException;
+    public Process createProcessBuilder(String[] command) throws IOException {
+
+        Process p = Runtime.getRuntime().exec(command);
+
+        return p;
+    }
 
 }

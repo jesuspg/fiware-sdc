@@ -89,6 +89,15 @@
 		<property name="productInstanceDao" ref="productInstanceDao" />
 		<property name="chefNodeDao" ref="chefNodeDao" />
 	</bean>
+	
+	<bean id="nodeManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.NodeManagerImpl">
+		<property name="chefClientDao" ref="chefClientDao" />
+		<property name="productInstanceDao" ref="productInstanceDao" />
+		<property name="chefNodeDao" ref="chefNodeDao" />
+		<property name="propertiesProvider" ref="systemPropertiesProvider" />
+		<property name="client" ref="httpClient" />
+	</bean>
 
 	<!-- UTILS CLASSES -->
 	<bean id="recipeNamingGenerator" lazy-init="true"

@@ -40,6 +40,7 @@ public class Node {
     private String id;
     private String groupName;
     private List<Software> softwareList = new ArrayList<Software>();
+    private boolean manifestGenerated=false;
 
     public Node() {
 
@@ -93,6 +94,14 @@ public class Node {
         return sb.toString();
     }
 
+    public boolean isManifestGenerated() {
+        return manifestGenerated;
+    }
+
+    public void setManifestGenerated(boolean manifestGenerated) {
+        this.manifestGenerated = manifestGenerated;
+    }
+
     /**
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
@@ -102,9 +111,11 @@ public class Node {
      */
     public String toString() {
        StringBuilder sb = new StringBuilder("[[Node]");
+       sb.append("[eol = ").append(this.eol).append("]");
        sb.append("[id = ").append(this.id).append("]");
        sb.append("[groupName = ").append(this.groupName).append("]");
        sb.append("[softwareList = ").append(this.softwareList).append("]");
+       sb.append("[manifestGenerated = ").append(this.manifestGenerated).append("]");
        sb.append("]");
        return sb.toString();
     }

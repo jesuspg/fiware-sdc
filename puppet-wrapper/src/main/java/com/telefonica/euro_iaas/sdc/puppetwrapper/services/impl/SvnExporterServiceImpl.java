@@ -48,13 +48,13 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Service("svnExporterService")
 public class SvnExporterServiceImpl implements ModuleDownloader {
-    
+
     private static final Log logger = LogFactory.getLog(SvnExporterServiceImpl.class);
 
     private String modulesCodeDownloadPath;
-    
-    private String username="";
-    private String password="";
+
+    private String username = "";
+    private String password = "";
 
     public void download(String url, String moduleName) throws ModuleDownloaderException {
         // final String url = "svn://cavcops01.global.local/skunkworks";
@@ -86,18 +86,18 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
             // use SVNUpdateClient to do the export
             SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
             updateClient.setIgnoreExternals(false);
-            updateClient.doExport(repository.getLocation(), new File(modulesCodeDownloadPath+moduleName), SVNRevision.create(latestRevision),
-                    SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
+            updateClient.doExport(repository.getLocation(), new File(modulesCodeDownloadPath + moduleName),
+                    SVNRevision.create(latestRevision), SVNRevision.create(latestRevision), null, true,
+                    SVNDepth.INFINITY);
 
         } catch (SVNException e) {
             throw new ModuleDownloaderException(e);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new ModuleDownloaderException(ex);
-        } finally {
-            logger.debug("Done");
         }
+        logger.debug("Done");
     }
-    
+
     @Value(value = "${modulesCodeDownloadPath}")
     public void setModulesCodeDownloadPath(String modulesCodeDownloadPath) {
         this.modulesCodeDownloadPath = modulesCodeDownloadPath;

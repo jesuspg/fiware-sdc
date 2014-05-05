@@ -34,8 +34,8 @@ import org.springframework.stereotype.Component;
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
-import com.telefonica.euro_iaas.sdc.manager.ChefClientManager;
-import com.telefonica.euro_iaas.sdc.manager.async.ChefClientAsyncManager;
+import com.telefonica.euro_iaas.sdc.manager.NodeManager;
+import com.telefonica.euro_iaas.sdc.manager.async.NodeAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
@@ -48,36 +48,33 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 /**
  * @author jesus.movilla
  */
-@Path("/vdc/{vdc}/chefClient/deprecated")
+@Path("/vdc/{vdc}/chefClient")
 @Component
 @Scope("request")
-public class ChefClientResourceImpl implements ChefClientResource {
+public class NodeResourceImpl implements NodeResource {
 
-    @InjectParam("chefClientManager")
-    private ChefClientManager chefClientManager;
-    @InjectParam("chefClientAsyncManager")
-    private ChefClientAsyncManager chefClientAsyncManager;
+    @InjectParam("nodeAsyncManager")
+    private NodeAsyncManager nodeAsyncManager;
     @InjectParam("taskManager")
     private TaskManager taskManager;
+    @InjectParam("nodeManager")
+    private NodeManager nodeManager;
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ChefClientResource#findAll()
-     */
+
     public ChefClient findByHostname(String hostname) throws EntityNotFoundException, ChefClientExecutionException {
-        return chefClientManager.chefClientfindByHostname(hostname);
+        return nodeManager.chefClientfindByHostname(hostname);
     }
 
     public ChefClient load(String chefClientName) throws EntityNotFoundException, ChefClientExecutionException {
 
-        return chefClientManager.chefClientload(chefClientName);
+        return nodeManager.chefClientload(chefClientName);
     }
+    
+    public Task delete(String vdc, String nodeName, String callback) throws ChefClientExecutionException {
 
-    public Task delete(String vdc, String chefClientName, String callback) throws ChefClientExecutionException {
+        Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
 
-        Task task = createTask(MessageFormat.format("Delete ChefClient {0} from Chef Server", chefClientName), vdc);
-
-        chefClientAsyncManager.chefClientDelete(vdc, chefClientName, task, callback);
+        nodeAsyncManager.nodeDelete(vdc, nodeName, task, callback);
         return task;
 
     }
@@ -87,6 +84,18 @@ public class ChefClientResourceImpl implements ChefClientResource {
         task.setDescription(description);
         task.setVdc(vdc);
         return taskManager.createTask(task);
+    }
+
+    public void setNodeAsyncManager(NodeAsyncManager nodeAsyncManager) {
+        this.nodeAsyncManager = nodeAsyncManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    public void setNodeManager(NodeManager nodeManager) {
+        this.nodeManager = nodeManager;
     }
 
 }
