@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.puppetwrapper.services;
 
+import java.util.NoSuchElementException;
+
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 
 public interface CatalogManager {

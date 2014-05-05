@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Controller
-public class PuppetController /* extends GenericController */{
+public class PuppetController extends GenericController{
 
     private static final Log logger = LogFactory.getLog(PuppetController.class);
 
@@ -109,8 +110,7 @@ public class PuppetController /* extends GenericController */{
 
     @RequestMapping(value = "/generate/{nodeName}", method = RequestMethod.POST)
     public @ResponseBody
-    Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException,
-            UnsupportedEncodingException, IOException {
+    Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
         if (nodeName == null || "".equals(nodeName)) {
             throw new IllegalArgumentException("Node name is not set");

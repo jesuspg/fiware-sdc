@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -112,6 +113,13 @@ public class FileAccessServiceTest {
 
         File f2 = new File(defaultManifestsPath + "group/test2.pp");
         assertTrue(f2.exists());
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void generateManifest_node_not_exists() throws IOException {
+        when(catalogManager.getNode("nodenotexists")).thenThrow(new NoSuchElementException());
+        
+        fileAccessService.generateManifestFile("nodenotexists");
     }
 
     @Test

@@ -68,6 +68,9 @@ public class ActionsServiceImpl implements ActionsService {
             node = catalogManager.getNode(nodeName);
             node.setGroupName(group);
         } catch (NoSuchElementException e) {
+            if (Action.UNINSTALL.equals(action)) {
+                throw e;
+            }
             node = new Node();
             node.setId(nodeName);
             node.setGroupName(group);
@@ -79,6 +82,9 @@ public class ActionsServiceImpl implements ActionsService {
             soft.setVersion(version);
             soft.setAction(action);
         } catch (NoSuchElementException e) {
+            if (Action.UNINSTALL.equals(action)) {
+                throw e;
+            }
             soft = new Software();
             soft.setName(softName);
             soft.setVersion(version);

@@ -139,13 +139,41 @@ public class ActionsServiceTest {
         when(catalogManagerMongo.getNode("1")).thenReturn(node1);
 
         actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft", "1.0.0");
-        actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft2", "2.0.0");
+        actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoft", "2.0.0");
 
         Node node = catalogManagerMongo.getNode("1");
         Software soft = node.getSoftware("testSoft");
 
         verify(catalogManagerMongo, times(2)).addNode((Node) anyObject());
 
+    }
+    
+    @Test(expected = NoSuchElementException.class)
+    public void uninstall_soft_not_exists() {
+        
+        when(catalogManagerMongo.getNode("1")).thenReturn(node1);
+
+        actionsService.action(Action.UNINSTALL, "testGroup", "1", "testSoftNoExists", "1.0.0");
+        
+        verify(catalogManagerMongo, times(1)).getNode(anyString());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void uninstall_node_not_esxists() {
+
+        when(catalogManagerMongo.getNode("nodenoexists")).thenThrow(new NoSuchElementException());
+
+        actionsService.action(Action.UNINSTALL, "groupnoexists", "nodenoexists", "testSoft", "1.0.0");
+        
+        verify(catalogManagerMongo, times(1)).getNode(anyString());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void uninstall_soft_not_esxists() {
+
+        when(catalogManagerMongo.getNode("nodenoexists")).thenThrow(new NoSuchElementException());
+
+        actionsService.action(Action.UNINSTALL, "testGroup", "nodenoexists", "softnoexists", "1.0.0");
     }
 
     @Test
