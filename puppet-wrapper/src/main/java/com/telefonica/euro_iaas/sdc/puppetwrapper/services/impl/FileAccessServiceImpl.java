@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 
@@ -53,7 +54,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     private String defaultManifestsPath;
 
-    public Node generateManifestFile(String nodeName) throws IOException {
+    public Node generateManifestFile(String nodeName) throws IOException{
 
         logger.info("creating Manifest file for node: " + nodeName);
 
