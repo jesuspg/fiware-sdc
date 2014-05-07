@@ -44,4 +44,6 @@ public interface CatalogManager {
     public String generateSiteStr();
 
     public void removeNodesByGroupName(String groupName);
+    
+    public boolean isLastGroupNode(String groupName);
 }

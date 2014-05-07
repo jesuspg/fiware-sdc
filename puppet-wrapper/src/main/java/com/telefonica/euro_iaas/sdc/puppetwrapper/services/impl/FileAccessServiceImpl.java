@@ -134,6 +134,12 @@ public class FileAccessServiceImpl implements FileAccessService {
 
             if (!file.delete()) {
                 logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
+            }else{
+                logger.info(format("File {0} deleted.", path + "/" + node.getId() + ".pp"));
+            }
+            
+            if(catalogManager.isLastGroupNode(node.getGroupName())){
+                deleteGoupFolder(node.getGroupName());
             }
             
         } catch (NoSuchElementException e) {
@@ -147,6 +153,8 @@ public class FileAccessServiceImpl implements FileAccessService {
         File path = new File(defaultManifestsPath + groupName);
 
         FileUtils.deleteDirectory(path);
+        
+        logger.info(format("Folder {0} deleted.", path + "/" + groupName));
     }
 
     @Override
