@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 
-import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,13 +31,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Error;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 
 public class GenericController {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ModelAndView handleNoSuchElementException(NoSuchElementException ex, HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return handleModelAndView(ex.getMessage());
+    }
+    
+    @ExceptionHandler(ModuleDownloaderException.class)
+    public ModelAndView handleModuleDownloaderException(ModuleDownloaderException ex, HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return handleModelAndView(ex.getMessage());
     }
 
