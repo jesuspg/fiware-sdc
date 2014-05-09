@@ -100,6 +100,8 @@ public class FileAccessServiceTest {
         when(catalogManager.generateSiteStr()).thenReturn("site.pp content");
         when(catalogManager.generateManifestStr("test")).thenReturn("manifest test1 content");
         when(catalogManager.generateManifestStr("test2")).thenReturn("manifest test2 content");
+        
+        when(catalogManager.isLastGroupNode("group")).thenReturn(false).thenReturn(true);
     }
 
     @Test

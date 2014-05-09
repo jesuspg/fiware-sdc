@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.sdc.pupperwrapper.services.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.anyObject;
@@ -102,6 +103,16 @@ public class CatalogManagerMongoTest {
                 add(node2);
             }
         });
+        
+        Query queryFindOK = new Query(Criteria.where("groupName").is("groupNameOK"));
+        when(mongoTemplateMock.find(queryFindOK, Node.class)).thenReturn(new ArrayList<Node>() {
+            {
+                add(node);
+            }
+        });
+        
+        Query queryFindErr = new Query(Criteria.where("groupName").is("groupNameErr"));
+        when(mongoTemplateMock.find(queryFindErr, Node.class)).thenReturn(null);
         
     }
 
@@ -193,5 +204,19 @@ public class CatalogManagerMongoTest {
 
         assertTrue(catalogManagerMongo.getNodeLength() == 3);
 
+    }
+    
+    @Test
+    public void isLastGroupNodeTestOK(){
+        
+        assertTrue(catalogManagerMongo.isLastGroupNode("groupNameOK"));
+        
+    }
+    
+    @Test
+    public void isLastGroupNodeTestFail(){
+        
+        assertFalse(catalogManagerMongo.isLastGroupNode("groupNameErr"));
+        
     }
 }
