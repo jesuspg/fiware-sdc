@@ -131,3 +131,18 @@ Scenario Outline: Generate new manifest from non existent node
   | qaserver  | QASERVER      | mysql         | 1.0     | qaserver_         | 404         |
   | qaserver  | testingserver | mysql         | 0.0.1   | testing           | 404         |
   | qaserver  | testingserver | mysql         | 1       | hello             | 404         |
+
+
+Scenario Outline: Error creating a uninstall manifest from non existent software
+
+  Given the group "<group>" and server "<node_name>"
+  When I uninstall the software "<software_name>" with version "<version>"
+  Then I obtain an "<Error_code>"
+
+  Examples:
+
+  | group     | node_name     | software_name | version | Error_code  |
+  | qaserver  | QASERVER      | not_installed | 1.0     | 404         |
+  | qaserver  | testingserver | never_install | 0.0.1   | 404         |
+  | qaserver  | testingserver | not_found     | 1       | 404         |
+
