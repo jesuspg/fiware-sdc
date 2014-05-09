@@ -28,8 +28,6 @@ public class PuppetWrapperError {
     private int code;
     private String description;
 
-    public static final int PUPPETWRAPPER_INTERNAL_SERVER_ERROR = -500;
-    public static final int PUPPETWRAPPER_ELEMENT_NOT_FOUND = -404;
 
     /**
      * 
