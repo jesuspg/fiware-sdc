@@ -124,13 +124,14 @@ Scenario Outline: Generate new manifest from non existent node
   Then the install request is created in the system
   When I generate the manifest for the node "<another_node_name>"
   Then I obtain an "<Error_code>"
+  And a error message description "<error_message>"
 
   Examples:
 
-  | group     | node_name     | software_name | version | another_node_name | Error_code  |
-  | qaserver  | QASERVER      | mysql         | 1.0     | qaserver_         | 404         |
-  | qaserver  | testingserver | mysql         | 0.0.1   | testing           | 404         |
-  | qaserver  | testingserver | mysql         | 1       | hello             | 404         |
+  | group     | node_name     | software_name | version | another_node_name | Error_code  | error_message                         |
+  | qaserver  | QASERVER      | mysql         | 1.0     | qaserver_         | 404         | The node qaserver_ could not be found |
+  | qaserver  | testingserver | mysql         | 0.0.1   | testing           | 404         | The node testing could not be found   |
+  | qaserver  | testingserver | mysql         | 1       | hello             | 404         | The node hello could not be found     |
 
 
 Scenario Outline: Error creating a uninstall manifest from non existent software
@@ -138,11 +139,12 @@ Scenario Outline: Error creating a uninstall manifest from non existent software
   Given the group "<group>" and server "<node_name>"
   When I uninstall the software "<software_name>" with version "<version>"
   Then I obtain an "<Error_code>"
+  And a error message description "<error_message>"
+
 
   Examples:
 
-  | group     | node_name     | software_name | version | Error_code  |
-  | qaserver  | QASERVER      | not_installed | 1.0     | 404         |
-  | qaserver  | testingserver | never_install | 0.0.1   | 404         |
-  | qaserver  | testingserver | not_found     | 1       | 404         |
-
+  | group     | node_name     | software_name | version | Error_code  | error_message                                 |
+  | qaserver  | QASERVER      | not_installed | 1.0     | 404         | The software not_installed could not be found |
+  | qaserver  | testingserver | never_install | 0.0.1   | 404         | The software never_install could not be found |
+  | qaserver  | testingserver | not_found     | 1       | 404         | The software not_found could not be found     |
