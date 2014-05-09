@@ -67,7 +67,6 @@ Scenario Outline: Incorrect download URL
 
   Examples:
     | module_name     | Error_code  | repository  | url                                                 |
-    | postgres_error  | 400         | git         | https://github.com/puppetlabs/puppetlabs-mysql      |
     | postgres_error  | 400         | git         | http://github.com/puppetlabs/puppetlabs-mysql.git   |
     | postgres_error  | 400         | git         | git@github.com:puppetlabs/puppetlabs-mysql.git      |
     | postgres_error  | 400         | git         | https://github.com/puppetlabs/puppetlabs-mysql#     |
