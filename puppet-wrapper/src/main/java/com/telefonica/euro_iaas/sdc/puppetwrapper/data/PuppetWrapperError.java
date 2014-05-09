@@ -25,11 +25,11 @@
 package com.telefonica.euro_iaas.sdc.puppetwrapper.data;
 
 public class PuppetWrapperError {
-    private short code;
+    private int code;
     private String description;
 
-    public static final short PUPPETWRAPPER_INTERNAL_SERVER_ERROR = -500;
-    public static final short PUPPETWRAPPER_ELEMENT_NOT_FOUND = -404;
+    public static final int PUPPETWRAPPER_INTERNAL_SERVER_ERROR = -500;
+    public static final int PUPPETWRAPPER_ELEMENT_NOT_FOUND = -404;
 
     /**
      * 
@@ -41,7 +41,7 @@ public class PuppetWrapperError {
      * @param code
      * @param description
      */
-    public PuppetWrapperError(short code, String description) {
+    public PuppetWrapperError(int code, String description) {
         super();
         this.code = code;
         this.description = description;
@@ -50,7 +50,7 @@ public class PuppetWrapperError {
     /**
      * @return the code
      */
-    public short getCode() {
+    public int getCode() {
         return code;
     }
 
@@ -58,7 +58,7 @@ public class PuppetWrapperError {
      * @param code
      *            the code to set
      */
-    public void setCode(short code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
