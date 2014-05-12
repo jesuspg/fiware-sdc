@@ -78,3 +78,10 @@ def then_i_obtain_an_group1(step, expected_status_code):
     world.software_to_generate = []
     Assertions.assert_error_code(response=world.response, error_code=expected_status_code)
 
+
+@step(u'And a error message description "([^"]*)"')
+def and_a_error_message_description_group1(step, message_error):
+
+    response =  world.response.json()
+    print response['description']
+    Assertions.assert_message_description(response, message_error)

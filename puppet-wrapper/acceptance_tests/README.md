@@ -22,7 +22,7 @@ Folder for acceptance tests of the Puppet Wrapper.
 
 - Change to the test/acceptance folder of the project
 
-- Install the requirements for the acceptance tests in the virtual environment (pip install -r requirements.txt --allow-all-external).
+- Install the requirements for the acceptance tests in the virtual environment (pip2.7 install -r requirements.txt --allow-all-external).
 
 ### Tests execution:
 

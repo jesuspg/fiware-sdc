@@ -34,7 +34,6 @@ Scenario Outline: Delete a node with several products with the same action
 
   | group_name  | node_name | action    |
   | delete      | node1     | install   |
-  | delete      | node2     | uninstall |
 
 
 Scenario Outline: Delete a node with several products with the same action and different versions
@@ -53,7 +52,6 @@ Scenario Outline: Delete a node with several products with the same action and d
 
   | group_name  | node_name | action    |
   | delete      | node1     | install   |
-  | delete      | node2     | uninstall |
 
 
 Scenario Outline: Delete a node with several products with different actions
