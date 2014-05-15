@@ -46,6 +46,14 @@ public class Node {
 
     }
 
+    public Node(String id, String groupName, List<Software> softwareList, boolean manifestGenerated) {
+        super();
+        this.id = id;
+        this.groupName = groupName;
+        this.softwareList = softwareList;
+        this.manifestGenerated = manifestGenerated;
+    }
+
     public String getId() {
         return id;
     }

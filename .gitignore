@@ -4,6 +4,7 @@
 target/
 .classpath
 automatization_scripts/*.*
+puppet-wrapper/acceptance_tests/testreport
 .project
 .settings
 
