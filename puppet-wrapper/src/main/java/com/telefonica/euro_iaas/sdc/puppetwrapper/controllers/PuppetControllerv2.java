@@ -43,22 +43,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.common.URLValue;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.dto.NodeDto;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.dto.UrlDto;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 
 @Controller
-@RequestMapping(value = "/v2")
+// @RequestMapping(value = "/v2")
 public class PuppetControllerv2 extends GenericController {
 
     private static final Log logger = LogFactory.getLog(PuppetControllerv2.class);
-    
-    public static final String gitRepoSource="git";
-    public static final String svnRepoSource="svn";
+
+    public static final String gitRepoSource = "git";
+    public static final String svnRepoSource = "svn";
 
     @Resource
     private ActionsService actionsService;
@@ -67,23 +67,22 @@ public class PuppetControllerv2 extends GenericController {
     private FileAccessService fileAccessService;
 
     @Resource
-    private CatalogManager catalogManager;
-
-    @Resource
     private ModuleDownloader gitCloneService;
 
     @Resource
     private ModuleDownloader svnExporterService;
 
-    @RequestMapping(value = "/node/{nodeName}/install", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/v2/node/{nodeName}/install", method = RequestMethod.POST)
     public @ResponseBody
-    Node install(@RequestBody String group, @PathVariable String nodeName, @RequestBody String softwareName,
-            @RequestBody String version, HttpServletRequest request) {
+    Node install(@RequestBody NodeDto nodeDto, @PathVariable String nodeName, HttpServletRequest request) {
 
-        logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
-                + version);
 
-        if (group == null || "".equals(group)) {
+        if (nodeDto == null) {
+            logger.debug("Payload is missing");
+            throw new IllegalArgumentException("Payload is missing");
+        }
+        
+        if (nodeDto.getGroup() == null || "".equals(nodeDto.getGroup())) {
             logger.debug("Group is not set");
             throw new IllegalArgumentException("Group is not set");
         }
@@ -93,24 +92,28 @@ public class PuppetControllerv2 extends GenericController {
             throw new IllegalArgumentException("Node name is not set");
         }
 
-        if (softwareName == null || "".equals(softwareName)) {
+        if (nodeDto.getSoftwareName() == null || "".equals(nodeDto.getSoftwareName())) {
             logger.debug("Software Name is not set");
             throw new IllegalArgumentException("Software name is not set");
         }
 
-        if (version == null || "".equals(version)) {
+        if (nodeDto.getVersion() == null || "".equals(nodeDto.getVersion())) {
             logger.debug("version is not set");
             throw new IllegalArgumentException("Version is not set");
         }
+        
+        logger.info("install group:" + nodeDto.getGroup() + " nodeName: " + nodeName + " soft: "
+                + nodeDto.getSoftwareName() + " version: " + nodeDto.getVersion());
 
-        Node node = actionsService.action(Action.INSTALL, group, nodeName, softwareName, version);
+        Node node = actionsService.action(Action.INSTALL, nodeDto.getGroup(), nodeName, nodeDto.getSoftwareName(),
+                nodeDto.getVersion());
 
         logger.debug("node " + node);
 
         return node;
     }
 
-    @RequestMapping(value = "/node/{nodeName}/generate", method = RequestMethod.POST)
+    @RequestMapping(value = "/v2/node/{nodeName}/generate", method = RequestMethod.GET)
     public @ResponseBody
     Node generateManifest(@PathVariable("nodeName") String nodeName) throws FileNotFoundException,
             UnsupportedEncodingException, IOException {
@@ -129,15 +132,17 @@ public class PuppetControllerv2 extends GenericController {
         return node;
     }
 
-    @RequestMapping(value = "/node/{nodeName}/uninstall", method = RequestMethod.POST)
+    @RequestMapping(value = "/v2/node/{nodeName}/uninstall", method = RequestMethod.POST)
     public @ResponseBody
-    Node uninstall(@RequestBody String group, @PathVariable String nodeName, @RequestBody String softwareName,
-            @RequestBody String version, HttpServletRequest request) {
+    Node uninstall(@RequestBody NodeDto nodeDto, @PathVariable String nodeName, HttpServletRequest request) {
 
-        logger.info("uninstall group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
-                + version);
 
-        if (group == null || "".equals(group)) {
+        if (nodeDto == null) {
+            logger.debug("Payload is missing");
+            throw new IllegalArgumentException("Payload is missing");
+        }
+        
+        if (nodeDto.getGroup() == null || "".equals(nodeDto.getGroup())) {
             logger.debug("Group is not set");
             throw new IllegalArgumentException("Group is not set");
         }
@@ -147,17 +152,21 @@ public class PuppetControllerv2 extends GenericController {
             throw new IllegalArgumentException("Node name is not set");
         }
 
-        if (softwareName == null || "".equals(softwareName)) {
+        if (nodeDto.getSoftwareName() == null || "".equals(nodeDto.getSoftwareName())) {
             logger.debug("Software Name is not set");
             throw new IllegalArgumentException("Software name is not set");
         }
 
-        if (version == null || "".equals(version)) {
+        if (nodeDto.getVersion() == null || "".equals(nodeDto.getVersion())) {
             logger.debug("version is not set");
             throw new IllegalArgumentException("Version is not set");
         }
+        
+        logger.info("install group:" + nodeDto.getGroup() + " nodeName: " + nodeName + " soft: "
+                + nodeDto.getSoftwareName() + " version: " + nodeDto.getVersion());
 
-        Node node = actionsService.action(Action.UNINSTALL, group, nodeName, softwareName, version);
+        Node node = actionsService.action(Action.UNINSTALL, nodeDto.getGroup(), nodeName, nodeDto.getSoftwareName(),
+                nodeDto.getVersion());
 
         logger.debug("node " + node);
 
@@ -165,10 +174,10 @@ public class PuppetControllerv2 extends GenericController {
 
     }
 
-    @RequestMapping(value = "/node/{nodeName}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v2/node/{nodeName}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
-        
+
         if (nodeName == null || "".equals(nodeName)) {
             logger.debug("Node name is not set");
             throw new IllegalArgumentException("Node name is not set");
@@ -179,41 +188,45 @@ public class PuppetControllerv2 extends GenericController {
         logger.info("Node: " + nodeName + " deleted.");
     }
 
-
-    @RequestMapping(value = "/module/{softwareName}/download",  method = RequestMethod.GET)
+    @RequestMapping(value = "/v2/module/{softwareName}/download", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void downloadModule(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url,
-            @RequestBody String repoSource) throws ModuleDownloaderException {
+    public void downloadModule(@PathVariable("softwareName") String softwareName, @RequestBody UrlDto urlDto)
+            throws ModuleDownloaderException {
+
+        if (urlDto == null) {
+            logger.debug("Payload is missing");
+            throw new IllegalArgumentException("Payload is missing");
+        }
         
         if (softwareName == null || "".equals(softwareName)) {
             logger.debug("Software name is not set");
             throw new IllegalArgumentException("Software name is not set");
         }
-        
-        if(url==null || "".equals(url.getUrl())){
+
+        if (urlDto.getUrl() == null || "".equals(urlDto.getUrl())) {
             logger.debug("Url is not set");
             throw new IllegalArgumentException("Url is not set");
         }
-        
-        if(repoSource==null || "".equals(repoSource)){
+
+        if (urlDto.getRepoSource() == null || "".equals(urlDto.getRepoSource())) {
             logger.debug("repoSource is not set");
             throw new IllegalArgumentException("repoSource is not set");
         }
-        
-        if(gitRepoSource.equals(repoSource)){
-            gitCloneService.download(url.getUrl(), softwareName);
-        }else if(svnRepoSource.equals(repoSource)){
-            svnExporterService.download(url.getUrl(), softwareName);
-        }else{
+
+        if (gitRepoSource.equals(urlDto.getRepoSource())) {
+            gitCloneService.download(urlDto.getUrl(), softwareName);
+        } else if (svnRepoSource.equals(urlDto.getRepoSource())) {
+            svnExporterService.download(urlDto.getUrl(), softwareName);
+        } else {
             throw new ModuleDownloaderException("RepoSource parameter is incorrect");
         }
 
     }
 
-    @RequestMapping(value = "/module/{moduleName}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v2/module/{moduleName}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteModule(@PathVariable("moduleName") String moduleName) throws IOException {
-        
+
         if (moduleName == null || "".equals(moduleName)) {
             logger.debug("Module name is not set");
             throw new IllegalArgumentException("Module name is not set");
@@ -223,7 +236,6 @@ public class PuppetControllerv2 extends GenericController {
         actionsService.deleteModule(moduleName);
         logger.info("Module: " + moduleName + " deleted.");
     }
-    
 
     public void setActionsService(ActionsService actionsService) {
         this.actionsService = actionsService;
@@ -233,10 +245,6 @@ public class PuppetControllerv2 extends GenericController {
         this.fileAccessService = fileAccessService;
     }
 
-    public void setCatalogManager(CatalogManager catalogManager) {
-        this.catalogManager = catalogManager;
-    }
-
     public void setGitCloneService(ModuleDownloader gitCloneService) {
         this.gitCloneService = gitCloneService;
     }
@@ -244,7 +252,5 @@ public class PuppetControllerv2 extends GenericController {
     public void setSvnExporterService(ModuleDownloader svnExporterService) {
         this.svnExporterService = svnExporterService;
     }
-    
-
 
 }

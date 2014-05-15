@@ -22,23 +22,50 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.puppetwrapper.common;
+package com.telefonica.euro_iaas.sdc.puppetwrapper.dto;
 
-public class URLValue {
+public class NodeDto {
     
-    String url;
+    private String group;
+    private String softwareName;
+    private String version;
     
-    public URLValue(String url) {
+    public NodeDto(){
+        
+    }
+    
+    public NodeDto(String group, String softwareName, String version) {
         super();
-        this.url = url;
+        this.group = group;
+        this.softwareName = softwareName;
+        this.version = version;
     }
 
-    public String getUrl() {
-        return url;
+    public String getGroup() {
+        return group;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setGroup(String group) {
+        this.group = group;
     }
+
+    public String getSoftwareName() {
+        return softwareName;
+    }
+
+    public void setSoftwareName(String softwareName) {
+        this.softwareName = softwareName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    
+    
+    
 
 }

@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +43,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.common.URLValue;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.dto.UrlDto;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
@@ -179,7 +178,7 @@ public class PuppetController extends GenericController{
 
     @RequestMapping(value = "/download/git/{softwareName}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url)
+    public void downloadModuleFromGit(@PathVariable("softwareName") String softwareName, @RequestBody UrlDto url)
             throws ModuleDownloaderException {
 
         gitCloneService.download(url.getUrl(), softwareName);
@@ -188,7 +187,7 @@ public class PuppetController extends GenericController{
 
     @RequestMapping(value = "/download/svn/{softwareName}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, @RequestBody URLValue url)
+    public void downloadModuleFromSVN(@PathVariable("softwareName") String softwareName, @RequestBody UrlDto url)
             throws ModuleDownloaderException {
 
         svnExporterService.download(url.getUrl(), softwareName);

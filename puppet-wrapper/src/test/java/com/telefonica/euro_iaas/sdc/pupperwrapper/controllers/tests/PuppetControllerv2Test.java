@@ -45,11 +45,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.common.URLValue;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.controllers.PuppetControllerv2;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.dto.NodeDto;
+import com.telefonica.euro_iaas.sdc.puppetwrapper.dto.UrlDto;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.CatalogManager;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
@@ -89,7 +90,6 @@ public class PuppetControllerv2Test {
         
         puppetController.setActionsService(actionsService);
         puppetController.setFileAccessService(fileAccessService);
-        puppetController.setCatalogManager(catalogManager);
         puppetController.setGitCloneService(gitCloneService);
         puppetController.setSvnExporterService(svnExporterService);
         
@@ -112,7 +112,7 @@ public class PuppetControllerv2Test {
     public void installTest(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.install("group", "nodeName", "softwareName", "1",request);
+        puppetController.install(new NodeDto("group", "softwareName", "1"),"nodeName",request);
         
         verify(actionsService,times(1)).action((Action)anyObject(),anyString(), anyString(), anyString(), anyString());
         
@@ -122,7 +122,7 @@ public class PuppetControllerv2Test {
     public void installTest_missingParam_1(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.install(null, "nodeName", "softwareName", "1",request);
+        puppetController.install(null,"nodeName",request);
         
         
     }
@@ -131,24 +131,7 @@ public class PuppetControllerv2Test {
     public void installTest_missingParam_2(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.install("group", null, "softwareName", "1",request);
-        
-        
-    }
-    @Test(expected=IllegalArgumentException.class)
-    public void installTest_missingParam_3(){
-        when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
-        
-        puppetController.install("group", "nodeName", null, "1",request);
-        
-        
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void installTest_missingParam_4(){
-        when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
-        
-        puppetController.install("group", "nodeName", "softwareName", null,request);
+        puppetController.install(new NodeDto("group", "softwareName", "1"),null,request);
         
         
     }
@@ -157,7 +140,7 @@ public class PuppetControllerv2Test {
     public void unInstallTest(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.uninstall("group", "nodeName", "softwareName", "1",request);
+        puppetController.uninstall(new NodeDto("group", "softwareName", "1"),"nodeName",request);
         
         verify(actionsService,times(1)).action((Action)anyObject(),anyString(), anyString(), anyString(), anyString());
         
@@ -167,7 +150,7 @@ public class PuppetControllerv2Test {
     public void unInstallTest_missingParam_1(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.uninstall(null, "nodeName", "softwareName", "1",request);
+        puppetController.uninstall(null,"nodeName",request);
         
     }
     
@@ -175,22 +158,7 @@ public class PuppetControllerv2Test {
     public void unInstallTest_missingParam_2(){
         when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
         
-        puppetController.uninstall("group", null, "softwareName", "1",request);
-        
-    }
-    @Test(expected=IllegalArgumentException.class)
-    public void unInstallTest_missingParam_3(){
-        when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
-        
-        puppetController.uninstall("group", "nodeName", null, "1",request);
-        
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void unInstallTest_missingParam_4(){
-        when(actionsService.action(eq(Action.INSTALL), anyString(), anyString(), anyString(), anyString())).thenReturn(node);
-        
-        puppetController.uninstall("group", "nodeName", "softwareName", null,request);
+        puppetController.uninstall(new NodeDto("group", "softwareName", "1"),null,request);
         
     }
     
@@ -273,28 +241,21 @@ public class PuppetControllerv2Test {
     @Test(expected=IllegalArgumentException.class)
     public void downloadModuleTest_missingParam_1() throws ModuleDownloaderException{
         
-        puppetController.downloadModule(null, new URLValue("http://www.test.me"), "svn");
+        puppetController.downloadModule(null, new UrlDto("http://www.test.me","svn"));
         
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void downloadModuleTest_missingParam_2() throws ModuleDownloaderException{
         
-        puppetController.downloadModule("softName", null, "svn");
-        
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void downloadModuleTest_missingParam_3() throws ModuleDownloaderException{
-        
-        puppetController.downloadModule("softName", new URLValue("http://www.test.me"), null);
+        puppetController.downloadModule("softName", null);
         
     }
     
     @Test(expected=ModuleDownloaderException.class)
     public void downloadModuleTest_badParam() throws ModuleDownloaderException{
         
-        puppetController.downloadModule("softName", new URLValue("http://www.test.me"), "anyRepo");
+        puppetController.downloadModule("softName", new UrlDto("http://www.test.me","anyRepo"));
         
     }
     
@@ -303,7 +264,7 @@ public class PuppetControllerv2Test {
         
         doThrow(new ModuleDownloaderException()).when(svnExporterService).download("url", "soft");
         
-        puppetController.downloadModule("soft", new URLValue("url"), "svn");
+        puppetController.downloadModule("soft", new UrlDto("url","svn"));
         
     }
 
@@ -313,7 +274,7 @@ public class PuppetControllerv2Test {
         
         doThrow(new ModuleDownloaderException()).when(gitCloneService).download("url", "soft");
         
-        puppetController.downloadModule("soft", new URLValue("url"), "git");
+        puppetController.downloadModule("soft", new UrlDto("url","git"));
         
     }
 }

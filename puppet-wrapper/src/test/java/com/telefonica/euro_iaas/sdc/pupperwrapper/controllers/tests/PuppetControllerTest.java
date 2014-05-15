@@ -45,9 +45,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.common.URLValue;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.controllers.PuppetController;
-import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Node;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.Software;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ActionsService;
