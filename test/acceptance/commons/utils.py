@@ -6,6 +6,7 @@ import random
 from constants import AUTH_TOKEN_HEADER, TENANT_ID_HEADER, CONTENT_TYPE, CONTENT_TYPE_XML, ACCEPT_HEADER, \
     CONTENT_TYPE_JSON
 
+
 def dict_to_xml(dict_to_convert):
 
     return xmldict.dict_to_xml(dict_to_convert)
@@ -26,6 +27,7 @@ def set_default_headers(token_id, tenant_id):
 
     return headers
 
+
 def id_generator(size=10, chars=string.ascii_letters + string.digits):
 
     """Method to create random ids
@@ -35,6 +37,7 @@ def id_generator(size=10, chars=string.ascii_letters + string.digits):
     """
 
     return ''.join(random.choice(chars) for x in range(size))
+
 
 def delete_keys_from_dict(dict_del, key):
 

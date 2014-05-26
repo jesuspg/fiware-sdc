@@ -1,10 +1,8 @@
 __author__ = 'arobres'
 
-__author__ = 'arobres'
-
 from json import JSONEncoder
 from configuration import SDC_IP, SDC_PORT
-from constants import CONTENT_TYPE, CONTENT_TYPE_JSON, PRODUCT, PRODUCT_NAME
+from constants import CONTENT_TYPE, CONTENT_TYPE_JSON, PRODUCT, PRODUCT_NAME, VERSION, PRODUCT_RELEASE
 
 import requests
 
@@ -37,7 +35,6 @@ class RestUtils(object):
         :param **kwargs: URL parameters (without url_root) to fill the patters
         :returns: REST API response
         """
-
 
         kwargs['url_root'] = self.api_url
 
@@ -114,15 +111,7 @@ class RestUtils(object):
                     release_list = self.retrieve_product_release_list(headers=headers, product_id=product[PRODUCT_NAME])
                     release_list = release_list.json()
                     delete_release = self.delete_product_release(headers=headers, product_id=product[PRODUCT_NAME],
-                                                                 version=release_list['productRelease']['version'])
-                    #assert delete_release.ok
+                                                                 version=release_list[PRODUCT_RELEASE][VERSION])
+                    assert delete_release.ok
                     delete_response = self.delete_product(headers=headers, product_id=product[PRODUCT_NAME])
-                    #assert delete_response.ok
-
-
-
-
-
-
-
-
+                    assert delete_response.ok

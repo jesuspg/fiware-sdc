@@ -1,6 +1,7 @@
 __author__ = 'arobres'
 
-from constants import PRODUCT, PRODUCT_DESCRIPTION, PRODUCT_NAME, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS
+from constants import PRODUCT, PRODUCT_DESCRIPTION, PRODUCT_NAME, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS, KEY, \
+    DESCRIPTION, VALUE, VERSION
 from utils import id_generator, delete_keys_from_dict
 
 
@@ -56,14 +57,14 @@ def create_default_metadata_or_attributes_list(num_attributes=2):
 
     for i in range(num_attributes):
         parameter = {}
-        parameter['key'] = id_generator(10)
-        parameter['description'] = id_generator(10)
-        parameter['value'] = id_generator(10)
+        parameter[KEY] = id_generator(10)
+        parameter[DESCRIPTION] = id_generator(10)
+        parameter[VALUE] = id_generator(10)
         parameters.append(parameter)
 
     return parameters
 
+
 def create_product_release(version=None):
 
-    return {"productReleaseDto": {"version": version}}
-
+    return {"productReleaseDto": {VERSION: version}}
