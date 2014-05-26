@@ -174,7 +174,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
   @CLAUDIA-3742 @CLAUDIA-3741  @CLAUDIA-3740
-  Scenario Outline: Add a new product with missing parameters
+  Scenario Outline: Add a new product with incorrect parameters
 
     Given a product with name "<product_name>" with description "<description>"
     When I add the new product with accept parameter "<accept_parameter>" response
