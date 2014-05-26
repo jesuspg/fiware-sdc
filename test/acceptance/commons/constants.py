@@ -15,6 +15,7 @@ ID = u'id'
 PRODUCT_NAME = u'name'
 PRODUCT_DESCRIPTION = u'description'
 PRODUCT = u'product'
+PRODUCTS = u'products'
 PRODUCT_ATTRIBUTES = u'attributes'
 PRODUCT_METADATAS = u'metadatas'
 

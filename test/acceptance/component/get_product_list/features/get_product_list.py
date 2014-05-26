@@ -6,11 +6,12 @@ from commons.authentication import get_token
 from commons.rest_utils import RestUtils
 from commons.product_body import default_product, create_default_metadata_or_attributes_list
 from commons.utils import dict_to_xml, xml_to_dict, set_default_headers
-from commons.constants import CONTENT_TYPE, CONTENT_TYPE_XML, PRODUCT_NAME, PRODUCT, CONTENT_TYPE_JSON, \
-    ACCEPT_HEADER, LONG_ID, AUTH_TOKEN_HEADER, PRODUCT_DESCRIPTION, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS
+from commons.constants import CONTENT_TYPE, PRODUCTS, PRODUCT_NAME, PRODUCT, CONTENT_TYPE_JSON, \
+    ACCEPT_HEADER, AUTH_TOKEN_HEADER, PRODUCT_DESCRIPTION, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS
 from nose.tools import assert_equals, assert_true, assert_in
 
 api_utils = RestUtils()
+
 
 @before.each_feature
 def setup_feature(feature):
@@ -26,6 +27,7 @@ def setup_scenario(scenario):
     world.attributes = None
     world.metadatas = None
     world.exist = False
+
 
 @step(u'Given a created product with name "([^"]*)"')
 def given_a_created_product_with_name_group1(step, product_id):
@@ -47,6 +49,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
 
+
 @step(u'Given a created product with metadatas and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
@@ -56,6 +59,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
     response = api_utils.add_new_product(headers=world.headers, body=body)
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
+
 
 @step(u'Given a created product with all data and name "([^"]*)"')
 def given_a_created_product_with_all_data_and_name_group1(step, product_id):
@@ -68,10 +72,12 @@ def given_a_created_product_with_all_data_and_name_group1(step, product_id):
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
 
+
 @step(u'When I retrieve the list product with accept parameter "([^"]*)" response')
 def when_i_retrieve_the_list_product_with_accept_parameter_group1_response(step, accept_content):
     world.headers[ACCEPT_HEADER] = accept_content
     world.response = api_utils.retrieve_product_list(headers=world.headers)
+
 
 @step(u'Then the product is returned in the list')
 def then_the_product_is_returned_in_the_list(step):
@@ -88,7 +94,7 @@ def then_the_product_is_returned_in_the_list(step):
             print str(e)
 
     else:
-        response_body = xml_to_dict(world.response.content)['products']
+        response_body = xml_to_dict(world.response.content)[PRODUCTS]
 
     for product in response_body[PRODUCT]:
 
@@ -124,3 +130,9 @@ def incorrect_token(step, new_token):
     world.headers[AUTH_TOKEN_HEADER] = new_token
 
 
+@after.all
+def tear_down(scenario):
+
+    world.token_id, world.tenant_id = get_token()
+    world.headers = set_default_headers(world.token_id, world.tenant_id)
+    api_utils.delete_all_testing_products(world.headers)
