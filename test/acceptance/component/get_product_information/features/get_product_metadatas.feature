@@ -5,7 +5,7 @@ Feature: Get product attributes
     so that I can use it.
 
   @happy_path
-  Scenario Outline: Retrieve a product attributes without attributes
+  Scenario Outline: Retrieve a product metadatas without attributes
 
     Given a created product with name "<product_name>"
     When I retrieve the product metadatas "<product_name>" with accept parameter "<accept_parameter>" response
@@ -17,7 +17,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  Scenario Outline: Retrieve a product with attributes
+  Scenario Outline: Retrieve a product metadatas with attributes
 
     Given a created product with attributes and name "<product_name>"
     When I retrieve the product metadatas "<product_name>" with accept parameter "<accept_parameter>" response
@@ -29,7 +29,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  Scenario Outline: Retrieve a product attributes with only metadata
+  Scenario Outline: Retrieve a product metadatas attributes with only metadata
 
     Given a created product with metadatas and name "<product_name>"
     When I retrieve the product metadatas "<product_name>" with accept parameter "<accept_parameter>" response
@@ -42,7 +42,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  Scenario Outline: Retrieve a product with all data
+  Scenario Outline: Retrieve a product metadatas with all data
 
     Given a created product with all data and name "<product_name>"
     When I retrieve the product metadatas "<product_name>" with accept parameter "<accept_parameter>" response
@@ -55,7 +55,7 @@ Feature: Get product attributes
     | testing_information02  | application/xml   |
 
   @CLAUDIA-3733
-  Scenario Outline: Retrieve a not existent product
+  Scenario Outline: Retrieve metadatas from a not existent product
 
     Given a created product with all data and name "<product_name>"
     When I retrieve the product metadatas "<another_product_name>" with accept parameter "<accept_parameter>" response
@@ -69,7 +69,7 @@ Feature: Get product attributes
 
 
 
-  Scenario Outline: Cause a Not acceptable error when I Retrieve a product with Content Type header invalid
+  Scenario Outline: Cause a Not acceptable error when I Retrieve a product metadatas with Content Type header invalid
 
     Given a created product with all data and name "<product_name>"
     And incorrect "<content_type>" header
@@ -83,7 +83,7 @@ Feature: Get product attributes
     | testing_information05  | application/json  | 415         | application/testing |
 
 
-  Scenario Outline: Retrieve a product with incorrect token
+  Scenario Outline: Retrieve a product metadatas with incorrect token
 
     Given a created product with all data and name "<product_name>"
     And incorrect "<token>" authentication

@@ -41,7 +41,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  Scenario Outline: Retrieve a product with all data
+  Scenario Outline: Retrieve a product attributes with all data
 
     Given a created product with all data and name "<product_name>"
     When I retrieve the product attributes "<product_name>" with accept parameter "<accept_parameter>" response
@@ -54,7 +54,7 @@ Feature: Get product attributes
     | testing_information02  | application/xml   |
 
   @CLAUDIA-3733
-  Scenario Outline: Retrieve a not existent product
+  Scenario Outline: Retrieve attributes from a not existent product
 
     Given a created product with all data and name "<product_name>"
     When I retrieve the product attributes "<another_product_name>" with accept parameter "<accept_parameter>" response
@@ -68,7 +68,7 @@ Feature: Get product attributes
 
 
 
-  Scenario Outline: Cause a Not acceptable error when I Retrieve a product with Content Type header invalid
+  Scenario Outline: Cause a Not acceptable error when I Retrieve a product attributes with Content Type header invalid
 
     Given a created product with all data and name "<product_name>"
     And incorrect "<content_type>" header
@@ -82,7 +82,7 @@ Feature: Get product attributes
     | testing_information05  | application/json  | 415         | application/testing |
 
 
-  Scenario Outline: Retrieve a product with incorrect token
+  Scenario Outline: Retrieve a product attributes with incorrect token
 
     Given a created product with all data and name "<product_name>"
     And incorrect "<token>" authentication
@@ -91,7 +91,7 @@ Feature: Get product attributes
 
     Examples:
 
-    | product_name     | accept_parameter  | Error_code  | token                            |
+    | product_name          | accept_parameter  | Error_code  | token                            |
     | testing_information01 | application/json  | 401         | hello world                      |
     | testing_information02 | application/json  | 401         | 891855f21b2f1567afb966d3ceee1295 |
     | testing_information03 | application/json  | 401         |                                  |

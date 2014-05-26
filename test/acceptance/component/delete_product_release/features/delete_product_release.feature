@@ -70,7 +70,7 @@ Feature: Delete a product release in the catalogue
     | testing_delete05  | application/json  | 415         | application/testing | 1.0.0           |
 
 
-     Scenario Outline: Add a new product release in the catalogue from product with all data
+     Scenario Outline: Delete product release with incorrect Accept header
       Given a created product with name "<product_name>" and release "<product_release>"
       When I delete the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
       Then I obtain an "<Error_code>"

@@ -1,12 +1,13 @@
 __author__ = 'arobres'
 
 # -*- coding: utf-8 -*-
-from lettuce import step, world, before
+from lettuce import step, world, before, after
 from commons.authentication import get_token
 from commons.rest_utils import RestUtils
 from commons.product_body import default_product, create_default_metadata_or_attributes_list, create_product_release
 from commons.utils import dict_to_xml, set_default_headers, xml_to_dict
-from commons.constants import CONTENT_TYPE, PRODUCT_NAME, ACCEPT_HEADER, AUTH_TOKEN_HEADER, CONTENT_TYPE_JSON, LONG_ID
+from commons.constants import CONTENT_TYPE, PRODUCT_NAME, ACCEPT_HEADER, AUTH_TOKEN_HEADER, CONTENT_TYPE_JSON, LONG_ID, \
+    VERSION, PRODUCT_RELEASE
 from nose.tools import assert_equals, assert_true
 
 api_utils = RestUtils()
@@ -88,9 +89,9 @@ def then_the_product_release_is_created(step):
             print str(e)
 
     else:
-        response_body = xml_to_dict(world.response.content)['productRelease']
+        response_body = xml_to_dict(world.response.content)[PRODUCT_RELEASE]
 
-    assert_equals(response_body['version'], world.product_release)
+    assert_equals(response_body[VERSION], world.product_release)
     world.headers = set_default_headers(world.token_id, world.tenant_id)
 
 
@@ -109,3 +110,11 @@ def and_incorrect_content_type_header(step, content_type):
 @step(u'And incorrect "([^"]*)" authentication')
 def incorrect_token(step, new_token):
     world.headers[AUTH_TOKEN_HEADER] = new_token
+
+
+@after.all
+def tear_down(scenario):
+
+    world.token_id, world.tenant_id = get_token()
+    world.headers = set_default_headers(world.token_id, world.tenant_id)
+    api_utils.delete_all_testing_products(world.headers)

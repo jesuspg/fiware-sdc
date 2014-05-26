@@ -105,7 +105,7 @@ def incorrect_token(step, new_token):
 
 
 @after.all
-def setup_scenario(scenario):
+def tear_down(scenario):
 
     world.headers = set_default_headers(world.token_id, world.tenant_id)
     api_utils.delete_all_testing_products(world.headers)

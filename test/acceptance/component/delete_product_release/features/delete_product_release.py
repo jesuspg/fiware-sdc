@@ -25,6 +25,7 @@ def setup_scenario(scenario):
     world.attributes = None
     world.metadatas = None
 
+
 @step(u'Given a created product with name "([^"]*)" and release "([^"]*)"')
 def given_a_created_product_with_name_group1(step, product_id, product_release):
 
@@ -43,6 +44,7 @@ def delete_product_release(step, product_release, product_name, accept_content):
     world.headers[ACCEPT_HEADER] = accept_content
     world.response = api_utils.delete_product_release(headers=world.headers, product_id=product_name,
                                                       version=product_release)
+
 
 @step(u'Then the product release is deleted')
 def then_the_product_release_is_deleted(step):
@@ -68,7 +70,8 @@ def incorrect_token(step, new_token):
 
 
 @after.all
-def setup_scenario(scenario):
+def tear_down(scenario):
 
+    world.token_id, world.tenant_id = get_token()
     world.headers = set_default_headers(world.token_id, world.tenant_id)
     api_utils.delete_all_testing_products(world.headers)

@@ -1,7 +1,7 @@
 __author__ = 'arobres'
 
 # -*- coding: utf-8 -*-
-from lettuce import step, world, before
+from lettuce import step, world, before, after
 from commons.authentication import get_token
 from commons.rest_utils import RestUtils
 from commons.product_body import default_product, create_default_metadata_or_attributes_list
@@ -10,6 +10,7 @@ from commons.constants import CONTENT_TYPE, PRODUCT_NAME, ACCEPT_HEADER, AUTH_TO
 from nose.tools import assert_equals, assert_true
 
 api_utils = RestUtils()
+
 
 @before.each_feature
 def setup_feature(feature):
@@ -24,6 +25,7 @@ def setup_scenario(scenario):
     api_utils.delete_all_testing_products(world.headers)
     world.attributes = None
     world.metadatas = None
+
 
 @step(u'Given a created product with name "([^"]*)"')
 def given_a_created_product_with_name_group1(step, product_id):
@@ -43,6 +45,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
 
+
 @step(u'Given a created product with metadatas and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
@@ -51,6 +54,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
     response = api_utils.add_new_product(headers=world.headers, body=body)
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
+
 
 @step(u'Given a created product with all data and name "([^"]*)"')
 def given_a_created_product_with_all_data_and_name_group1(step, product_id):
@@ -61,6 +65,7 @@ def given_a_created_product_with_all_data_and_name_group1(step, product_id):
     response = api_utils.add_new_product(headers=world.headers, body=body)
     assert_true(response.ok, response.content)
     world.product_id = response.json()[PRODUCT_NAME]
+
 
 @step(u'When I delete the product "([^"]*)" with accept parameter "([^"]*)" response')
 def when_i_delete_the_product_group1_with_accept_parameter_group2_response(step, product_id, accept_content):
@@ -91,3 +96,11 @@ def and_incorrect_content_type_header(step, content_type):
 @step(u'And incorrect "([^"]*)" authentication')
 def incorrect_token(step, new_token):
     world.headers[AUTH_TOKEN_HEADER] = new_token
+
+
+@after.all
+def tear_down(scenario):
+
+    world.token_id, world.tenant_id = get_token()
+    world.headers = set_default_headers(world.token_id, world.tenant_id)
+    api_utils.delete_all_testing_products(world.headers)

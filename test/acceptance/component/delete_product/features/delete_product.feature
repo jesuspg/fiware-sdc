@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-Feature: Add a new product in the catalogue
+Feature: Delete a product in the catalogue
     As a fi-ware user
     I want to be able to delete a new products in the catalogue
     so that I can eliminate not useful products
