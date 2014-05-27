@@ -35,8 +35,8 @@ import java.util.NoSuchElementException;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 @Service("fileAccessService")
 public class FileAccessServiceImpl implements FileAccessService {
 
-    private static final Log logger = LogFactory.getLog(FileAccessServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileAccessServiceImpl.class);
 
     @Resource
     protected CatalogManager catalogManager;

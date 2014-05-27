@@ -29,11 +29,10 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -64,7 +63,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
-    private static Log LOGGER = LogFactory.getLog(ProductInstanceAsyncManagerImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
     
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;

@@ -43,8 +43,8 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -66,7 +66,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     ChefClientConfig clientConfig;
-    private static Log LOGGER = LogFactory.getLog(ChefClientDaoRestImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ChefClientDaoRestImpl.class);
 
     /*
      * (non-Javadoc)

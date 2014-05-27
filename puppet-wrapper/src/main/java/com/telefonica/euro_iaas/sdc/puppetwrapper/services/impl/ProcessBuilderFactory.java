@@ -27,14 +27,14 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service("processBuilderFactory")
 public class ProcessBuilderFactory {
 
-    private static final Log logger = LogFactory.getLog(ProcessBuilderFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderFactory.class);
 
     
     public Process createProcessBuilder(String[] command) throws IOException {

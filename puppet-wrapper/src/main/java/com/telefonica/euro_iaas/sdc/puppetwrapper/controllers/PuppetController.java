@@ -31,8 +31,8 @@ import java.io.UnsupportedEncodingException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,7 +54,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 @Controller
 public class PuppetController extends GenericController{
 
-    private static final Log logger = LogFactory.getLog(PuppetController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PuppetController.class);
 
     @Resource
     private ActionsService actionsService;

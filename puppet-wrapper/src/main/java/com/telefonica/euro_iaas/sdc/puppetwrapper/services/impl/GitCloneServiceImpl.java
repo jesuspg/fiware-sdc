@@ -28,8 +28,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
@@ -46,7 +46,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 @Service("gitCloneService")
 public class GitCloneServiceImpl implements ModuleDownloader {
 
-    private static final Log logger = LogFactory.getLog(GitCloneServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GitCloneServiceImpl.class);
     
     private String modulesCodeDownloadPath;
     

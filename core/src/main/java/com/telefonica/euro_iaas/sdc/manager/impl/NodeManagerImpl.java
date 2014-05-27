@@ -32,8 +32,8 @@ import static java.text.MessageFormat.format;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -65,7 +65,7 @@ public class NodeManagerImpl implements NodeManager {
     private HttpClient client;
 
 
-    private static Log log = LogFactory.getLog(NodeManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(NodeManagerImpl.class);
 
     /*
      * (non-Javadoc)

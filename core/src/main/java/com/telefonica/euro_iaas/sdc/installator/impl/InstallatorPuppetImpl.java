@@ -28,10 +28,9 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -50,7 +49,7 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 public class InstallatorPuppetImpl implements Installator {
     
-    private static Log log = LogFactory.getLog(InstallatorPuppetImpl.class);
+    private static Logger log = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
 
     private HttpClient client;
     private SystemPropertiesProvider propertiesProvider;

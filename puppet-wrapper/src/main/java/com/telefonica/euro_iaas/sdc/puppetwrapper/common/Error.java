@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.common;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author alberts
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Error {
 	
-    private static final Log logger = LogFactory.getLog(Error.class);
+    private static final Logger logger = LoggerFactory.getLogger(Error.class);
 	 
 	private int code;
 	private String description;

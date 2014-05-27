@@ -26,22 +26,19 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 
 import java.util.NoSuchElementException;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.PuppetWrapperError;
 
 public class GenericController {
     
-    private static final Log logger = LogFactory.getLog(GenericController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericController.class);
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

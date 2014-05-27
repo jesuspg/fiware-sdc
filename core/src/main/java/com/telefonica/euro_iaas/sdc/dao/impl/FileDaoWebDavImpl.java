@@ -30,12 +30,10 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.sardine.DavResource;
 import com.googlecode.sardine.Sardine;
@@ -57,7 +55,7 @@ public class FileDaoWebDavImpl implements FileDao {
     SystemPropertiesProvider propertiesProvider;
     Client client;
     Sardine sardine;
-    private static Log LOGGER = LogFactory.getLog(FileDaoWebDavImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(FileDaoWebDavImpl.class);
 
     /**
      * {@inheritDoc}

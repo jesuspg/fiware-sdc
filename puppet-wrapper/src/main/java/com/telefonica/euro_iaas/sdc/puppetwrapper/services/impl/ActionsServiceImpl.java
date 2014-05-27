@@ -32,8 +32,8 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.common.Action;
@@ -46,7 +46,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 @Service("actionsService")
 public class ActionsServiceImpl implements ActionsService {
 
-    private static final Log logger = LogFactory.getLog(ActionsServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionsServiceImpl.class);
 
     @SuppressWarnings("restriction")
     @Resource

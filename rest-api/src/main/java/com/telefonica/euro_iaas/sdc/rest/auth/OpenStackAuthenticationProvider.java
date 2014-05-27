@@ -30,8 +30,8 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.openstack.docs.identity.api.v2.AuthenticateResponse;
 import org.openstack.docs.identity.api.v2.Role;
@@ -85,7 +85,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     /**
      * The log.
      */
-    private static Log log = LogFactory.getLog(OpenStackAuthenticationProvider.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackAuthenticationProvider.class);
     /**
      * Thread to recover a valid X-Auth-Token each 24 hour
      */

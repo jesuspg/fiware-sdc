@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -49,7 +49,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 @Service("svnExporterService")
 public class SvnExporterServiceImpl implements ModuleDownloader {
 
-    private static final Log logger = LogFactory.getLog(SvnExporterServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SvnExporterServiceImpl.class);
 
     private String modulesCodeDownloadPath;
 
