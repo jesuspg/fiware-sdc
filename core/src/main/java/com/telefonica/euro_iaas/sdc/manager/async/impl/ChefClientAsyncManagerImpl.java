@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.ChefClientManager;
@@ -51,7 +53,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  */
 public class ChefClientAsyncManagerImpl implements ChefClientAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(ChefClientAsyncManagerImpl.class.getName());
+    private static Log LOGGER = LogFactory.getLog(ChefClientAsyncManagerImpl.class);
 
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;

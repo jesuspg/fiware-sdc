@@ -31,6 +31,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -84,7 +86,7 @@ public class OpenStackAuthenticationToken {
     /**
      * The log.
      */
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(OpenStackAuthenticationToken.class);
+    private static Log log = LogFactory.getLog(OpenStackAuthenticationToken.class);
     /**
      * The limit to request a new token due to it is not more valid. This means that the token is no more valid after 6m
      * 40sec.

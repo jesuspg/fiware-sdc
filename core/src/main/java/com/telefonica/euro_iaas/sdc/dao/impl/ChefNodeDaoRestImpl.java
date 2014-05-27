@@ -49,6 +49,8 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -80,7 +82,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     ChefClientConfig clientConfig;
 
     
-    private static Logger LOGGER = Logger.getLogger("ChefNodeDaoRestImpl");
+    private static Log LOGGER = LogFactory.getLog(ChefNodeDaoRestImpl.class);
     
     private String NODE_NOT_FOUND_PATTERN ="404";
     private String NODES_PATH ="/nodes";
@@ -148,10 +150,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             node.fromJson(jsonNode);
             return node;
         } catch (UniformInterfaceException e) {
-        	LOGGER.warning(e.getMessage());
+        	LOGGER.warn(e.getMessage());
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
-        	LOGGER.warning(e.getMessage());
+        	LOGGER.warn(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
@@ -250,15 +252,15 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 LOGGER.info(response);
                 time += time;
             } catch (UniformInterfaceException e) {
-            	LOGGER.warning(e.getMessage());
+            	LOGGER.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
             } catch (IOException e) {
-            	LOGGER.warning(e.getMessage());
+            	LOGGER.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
                 
             } catch (InterruptedException e) {
                 String errorMsg = e.getMessage();
-                LOGGER.warning(e.getMessage());
+                LOGGER.warn(e.getMessage());
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }

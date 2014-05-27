@@ -34,32 +34,21 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SE
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
@@ -77,7 +66,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     ChefClientConfig clientConfig;
-    private static Logger LOGGER = Logger.getLogger("ChefClientDaoRestImpl");
+    private static Log LOGGER = LogFactory.getLog(ChefClientDaoRestImpl.class);
 
     /*
      * (non-Javadoc)

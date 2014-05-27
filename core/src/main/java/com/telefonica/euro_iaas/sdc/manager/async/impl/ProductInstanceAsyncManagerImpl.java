@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -62,7 +64,8 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
-    private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
+    private static Log LOGGER = LogFactory.getLog(ProductInstanceAsyncManagerImpl.class);
+    
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
@@ -269,8 +272,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing a product action. See task " + task.getHref()
-                + "for more information");
+        LOGGER.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
+                + " for more information");
     }
 
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {

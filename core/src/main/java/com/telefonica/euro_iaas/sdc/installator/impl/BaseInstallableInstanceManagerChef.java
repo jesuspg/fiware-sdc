@@ -29,6 +29,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
@@ -64,7 +67,7 @@ public class BaseInstallableInstanceManagerChef {
 
     protected int MAX_TIME = 90000;
 
-    protected static Logger LOGGER = Logger.getLogger("BaseInstallableInstanceManager");
+    protected static Log LOGGER = LogFactory.getLog(BaseInstallableInstanceManagerChef.class);
 
     protected void callChefUpgrade(String recipe, VM vm) throws InstallatorException, NodeExecutionException {
         assignRecipes(vm, recipe);

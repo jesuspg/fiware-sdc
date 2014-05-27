@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<appender name="sdcConsole" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
+		</encoder>
+	</appender>
+
+	 <appender name="puppetAppender" class="ch.qos.logback.core.FileAppender">
+		<file>${catalina.base}/logs/puppet.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="chefAppender" class="ch.qos.logback.core.FileAppender">
+		<file>${catalina.base}/logs/chef.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="authentication" class="ch.qos.logback.core.FileAppender">
+		<file>${catalina.base}/logs/authentication.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl" additivity="true">
+		<level value="DEBUG" />
+		<appender-ref ref="puppetAppender" />
+	</logger>
+	
+	<logger name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl" additivity="true">
+		<level value="DEBUG" />
+		<appender-ref ref="chefAppender" />
+	</logger>
+	
+	<logger name="com.telefonica.euro_iaas.sdc.rest.auth" additivity="true">
+		<level value="DEBUG" />
+		<appender-ref ref="authentication" />
+	</logger>
+
+	<logger name="com.telefonica.euro_iaas.sdc" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="sdcConsole" />
+	</logger>
+
+	<!-- SpringFramework logger -->
+	<logger name="org.springframework" additivity="false">
+		<level value="ERROR" />
+		<appender-ref ref="sdcConsole" />
+	</logger>
+
+	<root>
+		<level value="WARN" />
+		<appender-ref ref="sdcConsole" />
+	</root>
+
+</configuration>

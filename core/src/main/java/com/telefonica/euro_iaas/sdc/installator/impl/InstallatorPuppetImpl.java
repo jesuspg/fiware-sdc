@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,7 +50,7 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 public class InstallatorPuppetImpl implements Installator {
     
-    private static Logger log = Logger.getLogger("InstallatorPuppetImpl");
+    private static Log log = LogFactory.getLog(InstallatorPuppetImpl.class);
 
     private HttpClient client;
     private SystemPropertiesProvider propertiesProvider;
@@ -62,12 +64,12 @@ public class InstallatorPuppetImpl implements Installator {
         
         postInstall.addHeader("Content-Type", "application/json");
         
-        System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
-
         HttpResponse response;
 
+        log.info("Calling puppetWrapper install");
+        log.debug("connecting to puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
+                + product.getVersion());
         try {
             response = client.execute(postInstall);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -76,9 +78,14 @@ public class InstallatorPuppetImpl implements Installator {
 
             if (statusCode != 200) {
                 String msg=format("[puppet install] response code was: {0}", statusCode);
-                log.info(msg);
+                log.warn(msg);
                 throw new InstallatorException(format(msg));
             }
+            log.debug("statusCode:"+ statusCode);
+            
+            log.info("Calling puppetWrapper generate");
+            log.debug(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL) + "generate/"
+                    + vm.getHostname());
 
             // generate files in puppet master
             HttpPost postGenerate = new HttpPost(
@@ -93,12 +100,17 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                throw new InstallatorException(format("[install] generete files response code was: {0}",
+                String msg=format("generavalte files response code was: {0}", statusCode);
+                log.warn(msg);
+                throw new InstallatorException(format(msg,
                         statusCode));
             }
+            log.debug("statusCode:"+ statusCode);
         } catch (IOException e) {
+            log.error(e.getMessage());
             throw new InstallatorException(e);
         } catch (IllegalStateException e1) {
+            log.error(e1.getMessage());
             throw new InstallatorException(e1);
         }
 
