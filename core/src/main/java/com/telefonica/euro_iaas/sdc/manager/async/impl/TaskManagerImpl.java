@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.TASK_BASE_URL;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.SDC_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -36,7 +36,8 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.euro_iaas.sdc.util.Configuration;
+
 
 /**
  * Default TaskManager implementation.
@@ -46,7 +47,6 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class TaskManagerImpl implements TaskManager {
 
     private TaskDao taskDao;
-    private SystemPropertiesProvider propertiesProvider;
 
     /**
      * {@inheritDoc}
@@ -56,7 +56,7 @@ public class TaskManagerImpl implements TaskManager {
         try {
             task = taskDao.create(task);
             String taskId = Long.valueOf(task.getId()).toString().replace(".", "");
-            task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
+            task.setHref(MessageFormat.format(SDC_MANAGER_URL+ Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
                     .toString(), task.getVdc()));
 
             return task;
@@ -71,7 +71,7 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     public Task updateTask(Task task) {
         task = taskDao.update(task);
-        task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
+        task.setHref(MessageFormat.format(SDC_MANAGER_URL+ Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
                 .toString(), task.getVdc()));
         return task;
     }
@@ -82,7 +82,7 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     public Task load(Long id) throws EntityNotFoundException {
         Task task = taskDao.load(id);
-        task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
+        task.setHref(MessageFormat.format(SDC_MANAGER_URL+ Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
                 .toString(), task.getVdc()));
         return task;
     }
@@ -93,7 +93,7 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     public List<Task> findByCriteria(TaskSearchCriteria criteria) {
         List<Task> tasks = taskDao.findByCriteria(criteria);
-        String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);
+        String taskUrl = SDC_MANAGER_URL+ Configuration.TASK_BASE_PATH;
         for (Task task : tasks) {
             task.setHref(MessageFormat.format(taskUrl, Long.valueOf(task.getId()).toString(), task.getVdc()));
         }
@@ -110,12 +110,5 @@ public class TaskManagerImpl implements TaskManager {
         this.taskDao = taskDao;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
 
 }

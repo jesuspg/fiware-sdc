@@ -39,7 +39,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
  */
 public interface ArtifactAsyncManager {
 
-    void deployArtifact(ProductInstance product, Artifact artifact, Task task, String callback);
+    void deployArtifact(ProductInstance product, Artifact artifact, String token, Task task, String callback);
 
     /**
      * Undeploy an artefact in the product
@@ -53,7 +53,7 @@ public interface ArtifactAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the
      */
-    void undeployArtifact(ProductInstance product, String artifactName, Task task, String callback);
+    void undeployArtifact(ProductInstance product, String artifactName, String token, Task task, String callback);
 
     Artifact load(String vdc, String productInstance, String name) throws EntityNotFoundException;
 

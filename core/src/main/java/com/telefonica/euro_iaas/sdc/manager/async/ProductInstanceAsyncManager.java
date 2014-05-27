@@ -58,7 +58,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes, Task task, String callback);
+    void install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes,String token,  Task task, String callback);
 
     /**
      * Configure an installed product
@@ -72,7 +72,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the
      */
-    void configure(ProductInstance productInstance, List<Attribute> configuration, Task task, String callback);
+    void configure(ProductInstance productInstance, List<Attribute> configuration,String token,  Task task, String callback);
 
     /**
      * Upgrade a ProductInstance
@@ -86,7 +86,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void upgrade(ProductInstance productInstance, ProductRelease productRelease, Task task, String callback);
+    void upgrade(ProductInstance productInstance, ProductRelease productRelease,String token,  Task task, String callback);
 
     /**
      * Uninstall a previously installed product.
@@ -98,7 +98,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void uninstall(ProductInstance productInstance, Task task, String callback);
+    void uninstall(ProductInstance productInstance, String token, Task task, String callback);
 
     /**
      * Find the ProductInstance using the given id.

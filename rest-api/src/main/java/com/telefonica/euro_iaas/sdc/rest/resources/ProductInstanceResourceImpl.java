@@ -33,6 +33,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
@@ -50,6 +51,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
@@ -93,7 +95,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             Task task = createTask(MessageFormat.format("Install product {0} in  VM {1}{2}", product.getProduct()
                     .getName(), product.getVm().getHostname(), product.getVm().getDomain()), vdc);
 
-            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, task, callback);
+            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken (), task, callback);
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -115,7 +117,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.uninstall(productInstance, task, callback);
+        productInstanceAsyncManager.uninstall(productInstance, getToken (), task, callback);
         return task;
     }
 
@@ -141,7 +143,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
                     productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                     productInstance.getVm().getDomain(), productInstance.getProductRelease().getVersion(), version),
                     vdc);
-            productInstanceAsyncManager.upgrade(productInstance, newRelease, task, callback);
+            productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken (), task, callback);
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -171,7 +173,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.configure(productInstance, arguments, task, callback);
+        productInstanceAsyncManager.configure(productInstance, arguments, getToken (), task, callback);
         return task;
     }
 
@@ -269,5 +271,23 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      */
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
+    }
+    
+    
+    public String getToken () {
+    	PaasManagerUser user = getCredentials();
+    	if (user == null) {
+    		return "";
+    	} else {
+    		return user.getToken();
+    	}
+    	
+    }
+    public PaasManagerUser getCredentials() {
+    	try {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	} catch (Exception e) {
+    	    return null;
+    	}
     }
 }

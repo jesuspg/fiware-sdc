@@ -86,7 +86,7 @@ public class ArtifactResourceImplTest {
 
         when(taskManager.createTask(any(Task.class))).thenReturn(task);
         when(productInstanceAsyncManager.load(any(String.class), any(String.class))).thenReturn(productIns);
-        doNothing().when(artifactAsyncManager).deployArtifact(any(ProductInstance.class), any(Artifact.class),
+        doNothing().when(artifactAsyncManager).deployArtifact(any(ProductInstance.class), any(Artifact.class), any(String.class),
                 any(Task.class), any(String.class));
 
     }

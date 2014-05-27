@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_CLIENT_URL_TEMPLATE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -70,7 +70,7 @@ public class SDCClientUtilsImplTest {
         propertiesProvider = mock(SystemPropertiesProvider.class);
         client = mock(Client.class);
         sdcClientUtils.setClient(client);
-        sdcClientUtils.setPropertiesProvider(propertiesProvider);
+       
         webResource = mock(WebResource.class);
         osDao1 = mock(OSDao.class);
         sdcClientUtils.setOsDao(osDao1);
@@ -90,8 +90,9 @@ public class SDCClientUtilsImplTest {
         String fqn = "fqn";
         String osType = "linux";
         VM vm = new VM();
+        String url = "http://"+ ip+ ":9990/sdc-client/rest/vm";
 
-        String url = "http://baseurl/rest/vm";
+
         WebResource.Builder builder = mock(WebResource.Builder.class);
         // when
 

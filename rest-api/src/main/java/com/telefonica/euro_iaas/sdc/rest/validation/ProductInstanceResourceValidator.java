@@ -27,6 +27,7 @@
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 
@@ -43,6 +44,7 @@ public interface ProductInstanceResourceValidator {
      * Verify if the ip where products are going to be installed belongs to the OpenStackUser
      * 
      * @throws UnauthorizedOperationException
+     * @throws OpenStackException 
      */
-    void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException;
+    void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException;
 }

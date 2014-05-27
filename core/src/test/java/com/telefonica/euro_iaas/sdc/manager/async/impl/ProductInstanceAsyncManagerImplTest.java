@@ -63,7 +63,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 public class ProductInstanceAsyncManagerImplTest {
     ProductInstanceAsyncManagerImpl productInstanceAsyncManager;
-    SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
+ 
     TaskManager taskManager = mock(TaskManager.class);
     TaskNotificator taskNotificator = mock(TaskNotificator.class);
     ProductInstanceManager productInstanceManager = mock(ProductInstanceManager.class);
@@ -73,16 +73,7 @@ public class ProductInstanceAsyncManagerImplTest {
     @Before
     public void setUp() throws EntityNotFoundException {
         
-//        product = new Product("testProduct", "description");
-//        Metadata metadata=new Metadata("installator", "puppet");
-//        List<Metadata>metadatas = new ArrayList<Metadata>();
-//        metadatas.add(metadata);
-//        product.setMetadatas(metadatas);
-        
-//        when(productDao.load(any(String.class))).thenReturn(product);
-        
         productInstanceAsyncManager = new ProductInstanceAsyncManagerImpl();
-        productInstanceAsyncManager.setPropertiesProvider(propertiesProvider);
         productInstanceAsyncManager.setTaskManager(taskManager);
         productInstanceAsyncManager.setTaskNotificator(taskNotificator);
         productInstanceAsyncManager.setProductInstanceManager(productInstanceManager);
@@ -109,15 +100,14 @@ public class ProductInstanceAsyncManagerImplTest {
         productRelease.setProduct(product);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenReturn(productInstance);
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token", task, callback);
         
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
     }
     
     @Test
@@ -142,15 +132,14 @@ public class ProductInstanceAsyncManagerImplTest {
         productRelease.setProduct(product);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenReturn(productInstance);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenReturn(productInstance);
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token",task, callback);
         
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
     }
     
     @Test
@@ -175,17 +164,16 @@ public class ProductInstanceAsyncManagerImplTest {
         product.setMetadatas(metadatas);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes,"token")).thenThrow(
                 new NodeExecutionException("node execution exception"));
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token",task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -216,17 +204,16 @@ public class ProductInstanceAsyncManagerImplTest {
         alreadyInstalledException.setInstace(new InstallableInstance());
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(alreadyInstalledException);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenThrow(alreadyInstalledException);
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -256,16 +243,15 @@ public class ProductInstanceAsyncManagerImplTest {
         alreadyInstalledException.setInstace(new InstallableInstance());
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(alreadyInstalledException);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenThrow(alreadyInstalledException);
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token",task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -294,17 +280,16 @@ public class ProductInstanceAsyncManagerImplTest {
                 "invalid request exception");
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenThrow(
                 invalidInstallProductRequestException);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes,"token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -333,18 +318,17 @@ public class ProductInstanceAsyncManagerImplTest {
                 "invalid request exception");
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes, "token")).thenThrow(
                 invalidInstallProductRequestException);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes,  "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -370,17 +354,16 @@ public class ProductInstanceAsyncManagerImplTest {
         product.setMetadatas(metadatas);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes,  "token")).thenThrow(
                 new RuntimeException("runtime exception"));
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(null);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes,  "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -406,18 +389,17 @@ public class ProductInstanceAsyncManagerImplTest {
         product.setMetadatas(metadatas);
 
         // when
-        when(productInstanceManager.install(vm, vdc, productRelease, attributes)).thenThrow(
+        when(productInstanceManager.install(vm, vdc, productRelease, attributes,  "token")).thenThrow(
                 new RuntimeException("runtime exception"));
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 productInstance);
 
         when(productDao.load(Mockito.anyString())).thenReturn(product);
-        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, task, callback);
+        productInstanceAsyncManager.install(vm, vdc, productRelease, attributes, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).install(vm, vdc, productRelease, attributes);
+        verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
         verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
     }
     
@@ -434,12 +416,11 @@ public class ProductInstanceAsyncManagerImplTest {
         String callback = "http://callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.uninstall(productInstance, task, callback);
+        productInstanceAsyncManager.uninstall(productInstance, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
-        verify(productInstanceManager).uninstall(productInstance);
+        verify(productInstanceManager).uninstall(productInstance,  "token");
         verify(taskManager).updateTask(task);
     }
     
@@ -457,13 +438,12 @@ public class ProductInstanceAsyncManagerImplTest {
 
         // when
 
-        doThrow(new FSMViolationException("error")).when(productInstanceManager).uninstall(productInstance);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.uninstall(productInstance, task, callback);
+        doThrow(new FSMViolationException("error")).when(productInstanceManager).uninstall(productInstance,  "token");
+        productInstanceAsyncManager.uninstall(productInstance, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).uninstall(productInstance);
+        verify(productInstanceManager).uninstall(productInstance,  "token");
         verify(taskManager).updateTask(task);
     }
     
@@ -482,13 +462,12 @@ public class ProductInstanceAsyncManagerImplTest {
 
         // when
 
-        doThrow(new NodeExecutionException("error")).when(productInstanceManager).uninstall(productInstance);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.uninstall(productInstance, task, callback);
+        doThrow(new NodeExecutionException("error")).when(productInstanceManager).uninstall(productInstance,  "token");
+        productInstanceAsyncManager.uninstall(productInstance,  "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).uninstall(productInstance);
+        verify(productInstanceManager).uninstall(productInstance,  "token");
         verify(taskManager).updateTask(task);
     }
     
@@ -507,13 +486,12 @@ public class ProductInstanceAsyncManagerImplTest {
 
         // when
 
-        doThrow(new RuntimeException("error")).when(productInstanceManager).uninstall(productInstance);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.uninstall(productInstance, task, callback);
+        doThrow(new RuntimeException("error")).when(productInstanceManager).uninstall(productInstance,  "token");
+        productInstanceAsyncManager.uninstall(productInstance,  "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(productInstanceManager).uninstall(productInstance);
+        verify(productInstanceManager).uninstall(productInstance,  "token");
         verify(taskManager).updateTask(task);
     }
     
@@ -530,12 +508,11 @@ public class ProductInstanceAsyncManagerImplTest {
         String callback = "http://callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.upgrade(productInstance, productRelease, task, callback);
+        productInstanceAsyncManager.upgrade(productInstance, productRelease,  "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
-        verify(productInstanceManager).upgrade(productInstance, productRelease);
+        verify(productInstanceManager).upgrade(productInstance, productRelease,  "token");
         verify(taskManager).updateTask(task);
     }
     
@@ -553,12 +530,11 @@ public class ProductInstanceAsyncManagerImplTest {
         List<Attribute> configuration = new ArrayList<Attribute>(2);
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn("url");
-        productInstanceAsyncManager.configure(productInstance, configuration, task, callback);
+        productInstanceAsyncManager.configure(productInstance, configuration, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
-        verify(productInstanceManager).configure(productInstance, configuration);
+        verify(productInstanceManager).configure(productInstance, configuration,  "token");
         verify(taskManager).updateTask(task);
     }
     

@@ -39,9 +39,12 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.OpenStackUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
+import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -50,12 +53,13 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class ProductInstanceResourceValidatorImpl implements ProductInstanceResourceValidator {
 
     private SystemPropertiesProvider systemPropertiesProvider;
+    private OpenStackRegion openStackRegion;
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator#validateInsert()
      */
-    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException {
+    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException {
         OpenStackUser user = getCredentials();
 
         List<String> ips = new ArrayList<String>();
@@ -90,11 +94,12 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      * 
      * @param user
      * @return
+     * @throws OpenStackException 
      */
-    private List<String> findAllServers(OpenStackUser user) {
+    private List<String> findAllServers(OpenStackUser user) throws OpenStackException {
         // http://130.206.80.63:8774/v2/ebe6d9ec7b024361b7a3882c65a57dda/servers
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
+        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),user.getToken() ) 
+                + Configuration.VERSION_PROPERTY + user.getTenantId()
                 + "/servers";
         String output = getResourceOpenStack(url, user.getToken());
 
@@ -108,10 +113,11 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      * @param user
      *            \param serverId
      * @return
+     * @throws OpenStackException 
      */
-    private String findServerIP(OpenStackUser user, String serverId) {
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
+    private String findServerIP(OpenStackUser user, String serverId) throws OpenStackException {
+        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),user.getToken() ) 
+                + Configuration.VERSION_PROPERTY + user.getTenantId()
                 + "/servers/" + serverId;
         String output = getResourceOpenStack(url, user.getToken());
 
@@ -178,5 +184,9 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+    
+    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
+    	this.openStackRegion = openStackRegion;
     }
 }

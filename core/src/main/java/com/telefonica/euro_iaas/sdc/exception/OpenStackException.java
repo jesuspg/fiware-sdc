@@ -22,27 +22,22 @@
  * </p>
  */
 
-/**
- * 
- */
-package com.telefonica.euro_iaas.sdc.manager.async;
-
-import com.telefonica.euro_iaas.sdc.model.Task;
+package com.telefonica.euro_iaas.sdc.exception;
 
 /**
  * @author jesus.movilla
  */
-public interface ChefClientAsyncManager {
+public class OpenStackException extends Exception {
 
-    /**
-     * Delete a ChefClient from ChefServer
-     * 
-     * @param chefClientName
-     *            the name of the chefclient to be deleted from chef server
-     * @param task
-     *            the task which contains the information about the async execution
-     * @param callback
-     *            if not empty, contains the url where the result of the execution will be sent
-     */
-    void chefClientDelete(String vdc, String chefClientname, Task task, String callback);
+    public OpenStackException(String msg) {
+        super(msg);
+    }
+
+    public OpenStackException(Throwable e) {
+        super(e);
+    }
+
+    public OpenStackException(String msg, Throwable e) {
+        super(msg, e);
+    }
 }

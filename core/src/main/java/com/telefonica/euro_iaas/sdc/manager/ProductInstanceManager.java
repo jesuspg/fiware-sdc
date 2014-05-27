@@ -64,7 +64,7 @@ public interface ProductInstanceManager {
      *            the configuration
      * @return the of installed product.
      */
-    ProductInstance install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes)
+    ProductInstance install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes, String token)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException, EntityNotFoundException;
 
     /**
@@ -77,7 +77,7 @@ public interface ProductInstanceManager {
      * @throws FSMViolationException
      *             if try to make a forbidden transition
      */
-    void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException, EntityNotFoundException;
+    void uninstall(ProductInstance productInstance, String token) throws NodeExecutionException, FSMViolationException, EntityNotFoundException;
 
     /**
      * Updates a product instance and persist it in the database.
@@ -101,7 +101,7 @@ public interface ProductInstanceManager {
      *             if try to make a forbidden transition
      * @throws InstallatorException
      */
-    ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
+    ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException;
 
     /**
@@ -121,7 +121,7 @@ public interface ProductInstanceManager {
      *             if try to make a forbidden transition
      * @throws InstallatorException
      */
-    ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease)
+    ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease, String token)
             throws NotTransitableException, NodeExecutionException, FSMViolationException, InstallatorException, EntityNotFoundException;
 
     /**

@@ -139,7 +139,7 @@ public class ProductInstanceManagerImpl_puppet_Test extends TestCase {
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
         when(productInstanceDao.create(any(ProductInstance.class))).thenReturn(expectedProduct);
-        ProductInstance installedProduct = productManager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+        ProductInstance installedProduct = productManager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
         // make verifications
         assertEquals(expectedProduct, installedProduct);
 
