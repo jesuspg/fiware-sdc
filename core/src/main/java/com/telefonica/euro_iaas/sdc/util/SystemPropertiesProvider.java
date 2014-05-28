@@ -51,15 +51,11 @@ public interface SystemPropertiesProvider {
     /** The Constant KEYSTONE_TENANT. */
     public final static String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
 
-    /** The Constant SYSTEM_FASTTRACK. */
-    public final static String VALIDATION_TIME_THRESHOLD = "openstack-tcloud.keystone.threshold";
-
-
     
  // Tells if the SDC works with sdc-client installed in the nodes
     public static final String SDCCLIENT_INSTALLED_IN_NODES = "sdcclient.installed.innodes";
 
-	public static final String CLOUD_SYSTEM = "FIWARE";
+	public static final String CLOUD_SYSTEM = "openstack-tcloud.cloudSystem";
 
 
     

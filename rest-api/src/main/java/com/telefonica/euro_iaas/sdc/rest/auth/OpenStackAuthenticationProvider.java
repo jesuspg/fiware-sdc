@@ -46,6 +46,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -134,8 +135,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         String adminTenant = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
 
-        String thresholdString = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.VALIDATION_TIME_THRESHOLD);
+        String thresholdString = Configuration.VALIDATION_TIME_THRESHOLD;
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
 

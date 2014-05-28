@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,8 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class TaskManagerImplTest {
 
     TaskManagerImpl taskManager;
+    private SystemPropertiesProvider propertiesProvider;
+    
     TaskDao taskDao;
 
 
@@ -55,7 +58,11 @@ public class TaskManagerImplTest {
     public void setUp() {
         taskManager = new TaskManagerImpl();
         taskDao = mock(TaskDao.class);
+        propertiesProvider = mock (SystemPropertiesProvider.class);
         taskManager.setTaskDao(taskDao);
+        taskManager.setSystemPropertiesProvider(propertiesProvider);
+        
+        when(propertiesProvider.getProperty(anyString())).thenReturn("dd");
 
 
     }
