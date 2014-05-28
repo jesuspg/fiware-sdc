@@ -2,9 +2,12 @@
 
 <configuration>
 
-	<appender name="sdcConsole" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="sdcAppender" class="ch.qos.logback.core.FileAppender">
+		<file>${catalina.base}/logs/sdc.log</file>
+		<append>true</append>
 		<encoder>
-			<pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
 		</encoder>
 	</appender>
 
@@ -51,13 +54,18 @@
 
 	<logger name="com.telefonica.euro_iaas.sdc" additivity="false">
 		<level value="DEBUG" />
-		<appender-ref ref="sdcConsole" />
+		<appender-ref ref="sdcAppender" />
 	</logger>
+	
+	<logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="sdcAppender"/>
+    </logger>
 
 	<!-- SpringFramework logger -->
 	<logger name="org.springframework" additivity="false">
 		<level value="ERROR" />
-		<appender-ref ref="sdcConsole" />
+		<appender-ref ref="sdcAppender" />
 	</logger>
 
 	<root>
