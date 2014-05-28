@@ -8,6 +8,7 @@
     <bean id="taskManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.TaskManagerImpl">
         <property name="taskDao" ref="taskDao"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
     </bean>
 
 
