@@ -29,6 +29,7 @@ import java.text.MessageFormat;
 import javax.ws.rs.Path;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
@@ -40,6 +41,7 @@ import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 
 /**
  * 
@@ -62,19 +64,19 @@ public class NodeResourceImpl implements NodeResource {
 
 
     public ChefClient findByHostname(String hostname) throws EntityNotFoundException, ChefClientExecutionException {
-        return nodeManager.chefClientfindByHostname(hostname);
+        return nodeManager.chefClientfindByHostname(hostname, getCredentials().getToken());
     }
 
     public ChefClient load(String chefClientName) throws EntityNotFoundException, ChefClientExecutionException {
 
-        return nodeManager.chefClientload(chefClientName);
+        return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
     }
     
     public Task delete(String vdc, String nodeName, String callback) throws ChefClientExecutionException {
 
         Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
 
-        nodeAsyncManager.nodeDelete(vdc, nodeName, task, callback);
+        nodeAsyncManager.nodeDelete(vdc, nodeName,getCredentials().getToken(), task, callback);
         return task;
 
     }
@@ -96,6 +98,10 @@ public class NodeResourceImpl implements NodeResource {
 
     public void setNodeManager(NodeManager nodeManager) {
         this.nodeManager = nodeManager;
+    }
+    
+    public PaasManagerUser getCredentials() {
+        return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

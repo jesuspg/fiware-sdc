@@ -44,5 +44,5 @@ public interface NodeAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void nodeDelete(String vdc, String chefClientname, Task task, String callback);
+    void nodeDelete(String vdc, String chefClientname, String token, Task task, String callback);
 }

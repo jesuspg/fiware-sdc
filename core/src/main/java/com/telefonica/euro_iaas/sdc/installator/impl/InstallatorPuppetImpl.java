@@ -39,30 +39,40 @@ import org.apache.http.util.EntityUtils;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.installator.Installator;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+
 
 public class InstallatorPuppetImpl implements Installator {
     
     private static Logger log = Logger.getLogger("InstallatorPuppetImpl");
 
     private HttpClient client;
-    private SystemPropertiesProvider propertiesProvider;
+    
+    private OpenStackRegion openStackRegion;
 
-    @Override
-    public void callService(VM vm, String vdc, ProductRelease product, String action) throws InstallatorException {
 
-        HttpPost postInstall = new HttpPost(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+    public void callService(VM vm, String vdc, ProductRelease product, String action, String token) throws InstallatorException {
+
+    	String puppetUrl = null;
+		try {
+			puppetUrl = openStackRegion.getChefServerEndPoint(token);
+		} catch (OpenStackException e) {
+			 throw new SdcRuntimeException(e);
+		}
+        HttpPost postInstall = new HttpPost(puppetUrl
                 + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
                 + product.getVersion());
         
         postInstall.addHeader("Content-Type", "application/json");
         
-        System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
+        System.out.println("puppetURL: "+puppetUrl
                 + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
                 + product.getVersion());
 
@@ -81,8 +91,7 @@ public class InstallatorPuppetImpl implements Installator {
             }
 
             // generate files in puppet master
-            HttpPost postGenerate = new HttpPost(
-                    propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL) + "generate/"
+            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/"
                             + vm.getHostname());
             
             postGenerate.addHeader("Content-Type", "application/json");
@@ -108,37 +117,37 @@ public class InstallatorPuppetImpl implements Installator {
         this.client = client;
     }
 
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
-
     @Override
-    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
+    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
             throws InstallatorException, NodeExecutionException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void upgrade(ProductInstance productInstance, VM vm) throws InstallatorException {
+    public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void callService(ProductInstance productInstance, String action) throws InstallatorException,
+    public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException {
+    public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException {
         if (!vm.canWorkWithInstallatorServer()) {
             String message = "The VM does not include the node hostname required to Install " +
                             "software";
             throw new InvalidInstallProductRequestException(message);
         }
+    }
+    
+    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
+    	this.openStackRegion = openStackRegion;
     }
 
 }

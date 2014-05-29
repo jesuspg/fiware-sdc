@@ -49,7 +49,7 @@ public class ChefClientDaoCommandImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
      */
-    public void deleteChefClient(String chefClientName) {
+    public void deleteChefClient(String chefClientName, String token) {
         String command = MessageFormat.format(CHEF_CLIENT_DELETE_COMMAND, chefClientName);
 
         try {
@@ -64,7 +64,7 @@ public class ChefClientDaoCommandImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
-    public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
+    public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException, EntityNotFoundException {
         String command = MessageFormat.format(CHEF_CLIENT_GET_COMMAND, chefClientName);
         String[] output = new String[2];
         String chefClientString;
@@ -100,7 +100,7 @@ public class ChefClientDaoCommandImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#chefClientfindByHostname(java.lang.String)
      */
-    public ChefClient chefClientfindByHostname(String hostname) {
+    public ChefClient chefClientfindByHostname(String hostname, String token) {
         // TODO Auto-generated method stub
         return null;
     }

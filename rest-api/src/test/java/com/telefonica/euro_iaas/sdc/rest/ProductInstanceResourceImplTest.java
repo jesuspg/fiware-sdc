@@ -116,7 +116,7 @@ public class ProductInstanceResourceImplTest {
         when(productInstanceAsyncManager.findByCriteria(any(ProductInstanceSearchCriteria.class))).thenReturn(
                 lProductInstance);
         doNothing().when(productInstanceAsyncManager).install(any(VM.class), any(String.class),
-                any(ProductRelease.class), any(List.class), any(Task.class), any(String.class));
+                any(ProductRelease.class), any(List.class), any(String.class), any(Task.class), any(String.class));
 
     }
 

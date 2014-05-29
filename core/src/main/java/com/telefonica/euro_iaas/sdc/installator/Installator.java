@@ -36,14 +36,14 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public interface Installator {
 
-    void callService(VM vm, String vdc, ProductRelease productRelease, String action) throws InstallatorException;
+    void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token) throws InstallatorException;
     
-    void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
+    void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
             throws InstallatorException, NodeExecutionException;
 
-    void upgrade(ProductInstance productInstance, VM vm) throws InstallatorException;
+    void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException;
 
-    void callService(ProductInstance productInstance, String action) throws InstallatorException, NodeExecutionException;
+    void callService(ProductInstance productInstance, String action, String token) throws InstallatorException, NodeExecutionException;
     
-    void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException, NodeExecutionException;
+    void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException, NodeExecutionException;
 }

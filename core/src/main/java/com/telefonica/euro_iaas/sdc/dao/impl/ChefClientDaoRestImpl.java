@@ -29,8 +29,8 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_ID;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_PASS;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_CLIENTS_PATH;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_SERVER_URL;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_SERVER_CLIENTS_PATH;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +64,9 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
@@ -77,20 +79,27 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     ChefClientConfig clientConfig;
+    private OpenStackRegion openStackRegion;
     private static Logger LOGGER = Logger.getLogger("ChefClientDaoRestImpl");
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#findAllChefClient()
      */
-    public ChefClient chefClientfindByHostname(String hostname) throws EntityNotFoundException, CanNotCallChefException {
+    public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException, CanNotCallChefException {
 
         try {
             String path = "/clients";
-            LOGGER.info(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            String chefServer = null;
+			try {
+				chefServer = openStackRegion.getChefServerEndPoint(token);
+			} catch (OpenStackException e) {
+				 throw new SdcRuntimeException(e);
+			}
+            LOGGER.info(chefServer+ path);
 
             Map<String, String> header = getHeaders("GET", path, "");
-            WebResource webResource = clientConfig.getClient().resource(propertiesProvider.getProperty(CHEF_SERVER_URL) + path);
+            WebResource webResource = clientConfig.getClient().resource(chefServer + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
@@ -106,7 +115,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             ChefClient chefClient = new ChefClient();
             String clientName = chefClient.getChefClientName(stringChefClients, hostname);
 
-            return getChefClient(clientName);
+            return getChefClient(clientName, token);
         } catch (UniformInterfaceException e) {
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
@@ -118,7 +127,13 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
      */
-    public void deleteChefClient(String chefClientName) throws CanNotCallChefException {
+    public void deleteChefClient(String chefClientName, String token) throws CanNotCallChefException {
+    	String chefServerUrl = null;
+		try {
+			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+		} catch (OpenStackException e) {
+			 throw new SdcRuntimeException(e);
+		}
     	if (!chefClientName.startsWith("/")) {
     		chefClientName = "/"+chefClientName;
     	}
@@ -126,7 +141,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
             // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
-        	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
+
         	
         	LOGGER.info(chefServerUrl + path);
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
@@ -148,16 +163,19 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
-    public ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException {
+    public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException, EntityNotFoundException {
+    	String chefServerUrl = null;
+		try {
+			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+		} catch (OpenStackException e) {
+			 throw new SdcRuntimeException(e);
+		}
     	if (!chefClientName.startsWith("/")) {
     		chefClientName = "/"+chefClientName;
     	}
         
         try {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
- 
-        	String chefServerUrl = propertiesProvider.getProperty(CHEF_SERVER_URL);
-
         	LOGGER.info(chefServerUrl + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
@@ -213,6 +231,9 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
      */
     public void setClientConfig(ChefClientConfig clientConfig) {
         this.clientConfig = clientConfig;
+    }
+    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
+    	this.openStackRegion = openStackRegion;
     }
     
    

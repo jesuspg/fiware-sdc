@@ -29,13 +29,13 @@ import java.text.MessageFormat;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.BACKUP_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CONFIGURE_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.DEPLOYAC_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.INSTALL_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.RESTORE_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNDEPLOYAC_PRODUCT_RECIPE_TEMPLATE;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNINSTALL_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.BACKUP_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CONFIGURE_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.DEPLOYAC_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.INSTALL_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.RESTORE_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.UNDEPLOYAC_PRODUCT_RECIPE_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.UNINSTALL_PRODUCT_RECIPE_TEMPLATE;
 
 /**
  * Default RecipeNamingGenerator implementation.
@@ -44,14 +44,12 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.UNINSTA
  */
 public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
 
-    private SystemPropertiesProvider propertiesProvider;
 
     /**
      * {@inheritDoc}
      */
     public String getInstallRecipe(ProductInstance product) {
-        String installTemplate = propertiesProvider.getProperty(INSTALL_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(installTemplate, product);
+        return populateProductRecipe(INSTALL_PRODUCT_RECIPE_TEMPLATE, product);
 
     }
 
@@ -59,8 +57,7 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
      * {@inheritDoc}
      */
     public String getUninstallRecipe(ProductInstance product) {
-        String uninstallTemplate = propertiesProvider.getProperty(UNINSTALL_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(uninstallTemplate, product);
+        return populateProductRecipe(UNINSTALL_PRODUCT_RECIPE_TEMPLATE, product);
 
     }
 
@@ -68,16 +65,14 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
      * {@inheritDoc}
      */
     public String getDeployArtifactRecipe(ProductInstance productInstance) {
-        String deployACTemplate = propertiesProvider.getProperty(DEPLOYAC_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(deployACTemplate, productInstance);
+        return populateProductRecipe(DEPLOYAC_PRODUCT_RECIPE_TEMPLATE, productInstance);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getUnDeployArtifactRecipe(ProductInstance productInstance) {
-        String unDeployACTemplate = propertiesProvider.getProperty(UNDEPLOYAC_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(unDeployACTemplate, productInstance);
+        return populateProductRecipe(UNDEPLOYAC_PRODUCT_RECIPE_TEMPLATE, productInstance);
 
     }
 
@@ -86,14 +81,12 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
      */
 
     public String getBackupRecipe(ProductInstance product) {
-        String backupTemplate = propertiesProvider.getProperty(BACKUP_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(backupTemplate, product);
+        return populateProductRecipe(BACKUP_PRODUCT_RECIPE_TEMPLATE, product);
 
     }
 
     public String getConfigureRecipe(ProductInstance product) {
-        String configureTemplate = propertiesProvider.getProperty(CONFIGURE_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(configureTemplate, product);
+        return populateProductRecipe(CONFIGURE_PRODUCT_RECIPE_TEMPLATE, product);
 
     }
 
@@ -102,8 +95,7 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
      */
 
     public String getRestoreRecipe(ProductInstance product) {
-        String restoreTemplate = propertiesProvider.getProperty(RESTORE_PRODUCT_RECIPE_TEMPLATE);
-        return populateProductRecipe(restoreTemplate, product);
+        return populateProductRecipe(RESTORE_PRODUCT_RECIPE_TEMPLATE, product);
 
     }
 
@@ -121,14 +113,5 @@ public class RecipeNamingGeneratorImpl implements RecipeNamingGenerator {
                 .getProductRelease().getVersion());
     }
 
-    // ///////////I.O.C.////////////
-
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
 
 }

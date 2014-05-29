@@ -8,7 +8,7 @@
     <bean id="taskManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.TaskManagerImpl">
         <property name="taskDao" ref="taskDao"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"></property>
     </bean>
 
 
@@ -16,7 +16,6 @@
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.ProductInstanceAsyncManagerImpl">
         <property name="productInstanceManager" ref="productInstanceManager"/>
         <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
     </bean>
 
@@ -24,23 +23,6 @@
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.ArtifactAsyncManagerImpl">
         <property name="artifactManager" ref="artifactManager"/>
         <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="taskNotificator" ref="taskNotificator"/>
-    </bean>
-
-    <bean id="chefNodeAsyncManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ChefNodeAsyncManagerImpl">
-        <property name="chefNodeManager" ref="chefNodeManager"/>
-        <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-        <property name="taskNotificator" ref="taskNotificator"/>
-    </bean>
-
-    <bean id="chefClientAsyncManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.manager.async.impl.ChefClientAsyncManagerImpl">
-        <property name="chefClientManager" ref="chefClientManager"/>
-        <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
     </bean>
     
@@ -48,7 +30,6 @@
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.NodeAsyncManagerImpl">
         <property name="nodeManager" ref="nodeManager"/>
         <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
     </bean>
 </beans>

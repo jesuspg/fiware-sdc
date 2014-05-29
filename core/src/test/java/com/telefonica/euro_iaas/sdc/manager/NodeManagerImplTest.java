@@ -49,6 +49,8 @@ import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.manager.impl.NodeManagerImpl;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
@@ -66,7 +68,7 @@ public class NodeManagerImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setup() throws CanNotCallChefException {
+    public void setup() throws CanNotCallChefException, OpenStackException {
 
         productInstanceDao = mock(ProductInstanceDao.class);
         chefClientDao = mock(ChefClientDao.class);
@@ -79,14 +81,17 @@ public class NodeManagerImplTest {
         nodeManager.setChefNodeDao(chefNodeDao);
         nodeManager.setProductInstanceDao(productInstanceDao);
         nodeManager.setClient(client);
-        nodeManager.setPropertiesProvider(propertiesProvider);
+        OpenStackRegion openStackRegion = mock (OpenStackRegion.class);
+        nodeManager.setOpenStackRegion(openStackRegion);
+        when (openStackRegion.getChefServerEndPoint("token")).thenReturn("http://");
+
 
     }
 
     @Test
     public void deleteNodeTestOK() throws NodeExecutionException, CanNotCallChefException, EntityNotFoundException, ClientProtocolException, IOException {
 
-        when(chefNodeDao.loadNode("testOk")).thenReturn(new ChefNode());
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
         productInstances.add(new ProductInstance());
@@ -101,7 +106,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testOk");
+        nodeManager.nodeDelete("test", "testOk", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -123,7 +128,7 @@ public class NodeManagerImplTest {
 
         when(productInstanceDao.findByHostname(anyString())).thenThrow(EntityNotFoundException.class);
         
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -133,8 +138,8 @@ public class NodeManagerImplTest {
     @Test(expected = NodeExecutionException.class)
     public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException, CanNotCallChefException, EntityNotFoundException, ClientProtocolException, IOException {
 
-        when(chefNodeDao.loadNode("testError")).thenThrow(CanNotCallChefException.class);
-        when(chefNodeDao.loadNode("testOk")).thenReturn(new ChefNode());
+        when(chefNodeDao.loadNode("testError", "token")).thenThrow(CanNotCallChefException.class);
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
         productInstances.add(new ProductInstance());
@@ -149,7 +154,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -159,7 +164,7 @@ public class NodeManagerImplTest {
     @Test(expected = NodeExecutionException.class)
     public void deleteNodeTestNodeException_chef_2() throws NodeExecutionException, Exception {
 
-        when(chefNodeDao.loadNode("testError")).thenThrow(Exception.class);
+        when(chefNodeDao.loadNode("testError", "token")).thenThrow(Exception.class);
         
         HttpResponse httpResponse= mock(HttpResponse.class);
         StatusLine statusLine= mock(StatusLine.class);
@@ -169,7 +174,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -187,7 +192,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -202,7 +207,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
@@ -217,7 +222,7 @@ public class NodeManagerImplTest {
         
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError");
+        nodeManager.nodeDelete("test", "testError", "token");
         
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
