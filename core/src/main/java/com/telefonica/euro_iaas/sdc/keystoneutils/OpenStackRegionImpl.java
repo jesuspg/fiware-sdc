@@ -77,7 +77,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
-        	log.info ("Get url for sdc in region " + url);
+        	log.info ("Get url for " + type + " in region " +regionName + " : " + url);
             return url;
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
@@ -116,8 +116,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
     
     public String getChefServerEndPoint( String token) throws OpenStackException  {
+    	
     	String defaulRegion = this.getDefaultRegion(token);
-    	log.info ("Get url for puppet for default region " + defaulRegion);
+    	log.info ("Get url for chef-server for default region " + defaulRegion);
     	String url;
         try {
             url = getEndPointByNameAndRegionName("chef-server", defaulRegion, token);
@@ -132,7 +133,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     
     public String getWebdavPoint(String token) throws OpenStackException {
     	String defaulRegion = this.getDefaultRegion(token);
-    	log.info ("Get url for puppet for default region " + defaulRegion);
+    	log.info ("Get url for webdav for default region " + defaulRegion);
     	String url;
         try {
             url = getEndPointByNameAndRegionName("webdav", defaulRegion, token);
@@ -163,8 +164,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     @Override
     public List<String> getRegionNames(String token) throws OpenStackException {
-
+    	log.info("getRegionNames" );
         String tokenAdmin = this.getTokenAdmin();
+        log.info("token admin" + tokenAdmin);
         String responseJSON = callToKeystone(token, tokenAdmin);
         return parseRegionName(responseJSON, "nova");
 

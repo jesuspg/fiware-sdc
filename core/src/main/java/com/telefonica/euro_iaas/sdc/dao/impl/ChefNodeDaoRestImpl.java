@@ -62,6 +62,7 @@ import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -87,7 +88,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     
     public ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException, 
         CanNotCallChefException {
-    	LOGGER.info ("Loading nodes" + hostname );
+    	LOGGER.info ("Loading nodes " + hostname );
     	String chefServerUrl = null;
 		try {
 			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
@@ -114,6 +115,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             ChefNode node = new ChefNode();
             LOGGER.info (stringNodes);
             String nodeName = node.getChefNodeName(stringNodes, hostname);
+            LOGGER.info ("node name " + nodeName);
             return loadNode(nodeName, token);
          } catch (UniformInterfaceException e) {
              throw new CanNotCallChefException(e);
@@ -126,9 +128,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      */
   
     public ChefNode loadNode(String chefNodename, String token) throws CanNotCallChefException {
+    	LOGGER.info("loadNode " + chefNodename);
     	String chefServerUrl = null;
 		try {
 			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+			LOGGER.info("chefServerUrl " + chefServerUrl);
 		} catch (OpenStackException e) {
 			 throw new SdcRuntimeException(e);
 		}
@@ -138,27 +142,28 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         		chefNodename = "/"+chefNodename;
         	}
         	
-            String  path = MessageFormat.format(chefServerUrl, chefNodename);
-            LOGGER.info (chefServerUrl + path);
-            LOGGER.info("getting hedares");
+            String  path = MessageFormat.format(Configuration.CHEF_SERVER_NODES_PATH, chefNodename);
+       
             Map<String, String> header = getHeaders("GET", path, "");
-            LOGGER.info("obtainaing webresource");
-            WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
+            
+            String url = chefServerUrl + path;
+            LOGGER.info("url " + url );
+            WebResource webResource = clientConfig.getClient().resource(url);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
-            LOGGER.info("getting input string");
+          
             InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
             stringNode = IOUtils.toString(inputStream);
+         
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
-            LOGGER.info (stringNode);
     
             ChefNode node = new ChefNode();
             node.fromJson(jsonNode);
             return node;
-        } catch (UniformInterfaceException e) {
+        } catch (UniformInterfaceException e) {   
         	LOGGER.warning(e.getMessage());
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
