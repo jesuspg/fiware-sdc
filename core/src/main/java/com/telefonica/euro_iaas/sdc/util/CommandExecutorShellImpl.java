@@ -41,7 +41,7 @@ import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
  */
 public class CommandExecutorShellImpl implements CommandExecutor {
 
-    private static Logger logger = Logger.getLogger(CommandExecutorShellImpl.class.getName());
+    private static Logger log = Logger.getLogger(CommandExecutorShellImpl.class.getName());
 
     /**
      * <p>
@@ -59,7 +59,7 @@ public class CommandExecutorShellImpl implements CommandExecutor {
 
         try {
             // Command is executed
-            logger.log(Level.INFO, "Executing command: " + command);
+            log.log(Level.INFO, "Executing command: " + command);
             Process p = Runtime.getRuntime().exec(command);
 
             // Leemos la salida del comando
@@ -74,12 +74,12 @@ public class CommandExecutorShellImpl implements CommandExecutor {
                 try {
                     exitValue = p.exitValue();
                 } catch (IllegalThreadStateException e) {
-                    logger.log(Level.FINEST, "The command does not finished yet");
+                    log.log(Level.FINEST, "The command does not finished yet");
                 }
             }
 
             if (!exitValue.equals(0)) {
-                logger.log(Level.SEVERE, "Error executing command: " + outputCommand[1]);
+                log.log(Level.SEVERE, "Error executing command: " + outputCommand[1]);
                 throw new ShellCommandException(outputCommand[1]);
             }
             return outputCommand;

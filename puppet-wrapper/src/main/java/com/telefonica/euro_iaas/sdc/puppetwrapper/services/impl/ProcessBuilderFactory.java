@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 @Service("processBuilderFactory")
 public class ProcessBuilderFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessBuilderFactory.class);
 
     
     public Process createProcessBuilder(String[] command) throws IOException {

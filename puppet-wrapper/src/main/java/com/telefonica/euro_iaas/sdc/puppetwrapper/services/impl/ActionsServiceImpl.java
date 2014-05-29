@@ -46,7 +46,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 @Service("actionsService")
 public class ActionsServiceImpl implements ActionsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActionsServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ActionsServiceImpl.class);
 
     @SuppressWarnings("restriction")
     @Resource
@@ -60,7 +60,7 @@ public class ActionsServiceImpl implements ActionsService {
 
     public Node action(Action action, String group, String nodeName, String softName, String version) {
 
-        logger.info("action: " + action + "group:" + group + " nodeName: " + nodeName + " soft: " + softName
+        log.info("action: " + action + "group:" + group + " nodeName: " + nodeName + " soft: " + softName
                 + " version: " + version);
 
         Node node = null;
@@ -94,7 +94,7 @@ public class ActionsServiceImpl implements ActionsService {
 
         catalogManager.addNode(node);
 
-        logger.debug("node: " + node);
+        log.debug("node: " + node);
 
         return node;
 
@@ -113,10 +113,10 @@ public class ActionsServiceImpl implements ActionsService {
 
     private void uregisterNode(String nodeName) throws IOException {
 
-        logger.debug("Unregistering node: " + nodeName);
+        log.debug("Unregistering node: " + nodeName);
 
         if (isNodeRegistered(nodeName)) {
-            logger.debug("Node " + nodeName + " is registered -> unregistering");
+            log.debug("Node " + nodeName + " is registered -> unregistering");
 
             String[] cmd = { "/bin/sh", "-c", "sudo puppet cert clean "+getRealNodeName(nodeName) };
             
@@ -136,7 +136,7 @@ public class ActionsServiceImpl implements ActionsService {
 
     public String getRealNodeName(String nodeName) throws IOException {
 
-        logger.debug("getRealNodeName for node: " + nodeName);
+        log.debug("getRealNodeName for node: " + nodeName);
 
         String[] cmd = { "/bin/sh", "-c", "sudo puppet cert list --all | grep " + nodeName + " | gawk '{print $2}'" };
 
@@ -150,11 +150,11 @@ public class ActionsServiceImpl implements ActionsService {
         if ("".equals(success) && !"".equals(error)) {
             throw new IOException("Puppet cert clean has failed");
         }
-        logger.debug("success, real name is: " + success);
+        log.debug("success, real name is: " + success);
 
         String name = success.substring(1, success.length() - 1);
 
-        logger.debug("name: " + name);
+        log.debug("name: " + name);
 
         return name;
 
@@ -162,7 +162,7 @@ public class ActionsServiceImpl implements ActionsService {
 
     public boolean isNodeRegistered(String nodeName) throws IOException {
 
-        logger.debug("isNodeRegistered node: " + nodeName);
+        log.debug("isNodeRegistered node: " + nodeName);
         
         String[] cmd = { "/bin/sh", "-c", "sudo puppet cert list --all" };
         Process shell = processBuilderFactory.createProcessBuilder(cmd);
@@ -183,7 +183,7 @@ public class ActionsServiceImpl implements ActionsService {
 
         } else {
             String msg = "Puppet cert list command has failed";
-            logger.debug(msg);
+            log.debug(msg);
             throw new IOException(msg);
         }
         return true;

@@ -55,7 +55,7 @@ public class FileDaoWebDavImpl implements FileDao {
  //   SystemPropertiesProvider propertiesProvider;
     Client client;
     Sardine sardine;
-    private static Logger LOGGER = LoggerFactory.getLogger(FileDaoWebDavImpl.class);
+    private static Logger log = LoggerFactory.getLogger(FileDaoWebDavImpl.class);
 
     /**
      * {@inheritDoc}
@@ -66,7 +66,7 @@ public class FileDaoWebDavImpl implements FileDao {
         sardine = SardineFactory.begin(WEBDAV_USERNAME,
                 WEBDAV_PASSWD);
         sardine.createDirectory(webdavDirectoryUrl);
-        LOGGER.info(webdavDirectoryUrl + " CREATED ");
+        log.info(webdavDirectoryUrl + " CREATED ");
     }
 
     /**
@@ -81,7 +81,7 @@ public class FileDaoWebDavImpl implements FileDao {
         try {
             data = FileUtils.readFileToByteArray(new File(installable.getAbsolutePath()));
             sardine.put(webdavFileUrl, data);
-            LOGGER.info(webdavFileUrl + " INSERTED ");
+            log.info(webdavFileUrl + " INSERTED ");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             throw new SdcRuntimeException(e);
@@ -99,7 +99,7 @@ public class FileDaoWebDavImpl implements FileDao {
         sardine = SardineFactory.begin(WEBDAV_USERNAME,
                 WEBDAV_PASSWD);
         sardine.delete(webdavUrl);
-        LOGGER.info( webdavUrl + " DELETED ");
+        log.info( webdavUrl + " DELETED ");
     }
 
     /**
@@ -114,7 +114,7 @@ public class FileDaoWebDavImpl implements FileDao {
         List<DavResource> resources = sardine.getResources(directoryBase);
         for (DavResource res : resources) {
             if (res.getAbsoluteUrl().equals(webdavUrl)) {
-                LOGGER.info( webdavUrl + " exists in " + directoryBase);
+                log.info( webdavUrl + " exists in " + directoryBase);
                 exist = true;
             }
         }

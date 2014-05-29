@@ -68,7 +68,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     ChefClientConfig clientConfig;
-    private static Logger LOGGER = LoggerFactory.getLogger(ChefClientDaoRestImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ChefClientDaoRestImpl.class);
     private OpenStackRegion openStackRegion;
 
     /*
@@ -85,7 +85,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 			} catch (OpenStackException e) {
 				 throw new SdcRuntimeException(e);
 			}
-            LOGGER.info(chefServer+ path);
+            log.info(chefServer+ path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = clientConfig.getClient().resource(chefServer + path);
@@ -132,7 +132,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             Map<String, String> header = getHeaders("DELETE", path, "");
 
         	
-        	LOGGER.info(chefServerUrl + path);
+        	log.info(chefServerUrl + path);
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
@@ -165,7 +165,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         
         try {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
-        	LOGGER.info(chefServerUrl + path);
+        	log.info(chefServerUrl + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);

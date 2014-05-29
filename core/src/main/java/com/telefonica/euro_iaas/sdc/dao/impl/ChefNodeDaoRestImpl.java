@@ -71,7 +71,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     private SystemPropertiesProvider propertiesProvider;
 
     
-    private static Logger LOGGER = LoggerFactory.getLogger(ChefNodeDaoRestImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ChefNodeDaoRestImpl.class);
     
     private String NODE_NOT_FOUND_PATTERN ="404";
     private String NODES_PATH ="/nodes";
@@ -79,7 +79,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     
     public ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException, 
         CanNotCallChefException {
-    	LOGGER.info ("Loading nodes " + hostname );
+    	log.info ("Loading nodes " + hostname );
     	String chefServerUrl = null;
 		try {
 			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
@@ -90,7 +90,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             String path = NODES_PATH;
 
             Map<String, String> header = getHeaders("GET", path, "");
-            LOGGER.info (chefServerUrl + path);
+            log.info (chefServerUrl + path);
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
@@ -104,9 +104,9 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     "The ChefServer is empty of ChefNodes");
             }           
             ChefNode node = new ChefNode();
-            LOGGER.info (stringNodes);
+            log.info (stringNodes);
             String nodeName = node.getChefNodeName(stringNodes, hostname);
-            LOGGER.info ("node name " + nodeName);
+            log.info ("node name " + nodeName);
             return loadNode(nodeName, token);
          } catch (UniformInterfaceException e) {
              throw new CanNotCallChefException(e);
@@ -119,11 +119,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      */
   
     public ChefNode loadNode(String chefNodename, String token) throws CanNotCallChefException {
-    	LOGGER.info("loadNode " + chefNodename);
+    	log.info("loadNode " + chefNodename);
     	String chefServerUrl = null;
 		try {
 			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
-			LOGGER.info("chefServerUrl " + chefServerUrl);
+			log.info("chefServerUrl " + chefServerUrl);
 		} catch (OpenStackException e) {
 			 throw new SdcRuntimeException(e);
 		}
@@ -138,7 +138,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             Map<String, String> header = getHeaders("GET", path, "");
             
             String url = chefServerUrl + path;
-            LOGGER.info("url " + url );
+            log.info("url " + url );
             WebResource webResource = clientConfig.getClient().resource(url);
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
             for (String key : header.keySet()) {
@@ -155,10 +155,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             node.fromJson(jsonNode);
             return node;
         } catch (UniformInterfaceException e) {
-        	LOGGER.warn(e.getMessage());
+        	log.warn(e.getMessage());
             throw new CanNotCallChefException(e);
         } catch (IOException e) {
-        	LOGGER.warn(e.getMessage());
+        	log.warn(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
@@ -168,7 +168,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
      */
   
     public ChefNode updateNode(ChefNode node, String token) throws CanNotCallChefException {
-    	LOGGER.info("Update node " + node.getName() );
+    	log.info("Update node " + node.getName() );
     	String chefServerUrl = null;
 		try {
 			chefServerUrl = openStackRegion.getChefServerEndPoint(token);
@@ -177,7 +177,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 		}
         try {
             String path = MessageFormat.format(CHEF_SERVER_NODES_PATH, "/"+node.getName());
-            LOGGER.info (chefServerUrl + path);
+            log.info (chefServerUrl + path);
             String payload = node.toJson();
             Map<String, String> header = getHeaders("PUT", path, payload);
 
@@ -250,18 +250,18 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         while (!response.contains(hostname)) {
                       
             try {
-                LOGGER.info("Checking node : " + hostname + " time:" + time);
+                log.info("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
                     String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
-                    LOGGER.info(errorMesg);
+                    log.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
                 Thread.sleep(time);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
-                LOGGER.info(chefServerUrl + path);
+                log.info(chefServerUrl + path);
 
-                LOGGER.info("web resource");
+                log.info("web resource");
                 WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {
@@ -269,20 +269,20 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     wr = wr.header(key, header.get(key));
                 }
                 
-                LOGGER.info("geting");
+                log.info("geting");
                 response = IOUtils.toString(wr.get(InputStream.class));
-                LOGGER.info(response);
+                log.info(response);
                 time += time;
             } catch (UniformInterfaceException e) {
-            	LOGGER.warn(e.getMessage());
+            	log.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
             } catch (IOException e) {
-            	LOGGER.warn(e.getMessage());
+            	log.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
                 
             } catch (InterruptedException e) {
                 String errorMsg = e.getMessage();
-                LOGGER.warn(e.getMessage());
+                log.warn(e.getMessage());
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }

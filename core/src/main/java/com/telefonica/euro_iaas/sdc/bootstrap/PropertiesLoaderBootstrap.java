@@ -45,7 +45,7 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
  */
 public class PropertiesLoaderBootstrap implements ServletContextListener {
 
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static final Logger log = Logger.getAnonymousLogger();
     private static final String NAMESPACE = "/SystemConfiguration.properties";
 
     /**
@@ -67,7 +67,7 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
         PropertiesProvider propertiesProvider = new PropertiesProviderFactoryImpl().createPropertiesProvider(emf);
         Properties properties = propertiesProvider.load(NAMESPACE);
         try {
-            LOGGER.info("store namespace: " + NAMESPACE);
+            log.info("store namespace: " + NAMESPACE);
             propertiesProvider.store(properties, NAMESPACE);
         } catch (Exception e) {
             throw new SdcRuntimeException(e);

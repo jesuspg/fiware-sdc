@@ -66,7 +66,7 @@ public class BaseInstallableInstanceManagerChef {
 
     protected int MAX_TIME = 90000;
 
-    protected static Logger LOGGER = LoggerFactory.getLogger(BaseInstallableInstanceManagerChef.class);
+    protected static Logger log = LoggerFactory.getLogger(BaseInstallableInstanceManagerChef.class);
 
     protected void callChefUpgrade(String recipe, VM vm, String token) throws InstallatorException, NodeExecutionException {
         assignRecipes(vm, recipe, token);
@@ -123,7 +123,7 @@ public class BaseInstallableInstanceManagerChef {
             node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
         } catch (EntityNotFoundException e) {
             String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
-            LOGGER.info(message);
+            log.info(message);
             throw new InstallatorException(message, e);
         } catch (CanNotCallChefException e) {
             throw new InstallatorException(e);
@@ -163,7 +163,7 @@ public class BaseInstallableInstanceManagerChef {
             }
         } catch (EntityNotFoundException e) {
             String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
-            LOGGER.info(message);
+            log.info(message);
             throw new InstallatorException(message, e);
         } catch (CanNotCallChefException e) {
             throw new InstallatorException(e);

@@ -54,7 +54,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 @Controller
 public class PuppetController extends GenericController{
 
-    private static final Logger logger = LoggerFactory.getLogger(PuppetController.class);
+    private static final Logger log = LoggerFactory.getLogger(PuppetController.class);
 
     @Resource
     private ActionsService actionsService;
@@ -77,32 +77,32 @@ public class PuppetController extends GenericController{
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
             HttpServletRequest request) {
 
-        logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
+        log.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
                 + version);
 
         if (group == null || "".equals(group)) {
-            logger.debug("Group is not set");
+            log.debug("Group is not set");
             throw new IllegalArgumentException("Group is not set");
         }
 
         if (nodeName == null || "".equals(nodeName)) {
-            logger.debug("Node name is not set");
+            log.debug("Node name is not set");
             throw new IllegalArgumentException("Node name is not set");
         }
 
         if (softwareName == null || "".equals(softwareName)) {
-            logger.debug("Software Name is not set");
+            log.debug("Software Name is not set");
             throw new IllegalArgumentException("Software name is not set");
         }
 
         if (version == null || "".equals(version)) {
-            logger.debug("version is not set");
+            log.debug("version is not set");
             throw new IllegalArgumentException("Version is not set");
         }
 
         Node node = actionsService.action(Action.INSTALL, group, nodeName, softwareName, version);
 
-        logger.debug("node " + node);
+        log.debug("node " + node);
 
         return node;
     }
@@ -114,13 +114,13 @@ public class PuppetController extends GenericController{
         if (nodeName == null || "".equals(nodeName)) {
             throw new IllegalArgumentException("Node name is not set");
         }
-        logger.info("generating files for node:" + nodeName);
+        log.info("generating files for node:" + nodeName);
 
         Node node = fileAccessService.generateManifestFile(nodeName);
-        logger.debug("nodes pp files OK");
+        log.debug("nodes pp files OK");
 
         fileAccessService.generateSiteFile();
-        logger.debug("site.pp OK");
+        log.debug("site.pp OK");
 
         return node;
     }
@@ -131,32 +131,32 @@ public class PuppetController extends GenericController{
             @PathVariable("softwareName") String softwareName, @PathVariable("version") String version,
             HttpServletRequest request)  {
 
-        logger.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
+        log.info("install group:" + group + " nodeName: " + nodeName + " soft: " + softwareName + " version: "
                 + version);
 
         if (group == null || "".equals(group)) {
-            logger.debug("Group is not set");
+            log.debug("Group is not set");
             throw new IllegalArgumentException("Group is not set");
         }
 
         if (nodeName == null || "".equals(nodeName)) {
-            logger.debug("Node name is not set");
+            log.debug("Node name is not set");
             throw new IllegalArgumentException("Node name is not set");
         }
 
         if (softwareName == null || "".equals(softwareName)) {
-            logger.debug("Software Name is not set");
+            log.debug("Software Name is not set");
             throw new IllegalArgumentException("Software name is not set");
         }
 
         if (version == null || "".equals(version)) {
-            logger.debug("version is not set");
+            log.debug("version is not set");
             throw new IllegalArgumentException("Version is not set");
         }
 
         Node node = actionsService.action(Action.UNINSTALL, group, nodeName, softwareName, version);
 
-        logger.debug("node " + node);
+        log.debug("node " + node);
 
         return node;
 
@@ -167,13 +167,13 @@ public class PuppetController extends GenericController{
     public void deleteNode(@PathVariable("nodeName") String nodeName) throws IOException {
 
         if (nodeName == null || "".equals(nodeName)) {
-            logger.debug("Node name is not set");
+            log.debug("Node name is not set");
             throw new IllegalArgumentException("Node name is not set");
         }
         
-        logger.info("Deleting node: " + nodeName);
+        log.info("Deleting node: " + nodeName);
         actionsService.deleteNode(nodeName);
-        logger.info("Node: " + nodeName + " deleted.");
+        log.info("Node: " + nodeName + " deleted.");
     }
 
     @RequestMapping(value = "/download/git/{softwareName}", method = RequestMethod.POST)
@@ -199,13 +199,13 @@ public class PuppetController extends GenericController{
     public void deleteModule(@PathVariable("moduleName") String moduleName) throws IOException{
     
         if (moduleName == null || "".equals(moduleName)) {
-            logger.debug("Module name is not set");
+            log.debug("Module name is not set");
             throw new IllegalArgumentException("Module name is not set");
         }
         
-        logger.info("Deleting module: " + moduleName);
+        log.info("Deleting module: " + moduleName);
         actionsService.deleteModule(moduleName);
-        logger.info("Module: " + moduleName + " deleted.");
+        log.info("Module: " + moduleName + " deleted.");
     }
     
     public void setActionsService(ActionsService actionsService) {

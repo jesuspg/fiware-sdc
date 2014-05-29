@@ -64,7 +64,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -78,12 +77,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     private ProductReleaseManager productReleaseManager;
     @InjectParam("productManager")
     private ProductManager productManager;
-    
-
 
     private ProductResourceValidator validator;
     private GeneralResourceValidator generalValidator;
-    private static Logger LOGGER = Logger.getLogger("ProductReleaseResourceImpl");
+    private static Logger log = Logger.getLogger("ProductReleaseResourceImpl");
 
     /**
      * Insert the ProductRelease in SDC.
@@ -103,7 +100,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         productReleaseDto.setProductName(pName);
 
-        LOGGER.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
+        log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
                 + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
@@ -111,7 +108,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
                 productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
                 productReleaseDto.getTransitableReleases());
 
-        LOGGER.info(productRelease.toString());
+        log.info(productRelease.toString());
         return productReleaseManager.insert(productRelease);
     }
 
@@ -131,14 +128,16 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         // First part contains a Project object
         ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
-        LOGGER.log(Level.INFO, " Insert ProductRelease " + productReleaseDto.getProductName() + " version "
+        log.log(Level.INFO, " Insert ProductRelease " + productReleaseDto.getProductName() + " version "
                 + productReleaseDto.getVersion());
 
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
         /*
-         * for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
-         * product.addAttribute(productReleaseDto.getPrivateAttributes().get(i)); }
+         * for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1;
+         * i++) {
+         * product.addAttribute(productReleaseDto.getPrivateAttributes().get
+         * (i)); }
          */
 
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
@@ -170,9 +169,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     public List<ProductRelease> findAll(String pName, String osType, Integer page, Integer pageSize, String orderBy,
             String orderType) {
-    	
-    	
-    	
+
         ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
 
         if (!StringUtils.isEmpty(pName)) {
@@ -200,8 +197,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return productReleaseManager.findReleasesByCriteria(criteria);
     }
-    
-   
 
     /**
      * {@inheritDoc}
@@ -219,7 +214,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public void delete(String pName, String version) throws ProductReleaseNotFoundException,
             ProductReleaseStillInstalledException {
 
-        LOGGER.log(Level.INFO, "Delete ProductRelease. ProductName : " + pName + " ProductVersion : " + version);
+        log.log(Level.INFO, "Delete ProductRelease. ProductName : " + pName + " ProductVersion : " + version);
 
         Product product;
         try {
@@ -240,8 +235,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#findTransitable(java.lang.String,
-     * java.lang.String)
+     * 
+     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#
+     * findTransitable(java.lang.String, java.lang.String)
      */
     @Override
     public List<ProductRelease> findTransitable(String pName, String version) throws EntityNotFoundException {
@@ -257,13 +253,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @throws InvalidProductReleaseException
      * @throws InvalidMultiPartRequestException
      * @return productRelease
+     * @throws InvalidProductReleaseUpdateRequestException 
      */
     public ProductRelease update(MultiPart multiPart) throws ProductReleaseNotFoundException,
-            InvalidProductReleaseException, InvalidProductReleaseUpdateRequestException,
-            InvalidMultiPartRequestException {
+            InvalidProductReleaseException, InvalidMultiPartRequestException, InvalidProductReleaseUpdateRequestException {
 
         ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
-        LOGGER.log(Level.INFO,
+        log.log(Level.INFO,
                 "ProductRelease " + productReleaseDto.getProductName() + " version " + productReleaseDto.getVersion());
 
         // TODO Validar el Objeto ProductReleaseDto en las validaciones
@@ -277,9 +273,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
 
         /*
-         * if (productReleaseDto.getPrivateAttributes() != null) { for (int i = 0;
-         * productReleaseDto.getPrivateAttributes().size() < 1; i++) {
-         * product.addAttribute(productReleaseDto.getPrivateAttributes().get(i)); } }
+         * if (productReleaseDto.getPrivateAttributes() != null) { for (int i =
+         * 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
+         * product
+         * .addAttribute(productReleaseDto.getPrivateAttributes().get(i)); } }
          */
 
         productRelease.setProduct(product);
@@ -296,7 +293,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         // PrivateAttributes
         /*
          * if (productReleaseDto.getPrivateAttributes() != null) {
-         * productRelease.setPrivateAttributes(productReleaseDto.getPrivateAttributes()); }
+         * productRelease
+         * .setPrivateAttributes(productReleaseDto.getPrivateAttributes()); }
          */
 
         // SupportedOS
@@ -334,7 +332,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
         }
-        
+
         return productReleaseManager.update(productRelease, cookbook, installable, getCredentials().getToken());
     }
 
@@ -355,10 +353,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
         return file;
     }
-    
-
-    
-
 
     /**
      * @param validator
@@ -367,7 +361,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public void setValidator(ProductResourceValidator validator) {
         this.validator = validator;
     }
-    
+
     /**
      * @param generalValidator
      *            the generalValidator to set
@@ -391,7 +385,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
-    
+
     public PaasManagerUser getCredentials() {
         return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

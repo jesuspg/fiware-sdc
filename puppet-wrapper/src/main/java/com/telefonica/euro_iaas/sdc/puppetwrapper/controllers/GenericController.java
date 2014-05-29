@@ -38,13 +38,13 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.data.PuppetWrapperError;
 
 public class GenericController {
     
-    private static final Logger logger = LoggerFactory.getLogger(GenericController.class);
+    private static final Logger log = LoggerFactory.getLogger(GenericController.class);
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public PuppetWrapperError handleNoSuchElementException(NoSuchElementException ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
     
@@ -52,7 +52,7 @@ public class GenericController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public PuppetWrapperError handleModuleDownloaderException(ModuleDownloaderException ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
     
@@ -60,7 +60,7 @@ public class GenericController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public PuppetWrapperError handleException(Exception ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 

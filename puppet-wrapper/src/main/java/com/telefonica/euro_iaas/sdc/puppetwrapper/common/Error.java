@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Error {
 	
-    private static final Logger logger = LoggerFactory.getLogger(Error.class);
+    private static final Logger log = LoggerFactory.getLogger(Error.class);
 	 
 	private int code;
 	private String description;
@@ -52,7 +52,7 @@ public class Error {
 		super();
 		this.code = code;
 		this.description = description;
-		logger.error("code[" + code + "] description: " + description+"]");
+		log.error("code[" + code + "] description: " + description+"]");
 	}
 
 	/**

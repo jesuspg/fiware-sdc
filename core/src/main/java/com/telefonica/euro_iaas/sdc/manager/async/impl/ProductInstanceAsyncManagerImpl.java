@@ -63,7 +63,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
-    private static Logger LOGGER = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
     
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
@@ -84,7 +84,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
             
             updateSuccessTask(task, productInstance);
 
-            LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
+            log.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
             String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
@@ -126,7 +126,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.configure(productInstance, configuration, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " configured successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -153,7 +153,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.upgrade(productInstance, productRelease, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " upgraded successfully");
         } catch (NotTransitableException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -186,7 +186,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.uninstall(productInstance, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product " + productInstance.getId()
@@ -271,7 +271,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
+        log.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
                 + " for more information");
     }
 
