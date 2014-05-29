@@ -11,6 +11,7 @@
 	
 	<bean id="openStackRegion" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegionImpl">
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider"></property>
 	</bean>
 	
 	
