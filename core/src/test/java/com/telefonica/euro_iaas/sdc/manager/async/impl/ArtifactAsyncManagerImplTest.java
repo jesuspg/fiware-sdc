@@ -52,20 +52,19 @@ public class ArtifactAsyncManagerImplTest {
     ArtifactManager artifactManager;
     TaskNotificator taskNotificator;
     TaskManager taskManager;
-    SystemPropertiesProvider propertiesProvider;
+
 
     @Before
     public void setup() {
         artifactManager = mock(ArtifactManager.class);
         taskNotificator = mock(TaskNotificator.class);
         taskManager = mock(TaskManager.class);
-        propertiesProvider = mock(SystemPropertiesProvider.class);
 
         artifactAsyncManagerImpl = new ArtifactAsyncManagerImpl();
         artifactAsyncManagerImpl.setArtifactManager(artifactManager);
         artifactAsyncManagerImpl.setTaskNotificator(taskNotificator);
         artifactAsyncManagerImpl.setTaskManager(taskManager);
-        artifactAsyncManagerImpl.setPropertiesProvider(propertiesProvider);
+
 
     }
 
@@ -88,12 +87,10 @@ public class ArtifactAsyncManagerImplTest {
         String urlCallback = "http://url_to_callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
-        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, task, urlCallback);
+        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).deployArtifact(productInstance, artifact);
+        verify(artifactManager).deployArtifact(productInstance, artifact, "token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
 
@@ -117,15 +114,12 @@ public class ArtifactAsyncManagerImplTest {
         Task task = new Task();
         String urlCallback = "http://url_to_callback";
 
-        // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
 
-        when(artifactManager.deployArtifact(productInstance, artifact)).thenThrow(new FSMViolationException("error"));
-        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, task, urlCallback);
+        when(artifactManager.deployArtifact(productInstance, artifact, "token")).thenThrow(new FSMViolationException("error"));
+        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).deployArtifact(productInstance, artifact);
+        verify(artifactManager).deployArtifact(productInstance, artifact, "token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
@@ -151,14 +145,12 @@ public class ArtifactAsyncManagerImplTest {
         String urlCallback = "http://url_to_callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
 
-        when(artifactManager.deployArtifact(productInstance, artifact)).thenThrow(new NodeExecutionException("error"));
-        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, task, urlCallback);
+        when(artifactManager.deployArtifact(productInstance, artifact, "token")).thenThrow(new NodeExecutionException("error"));
+        artifactAsyncManagerImpl.deployArtifact(productInstance, artifact, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).deployArtifact(productInstance, artifact);
+        verify(artifactManager).deployArtifact(productInstance, artifact, "token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
@@ -184,12 +176,10 @@ public class ArtifactAsyncManagerImplTest {
         String urlCallback = "http://url_to_callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
-        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, task, urlCallback);
+        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).undeployArtifact(productInstance, artifactName);
+        verify(artifactManager).undeployArtifact(productInstance, artifactName, "token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
         assertEquals(task.getStatus(), Task.TaskStates.SUCCESS);
@@ -217,14 +207,13 @@ public class ArtifactAsyncManagerImplTest {
 
         // when
 
-        when(artifactManager.undeployArtifact(productInstance, artifactName)).thenThrow(
+        when(artifactManager.undeployArtifact(productInstance, artifactName, "token")).thenThrow(
                 new NodeExecutionException("error"));
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
-        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, task, urlCallback);
+
+        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).undeployArtifact(productInstance, artifactName);
+        verify(artifactManager).undeployArtifact(productInstance, artifactName,"token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
@@ -252,14 +241,13 @@ public class ArtifactAsyncManagerImplTest {
 
         // when
 
-        when(artifactManager.undeployArtifact(productInstance, artifactName)).thenThrow(
+        when(artifactManager.undeployArtifact(productInstance, artifactName,"token")).thenThrow(
                 new FSMViolationException("error"));
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL)).thenReturn(
-                "http://baseurl");
-        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, task, urlCallback);
+
+        artifactAsyncManagerImpl.undeployArtifact(productInstance, artifactName, "token", task, urlCallback);
 
         // then
-        verify(artifactManager).undeployArtifact(productInstance, artifactName);
+        verify(artifactManager).undeployArtifact(productInstance, artifactName,"token");
         verify(taskNotificator).notify(urlCallback, task);
         verify(taskManager).updateTask(task);
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);

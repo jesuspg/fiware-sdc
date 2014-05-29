@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.PRODUCT_INSTANCE_BASE_PATH;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.SDC_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -54,7 +55,6 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 /**
@@ -67,7 +67,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
-    private SystemPropertiesProvider propertiesProvider;
+  
     private TaskNotificator taskNotificator;
 
     /**
@@ -75,12 +75,12 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, Task task,
+    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token, Task task,
             String callback) {
         try {
 
             ProductInstance productInstance = null;
-            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
+            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes, token);
             
             updateSuccessTask(task, productInstance);
 
@@ -122,9 +122,9 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void configure(ProductInstance productInstance, List<Attribute> configuration, Task task, String callback) {
+    public void configure(ProductInstance productInstance, List<Attribute> configuration, String token, Task task, String callback) {
         try {
-            productInstanceManager.configure(productInstance, configuration);
+            productInstanceManager.configure(productInstance, configuration, token);
             updateSuccessTask(task, productInstance);
             LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " configured successfully");
@@ -149,9 +149,9 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void upgrade(ProductInstance productInstance, ProductRelease productRelease, Task task, String callback) {
+    public void upgrade(ProductInstance productInstance, ProductRelease productRelease,  String token, Task task, String callback) {
         try {
-            productInstanceManager.upgrade(productInstance, productRelease);
+            productInstanceManager.upgrade(productInstance, productRelease, token);
             updateSuccessTask(task, productInstance);
             LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " upgraded successfully");
@@ -181,10 +181,10 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void uninstall(ProductInstance productInstance, Task task, String callback) {
+    public void uninstall(ProductInstance productInstance, String token, Task task, String callback) {
 
         try {
-            productInstanceManager.uninstall(productInstance);
+            productInstanceManager.uninstall(productInstance, token);
             updateSuccessTask(task, productInstance);
             LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
@@ -232,7 +232,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
+        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
                 productInstance.getName(), // the name
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
@@ -249,7 +249,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
+        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
         // productInstance.getId(), // the id
                 productInstance.getName(), // the id
                 productInstance.getVm().getHostname(), // the hostname
@@ -310,14 +310,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
-    }
-
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
     }
 
     /**

@@ -40,6 +40,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -50,6 +51,8 @@ import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
+import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
@@ -119,10 +122,10 @@ public class InstallatorChefTest {
         //chefNode.addRecipe(installProbeRecipe);
         
         chefNodeDao = mock(ChefNodeDao.class);
-        when(chefNodeDao.loadNode(any(String.class))).thenReturn(chefNode);
-        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
-        when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
-        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
+        when(chefNodeDao.loadNode(any(String.class),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.updateNode((ChefNode) anyObject(),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.loadNodeFromHostname(any(String.class),any(String.class))).thenReturn(chefNode);
+        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class),any(String.class)); 
         
         recipeNamingGenerator = mock(RecipeNamingGenerator.class);
         when(recipeNamingGenerator.getInstallRecipe(any(ProductInstance.class))).thenReturn(installRecipe);
@@ -138,6 +141,8 @@ public class InstallatorChefTest {
         installator.setChefNodeDao(chefNodeDao);
         installator.setPropertiesProvider(propertiesProvider);
         installator.setSdcClientUtils(sdcClientUtils);
+        
+        
     }
 
   /*  @Test

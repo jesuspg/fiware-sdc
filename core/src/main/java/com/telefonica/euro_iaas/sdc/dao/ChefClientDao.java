@@ -44,7 +44,7 @@ public interface ChefClientDao {
      * @throws CanNotCallChefException
      *             if Chef Server returns an unexpected error code
      */
-    void deleteChefClient(String chefClientName) throws CanNotCallChefException;
+    void deleteChefClient(String chefClientName, String token) throws CanNotCallChefException;
 
     /**
      * Get the ChefClient
@@ -53,7 +53,7 @@ public interface ChefClientDao {
      * @return
      * @throws CanNotCallChefException
      */
-    ChefClient getChefClient(String chefClientName) throws CanNotCallChefException, EntityNotFoundException;
+    ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException, EntityNotFoundException;
 
     /**
      * FindAll ChefClients
@@ -61,5 +61,5 @@ public interface ChefClientDao {
      * @return
      * @throws CanNotCallChefException
      */
-    ChefClient chefClientfindByHostname(String hostname) throws EntityNotFoundException, CanNotCallChefException;
+    ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException, CanNotCallChefException;
 }

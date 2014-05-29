@@ -161,7 +161,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             throw new RuntimeException(e);
         }
 
-        return productReleaseManager.insert(productRelease, cookbook, installable);
+        return productReleaseManager.insert(productRelease, cookbook, installable, getCredentials().getToken());
     }
 
     /**
@@ -334,7 +334,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
         }
-        return productReleaseManager.update(productRelease, cookbook, installable);
+        
+        return productReleaseManager.update(productRelease, cookbook, installable, getCredentials().getToken());
     }
 
     private File getFileFromBodyPartEntity(BodyPartEntity bpe, File file) {
@@ -389,5 +390,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
+    }
+    
+    public PaasManagerUser getCredentials() {
+        return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

@@ -86,6 +86,9 @@
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
         <!-- sonar -->
         <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
+	
+	<!-- ehcache -->
+        <ehcache.version>2.7.4</ehcache.version>
         
 
     </properties>

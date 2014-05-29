@@ -44,7 +44,7 @@ public interface NodeManager {
      *            the name of the chefclient to be deleted from chef server
      * @throws ChefClientExecutionException
      */
-    void nodeDelete(String vdc, String nodeName) throws NodeExecutionException;
+    void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException;
     
     /**
      * Load a ChefClient from ChefServer
@@ -54,7 +54,7 @@ public interface NodeManager {
      * @throws ChefClientExecutionException
      * @throws EntityNotFoundException
      */
-    ChefClient chefClientload(String chefClientname) throws ChefClientExecutionException, EntityNotFoundException;
+    ChefClient chefClientload(String chefClientname, String token) throws ChefClientExecutionException, EntityNotFoundException;
 
     /**
      * Loads the chefclient whose hostname is hostname
@@ -62,6 +62,6 @@ public interface NodeManager {
      * @param hostname
      * @return ChefClient
      */
-    ChefClient chefClientfindByHostname(String hostname) throws ChefClientExecutionException, EntityNotFoundException;
+    ChefClient chefClientfindByHostname(String hostname, String token) throws ChefClientExecutionException, EntityNotFoundException;
 
 }

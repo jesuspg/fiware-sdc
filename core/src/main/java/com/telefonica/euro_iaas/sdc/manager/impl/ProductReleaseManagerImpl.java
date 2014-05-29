@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PRODUCT_BASEDIR;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.WEBDAV_PRODUCT_BASEDIR;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
      */
     @Override
     @UseCase(traceTo = "UC_101.1", status = "implemented and tested")
-    public ProductRelease insert(ProductRelease productRelease, File cookbook, File installable)
+    public ProductRelease insert(ProductRelease productRelease, File cookbook, File installable, String token)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
         LOGGER.info("Inserting productRelease " + productRelease.getVersion() + " "
@@ -90,9 +90,9 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
-        uploadInstallable(installable, releaseDto);
+        uploadInstallable(installable, releaseDto, token);
         uploadRecipe(cookbook, releaseDto.getName());
 
         return productReleaseOut;
@@ -139,7 +139,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
         deleteProductReleaseBBDD(productRelease);
 
@@ -150,7 +150,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
 
     @Override
     @UseCase(traceTo = "UC_101.3", status = "implemented and tested")
-    public ProductRelease update(ProductRelease productRelease, File cookbook, File installable)
+    public ProductRelease update(ProductRelease productRelease, File cookbook, File installable, String token)
             throws ProductReleaseNotFoundException, InvalidProductReleaseException {
 
         if (productRelease != null) {
@@ -159,10 +159,10 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
         if (installable != null) {
-            uploadInstallable(installable, releaseDto);
+            uploadInstallable(installable, releaseDto, token);
         }
         if (cookbook != null) {
             uploadRecipe(cookbook, releaseDto.getName());

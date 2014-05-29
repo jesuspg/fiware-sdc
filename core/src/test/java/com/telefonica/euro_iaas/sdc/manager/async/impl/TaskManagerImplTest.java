@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,16 +49,21 @@ import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 public class TaskManagerImplTest {
 
     TaskManagerImpl taskManager;
+    private SystemPropertiesProvider propertiesProvider;
+    
     TaskDao taskDao;
-    SystemPropertiesProvider propertiesProvider;
+
 
     @Before
     public void setUp() {
         taskManager = new TaskManagerImpl();
         taskDao = mock(TaskDao.class);
-        propertiesProvider = mock(SystemPropertiesProvider.class);
+        propertiesProvider = mock (SystemPropertiesProvider.class);
         taskManager.setTaskDao(taskDao);
-        taskManager.setPropertiesProvider(propertiesProvider);
+        taskManager.setSystemPropertiesProvider(propertiesProvider);
+        
+        when(propertiesProvider.getProperty(anyString())).thenReturn("dd");
+
 
     }
 
@@ -71,13 +77,12 @@ public class TaskManagerImplTest {
         // when
 
         when(taskDao.create(task)).thenReturn(createdTask);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.TASK_BASE_URL)).thenReturn("http://url");
         Task resultTask = taskManager.createTask(task);
 
         // then
         assertNotNull(resultTask);
         verify(taskDao).create(task);
-        verify(propertiesProvider).getProperty(SystemPropertiesProvider.TASK_BASE_URL);
+
     }
 
     @Test(expected = SdcRuntimeException.class)
@@ -105,13 +110,12 @@ public class TaskManagerImplTest {
         // when
 
         when(taskDao.update(task)).thenReturn(updatedTask);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.TASK_BASE_URL)).thenReturn("http://url");
         Task resultTask = taskManager.updateTask(task);
 
         // then
         assertNotNull(resultTask);
         verify(taskDao).update(task);
-        verify(propertiesProvider).getProperty(SystemPropertiesProvider.TASK_BASE_URL);
+
     }
 
     @Test
@@ -146,7 +150,6 @@ public class TaskManagerImplTest {
 
         // when
         when(taskDao.findByCriteria(criteria)).thenReturn(tasks);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.TASK_BASE_URL)).thenReturn("http://url");
         List<Task> result = taskManager.findByCriteria(criteria);
 
         // then
@@ -161,13 +164,13 @@ public class TaskManagerImplTest {
         task1.setId(1L);
         // when
         when(taskDao.load(1L)).thenReturn(task1);
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.TASK_BASE_URL)).thenReturn("http://url");
+
         Task resultTask = taskManager.load(1L);
 
         // then
         assertNotNull(resultTask);
         verify(taskDao).load(1L);
-        verify(propertiesProvider).getProperty(SystemPropertiesProvider.TASK_BASE_URL);
+
     }
 
 }
