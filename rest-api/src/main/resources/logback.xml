@@ -69,7 +69,7 @@
 	</logger>
 
 	<logger name="com.telefonica.euro_iaas.sdc.rest.auth"
-		additivity="true">
+		additivity="false">
 		<level value="DEBUG" />
 		<appender-ref ref="authentication" />
 	</logger>
@@ -92,7 +92,7 @@
 
 	<root>
 		<level value="WARN" />
-		<appender-ref ref="sdcConsole" />
+		<appender-ref ref="sdcAppender" />
 	</root>
 
 </configuration>
