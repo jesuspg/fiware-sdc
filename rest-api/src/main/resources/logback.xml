@@ -2,52 +2,74 @@
 
 <configuration>
 
-	<appender name="sdcAppender" class="ch.qos.logback.core.FileAppender">
+	<appender name="sdcAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${catalina.base}/logs/sdc.log</file>
-		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${catalina.base}/logs/sdc.%d{yyyy-MM-dd}.gz</fileNamePattern>
+		</rollingPolicy>
 		<encoder>
 			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
 			</pattern>
 		</encoder>
 	</appender>
 
-	 <appender name="puppetAppender" class="ch.qos.logback.core.FileAppender">
+	<appender name="puppetAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${catalina.base}/logs/puppet.log</file>
-		<append>true</append>
-		<encoder>
-			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
-			</pattern>
-		</encoder>
-	</appender>
-	
-	<appender name="chefAppender" class="ch.qos.logback.core.FileAppender">
-		<file>${catalina.base}/logs/chef.log</file>
-		<append>true</append>
-		<encoder>
-			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
-			</pattern>
-		</encoder>
-	</appender>
-	<appender name="authentication" class="ch.qos.logback.core.FileAppender">
-		<file>${catalina.base}/logs/authentication.log</file>
-		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${catalina.base}/logs/puppet.%d{yyyy-MM-dd}.gz</fileNamePattern>
+		</rollingPolicy>
 		<encoder>
 			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
 			</pattern>
 		</encoder>
 	</appender>
 
-	<logger name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl" additivity="true">
+	<appender name="chefAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base}/logs/chef.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${catalina.base}/logs/chef.%d{yyyy-MM-dd}.gz</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="authentication"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base}/logs/authentication.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${catalina.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger
+		name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl"
+		additivity="true">
 		<level value="DEBUG" />
 		<appender-ref ref="puppetAppender" />
 	</logger>
-	
-	<logger name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl" additivity="true">
+
+	<logger
+		name="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl"
+		additivity="true">
 		<level value="DEBUG" />
 		<appender-ref ref="chefAppender" />
 	</logger>
-	
-	<logger name="com.telefonica.euro_iaas.sdc.rest.auth" additivity="true">
+
+	<logger name="com.telefonica.euro_iaas.sdc.rest.auth"
+		additivity="true">
 		<level value="DEBUG" />
 		<appender-ref ref="authentication" />
 	</logger>
@@ -56,11 +78,11 @@
 		<level value="DEBUG" />
 		<appender-ref ref="sdcAppender" />
 	</logger>
-	
+
 	<logger name="org.hibernate" additivity="false">
-        <level value="WARN"/>
-        <appender-ref ref="sdcAppender"/>
-    </logger>
+		<level value="WARN" />
+		<appender-ref ref="sdcAppender" />
+	</logger>
 
 	<!-- SpringFramework logger -->
 	<logger name="org.springframework" additivity="false">
