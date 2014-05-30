@@ -24,13 +24,12 @@
 
 package com.telefonica.euro_iaas.sdc.model.dto;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import java.util.NoSuchElementException;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 
 /**
  * 
@@ -39,7 +38,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 /**
  * @author jesus.movilla
  */
-public class ChefClientTest extends TestCase {
+public class ChefClientTest {
 
     ChefClient chefClient;
     String json;
@@ -83,6 +82,15 @@ public class ChefClientTest extends TestCase {
         node.removeAttritube(KEY1);
         assertEquals(node.getAttributes().size(), 1);
 
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void shouldThrowExceptionWithUnknownName() throws Exception {
+        // Given
+
+        // When
+        chefClient.getChefClientName(json, "unknown");
+        // Then
     }
 
 }
