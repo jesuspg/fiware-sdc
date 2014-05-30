@@ -48,33 +48,30 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
-
 public class InstallatorPuppetImpl implements Installator {
-    
+
     private static Logger log = Logger.getLogger("InstallatorPuppetImpl");
 
     private HttpClient client;
-    
+
     private OpenStackRegion openStackRegion;
 
+    public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
+            throws InstallatorException {
 
-    public void callService(VM vm, String vdc, ProductRelease product, String action, String token) throws InstallatorException {
+        String puppetUrl = null;
+        try {
+            puppetUrl = openStackRegion.getPuppetEndPoint(token);
+        } catch (OpenStackException e) {
+            throw new SdcRuntimeException(e);
+        }
+        HttpPost postInstall = new HttpPost(puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
+                + product.getProduct().getName() + "/" + product.getVersion());
 
-    	String puppetUrl = null;
-		try {
-			puppetUrl = openStackRegion.getChefServerEndPoint(token);
-		} catch (OpenStackException e) {
-			 throw new SdcRuntimeException(e);
-		}
-        HttpPost postInstall = new HttpPost(puppetUrl
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
-        
         postInstall.addHeader("Content-Type", "application/json");
-        
-        System.out.println("puppetURL: "+puppetUrl
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
+
+        System.out.println("puppetURL: " + puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
+                + product.getProduct().getName() + "/" + product.getVersion());
 
         HttpResponse response;
 
@@ -85,15 +82,14 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                String msg=format("[puppet install] response code was: {0}", statusCode);
+                String msg = format("[puppet install] response code was: {0}", statusCode);
                 log.info(msg);
                 throw new InstallatorException(format(msg));
             }
 
             // generate files in puppet master
-            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/"
-                            + vm.getHostname());
-            
+            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/" + vm.getHostname());
+
             postGenerate.addHeader("Content-Type", "application/json");
 
             response = client.execute(postGenerate);
@@ -102,8 +98,7 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                throw new InstallatorException(format("[install] generete files response code was: {0}",
-                        statusCode));
+                throw new InstallatorException(format("[install] generete files response code was: {0}", statusCode));
             }
         } catch (IOException e) {
             throw new InstallatorException(e);
@@ -118,36 +113,35 @@ public class InstallatorPuppetImpl implements Installator {
     }
 
     @Override
-    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
-            throws InstallatorException, NodeExecutionException {
+    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
+            String token) throws InstallatorException, NodeExecutionException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException {
         if (!vm.canWorkWithInstallatorServer()) {
-            String message = "The VM does not include the node hostname required to Install " +
-                            "software";
+            String message = "The VM does not include the node hostname required to Install " + "software";
             throw new InvalidInstallProductRequestException(message);
         }
     }
-    
-    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
-    	this.openStackRegion = openStackRegion;
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 
 }
