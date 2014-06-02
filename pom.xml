@@ -54,7 +54,7 @@
         <!-- plugins versions -->
 
 
-        <compilerInfoDebug>false</compilerInfoDebug>
+        <compilerInfoDebug>true</compilerInfoDebug>
         <compilerOptimize>false</compilerOptimize>
         <compilerShowWarnings>true</compilerShowWarnings>
         <compilerShowDeprecation>true</compilerShowDeprecation>
