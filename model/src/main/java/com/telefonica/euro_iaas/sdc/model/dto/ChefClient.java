@@ -165,7 +165,7 @@ public class ChefClient {
     public void fromJson(JSONObject jsonNode) {
         name = jsonNode.getString("name");
         publickey = jsonNode.getString("public_key");
-     //   _rev = jsonNode.getString("_rev");
+        // _rev = jsonNode.getString("_rev");
         admin = jsonNode.getString("admin");
     }
 
@@ -197,15 +197,18 @@ public class ChefClient {
     public String getChefClientName(String stringChefClients, String hostname) {
 
         String[] output = stringChefClients.split("\"" + hostname);
+        if (output.length == 1) {
+            throw new NoSuchElementException("The hostname " + hostname + " not found in json");
+        }
         String url = output[1].split("\"")[2];
         System.out.println("url:" + url);
         String nameAux = url.split("clients")[1];
         System.out.println("nameAux:" + nameAux);
         if (nameAux.startsWith("\\"))
-            //String name = nameAux.substring(1, nameAux.length());
+            // String name = nameAux.substring(1, nameAux.length());
             return nameAux.substring(2, nameAux.length());
         else
-            //String name = nameAux.substring(1, nameAux.length());
+            // String name = nameAux.substring(1, nameAux.length());
             return nameAux.substring(1, nameAux.length());
     }
 }

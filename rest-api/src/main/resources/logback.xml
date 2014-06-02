@@ -68,15 +68,15 @@
 		<appender-ref ref="chefAppender" />
 	</logger>
 
+	<logger name="com.telefonica.euro_iaas.sdc" additivity="true">
+		<level value="DEBUG" />
+		<appender-ref ref="sdcAppender" />
+	</logger>
+	
 	<logger name="com.telefonica.euro_iaas.sdc.rest.auth"
 		additivity="false">
 		<level value="DEBUG" />
 		<appender-ref ref="authentication" />
-	</logger>
-
-	<logger name="com.telefonica.euro_iaas.sdc" additivity="false">
-		<level value="DEBUG" />
-		<appender-ref ref="sdcAppender" />
 	</logger>
 
 	<logger name="org.hibernate" additivity="false">
