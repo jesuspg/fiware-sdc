@@ -27,6 +27,8 @@
  */
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.util.NoSuchElementException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
