@@ -30,9 +30,10 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.SDC_MAN
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -62,7 +63,8 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
-    private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
+    
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
   
@@ -82,7 +84,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
             
             updateSuccessTask(task, productInstance);
 
-            LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
+            log.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
             String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
@@ -124,7 +126,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.configure(productInstance, configuration, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " configured successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -151,7 +153,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.upgrade(productInstance, productRelease, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " upgraded successfully");
         } catch (NotTransitableException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -184,7 +186,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             productInstanceManager.uninstall(productInstance, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product " + productInstance.getId()
@@ -269,8 +271,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing a product action. See task " + task.getHref()
-                + "for more information");
+        log.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
+                + " for more information");
     }
 
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {

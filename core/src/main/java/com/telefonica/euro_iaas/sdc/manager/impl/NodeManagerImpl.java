@@ -31,8 +31,9 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -53,7 +54,6 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 
-
 /**
  * @author alberts
  */
@@ -65,29 +65,23 @@ public class NodeManagerImpl implements NodeManager {
     private HttpClient client;
     private OpenStackRegion openStackRegion;
 
-
-    private static Logger log = Logger.getLogger("NodeManagerImpl");
+    private static Logger log = LoggerFactory.getLogger(NodeManagerImpl.class);
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete
-     * (java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete (java.lang.String, java.lang.String)
      */
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
         try {
-            
-            puppetDelete(vdc,nodeName, token);
-            chefClientDelete(vdc,nodeName, token);
-        
+
+            puppetDelete(vdc, nodeName, token);
+            chefClientDelete(vdc, nodeName, token);
+
         } catch (ChefClientExecutionException e) {
             throw new NodeExecutionException(e);
         }
-        
-        
-        
+
         List<ProductInstance> productInstances = null;
 
         // eliminacion de los productos instalados en la maquina virtual
@@ -104,18 +98,17 @@ public class NodeManagerImpl implements NodeManager {
         }
 
     }
-    
+
     private void puppetDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
-        
+
         HttpDelete delete;
-		try {
-			delete = new HttpDelete(openStackRegion.getPuppetEndPoint(token)
-			        + "delete/node/"+nodeName);
-		} catch (OpenStackException e2) {
-			log.info(e2.getMessage());
-			 throw new NodeExecutionException(e2);
-		}
-        
+        try {
+            delete = new HttpDelete(openStackRegion.getPuppetEndPoint(token) + "delete/node/" + nodeName);
+        } catch (OpenStackException e2) {
+            log.info(e2.getMessage());
+            throw new NodeExecutionException(e2);
+        }
+
         delete.setHeader("Content-Type", "application/json");
 
         HttpResponse response;
@@ -127,7 +120,7 @@ public class NodeManagerImpl implements NodeManager {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                String msg=format("[puppet delete node] response code was: {0}", statusCode);
+                String msg = format("[puppet delete node] response code was: {0}", statusCode);
                 log.info(msg);
                 throw new NodeExecutionException(msg);
             }
@@ -139,7 +132,7 @@ public class NodeManagerImpl implements NodeManager {
             log.info(e1.getMessage());
             throw new NodeExecutionException(e1);
         }
-        
+
     }
 
     private void chefClientDelete(String vdc, String chefClientName, String token) throws ChefClientExecutionException {
@@ -148,14 +141,13 @@ public class NodeManagerImpl implements NodeManager {
         String hostname = null;
         try {
             // Eliminacion del nodo
-            node = chefNodeDao.loadNode(chefClientName,token);
-            chefNodeDao.deleteNode(node,token);
+            node = chefNodeDao.loadNode(chefClientName, token);
+            chefNodeDao.deleteNode(node, token);
             log.info("Node " + chefClientName + " deleted from Chef Server");
 
             // eliminacion del chefClient
-            chefClientDao.deleteChefClient(chefClientName,token);
+            chefClientDao.deleteChefClient(chefClientName, token);
 
-            
         } catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
@@ -167,15 +159,15 @@ public class NodeManagerImpl implements NodeManager {
             throw new ChefClientExecutionException(errorMsg, e2);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll()
      */
-    public ChefClient chefClientfindByHostname(String hostname,String token) throws EntityNotFoundException,
+    public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
             ChefClientExecutionException {
 
-        ChefClient chefClient = new ChefClient();
+        ChefClient chefClient;
         try {
             chefClient = chefClientDao.chefClientfindByHostname(hostname, token);
         } catch (EntityNotFoundException e) {
@@ -210,9 +202,7 @@ public class NodeManagerImpl implements NodeManager {
         }
         return chefClient;
     }
-    
-    
-    
+
     /**
      * @param chefClientDao
      *            the chefClientDao to set
@@ -236,7 +226,7 @@ public class NodeManagerImpl implements NodeManager {
     public void setProductInstanceDao(ProductInstanceDao productInstanceDao) {
         this.productInstanceDao = productInstanceDao;
     }
-    
+
     /**
      * @param client
      *            the client to set
@@ -244,9 +234,9 @@ public class NodeManagerImpl implements NodeManager {
     public void setClient(HttpClient client) {
         this.client = client;
     }
-    
-    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
-    	this.openStackRegion = openStackRegion;
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 
 }

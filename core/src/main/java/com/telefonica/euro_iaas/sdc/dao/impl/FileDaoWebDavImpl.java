@@ -30,10 +30,10 @@ import static com.telefonica.euro_iaas.sdc.util.Configuration.WEBDAV_USERNAME;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.sardine.DavResource;
 import com.googlecode.sardine.Sardine;
@@ -55,7 +55,7 @@ public class FileDaoWebDavImpl implements FileDao {
  //   SystemPropertiesProvider propertiesProvider;
     Client client;
     Sardine sardine;
-    private static Logger LOGGER = Logger.getLogger("FileDaoWebDavImpl");
+    private static Logger log = LoggerFactory.getLogger(FileDaoWebDavImpl.class);
 
     /**
      * {@inheritDoc}
@@ -66,7 +66,7 @@ public class FileDaoWebDavImpl implements FileDao {
         sardine = SardineFactory.begin(WEBDAV_USERNAME,
                 WEBDAV_PASSWD);
         sardine.createDirectory(webdavDirectoryUrl);
-        LOGGER.log(Level.INFO, webdavDirectoryUrl + " CREATED ");
+        log.info(webdavDirectoryUrl + " CREATED ");
     }
 
     /**
@@ -81,7 +81,7 @@ public class FileDaoWebDavImpl implements FileDao {
         try {
             data = FileUtils.readFileToByteArray(new File(installable.getAbsolutePath()));
             sardine.put(webdavFileUrl, data);
-            LOGGER.log(Level.INFO, webdavFileUrl + " INSERTED ");
+            log.info(webdavFileUrl + " INSERTED ");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             throw new SdcRuntimeException(e);
@@ -99,7 +99,7 @@ public class FileDaoWebDavImpl implements FileDao {
         sardine = SardineFactory.begin(WEBDAV_USERNAME,
                 WEBDAV_PASSWD);
         sardine.delete(webdavUrl);
-        LOGGER.log(Level.INFO, webdavUrl + " DELETED ");
+        log.info( webdavUrl + " DELETED ");
     }
 
     /**
@@ -114,7 +114,7 @@ public class FileDaoWebDavImpl implements FileDao {
         List<DavResource> resources = sardine.getResources(directoryBase);
         for (DavResource res : resources) {
             if (res.getAbsoluteUrl().equals(webdavUrl)) {
-                LOGGER.log(Level.INFO, webdavUrl + " exists in " + directoryBase);
+                log.info( webdavUrl + " exists in " + directoryBase);
                 exist = true;
             }
         }

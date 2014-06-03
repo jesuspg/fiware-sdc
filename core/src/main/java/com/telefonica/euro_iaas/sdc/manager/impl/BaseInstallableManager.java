@@ -56,25 +56,25 @@ public class BaseInstallableManager {
     private OpenStackRegion openStackRegion;
 
     private String INSTALLABLE_NOT_FOUND = "404";
-    private static Logger LOGGER = Logger.getLogger("BaseInstallableManager");
+    private static Logger log = Logger.getLogger("BaseInstallableManager");
 
     // *************** METHODS RELATED TO CHEF SERVER ******************
     protected void uploadRecipe(File cookbook, String name) {
         String untarCommand = MessageFormat.format(UNTAR_COMMAND,
                 cookbook.getAbsolutePath(), CHEF_DIRECTORY_COOKBOOK);
         try {
-            LOGGER.log(Level.INFO, "untarCommand : " + untarCommand);
+            log.log(Level.INFO, "untarCommand : " + untarCommand);
             commandExecutor.executeCommand(untarCommand);
 
             String uploadRecipeCommand = MessageFormat.format(UPLOAD_RECIPES_SCRIPT,
                     name);
 
-            LOGGER.log(Level.INFO, "uploadRecipeCommand : " + uploadRecipeCommand);
+            log.log(Level.INFO, "uploadRecipeCommand : " + uploadRecipeCommand);
             commandExecutor.executeCommand(uploadRecipeCommand);
-            LOGGER.log(Level.INFO, "Recipe UPLOADED ");
+            log.log(Level.INFO, "Recipe UPLOADED ");
 
         } catch (ShellCommandException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            log.log(Level.SEVERE, e.getMessage());
             throw new SdcRuntimeException(e);
         }
         cookbook.deleteOnExit();
@@ -87,11 +87,11 @@ public class BaseInstallableManager {
                 version);
 
         try {
-            LOGGER.log(Level.INFO, "deleteRecipeCommand : " + deleteRecipeCommand);
+            log.log(Level.INFO, "deleteRecipeCommand : " + deleteRecipeCommand);
             commandExecutor.executeCommand(deleteRecipeCommand);
-            LOGGER.log(Level.INFO, "Recipe DELETED ");
+            log.log(Level.INFO, "Recipe DELETED ");
         } catch (ShellCommandException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            log.log(Level.SEVERE, e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
@@ -103,7 +103,7 @@ public class BaseInstallableManager {
 		try {
 			webDavUrl = openStackRegion.getWebdavPoint(token);
 		} catch (OpenStackException e1) {
-			LOGGER.log(Level.SEVERE, e1.getMessage());
+			log.log(Level.SEVERE, e1.getMessage());
             throw new SdcRuntimeException(e1);
 		}
     	
@@ -129,11 +129,11 @@ public class BaseInstallableManager {
 		try {
 			webDavUrl = openStackRegion.getWebdavPoint(token);
 		} catch (OpenStackException e1) {
-			LOGGER.log(Level.SEVERE, e1.getMessage());
+			log.log(Level.SEVERE, e1.getMessage());
             throw new SdcRuntimeException(e1);
 		}
 
-        LOGGER.log(Level.INFO, webDavUrl + "/" + releaseDto.getType() + "/"
+        log.log(Level.INFO, webDavUrl + "/" + releaseDto.getType() + "/"
                 + releaseDto.getName() + "/");
         try {
             if (!fileDao.directoryExists(webDavUrl + "/" + releaseDto.getType()
@@ -143,7 +143,7 @@ public class BaseInstallableManager {
                 fileDao.createDirectory(webDavUrl + "/" + releaseDto.getType()
                         + "/" + releaseDto.getName());
             else
-                LOGGER.log(Level.INFO, "Directory " + webDavUrl + "/"
+                log.log(Level.INFO, "Directory " + webDavUrl + "/"
                         + releaseDto.getType() + "/" + releaseDto.getName() + "/" + " already CREATED");
         } catch (SardineException e) {
             throw new SdcRuntimeException(e);
@@ -156,7 +156,7 @@ public class BaseInstallableManager {
                 fileDao.createDirectory(webDavUrl + "/" + releaseDto.getType()
                         + "/" + releaseDto.getName() + "/" + releaseDto.getVersion());
             else
-                LOGGER.log(Level.INFO, "Directory " + webDavUrl + "/"
+                log.log(Level.INFO, "Directory " + webDavUrl + "/"
                         + releaseDto.getType() + "/" + releaseDto.getName() + "/" + releaseDto.getVersion()
                         + " already CREATED");
         } catch (SardineException e) {
@@ -169,7 +169,7 @@ public class BaseInstallableManager {
 		try {
 			webDavUrl = openStackRegion.getWebdavPoint(token);
 		} catch (OpenStackException e1) {
-			LOGGER.log(Level.SEVERE, e1.getMessage());
+			log.log(Level.SEVERE, e1.getMessage());
             throw new SdcRuntimeException(e1);
 		}
         String webdavFileUrl = MessageFormat.format(WEBDAV_FILE_URL,
@@ -182,12 +182,12 @@ public class BaseInstallableManager {
 
                 fileDao.delete(webdavFileUrl);
             else
-                LOGGER.log(Level.INFO,
+                log.log(Level.INFO,
                         "File " + webDavUrl + "/" + releaseDto.getType() + "/"
                                 + releaseDto.getName() + "/" + " does NOT exist");
         } catch (SardineException e) {
             if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)) {
-                LOGGER.log(Level.INFO, webdavFileUrl + " does not EXIST");
+                log.log(Level.INFO, webdavFileUrl + " does not EXIST");
             } else
                 throw new SdcRuntimeException(e);
         }
@@ -200,7 +200,7 @@ public class BaseInstallableManager {
 		try {
 			webDavUrl = openStackRegion.getWebdavPoint(token);
 		} catch (OpenStackException e1) {
-			LOGGER.log(Level.SEVERE, e1.getMessage());
+			log.log(Level.SEVERE, e1.getMessage());
             throw new SdcRuntimeException(e1);
 		}
 
@@ -212,12 +212,12 @@ public class BaseInstallableManager {
                 fileDao.delete(webDavUrl + "/" + releaseDto.getType() + "/"
                         + releaseDto.getName() + "/" + releaseDto.getVersion() + "/");
             else
-                LOGGER.log(Level.INFO, "Directory " + webDavUrl + "/"
+                log.log(Level.INFO, "Directory " + webDavUrl + "/"
                         + releaseDto.getType() + "/" + releaseDto.getName() + "/" + releaseDto.getVersion() + "/"
                         + " does NOT exist");
         } catch (SardineException e) {
             if (String.valueOf(e.getStatusCode()).equals(INSTALLABLE_NOT_FOUND)) {
-                LOGGER.log(Level.INFO, webDavUrl + "/" + releaseDto.getType()
+                log.log(Level.INFO, webDavUrl + "/" + releaseDto.getType()
                         + "/" + releaseDto.getName() + "/" + " does not EXIST");
             } else
                 throw new SdcRuntimeException(e);
@@ -231,7 +231,7 @@ public class BaseInstallableManager {
                 fileDao.delete(webDavUrl + "/" + releaseDto.getType() + "/"
                         + releaseDto.getName() + "/");
             else
-                LOGGER.log(Level.INFO, "Directory " + webDavUrl + "/"
+                log.log(Level.INFO, "Directory " + webDavUrl + "/"
                         + releaseDto.getType() + "/" + releaseDto.getName() + "/" + "  does NOT exist");
         } catch (SardineException e) {
             throw new SdcRuntimeException(e);

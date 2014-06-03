@@ -228,6 +228,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
                 String regionName1 = endpointJson.get("region").toString();
 
                 if (type.equals(name1)) {
+                    
                     url = endpointJson.get("publicURL").toString();
                     urlMap.put(regionName1, url);
                     if ((regionName != null) && (regionName.equals(regionName1))) {

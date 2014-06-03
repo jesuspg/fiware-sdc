@@ -28,8 +28,9 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,36 +49,37 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
-
 public class InstallatorPuppetImpl implements Installator {
-    
-    private static Logger log = Logger.getLogger("InstallatorPuppetImpl");
+  
+    private static Logger log = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
 
     private HttpClient client;
-    
+
     private OpenStackRegion openStackRegion;
 
+    public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
+            throws InstallatorException {
 
-    public void callService(VM vm, String vdc, ProductRelease product, String action, String token) throws InstallatorException {
+        String puppetUrl = null;
+        try {
+            puppetUrl = openStackRegion.getPuppetEndPoint(token);
+        } catch (OpenStackException e) {
+            throw new SdcRuntimeException(e);
+        }
+        HttpPost postInstall = new HttpPost(puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
+                + product.getProduct().getName() + "/" + product.getVersion());
 
-    	String puppetUrl = null;
-		try {
-			puppetUrl = openStackRegion.getChefServerEndPoint(token);
-		} catch (OpenStackException e) {
-			 throw new SdcRuntimeException(e);
-		}
-        HttpPost postInstall = new HttpPost(puppetUrl
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
-        
         postInstall.addHeader("Content-Type", "application/json");
-        
-        System.out.println("puppetURL: "+puppetUrl
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
+
+        System.out.println("puppetURL: " + puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
+                + product.getProduct().getName() + "/" + product.getVersion());
 
         HttpResponse response;
 
+        log.info("Calling puppetWrapper install");
+        log.debug("connecting to puppetURL: "+puppetUrl
+                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
+                + product.getVersion());
         try {
             response = client.execute(postInstall);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -86,14 +88,18 @@ public class InstallatorPuppetImpl implements Installator {
 
             if (statusCode != 200) {
                 String msg=format("[puppet install] response code was: {0}", statusCode);
-                log.info(msg);
+                log.warn(msg);
                 throw new InstallatorException(format(msg));
             }
+            log.debug("statusCode:"+ statusCode);
+            
+            log.info("Calling puppetWrapper generate");
+            log.debug(puppetUrl + "generate/"
+                    + vm.getHostname());
 
             // generate files in puppet master
-            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/"
-                            + vm.getHostname());
-            
+            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/" + vm.getHostname());
+
             postGenerate.addHeader("Content-Type", "application/json");
 
             response = client.execute(postGenerate);
@@ -102,12 +108,17 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                throw new InstallatorException(format("[install] generete files response code was: {0}",
+                String msg=format("generate files response code was: {0}", statusCode);
+                log.warn(msg);
+                throw new InstallatorException(format(msg,
                         statusCode));
             }
+            log.debug("statusCode:"+ statusCode);
         } catch (IOException e) {
+            log.error(e.getMessage());
             throw new InstallatorException(e);
         } catch (IllegalStateException e1) {
+            log.error(e1.getMessage());
             throw new InstallatorException(e1);
         }
 
@@ -118,36 +129,35 @@ public class InstallatorPuppetImpl implements Installator {
     }
 
     @Override
-    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
-            throws InstallatorException, NodeExecutionException {
+    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
+            String token) throws InstallatorException, NodeExecutionException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException {
         if (!vm.canWorkWithInstallatorServer()) {
-            String message = "The VM does not include the node hostname required to Install " +
-                            "software";
+            String message = "The VM does not include the node hostname required to Install " + "software";
             throw new InvalidInstallProductRequestException(message);
         }
     }
-    
-    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
-    	this.openStackRegion = openStackRegion;
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 
 }
