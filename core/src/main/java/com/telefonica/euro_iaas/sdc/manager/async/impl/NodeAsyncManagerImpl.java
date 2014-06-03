@@ -33,9 +33,10 @@ import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.SDC_MAN
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
@@ -53,7 +54,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  */
 public class NodeAsyncManagerImpl implements NodeAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(NodeAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(NodeAsyncManagerImpl.class);
 
     private TaskManager taskManager;
     private TaskNotificator taskNotificator;
@@ -63,7 +64,7 @@ public class NodeAsyncManagerImpl implements NodeAsyncManager {
         try {
             nodeManager.nodeDelete(vdc, nodeName, token);
             updateSuccessTask(task, vdc, nodeName);
-            LOGGER.info("Node   " + nodeName + " is being deleted");
+            log.info("Node   " + nodeName + " is being deleted");
         } catch (NodeExecutionException e) {
             updateErrorTask(vdc, nodeName, task, "The node " + nodeName
                     + " can not be deleted due to an error executing in node.", e);
@@ -110,7 +111,7 @@ public class NodeAsyncManagerImpl implements NodeAsyncManager {
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while deleting a node . See task " + task.getHref()
+        log.info("An error occurs while deleting a node . See task " + task.getHref()
                 + "for more information");
     }
 

@@ -56,7 +56,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
-    private Logger logger = Logger.getLogger(ArtifactAsyncManagerImpl.class.getName());
+    private Logger log = Logger.getLogger(ArtifactAsyncManagerImpl.class.getName());
     private ArtifactManager artifactManager;
     private TaskManager taskManager;
     private TaskNotificator taskNotificator;
@@ -70,7 +70,7 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         try {
             artifactManager.deployArtifact(productInstance, artifact, token);
             updateSuccessTask(task, productInstance);
-            logger.info("Artefact  " + artifact.getName() + " installed in Product "
+            log.info("Artefact  " + artifact.getName() + " installed in Product "
                     + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " successfully");
         } catch (FSMViolationException e) {
@@ -94,7 +94,7 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         try {
             artifactManager.undeployArtifact(productInstance, artifactName, token);
             updateSuccessTask(task, productInstance);
-            logger.info("Artefact  " + artifactName + " uninstalled in Product "
+            log.info("Artefact  " + artifactName + " uninstalled in Product "
                     + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " successfully");
         } catch (FSMViolationException e) {
@@ -166,7 +166,7 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        logger.info("An error occurs while executing a product action. See task " + task.getHref()
+        log.info("An error occurs while executing a product action. See task " + task.getHref()
                 + " for more information");
     }
 

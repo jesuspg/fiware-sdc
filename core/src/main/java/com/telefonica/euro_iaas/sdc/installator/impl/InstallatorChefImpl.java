@@ -83,7 +83,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         
         configureNode(vm, attributes, process, recipe, token);
         try {
-            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
+            log.info("Updating node with recipe " + recipe + " in " + vm.getIp());
             if (isSdcClientInstalled()) {
                 executeRecipes(vm);
                 // unassignRecipes(vm, recipe);
@@ -169,7 +169,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             try {
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + process + " coub not be executed in " + vm.getChefClientName();
-                    LOGGER.info(errorMesg);
+                    log.info(errorMesg);
                     unassignRecipes(vm, recipe, token);
                     throw new NodeExecutionException(errorMesg);
                 }
@@ -179,7 +179,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
                 
                 long last_recipeexecution_timestamp = getLastRecipeExecutionTimeStamp (node);
-                LOGGER.info("last_recipeexecution_timestamp:" + last_recipeexecution_timestamp 
+                log.info("last_recipeexecution_timestamp:" + last_recipeexecution_timestamp 
                                 + "fechaAhora:" + fechaAhora.getTime());
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
                     //if (isRecipeExecutedOK(process, node))
@@ -207,20 +207,20 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
    private long getLastRecipeExecutionTimeStamp (ChefNode node) throws NodeExecutionException{
         String platform = node.getAutomaticAttributes().get("platform").toString();
         String platform_version = node.getAutomaticAttributes().get("platform_version").toString();
-        LOGGER.info("platform:" + platform + " platform_version:" + platform_version);
+        log.info("platform:" + platform + " platform_version:" + platform_version);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
         long last_recipeexecution_timestamp =0;
 
         String ohai_time_format = node.getAutomaticAttributes().get("ohai_time").toString();
-        LOGGER.info("ohai_time_format:[" + ohai_time_format +"]");
+        log.info("ohai_time_format:[" + ohai_time_format +"]");
 
         try {
             Date ohai_time_date = df.parse(ohai_time_format);
             last_recipeexecution_timestamp = ohai_time_date.getTime();
         } catch (ParseException ex) {
             String message = "Error parsing ohai_time date copming from node: " + ex.getMessage();
-            LOGGER.info(message);
+            log.info(message);
             throw new NodeExecutionException (message);
         }
         return last_recipeexecution_timestamp;

@@ -67,7 +67,7 @@ public class ProductResourceImpl implements ProductResource {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger LOGGER = Logger.getLogger("ProductResourceImpl");
+    private static Logger log = Logger.getLogger("ProductResourceImpl");
 
     /**
      * Insert a product into SDC Databse.

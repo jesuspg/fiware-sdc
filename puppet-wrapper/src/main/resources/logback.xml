@@ -8,20 +8,16 @@
 		</encoder>
 	</appender>
 	
-	<logger name="com.telefonica.euro_iaas.sdc.puppetwrapper" additivity="false">
+	<logger name="com.telefonica.euro_iaas.sdc" additivity="false">
 		<level value="DEBUG" />
 		<appender-ref ref="puppetwrapper" />
 	</logger>
 	
 	<!-- SpringFramework logger -->
      <logger name="org.springframework" additivity="false">
-        <level value="debug" />
+        <level value="warn" />
         <appender-ref ref="puppetwrapper" />
     </logger>
-
-	<logger name="de.flapdoodle.embed.mongo" additivity="false">
-		<level value="info" />
-	</logger>
 
 	<root>
 		<level value="DEBUG" />

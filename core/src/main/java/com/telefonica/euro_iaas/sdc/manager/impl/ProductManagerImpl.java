@@ -48,14 +48,14 @@ import com.xmlsolutions.annotation.UseCase;
 public class ProductManagerImpl extends BaseInstallableManager implements ProductManager {
 
     private ProductDao productDao;
-    private static Logger LOGGER = Logger.getLogger("ProductManagerImpl");
+    private static Logger log = Logger.getLogger("ProductManagerImpl");
 
     public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
 
         Product productOut;
         try {
             productOut = productDao.load(product.getName());
-            LOGGER.log(Level.INFO, "Product " + productOut.getName() + " LOADED");
+            log.log(Level.INFO, "Product " + productOut.getName() + " LOADED");
         } catch (EntityNotFoundException e) {
 
             List<Metadata> metadatas = new ArrayList<Metadata>();

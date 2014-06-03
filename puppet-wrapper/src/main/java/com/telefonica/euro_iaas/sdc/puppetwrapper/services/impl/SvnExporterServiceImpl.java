@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.services.impl;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -49,7 +49,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.ModuleDownloader;
 @Service("svnExporterService")
 public class SvnExporterServiceImpl implements ModuleDownloader {
 
-    private static final Log logger = LogFactory.getLog(SvnExporterServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SvnExporterServiceImpl.class);
 
     private String modulesCodeDownloadPath;
 
@@ -74,11 +74,11 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
             ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password);
             repository.setAuthenticationManager(authManager);
             // output some data to verify connection
-            logger.debug("Repository Root: " + repository.getRepositoryRoot(true));
-            logger.debug("Repository UUID: " + repository.getRepositoryUUID(true));
+            log.debug("Repository Root: " + repository.getRepositoryRoot(true));
+            log.debug("Repository UUID: " + repository.getRepositoryUUID(true));
             // need to identify latest revision
             long latestRevision = repository.getLatestRevision();
-            logger.debug("Repository Latest Revision: " + latestRevision);
+            log.debug("Repository Latest Revision: " + latestRevision);
 
             // create client manager and set authentication
             SVNClientManager ourClientManager = SVNClientManager.newInstance();
@@ -95,7 +95,7 @@ public class SvnExporterServiceImpl implements ModuleDownloader {
         } catch (Exception ex) {
             throw new ModuleDownloaderException(ex);
         }
-        logger.debug("Done");
+        log.debug("Done");
     }
 
     @Value(value = "${modulesCodeDownloadPath}")

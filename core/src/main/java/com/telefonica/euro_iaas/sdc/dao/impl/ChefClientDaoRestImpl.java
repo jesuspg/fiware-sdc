@@ -34,32 +34,21 @@ import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_SERVER_CLIENT
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
@@ -79,8 +68,8 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     SystemPropertiesProvider propertiesProvider;
     MixlibAuthenticationDigester digester;
     ChefClientConfig clientConfig;
+    private static Logger log = LoggerFactory.getLogger(ChefClientDaoRestImpl.class);
     private OpenStackRegion openStackRegion;
-    private static Logger LOGGER = Logger.getLogger("ChefClientDaoRestImpl");
 
     /*
      * (non-Javadoc)
@@ -96,7 +85,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 			} catch (OpenStackException e) {
 				 throw new SdcRuntimeException(e);
 			}
-            LOGGER.info(chefServer+ path);
+            log.info(chefServer+ path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = clientConfig.getClient().resource(chefServer + path);
@@ -143,7 +132,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             Map<String, String> header = getHeaders("DELETE", path, "");
 
         	
-        	LOGGER.info(chefServerUrl + path);
+        	log.info(chefServerUrl + path);
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
 
             Builder wr = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
@@ -176,7 +165,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         
         try {
         	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
-        	LOGGER.info(chefServerUrl + path);
+        	log.info(chefServerUrl + path);
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);

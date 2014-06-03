@@ -26,28 +26,25 @@ package com.telefonica.euro_iaas.sdc.puppetwrapper.controllers;
 
 import java.util.NoSuchElementException;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.ModuleDownloaderException;
 import com.telefonica.euro_iaas.sdc.puppetwrapper.data.PuppetWrapperError;
 
 public class GenericController {
     
-    private static final Log logger = LogFactory.getLog(GenericController.class);
+    private static final Logger log = LoggerFactory.getLogger(GenericController.class);
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public PuppetWrapperError handleNoSuchElementException(NoSuchElementException ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
     
@@ -55,7 +52,7 @@ public class GenericController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public PuppetWrapperError handleModuleDownloaderException(ModuleDownloaderException ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
     
@@ -63,7 +60,7 @@ public class GenericController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public PuppetWrapperError handleException(Exception ex) {
-        logger.error(ex.getMessage());
+        log.error(ex.getMessage());
         return new PuppetWrapperError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 

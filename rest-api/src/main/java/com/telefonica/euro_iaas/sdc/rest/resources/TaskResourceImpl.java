@@ -54,7 +54,7 @@ public class TaskResourceImpl implements TaskResource {
  //   @InjectParam("taskManager")
     private TaskManager taskManager;
     
-    private static Logger LOGGER = Logger.getLogger("TaskResourceImpl");
+    private static Logger log = Logger.getLogger("TaskResourceImpl");
 
     @Override
     public Task load(Long id) throws EntityNotFoundException {
