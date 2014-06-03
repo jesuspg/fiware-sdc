@@ -127,7 +127,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     		chefClientName = "/"+chefClientName;
     	}
         try {
-        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
+        	String path = MessageFormat.format(CHEF_SERVER_CLIENTS_PATH, chefClientName);
             // String payload = node.toJson();
             Map<String, String> header = getHeaders("DELETE", path, "");
 
@@ -164,8 +164,10 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     	}
         
         try {
-        	String path = MessageFormat.format(propertiesProvider.getProperty(CHEF_SERVER_CLIENTS_PATH), chefClientName);
+
+        	String path = MessageFormat.format(CHEF_SERVER_CLIENTS_PATH, chefClientName);
         	log.info(chefServerUrl + path);
+
 
             Map<String, String> header = getHeaders("GET", path, "");
             WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
