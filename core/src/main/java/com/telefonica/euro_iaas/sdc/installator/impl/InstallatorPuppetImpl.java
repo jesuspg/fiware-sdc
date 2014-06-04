@@ -62,7 +62,7 @@ public class InstallatorPuppetImpl implements Installator {
 
         String puppetUrl = null;
         try {
-            puppetUrl = openStackRegion.getPuppetEndPoint(token);
+            puppetUrl = openStackRegion.getPuppetWrapperEndPoint(token);
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }

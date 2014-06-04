@@ -103,7 +103,7 @@ public class NodeManagerImpl implements NodeManager {
 
         HttpDelete delete;
         try {
-            delete = new HttpDelete(openStackRegion.getPuppetEndPoint(token) + "delete/node/" + nodeName);
+            delete = new HttpDelete(openStackRegion.getPuppetWrapperEndPoint(token) + "delete/node/" + nodeName);
         } catch (OpenStackException e2) {
             log.info(e2.getMessage());
             throw new NodeExecutionException(e2);

@@ -66,7 +66,7 @@ public interface OpenStackRegion {
 
 	String getChefServerEndPoint(String token) throws OpenStackException;
 	
-	String getPuppetEndPoint(String token) throws OpenStackException;
+	String getPuppetWrapperEndPoint(String token) throws OpenStackException;
 	
 	String getWebdavPoint(String token) throws OpenStackException;
 	
