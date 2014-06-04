@@ -88,9 +88,21 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      */
     private static Logger log = LoggerFactory.getLogger(OpenStackAuthenticationProvider.class);
     /**
-     * Thread to recover a valid X-Auth-Token each 24 hour
+     * Thread to recover a valid X-Auth-Token each 24 hour.
      */
     OpenStackAuthenticationToken oSAuthToken = null;
+
+    /**
+     * + * Jersey client used to validates token to OpenStack. +
+     */
+    private Client client;
+
+    /**
+     * + * Default constructor.
+     */
+    public OpenStackAuthenticationProvider() {
+        client = Client.create();
+    }
 
     /*
      * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
@@ -126,7 +138,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * @return the open stack user
      */
     @SuppressWarnings("deprecation")
-    private PaasManagerUser authenticationFiware(String token, String tenantId) {
+    public PaasManagerUser authenticationFiware(String token, String tenantId) {
 
         String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
@@ -140,73 +152,97 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
-        if (oSAuthToken == null) {
-            ArrayList<Object> params = new ArrayList();
-
-            Long threshold = Long.parseLong(thresholdString);
-
-            params.add(keystoneURL);
-            params.add(adminTenant);
-            params.add(adminUser);
-            params.add(adminPass);
-            params.add(httpClient);
-            params.add(threshold);
-
-            oSAuthToken = new OpenStackAuthenticationToken(params);
-        }
+        configureOpenStackAuthenticationToken(keystoneURL, adminUser, adminPass, adminTenant, thresholdString,
+                httpClient);
 
         String[] credential = oSAuthToken.getCredentials();
 
         log.debug("Keystone URL : " + keystoneURL);
         log.debug("adminToken : " + credential[0]);
 
-        Client client = Client.create();
         WebResource webResource = client.resource(keystoneURL);
         try {
 
             // Validate user's token
-            AuthenticateResponse responseAuth = webResource.path("tokens").path(token)
-                    .header("Accept", "application/xml").header("X-Auth-Token", credential[0])
-                    .get(AuthenticateResponse.class);
-
-            if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
-                throw new AuthenticationServiceException("Token " + responseAuth.getToken().getTenant().getId()
-                        + " not valid for the tenantId provided:" + tenantId);
-            }
-
-            Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
-
-            if (responseAuth.getUser().getRoles() != null) {
-                for (Role role : responseAuth.getUser().getRoles().getRole()) {
-                    authsSet.add(new GrantedAuthorityImpl(role.getName()));
-                }
-            }
-
-            PaasManagerUser user = new PaasManagerUser(responseAuth.getUser().getOtherAttributes()
-                    .get(new QName("username")), token, authsSet);
-
-            user.setTenantId(tenantId);
-            user.setTenantName(responseAuth.getToken().getTenant().getName());
-            user.setToken(token);
-            return user;
+            return validateUserToken(
+                    token,
+                    tenantId,
+                    webResource.path("tokens").path(token).header("Accept", "application/xml")
+                            .header("X-Auth-Token", credential[0]).get(AuthenticateResponse.class));
 
         } catch (UniformInterfaceException e) {
-            // this.OSAuthToken.close();
-            // this.OSAuthToken = null;
+            log.warn("response status:" + e.getResponse().getStatus());
 
-            log.error("response status:" + e.getResponse().getStatus());
+            if (e.getResponse().getStatus() == CODE_401) {
+                // create new admin token
+                configureOpenStackAuthenticationToken(keystoneURL, adminUser, adminPass, adminTenant, thresholdString,
+                        httpClient);
+                String[] newCredentials = oSAuthToken.getCredentials();
+                // try validateUserToken
+                WebResource webResource2 = client.resource(keystoneURL);
+                return validateUserToken(
+                        token,
+                        tenantId,
+                        webResource2.path("tokens").path(token).header("Accept", "application/xml")
+                                .header("X-Auth-Token", newCredentials[0]).get(AuthenticateResponse.class));
 
-            if ((e.getResponse().getStatus() == CODE_401) || (e.getResponse().getStatus() == CODE_403)
-                    || (e.getResponse().getStatus() == CODE_404)) {
+            } else if ((e.getResponse().getStatus() == CODE_403) || (e.getResponse().getStatus() == CODE_404)) {
                 throw new BadCredentialsException("Token not valid", e);
             }
-
             throw new AuthenticationServiceException("Token not valid", e);
+
         } catch (Exception e) {
-            // this.OSAuthToken.close();
-            // this.OSAuthToken = null;
 
             throw new AuthenticationServiceException("unknown problem", e);
+        }
+    }
+
+    /**
+     * + * Connect to keystone and validate user token using admin token. + * + * @param token + * @param tenantId + * @param
+     * authenticateResponse + * @return +
+     */
+    private PaasManagerUser validateUserToken(String token, String tenantId, AuthenticateResponse authenticateResponse) {
+        AuthenticateResponse responseAuth = authenticateResponse;
+
+        if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
+            throw new AuthenticationServiceException("Token " + responseAuth.getToken().getTenant().getId()
+                    + " not valid for the tenantId provided:" + tenantId);
+        }
+
+        Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
+
+        if (responseAuth.getUser().getRoles() != null) {
+            for (Role role : responseAuth.getUser().getRoles().getRole()) {
+                authsSet.add(new GrantedAuthorityImpl(role.getName()));
+            }
+        }
+
+        PaasManagerUser user = new PaasManagerUser(responseAuth.getUser().getOtherAttributes()
+
+        .get(new QName("username")), token, authsSet);
+        user.setTenantId(tenantId);
+        user.setTenantName(responseAuth.getToken().getTenant().getName());
+        user.setToken(token);
+        return user;
+    }
+
+    private void configureOpenStackAuthenticationToken(String keystoneURL, String adminUser, String adminPass,
+            String adminTenant, String thresholdString, DefaultHttpClient httpClient) {
+        ArrayList<Object> params = new ArrayList();
+
+        Long threshold = Long.parseLong(thresholdString);
+
+        params.add(keystoneURL);
+        params.add(adminTenant);
+        params.add(adminUser);
+        params.add(adminPass);
+        params.add(httpClient);
+        params.add(threshold);
+
+        if (oSAuthToken == null) {
+            oSAuthToken = new OpenStackAuthenticationToken(params);
+        } else {
+            oSAuthToken.initialize(params);
         }
     }
 
@@ -217,6 +253,10 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      */
     public final SystemPropertiesProvider getSystemPropertiesProvider() {
         return systemPropertiesProvider;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     /*
