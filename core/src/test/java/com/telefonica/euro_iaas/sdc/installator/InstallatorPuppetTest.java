@@ -109,7 +109,7 @@ public class InstallatorPuppetTest {
         puppetInstallator = new InstallatorPuppetImpl();
         puppetInstallator.setClient(client);
         puppetInstallator.setOpenStackRegion(openStackRegion);
-        when (openStackRegion.getPuppetEndPoint("token")).thenReturn("http://");
+        when (openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
    
     }
     
