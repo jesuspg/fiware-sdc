@@ -48,3 +48,31 @@ DEFAULT_METADATA = {"metadata": [{"key": "image", "value": "df44f62d-9d66-4dc5-b
 
 PRODUCT_RELEASE_WITHOUT_RELEASES_RESPONSE = u'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' \
                                             u'<productReleases></productReleases>'
+
+FABRIC_RESULT_EXECUTE = u'<local-only>'
+
+#PRODUCT_INSTALLATION_PARAMETERS
+
+PRODUCT_INSTANCE = u'productInstanceDto'
+VM = u'vm'
+HOSTNAME = u'hostname'
+IP = u'ip'
+FQN = u'fqn'
+OSTYPE = u'osType'
+
+
+# METADATAS VALUES
+
+INSTALLATOR = u'instalator'
+INSTALLATOR_VALUE = (u'puppet', u'chef')
+
+
+#TASKS
+TASK_URL = u'@href'
+RUNNING = u'RUNNING'
+SUCCESS = u'SUCCESS'
+ERROR = u'ERROR'
+INSTALLED = u'INSTALLED'
+STATUS = u'status'
+STATUS_XML = u'@status'
+VDC = u'VDC'
