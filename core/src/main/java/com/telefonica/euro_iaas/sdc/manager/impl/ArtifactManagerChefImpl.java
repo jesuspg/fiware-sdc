@@ -69,7 +69,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
      * @throws InstallatorException
      */
 
-    public ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact)
+    public ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
         Status previousStatus = productInstance.getStatus();
         try {
@@ -80,7 +80,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
             // VM vm = productInstance.getVm();
 
             installator
-                    .callService(productInstance, productInstance.getVm(), artifact.getAttributes(), DEPLOY_ARTIFACT);
+                    .callService(productInstance, productInstance.getVm(), artifact.getAttributes(), DEPLOY_ARTIFACT, token);
 
             productInstance.setStatus(Status.INSTALLED);
 
@@ -112,7 +112,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
 
     }
 
-    public ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName)
+    public ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
         Status previousStatus = productInstance.getStatus();
         try {
@@ -124,7 +124,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
             VM vm = productInstance.getVm();
 
             installator.callService(productInstance, productInstance.getVm(), artifact.getAttributes(),
-                    UNDEPLOY_ARTIFACT);
+                    UNDEPLOY_ARTIFACT, token);
 
             productInstance.setStatus(Status.INSTALLED);
 

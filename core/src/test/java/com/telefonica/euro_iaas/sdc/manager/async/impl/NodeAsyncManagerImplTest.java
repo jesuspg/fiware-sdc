@@ -46,15 +46,14 @@ public class NodeAsyncManagerImplTest {
     NodeAsyncManagerImpl nodeAsyncManager;
     NodeManager nodeManager = mock(NodeManager.class);
     TaskNotificator taskNotificator = mock(TaskNotificator.class);
-    SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
+   
     TaskManager taskManager = mock(TaskManager.class);
 
     @Before
     public void setup() {
         nodeAsyncManager = new NodeAsyncManagerImpl();
         nodeAsyncManager.setNodeManager(nodeManager);
-        nodeAsyncManager.setTaskNotificator(taskNotificator);
-        nodeAsyncManager.setPropertiesProvider(propertiesProvider);
+        nodeAsyncManager.setTaskNotificator(taskNotificator);;
         nodeAsyncManager.setTaskManager(taskManager);
     }
 
@@ -67,11 +66,11 @@ public class NodeAsyncManagerImplTest {
         String callback = "http://callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.CHEF_NODE_BASE_URL)).thenReturn("http://baseurl");
-        nodeAsyncManager.nodeDelete(vdc, nodeName, task, callback);
+       
+        nodeAsyncManager.nodeDelete(vdc, nodeName, "token" , task, callback);
 
         // then
-        verify(nodeManager).nodeDelete(vdc, nodeName);
+        verify(nodeManager).nodeDelete(vdc, nodeName, "token");
         verify(taskManager).updateTask(task);
     }
 
@@ -84,13 +83,13 @@ public class NodeAsyncManagerImplTest {
         String callback = "http://callback";
 
         // when
-        when(propertiesProvider.getProperty(SystemPropertiesProvider.CHEF_NODE_BASE_URL)).thenReturn("http://baseurl");
-        doThrow(new NodeExecutionException("error")).when(nodeManager).nodeDelete(vdc, nodeName);
-        nodeAsyncManager.nodeDelete(vdc, nodeName, task, callback);
+       
+        doThrow(new NodeExecutionException("error")).when(nodeManager).nodeDelete(vdc, nodeName, "token");
+        nodeAsyncManager.nodeDelete(vdc, nodeName, "token", task, callback);
 
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
-        verify(nodeManager).nodeDelete(vdc, nodeName);
+        verify(nodeManager).nodeDelete(vdc, nodeName, "token");
         verify(taskManager).updateTask(task);
 
     }

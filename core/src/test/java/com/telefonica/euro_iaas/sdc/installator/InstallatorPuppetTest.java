@@ -26,27 +26,27 @@ package com.telefonica.euro_iaas.sdc.installator;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.protocol.HTTP;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.test.annotation.ExpectedException;
 
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
@@ -68,10 +68,11 @@ public class InstallatorPuppetTest {
     private OS os;
     private HttpResponse response;
     private StatusLine statusLine;
+    private OpenStackRegion openStackRegion;
     
     
     @Before
-    public void setup() throws ClientProtocolException, IOException{
+    public void setup() throws ClientProtocolException, IOException, OpenStackException{
         Product product = new Product("testProduct", "description");
         Metadata metadata=new Metadata("installator", "puppet");
         List<Metadata>metadatas = new ArrayList<Metadata>();
@@ -91,6 +92,8 @@ public class InstallatorPuppetTest {
         client = mock(HttpClient.class);
         response=mock(HttpResponse.class);
         statusLine = mock(StatusLine.class);
+        openStackRegion = mock (OpenStackRegion.class);
+
         
         when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(response);
         when(response.getStatusLine()).thenReturn(statusLine);
@@ -102,7 +105,9 @@ public class InstallatorPuppetTest {
         
         puppetInstallator = new InstallatorPuppetImpl();
         puppetInstallator.setClient(client);
-        puppetInstallator.setPropertiesProvider(propertiesProvider);
+        puppetInstallator.setOpenStackRegion(openStackRegion);
+        when (openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
+   
     }
     
     @Test
@@ -110,16 +115,17 @@ public class InstallatorPuppetTest {
         
         when(statusLine.getStatusCode()).thenReturn(200);
         
-        puppetInstallator.callService(host,"test",productRelease, "install");
+        puppetInstallator.callService(host,"test",productRelease, "install", "token");
         
     }
     
     @Test(expected = InstallatorException.class)
-    public void testCallService_FAIL() throws InstallatorException, NodeExecutionException{
+    public void testCallService_FAIL() throws InstallatorException, NodeExecutionException, OpenStackException{
         
         when(statusLine.getStatusCode()).thenReturn(500);
+//        when(openStackRegion.getPuppetWrapperEndPoint(anyString())).thenReturn("http://testurl.es");
         
-        puppetInstallator.callService(host,"test",productRelease, "install");
+        puppetInstallator.callService(host,"test",productRelease, "install", "token");
         
     }
     
@@ -128,7 +134,7 @@ public class InstallatorPuppetTest {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         
-        puppetInstallator.callService(host,"test",productRelease, "install");
+        puppetInstallator.callService(host,"test",productRelease, "install", "token");
         
     }
 

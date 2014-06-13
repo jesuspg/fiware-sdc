@@ -1,0 +1,9 @@
+<ehcache>
+
+    <cache name="regions"
+           maxEntriesLocalHeap="500"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600">
+    </cache>
+</ehcache>

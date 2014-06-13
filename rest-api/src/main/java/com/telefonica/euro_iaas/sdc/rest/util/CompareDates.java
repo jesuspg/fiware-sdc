@@ -43,7 +43,7 @@ public class CompareDates {
 
     private static Long limit;
     private long offset;
-    private static Logger LOGGER = Logger.getLogger("CompareDates");
+    private static Logger log = Logger.getLogger("CompareDates");
 
     /**
      * Constructor.
@@ -78,8 +78,8 @@ public class CompareDates {
 
         long diff = getTimeDiff(date, now) - offset;
 
-        LOGGER.info("Date1: " + dateString + "\tDate2: " + now.toString());
-        LOGGER.info("Diff: " + diff);
+        log.info("Date1: " + dateString + "\tDate2: " + now.toString());
+        log.info("Diff: " + diff);
 
         if (!now.before(date)) {
             result = true;
@@ -167,7 +167,7 @@ public class CompareDates {
 
                     date = c2.getTime();
                 } catch (DatatypeConfigurationException ex) {
-                    LOGGER.warning("Cannot parse correctly the date: " + date);
+                    log.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -178,7 +178,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    LOGGER.warning("Cannot parse correctly the date: " + date);
+                    log.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -189,7 +189,7 @@ public class CompareDates {
                     date = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", new Locale("en_EN")).parse(dateString);
 
                 } catch (ParseException ex) {
-                    LOGGER.warning("Cannot parse correctly the date: " + date);
+                    log.warning("Cannot parse correctly the date: " + date);
                 }
 
                 break;
@@ -220,7 +220,7 @@ public class CompareDates {
         long timeDiff = dateLong1 - dateLong2;
 
         if (timeDiff != 86400000) {
-            LOGGER.warning("Date format incorrect between token.expires " + "and Header field in the HTTP message");
+            log.warning("Date format incorrect between token.expires " + "and Header field in the HTTP message");
 
             dateLong1 += (86400000 - timeDiff);
         }

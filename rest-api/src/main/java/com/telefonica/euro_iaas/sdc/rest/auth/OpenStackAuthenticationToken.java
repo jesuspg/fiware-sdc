@@ -39,6 +39,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.sdc.rest.exception.AuthenticationConnectionException;
 import com.telefonica.euro_iaas.sdc.rest.util.CompareDates;
@@ -55,11 +57,11 @@ public class OpenStackAuthenticationToken {
     /**
      * The token ID.
      */
-    private static String token;
+    private String token;
     /**
      * The tenant ID.
      */
-    private static String tenantId;
+    private String tenantId;
     /**
      * The expiration date of the token.
      */
@@ -84,7 +86,7 @@ public class OpenStackAuthenticationToken {
     /**
      * The log.
      */
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(OpenStackAuthenticationToken.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackAuthenticationToken.class);
     /**
      * The limit to request a new token due to it is not more valid. This means that the token is no more valid after 6m
      * 40sec.
@@ -96,6 +98,11 @@ public class OpenStackAuthenticationToken {
     private static long offset;
 
     OpenStackAuthenticationToken(ArrayList<Object> params) {
+
+        initialize(params);
+    }
+
+    public void initialize(ArrayList<Object> params) {
         this.token = "";
         this.tenantId = "";
         this.url = (String) params.get(0);

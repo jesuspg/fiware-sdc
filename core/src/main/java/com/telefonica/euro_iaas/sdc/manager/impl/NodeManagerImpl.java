@@ -31,29 +31,28 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.properties.PropertiesProvider;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author alberts
@@ -63,32 +62,26 @@ public class NodeManagerImpl implements NodeManager {
     private ProductInstanceDao productInstanceDao;
     private ChefClientDao chefClientDao;
     private ChefNodeDao chefNodeDao;
-    private SystemPropertiesProvider propertiesProvider;
     private HttpClient client;
+    private OpenStackRegion openStackRegion;
 
-
-    private static Logger log = Logger.getLogger("NodeManagerImpl");
+    private static Logger log = LoggerFactory.getLogger(NodeManagerImpl.class);
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete
-     * (java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete (java.lang.String, java.lang.String)
      */
-    public void nodeDelete(String vdc, String nodeName) throws NodeExecutionException {
+    public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
         try {
-            
-            puppetDelete(vdc,nodeName);
-            chefClientDelete(vdc,nodeName);
-        
+
+            puppetDelete(vdc, nodeName, token);
+            chefClientDelete(vdc, nodeName, token);
+
         } catch (ChefClientExecutionException e) {
             throw new NodeExecutionException(e);
         }
-        
-        
-        
+
         List<ProductInstance> productInstances = null;
 
         // eliminacion de los productos instalados en la maquina virtual
@@ -105,15 +98,17 @@ public class NodeManagerImpl implements NodeManager {
         }
 
     }
-    
-    private void puppetDelete(String vdc, String nodeName) throws NodeExecutionException {
-        
-        HttpDelete delete = new HttpDelete(propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
-                + "delete/node/"+nodeName);
-        
-        System.out.println("puppetURL: "+propertiesProvider.getProperty(SystemPropertiesProvider.PUPPET_MASTER_URL)
-                + "delete/node/"+nodeName);
-        
+
+    private void puppetDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
+
+        HttpDelete delete;
+        try {
+            delete = new HttpDelete(openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName);
+        } catch (OpenStackException e2) {
+            log.info(e2.getMessage());
+            throw new NodeExecutionException(e2);
+        }
+
         delete.setHeader("Content-Type", "application/json");
 
         HttpResponse response;
@@ -125,7 +120,7 @@ public class NodeManagerImpl implements NodeManager {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                String msg=format("[puppet delete node] response code was: {0}", statusCode);
+                String msg = format("[puppet delete node] response code was: {0}", statusCode);
                 log.info(msg);
                 throw new NodeExecutionException(msg);
             }
@@ -137,23 +132,22 @@ public class NodeManagerImpl implements NodeManager {
             log.info(e1.getMessage());
             throw new NodeExecutionException(e1);
         }
-        
+
     }
 
-    private void chefClientDelete(String vdc, String chefClientName) throws ChefClientExecutionException {
+    private void chefClientDelete(String vdc, String chefClientName, String token) throws ChefClientExecutionException {
         ChefNode node;
         List<ProductInstance> productInstances = null;
         String hostname = null;
         try {
             // Eliminacion del nodo
-            node = chefNodeDao.loadNode(chefClientName);
-            chefNodeDao.deleteNode(node);
+            node = chefNodeDao.loadNode(chefClientName, token);
+            chefNodeDao.deleteNode(node, token);
             log.info("Node " + chefClientName + " deleted from Chef Server");
 
             // eliminacion del chefClient
-            chefClientDao.deleteChefClient(chefClientName);
+            chefClientDao.deleteChefClient(chefClientName, token);
 
-            
         } catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
@@ -165,17 +159,17 @@ public class NodeManagerImpl implements NodeManager {
             throw new ChefClientExecutionException(errorMsg, e2);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll()
      */
-    public ChefClient chefClientfindByHostname(String hostname) throws EntityNotFoundException,
+    public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
             ChefClientExecutionException {
 
-        ChefClient chefClient = new ChefClient();
+        ChefClient chefClient;
         try {
-            chefClient = chefClientDao.chefClientfindByHostname(hostname);
+            chefClient = chefClientDao.chefClientfindByHostname(hostname, token);
         } catch (EntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -191,12 +185,12 @@ public class NodeManagerImpl implements NodeManager {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientload(java.lang.String, java.lang.String)
      */
-    public ChefClient chefClientload(String chefClientName) throws ChefClientExecutionException,
+    public ChefClient chefClientload(String chefClientName, String token) throws ChefClientExecutionException,
             EntityNotFoundException {
 
         ChefClient chefClient = new ChefClient();
         try {
-            chefClient = chefClientDao.getChefClient(chefClientName);
+            chefClient = chefClientDao.getChefClient(chefClientName, token);
         } catch (EntityNotFoundException e) {
             // String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
             // log.info(message);
@@ -208,9 +202,7 @@ public class NodeManagerImpl implements NodeManager {
         }
         return chefClient;
     }
-    
-    
-    
+
     /**
      * @param chefClientDao
      *            the chefClientDao to set
@@ -236,19 +228,15 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
-    
-    /**
      * @param client
      *            the client to set
      */
     public void setClient(HttpClient client) {
         this.client = client;
+    }
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 
 }

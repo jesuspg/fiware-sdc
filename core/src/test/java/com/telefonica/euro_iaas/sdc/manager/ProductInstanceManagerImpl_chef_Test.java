@@ -135,10 +135,10 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
         chefNode.addAttribute(installRecipe, "dd", "dd");
         chefNode.addRecipe(installRecipe);
         
-        when(chefNodeDao.loadNode(any(String.class))).thenReturn(chefNode);
-        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
-        when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
-        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
+        when(chefNodeDao.loadNode(any(String.class),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.updateNode((ChefNode) anyObject(),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.loadNodeFromHostname(any(String.class),any(String.class))).thenReturn(chefNode);
+        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class),any(String.class)); 
                
         product = new Product("Product::server", "description");
         Metadata metadata=new Metadata("installator", "chef");
@@ -199,7 +199,7 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
         when(productInstanceDao.create(any(ProductInstance.class))).thenReturn(expectedProduct);
-        ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+        ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
         // make verifications
         assertEquals(expectedProduct, installedProduct);
 
@@ -221,7 +221,7 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
         Mockito.doThrow(new EntityNotFoundException(ProductInstance.class, "test", expectedProduct))
                 .when(productInstanceDao).load(any(String.class));
-        manager.uninstall(expectedProduct);
+        manager.uninstall(expectedProduct, "token");
 
 //        verify(recipeNamingGenerator, times(1)).getUninstallRecipe(any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
@@ -242,12 +242,12 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
         expectedProduct = new ProductInstance(productRelease, Status.INSTALLED, host, "vdc");
         when(productInstanceDao.create(any(ProductInstance.class))).thenReturn(expectedProduct);
-        ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+        ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
 
         // make verifications
         assertEquals(installedProduct.getStatus(), Status.INSTALLED);
 
-        manager.uninstall(installedProduct);
+        manager.uninstall(installedProduct, "token");
         assertEquals(installedProduct.getStatus(), Status.UNINSTALLED);
 
     }
@@ -268,12 +268,12 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
         when(productInstanceDao.update(any(ProductInstance.class))).thenReturn(expectedProduct);
 
-        manager.uninstall(expectedProduct);
+        manager.uninstall(expectedProduct, "token");
         assertEquals(expectedProduct.getStatus(), Status.UNINSTALLED);
 
         when(productInstanceDao.load(any(String.class))).thenReturn(expectedProduct);
 
-        expectedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+        expectedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
         assertEquals(expectedProduct.getStatus(), Status.INSTALLED);
 
     }
@@ -286,7 +286,7 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
         when(productInstanceDao.load(any(String.class))).thenReturn(expectedProduct);
         boolean thrown = false;
         try {
-            ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+            ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
         } catch (InvalidInstallProductRequestException e) {
             thrown = true;
         }
@@ -303,7 +303,7 @@ public class ProductInstanceManagerImpl_chef_Test extends TestCase {
 
         boolean thrown = false;
         try {
-            ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>());
+            ProductInstance installedProduct = manager.install(host, "vdc", productRelease, new ArrayList<Attribute>(), "token");
         } catch (AlreadyInstalledException e) {
             thrown = true;
         }

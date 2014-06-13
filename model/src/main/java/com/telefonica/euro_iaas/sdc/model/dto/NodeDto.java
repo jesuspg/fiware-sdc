@@ -22,7 +22,7 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.puppetwrapper.dto;
+package com.telefonica.euro_iaas.sdc.model.dto;
 
 public class NodeDto {
     

@@ -135,11 +135,11 @@ public class ArtifactManagerChefImplTest extends TestCase {
         
         chefNode.addRecipe(deployacrecipe);
         chefNode.addRecipe(undeployacrecipe);
-        
-        when(chefNodeDao.loadNode(host.getChefClientName())).thenReturn(chefNode);
-        when(chefNodeDao.loadNodeFromHostname(any(String.class))).thenReturn(chefNode);
-        when(chefNodeDao.updateNode((ChefNode) anyObject())).thenReturn(chefNode);
-        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class)); 
+        when (chefNodeDao.loadNode(any(String.class),any(String.class))).thenReturn(chefNode);
+       // when(chefNodeDao.loadNode(host.getChefClientName(),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.loadNodeFromHostname(any(String.class),any(String.class))).thenReturn(chefNode);
+        when(chefNodeDao.updateNode((ChefNode) anyObject(),any(String.class))).thenReturn(chefNode);
+        Mockito.doNothing().when(chefNodeDao).isNodeRegistered(any(String.class),any(String.class)); 
         
         product = new Product("Product::server", "description");
         productRelease = new ProductRelease("version", "releaseNotes", product, Arrays.asList(os), null);
@@ -199,7 +199,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         att.getAttributes().add(new Attribute("key2", "value2"));
         artifact.setAttributes(att);
 
-        manager.deployArtifact(expectedProduct, artifact);
+        manager.deployArtifact(expectedProduct, artifact, "token");
 
         //verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         // only one prodcut will be installed, the other one causes error.
@@ -220,7 +220,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         att.getAttributes().add(new Attribute("key2", "value2"));
         artifact.setAttributes(att);
 
-        manager.deployArtifact(expectedProduct, artifact);
+        manager.deployArtifact(expectedProduct, artifact, "token");
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);
         assertEquals("Result", expectedProduct.getArtifacts().size(), 1);
 
@@ -247,7 +247,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         artifact = new Artifact();
         artifact.setName("artifact2");
 
-        manager.deployArtifact(expectedProduct, artifact);
+        manager.deployArtifact(expectedProduct, artifact, "token");
 
 //        verify(recipeNamingGenerator, times(1)).getDeployArtifactRecipe(any(ProductInstance.class));
         verify(productInstanceDao, times(0)).create(any(ProductInstance.class));
@@ -281,7 +281,7 @@ public class ArtifactManagerChefImplTest extends TestCase {
         artifact.setName("artifact2");
         expectedProduct.addArtifact(artifact);
 
-        manager.undeployArtifact(expectedProduct, "artifact2");
+        manager.undeployArtifact(expectedProduct, "artifact2", "token");
 
         assertEquals("Result", expectedProduct.getStatus(), Status.INSTALLED);
         assertEquals("Result", expectedProduct.getArtifacts().size(), 0);

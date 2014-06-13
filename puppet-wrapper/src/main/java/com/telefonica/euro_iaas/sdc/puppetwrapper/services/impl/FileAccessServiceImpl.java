@@ -35,8 +35,8 @@ import java.util.NoSuchElementException;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.sdc.puppetwrapper.services.FileAccessService;
 @Service("fileAccessService")
 public class FileAccessServiceImpl implements FileAccessService {
 
-    private static final Log logger = LogFactory.getLog(FileAccessServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(FileAccessServiceImpl.class);
 
     @Resource
     protected CatalogManager catalogManager;
@@ -58,7 +58,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     public Node generateManifestFile(String nodeName) throws IOException {
 
-        logger.info("creating Manifest file for node: " + nodeName);
+        log.info("creating Manifest file for node: " + nodeName);
 
         Node node = catalogManager.getNode(nodeName);
 
@@ -71,7 +71,7 @@ public class FileAccessServiceImpl implements FileAccessService {
             f.mkdirs();
             f.createNewFile();
         } catch (IOException ex) {
-            logger.debug("Error creating manifest paths and pp file", ex);
+            log.debug("Error creating manifest paths and pp file", ex);
             throw new IOException("Error creating manifest paths and pp file");
         }
 
@@ -80,11 +80,11 @@ public class FileAccessServiceImpl implements FileAccessService {
             fw.write(fileContent);
             fw.close();
         } catch (IOException ex) {
-            logger.debug("Error creating manifest paths and pp file", ex);
+            log.debug("Error creating manifest paths and pp file", ex);
             throw new IOException("Error creating manifest paths and pp file");
         }
 
-        logger.debug("Manifest file created");
+        log.debug("Manifest file created");
 
         node.setManifestGenerated(true);
         return node;
@@ -93,23 +93,23 @@ public class FileAccessServiceImpl implements FileAccessService {
 
     public void generateSiteFile() throws IOException {
 
-        logger.info("Generate site.pp");
+        log.info("Generate site.pp");
 
         String fileContent = catalogManager.generateSiteStr();
 
-        logger.debug("site content: " + fileContent);
-        logger.debug("defaultManifestsPath: " + defaultManifestsPath);
+        log.debug("site content: " + fileContent);
+        log.debug("defaultManifestsPath: " + defaultManifestsPath);
 
         try {
             PrintWriter writer = new PrintWriter(defaultManifestsPath + "site.pp", "UTF-8");
             writer.println(fileContent);
             writer.close();
         } catch (IOException ex) {
-            logger.debug("Error creating site.pp file", ex);
+            log.debug("Error creating site.pp file", ex);
             throw new IOException("Error creating site.pp file");
         }
 
-        logger.debug("Site.pp file created");
+        log.debug("Site.pp file created");
     }
 
     @Value(value = "${defaultManifestsPath}")
@@ -133,9 +133,9 @@ public class FileAccessServiceImpl implements FileAccessService {
             File file = new File(path + "/" + node.getId() + ".pp");
 
             if (!file.delete()) {
-                logger.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
+                log.info(format("File {0} could not be deleted. Did it exist?", path + "/" + node.getId() + ".pp"));
             }else{
-                logger.info(format("File {0} deleted.", path + "/" + node.getId() + ".pp"));
+                log.info(format("File {0} deleted.", path + "/" + node.getId() + ".pp"));
             }
             
             if(catalogManager.isLastGroupNode(node.getGroupName())){
@@ -143,7 +143,7 @@ public class FileAccessServiceImpl implements FileAccessService {
             }
             
         } catch (NoSuchElementException e) {
-            logger.info(format("Node {0} was not registered in puppet master",nodeName));
+            log.info(format("Node {0} was not registered in puppet master",nodeName));
         }
 
     }
@@ -154,7 +154,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
         FileUtils.deleteDirectory(path);
         
-        logger.info(format("Folder {0} deleted.", path + "/" + groupName));
+        log.info(format("Folder {0} deleted.", path + "/" + groupName));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class FileAccessServiceImpl implements FileAccessService {
 
         FileUtils.deleteDirectory(file);
 
-        logger.info(format("File {0} could not be deleted. Did it exist?", modulesCodeDownloadPath + "/" + moduleName
+        log.info(format("File {0} could not be deleted. Did it exist?", modulesCodeDownloadPath + "/" + moduleName
                 + ".pp"));
 
     }

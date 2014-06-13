@@ -24,14 +24,16 @@
 
 package com.telefonica.euro_iaas.sdc.manager.async.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.PRODUCT_INSTANCE_BASE_PATH;
+import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.SDC_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -53,7 +55,6 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 /**
@@ -62,10 +63,11 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  * @author Sergio Arroyo
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
-    private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
+    
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
-    private SystemPropertiesProvider propertiesProvider;
+  
     private TaskNotificator taskNotificator;
 
     /**
@@ -73,16 +75,16 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, Task task,
+    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token, Task task,
             String callback) {
         try {
 
             ProductInstance productInstance = null;
-            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes);
+            productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes, token);
             
             updateSuccessTask(task, productInstance);
 
-            LOGGER.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
+            log.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (NodeExecutionException e) {
             String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
@@ -120,11 +122,11 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void configure(ProductInstance productInstance, List<Attribute> configuration, Task task, String callback) {
+    public void configure(ProductInstance productInstance, List<Attribute> configuration, String token, Task task, String callback) {
         try {
-            productInstanceManager.configure(productInstance, configuration);
+            productInstanceManager.configure(productInstance, configuration, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + '-'
                     + productInstance.getProductRelease().getVersion() + " configured successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -147,11 +149,11 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void upgrade(ProductInstance productInstance, ProductRelease productRelease, Task task, String callback) {
+    public void upgrade(ProductInstance productInstance, ProductRelease productRelease,  String token, Task task, String callback) {
         try {
-            productInstanceManager.upgrade(productInstance, productRelease);
+            productInstanceManager.upgrade(productInstance, productRelease, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " upgraded successfully");
         } catch (NotTransitableException e) {
             updateErrorTask(productInstance, task, "The product "
@@ -179,12 +181,12 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void uninstall(ProductInstance productInstance, Task task, String callback) {
+    public void uninstall(ProductInstance productInstance, String token, Task task, String callback) {
 
         try {
-            productInstanceManager.uninstall(productInstance);
+            productInstanceManager.uninstall(productInstance, token);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
+            log.info("Product " + productInstance.getProductRelease().getProduct().getName() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
         } catch (FSMViolationException e) {
             updateErrorTask(productInstance, task, "The product " + productInstance.getId()
@@ -230,7 +232,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
+        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
                 productInstance.getName(), // the name
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
@@ -247,7 +249,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
+        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
         // productInstance.getId(), // the id
                 productInstance.getName(), // the id
                 productInstance.getVm().getHostname(), // the hostname
@@ -269,8 +271,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing a product action. See task " + task.getHref()
-                + "for more information");
+        log.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
+                + " for more information");
     }
 
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {
@@ -308,14 +310,6 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
-    }
-
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
     }
 
     /**

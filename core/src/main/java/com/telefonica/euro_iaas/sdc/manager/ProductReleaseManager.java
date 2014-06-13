@@ -76,7 +76,7 @@ public interface ProductReleaseManager {
      * @throws AlreadyExistsProductReleaseException
      * @return the products releases.
      */
-    ProductRelease insert(ProductRelease productRelase, File recipes, File installable)
+    ProductRelease insert(ProductRelease productRelase, File recipes, File installable, String token)
         throws AlreadyExistsProductReleaseException, InvalidProductReleaseException;
 
     /**
@@ -104,7 +104,7 @@ public interface ProductReleaseManager {
     * @throws InvalidProductReleaseException
     * @throws ProductReleaseNotFoundException
     */
-    ProductRelease update(ProductRelease productRelease, File recipes, File installable)
+    ProductRelease update(ProductRelease productRelease, File recipes, File installable, String token)
         throws ProductReleaseNotFoundException, InvalidProductReleaseException;
 
     /**
