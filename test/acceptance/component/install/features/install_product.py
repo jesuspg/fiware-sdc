@@ -25,7 +25,7 @@ def setup_feature(feature):
 def setup_scenario(scenario):
 
     world.headers = set_default_headers(world.token_id, world.tenant_id)
-    #api_utils.delete_all_testing_products(world.headers)
+    api_utils.delete_all_testing_products(world.headers)
     world.attributes = None
     world.metadatas = None
     world.fqn = ''
@@ -215,4 +215,4 @@ def tear_down(scenario):
 
     world.token_id, world.tenant_id = get_token()
     world.headers = set_default_headers(world.token_id, world.tenant_id)
-    #api_utils.delete_all_testing_products(world.headers)
+    api_utils.delete_all_testing_products(world.headers)

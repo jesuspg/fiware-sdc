@@ -15,7 +15,7 @@ VERSION_RELEASE_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/rele
 PRODUCT_ATTRIBUTES_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/attributes'
 PRODUCT_METADATA_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/metadatas'
 INSTALL_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance'
-UNINSTALL_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance/{product_id}'
+PRODUCT_INSTALLED_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance/{product_id}'
 
 
 class RestUtils(object):
@@ -107,12 +107,17 @@ class RestUtils(object):
 
     def uninstall_product(self, headers=None, product_id=None, vdc_id=None, fqn=''):
 
-        return self._call_api(pattern=UNINSTALL_PATTERN, method='delete', headers=headers, vdc_id=vdc_id,
+        return self._call_api(pattern=PRODUCT_INSTALLED_PATTERN, method='delete', headers=headers, vdc_id=vdc_id,
                               product_id="{}_{}".format(fqn, product_id))
 
-    def retrieve_list_products_installed(self, headers=None, vdc_id=None):
+    def retrieve_list_products_installed(self, headers=None, vdc_id=None,):
 
         return self._call_api(pattern=INSTALL_PATTERN, method='get', headers=headers, vdc_id=vdc_id)
+
+    def retrieve_product_installed_information(self, headers=None, product_id=None, vdc_id=None, fqn=''):
+
+        return self._call_api(pattern=PRODUCT_INSTALLED_PATTERN, method='get', headers=headers, vdc_id=vdc_id,
+                              product_id="{}_{}".format(fqn, product_id))
 
     @staticmethod
     def call_url_task(method=None, headers=None, url=None):
@@ -143,13 +148,13 @@ class RestUtils(object):
         product_list = response.json()[PRODUCT]
 
         if not isinstance(product_list, list):
-            if 'testing' in product_list[PRODUCT_NAME] or 'test_module' in product_list[PRODUCT_NAME]:
+            if 'testing' in product_list[PRODUCT_NAME]:
                 delete_response = self.delete_product(headers=headers, product_id=product_list[PRODUCT_NAME])
 
                 if not delete_response.ok:
                     release_list = self.retrieve_product_release_list(headers=headers,
                                                                       product_id=product_list[PRODUCT_NAME])
-                    release_list = release_list.jsojajajan()
+                    release_list = release_list.json()
                     print "RELEASE LIST: {}".format(release_list)
                     delete_release = self.delete_product_release(headers=headers, product_id=product_list[PRODUCT_NAME],
                                                                  version=release_list[PRODUCT_RELEASE][VERSION])
@@ -159,7 +164,7 @@ class RestUtils(object):
 
         else:
             for product in product_list:
-                if 'testing' in product[PRODUCT_NAME] or 'test_module' in product[PRODUCT_NAME]:
+                if 'testing' in product[PRODUCT_NAME]:
 
                     delete_response = self.delete_product(headers=headers, product_id=product[PRODUCT_NAME])
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-Feature: Delete a product release in the catalogue
+Feature: Install product
     As a fi-ware user
-    I want to be able to delete a product release in the catalogue
-    so that I can clean up my system
+    I want to be able to install a product release in a Virtual Machine
+    so that I can use it
 
-    Scenario Outline: Delete a new product release in the catalogue by hostname
+    Scenario Outline: Install a new product release in the catalogue by hostname
       Given a created product with name "<product_name>" and release "<product_release>"
       And the accept header "<accept>"
       When I install the product in the VM with hostname "<hostname>"
@@ -17,7 +17,7 @@ Feature: Delete a product release in the catalogue
       | test_module       | 2.0.0           | testing   | application/xml |
 
 
-    Scenario Outline: Delete a new product release in the catalogue by IP and hostname
+    Scenario Outline: Install a new product release in the catalogue by IP and hostname
       Given a created product with name "<product_name>" and release "<product_release>"
       And the accept header "<accept>"
       When I install the product in the VM with IP "<ip>" and hostname "<hostname>"
