@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sdc-server-rest-api</artifactId>
@@ -64,12 +65,12 @@
             <artifactId>sdc-server-model</artifactId>
             <version>${project.version}</version>
         </dependency>
-	            <dependency>
-                <groupId>com.telefonica.euro_iaas</groupId>
-                <artifactId>openstack-tcloud-schemas</artifactId>
-                <version>2.3.3</version>
-                <type>jar</type>
-            </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>openstack-tcloud-schemas</artifactId>
+            <version>2.3.3</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -182,8 +183,9 @@
     </dependencies>
 
     <build>
+        <finalName>sdc</finalName>
         <plugins>
-           
+
             <!-- Modulo de validacion de token -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -202,7 +204,7 @@
                     <schemaDirectory>${basedir}/src/main/resources/keystone/</schemaDirectory>
                 </configuration>
             </plugin>
-           
+
         </plugins>
     </build>
 

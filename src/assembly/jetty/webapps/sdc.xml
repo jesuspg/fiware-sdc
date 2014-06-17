@@ -14,14 +14,14 @@
     <Set name="configurationDiscovered">true</Set>
 
 
-    <New id="paasmanager" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg>jdbc/paasmanager</Arg>
+    <New id="sdc" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jdbc/sdc</Arg>
         <Arg>
 
             <New class="org.postgresql.ds.PGSimpleDataSource">
                 <Set name="User">postgres</Set>
                 <Set name="Password">postgres</Set>
-                <Set name="DatabaseName">sdc_int_grizzly3</Set>
+                <Set name="DatabaseName">sdc_int_cookbooks</Set>
                 <Set name="ServerName">130.206.80.119</Set>
                 <Set name="PortNumber">5432</Set>
             </New>
