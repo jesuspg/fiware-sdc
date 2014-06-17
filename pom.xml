@@ -18,6 +18,8 @@
         <product.name>FIWARE</product.name>
         <product.release>3.2.3</product.release>
 
+        <assembly-directory>target/distribution</assembly-directory>
+
         <repoName>fiware-sdc</repoName>
 
         <scmURI>git@github.com:telefonicaid</scmURI>
@@ -220,13 +222,14 @@
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
-                    <!-- <pushChanges>true</pushChanges> -->
+                    <pushChanges>false</pushChanges>
                     <!-- rse: To keep release branch -->
                     <keepBranch>true</keepBranch>
                     <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
                     which activates the profile "release-profile", which is
                     inherited from the super pom -->
                     <useReleaseProfile>false</useReleaseProfile>
+                    <allowSnapshots>true</allowSnapshots>
                 </configuration>
             </plugin>
 
@@ -254,6 +257,140 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>rpm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.1-alpha-4</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <inherited>false</inherited>
+                                <id>generate-rpm</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <distribution>FIWARE 2014</distribution>
+                            <group>FIWARE</group>
+                            <prefix>fiware-sdc</prefix>
+
+                            <!-- Basics -->
+                            <name>fiware-sdc</name>
+                            <version>${project.version}</version>
+
+                            <copyright>copyright 2014</copyright>
+                            <packager>fiware</packager>
+
+                            <group>None</group>
+                            <needarch>noarch</needarch>
+
+                            <defineStatements>
+                                <!-- escamez: To speed up rpm creation, no jar re-compression -->
+                                <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+                                <defineStatement>_prefix /opt/fiware-sdc</defineStatement>
+                            </defineStatements>
+
+                            <requires>
+                                <require>java-1.7.0-openjdk</require>
+                                <require>java-1.7.0-openjdk-devel</require>
+                                <!-- <require>postgresql-server</require> -->
+                            </requires>
+                            <mappings>
+                                <mapping>
+                                    <directory>/opt/fiware-sdc</directory>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/sdc-server-dist</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>/opt/fiware-sdc/webapps</directory>
+
+                                    <configuration>true</configuration>
+                                    <sources>
+                                        <source>
+                                            <location>
+                                                ${project.build.directory}/sdc-server-dist/webapps/sdc.xml
+                                            </location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                            </mappings>
+                            <preinstallScriptlet>
+                                <script>echo "installing now"</script>
+                            </preinstallScriptlet>
+                            <postinstallScriptlet>
+                                <script>echo "installed in /opt/fiware-sdc"</script>
+                            </postinstallScriptlet>
+                            <!--                        <preremoveScriptlet>
+
+                                                    </preremoveScriptlet>
+                                                    -->
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>debian</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>unix-maven-plugin</artifactId>
+                        <version>1.0-alpha-5</version>
+
+                        <extensions>true</extensions>
+                        <configuration>
+                            <contact>fi-ware</contact>
+                            <contactEmail>fiware-lab-help@lists.fi-ware.org</contactEmail>
+                            <name>paasmanager</name>
+
+                            <deb>
+                                <section>devel</section>
+                                <depends>openjdk-7-jre</depends>
+                            </deb>
+                            <assembly>
+
+                                <copyDirectory>
+                                    <from>${project.build.directory}/sdc-server-dist</from>
+                                    <to>/opt/fiware-sdcr</to>
+                                </copyDirectory>
+                                <copyFile>
+                                    <path>${project.build.directory}/sdc-server-dist/bin/jetty.sh</path>
+                                    <toFile>/opt/fiware-sdc/bin/jetty.sh</toFile>
+                                    <attributes>
+                                        <mode>0755</mode>
+                                    </attributes>
+                                </copyFile>
+
+                            </assembly>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <inherited>false</inherited>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package-deb</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 
     <repositories>
