@@ -74,7 +74,7 @@
         <copyright.year>2012</copyright.year>
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.6</jvm.version>
+        <jvm.version>1.7</jvm.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <logback.version>1.0.13</logback.version>
@@ -245,6 +245,13 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptor>src/assembly/distribution.xml</descriptor>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -369,7 +376,7 @@
         <module>core</module>
         <module>rest-api</module>
         <!--    <module>integration-test</module>    -->
-        <module>puppet-wrapper</module>
+        <!-- <module>puppet-wrapper</module>   -->
         <module>client</module>
         <module>migrations</module>
     </modules>
