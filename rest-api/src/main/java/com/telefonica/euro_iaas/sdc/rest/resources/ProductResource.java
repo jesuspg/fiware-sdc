@@ -61,7 +61,7 @@ public interface ProductResource {
      * @return product
      */
     @POST
-    @Path("/")
+//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Product insert(Product product)  throws AlreadyExistsEntityException, InvalidEntityException;
@@ -80,7 +80,7 @@ public interface ProductResource {
      * @return the created OS instances.
      */
     @GET
-    @Path("/")
+//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);

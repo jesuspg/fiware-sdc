@@ -59,7 +59,7 @@ public interface ProductInstanceResource extends BaseInstallableInstanceResource
      * @return the installed product.
      */
     @POST
-    @Path("/")
+//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("vdc") String vdc, ProductInstanceDto product, @HeaderParam("callback") String callback);
@@ -86,7 +86,7 @@ public interface ProductInstanceResource extends BaseInstallableInstanceResource
      * @return the product instances that match with the criteria.
      */
     @GET
-    @Path("/")
+//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductInstance> findAll(@QueryParam("hostname") String hostname, @QueryParam("domain") String domain,
             @QueryParam("ip") String ip, @QueryParam("fqn") String fqn, @QueryParam("page") Integer page,

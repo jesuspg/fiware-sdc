@@ -54,7 +54,7 @@ public interface NodeResource {
      * @return the chefclients.
      */
     @GET
-    @Path("/")
+//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ChefClient findByHostname(@QueryParam("hostname") String hostname) throws EntityNotFoundException,
             ChefClientExecutionException;
