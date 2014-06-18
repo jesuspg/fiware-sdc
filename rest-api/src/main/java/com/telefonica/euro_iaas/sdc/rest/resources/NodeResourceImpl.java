@@ -42,6 +42,7 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 /**
  * 
@@ -62,22 +63,33 @@ public class NodeResourceImpl implements NodeResource {
     @InjectParam("nodeManager")
     private NodeManager nodeManager;
 
-
-    public ChefClient findByHostname(String hostname) throws EntityNotFoundException, ChefClientExecutionException {
-        return nodeManager.chefClientfindByHostname(hostname, getCredentials().getToken());
+    public ChefClient findByHostname(String hostname) {
+        try {
+            return nodeManager.chefClientfindByHostname(hostname, getCredentials().getToken());
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
     }
 
-    public ChefClient load(String chefClientName) throws EntityNotFoundException, ChefClientExecutionException {
-
-        return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
+    public ChefClient load(String chefClientName) {
+        try {
+            return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
     }
-    
-    public Task delete(String vdc, String nodeName, String callback) throws ChefClientExecutionException {
 
-        Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
+    public Task delete(String vdc, String nodeName, String callback) {
 
-        nodeAsyncManager.nodeDelete(vdc, nodeName,getCredentials().getToken(), task, callback);
-        return task;
+        try {
+
+            Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
+
+            nodeAsyncManager.nodeDelete(vdc, nodeName, getCredentials().getToken(), task, callback);
+            return task;
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
 
     }
 
@@ -99,7 +111,7 @@ public class NodeResourceImpl implements NodeResource {
     public void setNodeManager(NodeManager nodeManager) {
         this.nodeManager = nodeManager;
     }
-    
+
     public PaasManagerUser getCredentials() {
         return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
