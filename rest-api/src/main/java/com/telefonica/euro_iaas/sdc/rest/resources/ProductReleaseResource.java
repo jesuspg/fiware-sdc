@@ -66,7 +66,6 @@ public interface ProductReleaseResource {
      *             if the Product Release is invalid due to either OS, Product or Product Release
      */
     @POST
-//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(@PathParam("pName") String pName, ProductReleaseDto productRelease)
@@ -80,7 +79,6 @@ public interface ProductReleaseResource {
      * @throws InvalidMultiPartRequestException
      */
     @POST
-//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes("multipart/mixed")
     ProductRelease insert(MultiPart multiPart) throws AlreadyExistsProductReleaseException,
@@ -102,7 +100,6 @@ public interface ProductReleaseResource {
      * @return the ProductReleases.
      */
     @GET
-//    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findAll(@PathParam("pName") String pName, @QueryParam("osType") String osType,
             @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
