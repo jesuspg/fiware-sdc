@@ -33,6 +33,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,10 +46,8 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
-
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-
 
 /**
  * The Class OpenStackAuthenticationFilter.
@@ -143,6 +142,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
 
+        MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
+
         if (pathInfo.equals("/") || pathInfo.equals("/extensions")) {
             /**
              * It is not needed to authenticate these operations
@@ -157,6 +158,12 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             try {
                 String token = header;
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
+                String txId = request.getHeader("txId");
+                if (txId != null) {
+                    MDC.put("txId", txId);
+
+                }
+
                 // String tenantId = request.getPathInfo().split("/")[3];
 
                 if (debug) {
