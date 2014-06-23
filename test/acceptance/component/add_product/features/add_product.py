@@ -84,9 +84,9 @@ def and_the_following_attributes(step):
 
     for examples in step.hashes:
         attribute = {}
-        attribute['key'] = examples['key']
-        attribute['description'] = examples['description']
-        attribute['value'] = examples['value']
+        attribute[KEY] = examples[KEY]
+        attribute[PRODUCT_DESCRIPTION] = examples[PRODUCT_DESCRIPTION]
+        attribute[VALUE] = examples[VALUE]
         world.attributes.append(attribute)
 
 

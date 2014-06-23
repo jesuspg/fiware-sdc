@@ -1,4 +1,4 @@
-from fabric.api import run, env, settings, task
+from fabric.api import env
 from fabric.tasks import execute as fabric_execute
 from fabric.contrib import files
 from configuration import PROVISION_HOST_IP, PROVISION_HOST_PWD, PROVISION_HOST_USERNAME, PROVISION_ROOT_PATH
