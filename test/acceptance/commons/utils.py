@@ -92,7 +92,7 @@ def wait_for_software_installed(seconds=90, status_to_be_finished=True, file_nam
 
         response = execute_file_exist(test_file_name=file_name)
         print "FILE EXIST: {}".format(response)
-        if status_to_be_finished:
+        if status_to_be_finished == response:
             return True
 
         time.sleep(3)

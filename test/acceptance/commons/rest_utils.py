@@ -145,7 +145,11 @@ class RestUtils(object):
 
         response = self.retrieve_product_list(headers=headers)
         assert response.ok
-        product_list = response.json()[PRODUCT]
+        try:
+            product_list = response.json()[PRODUCT]
+        except:
+            assert response.content == 'null'
+            return
 
         if not isinstance(product_list, list):
             if 'testing' in product_list[PRODUCT_NAME]:

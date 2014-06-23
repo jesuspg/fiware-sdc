@@ -63,7 +63,7 @@ OSTYPE = u'osType'
 
 # METADATAS VALUES
 
-INSTALLATOR = u'instalator'
+INSTALLATOR = u'installator'
 INSTALLATOR_VALUE = (u'puppet', u'chef')
 
 
