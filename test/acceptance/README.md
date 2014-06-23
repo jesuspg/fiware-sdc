@@ -6,7 +6,7 @@ Folder for acceptance tests of SDC API.
 
 ### Prerequisites:
 
-- Python 2.6 or newer
+- Python 2.7 or newer
 
 - pip installed (http://docs.python-guide.org/en/latest/starting/install/linux/)
 
@@ -29,8 +29,6 @@ Folder for acceptance tests of SDC API.
 - Create a virtual environment somewhere, e.g. in ~/venv (virtualenv ~/venv)
 
 - Activate the virtual environment (source ~/venv/bin/activate)
-
-- Make sure pdihub.hi.inet domain is reachable from your system (some of the requirements come from it) and instruct Git not to validate SSL connections to it (export GIT\_SSL\_NO\_VERIFY=true).
 
 - Change to the test/acceptance folder of the project
 
