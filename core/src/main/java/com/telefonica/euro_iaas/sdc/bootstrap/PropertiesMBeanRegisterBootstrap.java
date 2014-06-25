@@ -45,7 +45,7 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
  * @author Sergio Arroyo
  */
 public class PropertiesMBeanRegisterBootstrap implements ServletContextListener {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static final Logger log = Logger.getAnonymousLogger();
 
     /**
      * Unregister the mbean.
@@ -57,7 +57,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
                 .createPropertiesProvider((EntityManagerFactory) ctx.getBean("entityManagerFactory"));
         try {
             for (String namespace : propertiesUtil.getNamespaces()) {
-                LOGGER.info("Unregistering mbean " + namespace);
+                log.info("Unregistering mbean " + namespace);
                 MBeanUtils.unregister(event.getServletContext().getContextPath() + ":service=SystemConfiguration-"
                         + namespace);
             }
@@ -80,7 +80,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
         try {
             for (String namespace : propertiesUtil.getNamespaces()) {
                 PropertiesProviderMBean mbean = new PropertiesProviderMBean(namespace, propertiesUtil);
-                LOGGER.info("Registering mbean " + namespace);
+                log.info("Registering mbean " + namespace);
                 MBeanUtils.register(mbean, event.getServletContext().getContextPath() + ":service=SystemConfiguration-"
                         + namespace);
             }

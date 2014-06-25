@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
@@ -63,7 +64,7 @@ public interface ProductInstanceManager {
      *            the configuration
      * @return the of installed product.
      */
-    ProductInstance install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes)
+    ProductInstance install(VM vm, String vdc, ProductRelease product, List<Attribute> attributes, String token)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException, EntityNotFoundException;
 
     /**
@@ -76,7 +77,7 @@ public interface ProductInstanceManager {
      * @throws FSMViolationException
      *             if try to make a forbidden transition
      */
-    void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException, EntityNotFoundException;
+    void uninstall(ProductInstance productInstance, String token) throws NodeExecutionException, FSMViolationException, EntityNotFoundException;
 
     /**
      * Updates a product instance and persist it in the database.
@@ -84,8 +85,9 @@ public interface ProductInstanceManager {
      * @param productInstance
      *            the product instance to modify
      * @return the product instance updated
+     * @throws InvalidEntityException
      */
-    ProductInstance update(ProductInstance productInstance);
+    ProductInstance update(ProductInstance productInstance) throws InvalidEntityException;
 
     /**
      * Configure an installed product.
@@ -99,7 +101,7 @@ public interface ProductInstanceManager {
      *             if try to make a forbidden transition
      * @throws InstallatorException
      */
-    ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
+    ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException;
 
     /**
@@ -119,7 +121,7 @@ public interface ProductInstanceManager {
      *             if try to make a forbidden transition
      * @throws InstallatorException
      */
-    ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease)
+    ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease, String token)
             throws NotTransitableException, NodeExecutionException, FSMViolationException, InstallatorException, EntityNotFoundException;
 
     /**

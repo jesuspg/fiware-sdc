@@ -60,7 +60,6 @@ public interface ArtifactResource {
      * @return the installed product.
      */
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("vdc") String vdc, @PathParam("productInstance") String productIntanceName,
@@ -88,7 +87,6 @@ public interface ArtifactResource {
      * @return the product instances that match with the criteria.
      */
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ArtifactDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,

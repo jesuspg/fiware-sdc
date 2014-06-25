@@ -46,6 +46,8 @@ public class ProductReleaseServiceImplTest {
         Client client = mock(Client.class);
         String baseHost = "http://localhost";
         String type = "application/json";
+        String token = "token";
+        String tenant = "tenant";
         ProductReleaseService productReleaseService = new ProductReleaseServiceImpl(client, baseHost, type);
         ProductReleaseDto productReleaseDto = new ProductReleaseDto();
         productReleaseDto.setProductName("tomcat");
@@ -67,7 +69,7 @@ public class ProductReleaseServiceImplTest {
         when(builder.type(type)).thenReturn(builder);
         when(builder.post(ProductRelease.class, productReleaseDto)).thenReturn(productReleaseCreated);
 
-        ProductRelease productRelease = productReleaseService.add(productReleaseDto);
+        ProductRelease productRelease = productReleaseService.add(productReleaseDto, token, tenant);
 
         // then
         assertNotNull(productRelease);

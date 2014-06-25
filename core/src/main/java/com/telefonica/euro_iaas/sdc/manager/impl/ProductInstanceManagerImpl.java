@@ -71,17 +71,11 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     protected String UNDEPLOY_ARTIFACT = "undeployArtifact";
 
     @Override
-    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes)
+    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token)
             throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
             EntityNotFoundException {
 
-        // if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-        //
-        // }else{
-        //
-        // }
-
-        // Check that there is not another product installed
+       // Check that there is not another product installed
         ProductInstance instance = null;
         try {
 
@@ -94,6 +88,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                 throw new AlreadyInstalledException(instance);
             } else if (!(instance.getStatus().equals(Status.UNINSTALLED))
                     && !(instance.getStatus().equals(Status.ERROR)))
+                //restoreInstance(Status.UNINSTALLED, instance);
                 throw new InvalidInstallProductRequestException("Product " + productRelease.getProduct().getName()
                         + " " + productRelease.getVersion() + " cannot be installed in the VM " + vm.getFqn()
                         + " strage status:  " + instance.getStatus());
@@ -125,15 +120,19 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             Product product = productDao.load(productRelease.getProduct().getName());
 
             if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
-                chefInstallator.validateInstalatorData(vm);
-                chefInstallator.callService(instance, vm, attributes, INSTALL);
+                chefInstallator.validateInstalatorData(vm, token);
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_init");
+                chefInstallator.callService(instance, vm, attributes, INSTALL, token);
+                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
-                    puppetInstallator.validateInstalatorData(vm);
-                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL);
+                    puppetInstallator.validateInstalatorData(vm, token);
+                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
                 } else {
-                    chefInstallator.validateInstalatorData(vm);
-                    chefInstallator.callService(instance, vm, attributes, INSTALL);
+                    chefInstallator.validateInstalatorData(vm, token);
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
+                    chefInstallator.callService(instance, vm, attributes, INSTALL, token);
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 
@@ -143,6 +142,12 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         } catch (InstallatorException sce) {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
+        } catch (NodeExecutionException nee) {
+           restoreInstance(previousStatus, instance);
+            throw new NodeExecutionException(nee);
+        } catch (InvalidInstallProductRequestException iipre) {
+            restoreInstance(previousStatus, instance);
+            throw new InvalidInstallProductRequestException(iipre);
         } catch (RuntimeException e) {
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
@@ -152,7 +157,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     }
 
     @Override
-    public void uninstall(ProductInstance productInstance) throws NodeExecutionException, FSMViolationException,
+    public void uninstall(ProductInstance productInstance, String token) throws NodeExecutionException, FSMViolationException,
             EntityNotFoundException {
         Status previousStatus = productInstance.getStatus();
         try {
@@ -164,9 +169,9 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 puppetInstallator.callService(productInstance.getVm(), productInstance.getVdc(),
-                        productInstance.getProductRelease(), UNINSTALL);
+                        productInstance.getProductRelease(), UNINSTALL, token);
             } else {
-                chefInstallator.callService(productInstance, UNINSTALL);
+                chefInstallator.callService(productInstance, UNINSTALL, token);
             }
 
             productInstance.setStatus(Status.UNINSTALLED);
@@ -188,7 +193,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
      * @throws InstallatorException
      */
     @Override
-    public ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration)
+    public ProductInstance configure(ProductInstance productInstance, List<Attribute> configuration, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
         System.out.println("Configuring product instance " + productInstance.getName() + " " + configuration);
         Status previousStatus = productInstance.getStatus();
@@ -218,7 +223,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 throw new InstallatorException("Product not configurable in Puppet");
             } else {
-                chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE);
+                chefInstallator.callService(productInstance, productInstance.getVm(), configuration, CONFIGURE, token);
             }
 
             /*
@@ -234,7 +239,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
         } catch (InstallatorException e) {
             restoreInstance(previousStatus, productInstance);
-            throw new SdcRuntimeException(e);
+            throw new InstallatorException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
             // restore the status
             restoreInstance(previousStatus, productInstance);
@@ -274,7 +279,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
      */
     @UseCase(traceTo = "UC_001.4", status = "implemented")
     @Override
-    public ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease)
+    public ProductInstance upgrade(ProductInstance productInstance, ProductRelease productRelease, String token)
             throws NotTransitableException, NodeExecutionException, FSMViolationException, InstallatorException,
             EntityNotFoundException {
         Status previousStatus = productInstance.getStatus();
@@ -291,7 +296,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                 throw new InstallatorException("Product not upgradeable in Puppet");
             } else {
-                chefInstallator.upgrade(productInstance, vm);
+                chefInstallator.upgrade(productInstance, vm, token);
             }
 
             productInstance.setStatus(Status.INSTALLED);

@@ -24,8 +24,15 @@
 
 package com.telefonica.euro_iaas.sdc.installator.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map.Entry;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
@@ -46,14 +53,14 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     private IpToVM ip2vm;
 
     @Override
-    public void callService(VM vm, String vdc, ProductRelease productRelease, String action)
+    public void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token)
             throws InstallatorException {
         // TODO Auto-generated method stub
         
     }
    
-    @Override
-    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action)
+
+    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
             throws InstallatorException, NodeExecutionException {
 
         String process = productInstance.getProductRelease().getProduct().getName();
@@ -73,27 +80,27 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }else{
             throw new InstallatorException("Missing Action");
         }
-        System.out.println("recipe " + recipe);
         
-        configureNode(vm, attributes, process, recipe);
+        configureNode(vm, attributes, process, recipe, token);
         try {
-            LOGGER.info("Updating node with recipe " + recipe + " in " + vm.getIp());
+            log.info("Updating node with recipe " + recipe + " in " + vm.getIp());
             if (isSdcClientInstalled()) {
                 executeRecipes(vm);
                 // unassignRecipes(vm, recipe);
             } else {
-                isRecipeExecuted(vm, process, recipe);
-                unassignRecipes(vm, recipe);
+                isRecipeExecuted(vm, process, recipe, token);
+              //  unassignRecipes(vm, recipe);
+                //eliminate the attribute
+
             }
         } catch (NodeExecutionException e) {
-            // unassignRecipes(vm, recipe);
             // even if execution fails want to unassign the recipe
             throw new NodeExecutionException(e.getMessage());
         }
     }
 
     @Override
-    public void callService(ProductInstance productInstance, String action) throws InstallatorException,
+    public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
         VM vm = productInstance.getVm();
         String recipe="";
@@ -103,7 +110,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
            
         }
 
-        assignRecipes(vm, recipe);
+        assignRecipes(vm, recipe, token);
         try {
             executeRecipes(vm);
             // unassignRecipes(vm, recipe);
@@ -115,19 +122,19 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     }
 
     @Override
-    public void upgrade(ProductInstance productInstance, VM vm) throws InstallatorException {
+    public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         try {
             String backupRecipe = recipeNamingGenerator.getBackupRecipe(productInstance);
-            callChef(backupRecipe, vm);
+            callChefUpgrade(backupRecipe, vm, token);
 
             String uninstallRecipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
-            callChef(uninstallRecipe, vm);
+            callChefUpgrade(uninstallRecipe, vm, token);
 
             String installRecipe = recipeNamingGenerator.getInstallRecipe(productInstance);
-            callChef(installRecipe, vm);
+            callChefUpgrade(installRecipe, vm, token);
 
             String restoreRecipe = recipeNamingGenerator.getRestoreRecipe(productInstance);
-            callChef(restoreRecipe, vm);
+            callChefUpgrade(restoreRecipe, vm, token);
         } catch (NodeExecutionException e) {
             throw new InstallatorException(e);
         } catch (InstallatorException ex) {
@@ -147,74 +154,41 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     }
 
     /**
-     * Add override attributes for the configured values.
-     * 
-     * @param vm
-     *            the chef node
-     * @param attributes
-     *            the new attributes
-     * @param recipe
-     *            the recipe for that new attributes
-     * @throws InstallatorException
-     */
-    public void configureNode(VM vm, List<Attribute> attributes, String process, String recipe)
-            throws InstallatorException {
-        // tell Chef the assigned recipes shall be deleted:
-        // ChefNode node = chefNodeDao.loadNode(vm.getChefClientName());
-        ChefNode node = null;
-        try {
-            node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
-            node.addRecipe(recipe);
-            if (attributes != null) {
-                for (Attribute attr : attributes) {
-                    node.addAttribute(process, attr.getKey(), attr.getValue());
-                }
-            }
-        } catch (EntityNotFoundException e) {
-            String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
-            LOGGER.info(message);
-            throw new InstallatorException(message, e);
-        } catch (CanNotCallChefException e) {
-            throw new InstallatorException(e);
-        }
-        try {
-            chefNodeDao.updateNode(node);
-        } catch (CanNotCallChefException e) {
-            throw new InstallatorException(e);
-        }
-    }
-
-    /**
      * Tell Chef the previously assigned recipes are ready to be installed.
      * 
      * @param osInstance
      * @throws
      * @throws ShellCommandException
      */
-    public void isRecipeExecuted(VM vm, String process, String recipe) throws NodeExecutionException {
+    public void isRecipeExecuted(VM vm, String process, String recipe, String token) throws NodeExecutionException {
         boolean isExecuted = false;
-        int time = 10000;
+        int time = 5000;
         Date fechaAhora = new Date();
         while (!isExecuted) {
             System.out.println("MAX_TIME: " + MAX_TIME + " and time: " + time);
             try {
                 if (time > MAX_TIME) {
-                    String errorMesg = "Recipe " + recipe + " coub not be executed in " + vm.getChefClientName();
-                    LOGGER.info(errorMesg);
+                    String errorMesg = "Recipe " + process + " coub not be executed in " + vm.getChefClientName();
+                    log.info(errorMesg);
+                    unassignRecipes(vm, recipe, token);
                     throw new NodeExecutionException(errorMesg);
                 }
                
                 Thread.sleep(time);
                
-                ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname());
-
-                long last_recipeexecution_timestamp = ((Double) node.getAutomaticAttributes().get("ohai_time"))
-                        .longValue() * 1000;
-                // Comprobar si el node tiene el recipe y sino vuelta a hacer la
-                // peticion
-
+                ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
+                
+                long last_recipeexecution_timestamp = getLastRecipeExecutionTimeStamp (node);
+                log.info("last_recipeexecution_timestamp:" + last_recipeexecution_timestamp 
+                                + "fechaAhora:" + fechaAhora.getTime());
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    isExecuted = true;
+                    //if (isRecipeExecutedOK(process, node))
+                        isExecuted = true;
+                    /*else{
+                        String message =" Recipe Execution failed";
+                        unassignRecipes(vm, recipe);
+                        throw new NodeExecutionException( new ChefRecipeExecutionException(message));
+                    }*/
                 }
                 time += time;
             } catch (EntityNotFoundException e) {
@@ -223,12 +197,37 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 throw new NodeExecutionException(e);
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
+            } catch (InstallatorException ie2){
+                throw new NodeExecutionException(ie2);
             }
         }
     }
 
+   //Getting Last Sucessfully Recipe Execution Timestamp (ohai_time)
+   private long getLastRecipeExecutionTimeStamp (ChefNode node) throws NodeExecutionException{
+        String platform = node.getAutomaticAttributes().get("platform").toString();
+        String platform_version = node.getAutomaticAttributes().get("platform_version").toString();
+        log.info("platform:" + platform + " platform_version:" + platform_version);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
+        long last_recipeexecution_timestamp =0;
+
+        String ohai_time_format = node.getAutomaticAttributes().get("ohai_time").toString();
+        log.info("ohai_time_format:[" + ohai_time_format +"]");
+
+        try {
+            Date ohai_time_date = df.parse(ohai_time_format);
+            last_recipeexecution_timestamp = ohai_time_date.getTime();
+        } catch (ParseException ex) {
+            String message = "Error parsing ohai_time date copming from node: " + ex.getMessage();
+            log.info(message);
+            throw new NodeExecutionException (message);
+        }
+        return last_recipeexecution_timestamp;
+    }
+    
     @Override
-    public void validateInstalatorData(VM vm) throws InvalidInstallProductRequestException, NodeExecutionException {
+    public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException, NodeExecutionException {
         if (isSdcClientInstalled()){
             if (!vm.canWorkWithChef()) {
                 sdcClientUtils.checkIfSdcNodeIsReady(vm.getIp());
@@ -243,7 +242,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                                 "software";
                 throw new InvalidInstallProductRequestException(message);
             }
-            isNodeRegistered(vm.getHostname());
+            isNodeRegistered(vm.getHostname(), token);
        }
     }
 

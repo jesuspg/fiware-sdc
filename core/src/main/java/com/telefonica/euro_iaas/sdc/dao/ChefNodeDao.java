@@ -42,7 +42,7 @@ public interface ChefNodeDao {
      * @return
      * @throws CanNotCallChefException
      */
-    ChefNode loadNodeFromHostname(String hostname) throws EntityNotFoundException, 
+    ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException, 
         CanNotCallChefException;
  
     /**
@@ -54,7 +54,7 @@ public interface ChefNodeDao {
      * @throws CanNotCallChefException
      *             if Chef Server returns an unexpected error code
      */
-    ChefNode loadNode(String chefNodeName) throws CanNotCallChefException;
+    ChefNode loadNode(String chefNodeName, String token) throws CanNotCallChefException;
 
     /**
      * Update the ChefNode with the actual values.
@@ -65,7 +65,7 @@ public interface ChefNodeDao {
      * @throws CanNotCallChefException
      *             if Chef Server returns an unexpected error code
      */
-    ChefNode updateNode(ChefNode node) throws CanNotCallChefException;
+    ChefNode updateNode(ChefNode node, String token) throws CanNotCallChefException;
 
     /**
      * Delete the ChefNode
@@ -75,7 +75,7 @@ public interface ChefNodeDao {
      * @throws CanNotCallChefException
      *             if Chef Server returns an unexpected error code
      */
-    void deleteNode(ChefNode node) throws CanNotCallChefException;
+    void deleteNode(ChefNode node, String token) throws CanNotCallChefException;
     
     
     /**
@@ -85,5 +85,5 @@ public interface ChefNodeDao {
      * @return void
      * @throws CanNotCallChefException
      */
-    void isNodeRegistered (String hostname) throws CanNotCallChefException;
+    void isNodeRegistered (String hostname, String token) throws CanNotCallChefException;
 }

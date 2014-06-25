@@ -33,6 +33,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
@@ -46,6 +47,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.ArtifactDto;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 
 /**
@@ -75,7 +77,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
                 .getVm().getDomain()), vdc);
         Artifact artifact = new Artifact(artifactDto.getName(), productInstance.getVdc(), productInstance,
                 artifactDto.getAttributes());
-        artifactAsyncManager.deployArtifact(productInstance, artifact, task, callback);
+        artifactAsyncManager.deployArtifact(productInstance, artifact, getToken (), task, callback);
         return task;
     }
 
@@ -89,7 +91,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
         Task task = createTask(MessageFormat.format("Undeploying artifact in  product {0} in  VM {1}{2}",
                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                 productInstance.getVm().getDomain()), vdc);
-        artifactAsyncManager.undeployArtifact(productInstance, artifactName, task, callback);
+        artifactAsyncManager.undeployArtifact(productInstance, artifactName, getToken (), task, callback);
 
         return task;
     }
@@ -174,6 +176,22 @@ public class ArtifactResourceImpl implements ArtifactResource {
 
     public void setArtifactAsyncManager(ArtifactAsyncManager artifactAsyncManager) {
         this.artifactAsyncManager = artifactAsyncManager;
+    }
+    public String getToken () {
+    	PaasManagerUser user = getCredentials();
+    	if (user == null) {
+    		return "";
+    	} else {
+    		return user.getToken();
+    	}
+    	
+    }
+    public PaasManagerUser getCredentials() {
+    	try {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	} catch (Exception e) {
+    	    return null;
+    	}
     }
 
 }

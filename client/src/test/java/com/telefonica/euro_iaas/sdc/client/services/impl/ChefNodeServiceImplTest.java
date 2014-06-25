@@ -41,6 +41,7 @@ public class ChefNodeServiceImplTest {
 
     String type = "application/json";
     String baseHost = "baseHost";
+    String token = "token";
 
     @Test
     public void shouldDeleteNode() {
@@ -62,7 +63,7 @@ public class ChefNodeServiceImplTest {
 
         Task task = null;
         try {
-            task = chefNodeService.delete(vdc, chefNodeName);
+            task = chefNodeService.delete(vdc, chefNodeName, token);
         } catch (InvalidExecutionException e) {
             fail();
         }

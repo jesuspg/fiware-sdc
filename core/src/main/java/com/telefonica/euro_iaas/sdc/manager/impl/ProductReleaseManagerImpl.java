@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.WEBDAV_PRODUCT_BASEDIR;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.WEBDAV_PRODUCT_BASEDIR;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
     private ProductDao productDao;
     private ProductReleaseDao productReleaseDao;
     private OSDao osDao;
-    private static Logger LOGGER = Logger.getLogger("ProductReleaseManagerImpl");
+    private static Logger log = Logger.getLogger("ProductReleaseManagerImpl");
 
     // @Override
     public ProductRelease load(Product product, String version) throws EntityNotFoundException {
@@ -79,10 +79,10 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
      */
     @Override
     @UseCase(traceTo = "UC_101.1", status = "implemented and tested")
-    public ProductRelease insert(ProductRelease productRelease, File cookbook, File installable)
+    public ProductRelease insert(ProductRelease productRelease, File cookbook, File installable, String token)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
-        LOGGER.info("Inserting productRelease " + productRelease.getVersion() + " "
+        log.info("Inserting productRelease " + productRelease.getVersion() + " "
                 + productRelease.getProduct().getName());
 
         ProductRelease productReleaseOut = insertProductReleaseBBDD(productRelease);
@@ -90,9 +90,9 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
-        uploadInstallable(installable, releaseDto);
+        uploadInstallable(installable, releaseDto, token);
         uploadRecipe(cookbook, releaseDto.getName());
 
         return productReleaseOut;
@@ -107,7 +107,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
      */
     public ProductRelease insert(ProductRelease productRelease) throws AlreadyExistsProductReleaseException,
             InvalidProductReleaseException {
-        LOGGER.info("Inserting productRelease " + productRelease.getVersion() + " "
+        log.info("Inserting productRelease " + productRelease.getVersion() + " "
                 + productRelease.getProduct().getName());
         ProductRelease productReleaseOut = insertProductReleaseBBDD(productRelease);
 
@@ -139,7 +139,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
         deleteProductReleaseBBDD(productRelease);
 
@@ -150,7 +150,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
 
     @Override
     @UseCase(traceTo = "UC_101.3", status = "implemented and tested")
-    public ProductRelease update(ProductRelease productRelease, File cookbook, File installable)
+    public ProductRelease update(ProductRelease productRelease, File cookbook, File installable, String token)
             throws ProductReleaseNotFoundException, InvalidProductReleaseException {
 
         if (productRelease != null) {
@@ -159,10 +159,10 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         ReleaseDto releaseDto = new ReleaseDto();
         releaseDto.setName(productRelease.getProduct().getName());
         releaseDto.setVersion(productRelease.getVersion());
-        releaseDto.setType(propertiesProvider.getProperty(WEBDAV_PRODUCT_BASEDIR));
+        releaseDto.setType(WEBDAV_PRODUCT_BASEDIR);
 
         if (installable != null) {
-            uploadInstallable(installable, releaseDto);
+            uploadInstallable(installable, releaseDto, token);
         }
         if (cookbook != null) {
             uploadRecipe(cookbook, releaseDto.getName());
@@ -174,7 +174,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
     private ProductRelease insertProductReleaseBBDD(ProductRelease productRelease)
             throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
 
-        LOGGER.info("Inserting insertProductReleaseBBDD " + productRelease.getVersion() + " "
+        log.info("Inserting insertProductReleaseBBDD " + productRelease.getVersion() + " "
                 + productRelease.getProduct().getName());
         Product product;
         ProductRelease productReleaseOut;
@@ -242,19 +242,19 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
         for (int i = 0; i < productRelease.getSupportedOOSS().size(); i++) {
             try {
                 os = osDao.load(productRelease.getSupportedOOSS().get(i).getName());
-                LOGGER.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " LOADED");
+                log.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " LOADED");
                 oss.add(os);
             } catch (EntityNotFoundException e) {
                 try {
                     os = osDao.create(productRelease.getSupportedOOSS().get(i));
-                    LOGGER.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " CREATED");
+                    log.log(Level.INFO, "OS " + productRelease.getSupportedOOSS().get(i).getName() + " CREATED");
                     oss.add(os);
                 } catch (Exception e1) {
                     String invalidOSMessageLog = "The supportedOS "
                             + productRelease.getSupportedOOSS().get(i).getName() + " in Product Release"
                             + productRelease.getProduct().getName() + productRelease.getVersion()
                             + " is invalid. Please Insert a valid OS";
-                    LOGGER.log(Level.SEVERE, invalidOSMessageLog);
+                    log.log(Level.SEVERE, invalidOSMessageLog);
                     throw new InvalidProductReleaseException(invalidOSMessageLog, e1);
                 }
             }
@@ -265,22 +265,22 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
     private Product insertProductReleaseLoadProduct(ProductRelease productRelease)
             throws InvalidProductReleaseException {
 
-        LOGGER.info("Inserting insertProductReleaseLoadProduct " + productRelease.getVersion() + " "
+        log.info("Inserting insertProductReleaseLoadProduct " + productRelease.getVersion() + " "
                 + productRelease.getProduct().getName());
         Product product;
         // Insert Product if needed
         try {
             product = productDao.load(productRelease.getProduct().getName());
-            LOGGER.log(Level.INFO, "Product " + product.getName() + " LOADED");
+            log.log(Level.INFO, "Product " + product.getName() + " LOADED");
         } catch (EntityNotFoundException e) {
             try {
                 product = productDao.create(productRelease.getProduct());
-                LOGGER.log(Level.INFO, "Product " + product.getName() + " CREATED");
+                log.log(Level.INFO, "Product " + product.getName() + " CREATED");
             } catch (Exception e1) {
                 String messageLog = "The Product " + productRelease.getProduct().getName() + " in Product Release"
                         + productRelease.getProduct().getName() + productRelease.getVersion()
                         + " is invalid. Please Insert a valid Product ";
-                LOGGER.log(Level.SEVERE, messageLog);
+                log.log(Level.SEVERE, messageLog);
                 throw new InvalidProductReleaseException(messageLog, e1);
             }
         }
@@ -289,33 +289,33 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
 
     private ProductRelease insertProductRelease(ProductRelease productRelease) throws InvalidProductReleaseException,
             AlreadyExistsProductReleaseException {
-        LOGGER.info("Inserting insertProductRelease " + productRelease.getVersion() + " "
+        log.info("Inserting insertProductRelease " + productRelease.getVersion() + " "
                 + productRelease.getProduct().getName());
         ProductRelease productReleaseOut;
         // Insert ProductRelease if not in BBDD
         try {
             productReleaseOut = productReleaseDao.load(productRelease.getProduct(), productRelease.getVersion());
-            LOGGER.log(Level.INFO,
+            log.log(Level.INFO,
                     "Product Release" + productRelease.getProduct().getName() + "-" + productRelease.getVersion()
                             + " LOADED");
         } catch (EntityNotFoundException e) {
             try {
-                LOGGER.log(Level.INFO, "Product Release not found, creating..." + productRelease.getProduct().getName()
+                log.log(Level.INFO, "Product Release not found, creating..." + productRelease.getProduct().getName()
                         + "-" + productRelease.getVersion());
                 productReleaseOut = productReleaseDao.create(productRelease);
-                LOGGER.log(Level.INFO,
+                log.log(Level.INFO,
                         "ProductRelease " + productRelease.getProduct().getName() + "-" + productRelease.getVersion()
                                 + " CREATED");
             } catch (AlreadyExistsEntityException e1) {
                 String alreadyExistsMessageLog = "The Product Release " + productRelease.getProduct().getName()
                         + productRelease.getVersion() + " already exist " + e1.getMessage();
-                LOGGER.log(Level.SEVERE, alreadyExistsMessageLog);
+                log.log(Level.SEVERE, alreadyExistsMessageLog);
                 throw new AlreadyExistsProductReleaseException(alreadyExistsMessageLog, e1);
             } catch (Exception e1) {
                 String invalidEntityMessageLog = "The Product Release " + productRelease.getProduct().getName()
                         + productRelease.getVersion() + " is invalid. Please Insert a valid Product Release "
                         + e1.getMessage();
-                LOGGER.log(Level.SEVERE, invalidEntityMessageLog);
+                log.log(Level.SEVERE, invalidEntityMessageLog);
                 throw new InvalidProductReleaseException(invalidEntityMessageLog, e1);
             }
         }
@@ -347,7 +347,7 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
 
         try {
             existedProduct = productDao.load(productRelease.getProduct().getName());
-            LOGGER.log(Level.INFO, "Product " + existedProduct.getName() + " LOADED");
+            log.log(Level.INFO, "Product " + existedProduct.getName() + " LOADED");
 
             if (productRelease.getProduct().getDescription() != null) {
                 existedProduct.setDescription(productRelease.getProduct().getDescription());
@@ -358,16 +358,16 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
             }
 
             product = productDao.update(existedProduct);
-            LOGGER.log(Level.INFO, "Product " + existedProduct.getName() + " UPDATED");
+            log.log(Level.INFO, "Product " + existedProduct.getName() + " UPDATED");
         } catch (EntityNotFoundException e) {
             String entityNotFoundMessageLog = "The Product " + productRelease.getProduct().getName()
                     + " has not been found in the System ";
-            LOGGER.log(Level.SEVERE, entityNotFoundMessageLog);
+            log.log(Level.SEVERE, entityNotFoundMessageLog);
             throw new ProductReleaseNotFoundException(entityNotFoundMessageLog, e);
         } catch (Exception e) {
             String invalidEntityException = "The Product " + productRelease.getProduct().getName()
                     + " to be updated is Invalid ";
-            LOGGER.log(Level.SEVERE, invalidEntityException);
+            log.log(Level.SEVERE, invalidEntityException);
             throw new InvalidProductReleaseException(invalidEntityException, e);
         }
         return product;
@@ -378,12 +378,12 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
 
         ProductRelease productReleaseOut, existedProductRelease;
         try {
-            LOGGER.log(Level.INFO, "Product Release Before Loading " + productRelease.getProduct().getName() + "-"
+            log.log(Level.INFO, "Product Release Before Loading " + productRelease.getProduct().getName() + "-"
                     + productRelease.getVersion());
 
             existedProductRelease = productReleaseDao.load(productRelease.getProduct(), productRelease.getVersion());
 
-            LOGGER.log(Level.INFO,
+            log.log(Level.INFO,
                     "Product Release " + productRelease.getProduct().getName() + "-" + productRelease.getVersion()
                             + " LOADED");
 
@@ -402,19 +402,19 @@ public class ProductReleaseManagerImpl extends BaseInstallableManager implements
             }
 
             productReleaseOut = productReleaseDao.update(existedProductRelease);
-            LOGGER.log(Level.INFO,
+            log.log(Level.INFO,
                     "ProductRelease " + productRelease.getProduct().getName() + "-" + productRelease.getVersion()
                             + " UPDATED");
 
         } catch (EntityNotFoundException e) {
             String entityNotFoundMessageLog = "The Product Release" + productRelease.getProduct().getName() + "-"
                     + productRelease.getVersion() + " has not been found in the System ";
-            LOGGER.log(Level.SEVERE, entityNotFoundMessageLog);
+            log.log(Level.SEVERE, entityNotFoundMessageLog);
             throw new ProductReleaseNotFoundException(entityNotFoundMessageLog, e);
         } catch (Exception e) {
             String invalidEntityException = "The Product Release" + productRelease.getProduct().getName() + " version "
                     + productRelease.getVersion() + " is Invalid ";
-            LOGGER.log(Level.SEVERE, invalidEntityException);
+            log.log(Level.SEVERE, invalidEntityException);
             throw new InvalidProductReleaseException(invalidEntityException, e);
         }
         return productReleaseOut;

@@ -1,0 +1,17 @@
+{
+    "environment": {
+        "name": "int-grizzly",
+        "logs_path": "logs"
+    },
+    "paas": {
+        "keystone_url": "http://130.206.80.58:35357/v2.0",
+        "sdc_url": "http://130.206.80.119:8082/sdc/rest",
+        "paasmanager_url": "http://130.206.80.112:8082/paasmanager/rest",
+        "vdc": "a68737887e5c453c8754ddb18315f961",
+        "tenant": "QA",
+        "user": "testQA",
+        "password": "testQA",
+        "VM_IP": "130.206.81.135",
+        "VM_hostname": "testingIvanQA-ivan0001tier-1"
+    }
+}

@@ -58,7 +58,7 @@ public interface ArtifactManager {
      * @throws InstallatorException 
      */
 
-    ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact) throws NodeExecutionException,
+    ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact, String token) throws NodeExecutionException,
             FSMViolationException, InstallatorException;
 
     /**
@@ -77,7 +77,7 @@ public interface ArtifactManager {
      * @throws InstallatorException 
      */
 
-    ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName)
+    ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException;
 
     /**

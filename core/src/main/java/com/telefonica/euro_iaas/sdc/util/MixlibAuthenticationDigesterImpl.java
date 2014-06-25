@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.util;
 
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_ID;
 import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_PASS;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_DATE_FORMAT;
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_TIME_ZONE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_DATE_FORMAT;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_TIME_ZONE;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -51,7 +51,7 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDigester {
 
     private Signer signer;
-    private SystemPropertiesProvider propertiesProvider;
+
 
     public final static String AUTH_HEADER_PREFIX = "X-Ops-Authorization-";
     public final static String CONTENT_HASH_HEADER = "X-Ops-Content-Hash";
@@ -59,7 +59,7 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
     public final static String USER_HEADER = "X-Ops-Userid";
     public final static String SIGN_VERSION_HEADER = "X-Ops-Sign";
     public final static String SIGN_VERSION_VALUE = "version=1.0";
-
+    
     private final static String BODY_TEMPLATE = "Method:{0}\nHashed Path:{1}\nX-Ops-Content-Hash:{2}\n"
             + "X-Ops-Timestamp:{3}\nX-Ops-UserId:{4}";
 
@@ -68,15 +68,17 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
      */
     public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl) {
         try {
-            DateFormat df = new SimpleDateFormat(propertiesProvider.getProperty(CHEF_DATE_FORMAT));
-            df.setTimeZone(TimeZone.getTimeZone(propertiesProvider.getProperty(CHEF_TIME_ZONE)));
+            DateFormat df = new SimpleDateFormat(CHEF_DATE_FORMAT);
+            df.setTimeZone(TimeZone.getTimeZone(CHEF_TIME_ZONE));
 
             Map<String, String> headers = new HashMap<String, String>();
             headers.put(CONTENT_HASH_HEADER, getHash(body));
             headers.put(TIMESTAMP_HEADER, df.format(timestamp));
             headers.put(USER_HEADER, id);
             headers.put(SIGN_VERSION_HEADER, SIGN_VERSION_VALUE);
-
+            //headers.put(CHEFSERVER_VERSION_HEADER, CHEFSERVER_VERSION_VALUE);
+            //headers.put("Accept", "application/json");
+            
             String digest = MessageFormat.format(BODY_TEMPLATE, method.toUpperCase(), getHash(path), getHash(body),
                     df.format(timestamp), id);
             digest = signer.sign(digest, new File(pkUrl));
@@ -108,12 +110,5 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
         this.signer = signer;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
 
 }

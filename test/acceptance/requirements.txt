@@ -1,0 +1,5 @@
+nose
+xmldict
+lettuce==0.2.19
+ujson
+git+https://github.com/telefonicaid/lettuce-tools.git#egg=lettuce_tools

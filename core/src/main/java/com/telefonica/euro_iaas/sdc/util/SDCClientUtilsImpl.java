@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-import static com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider.CHEF_CLIENT_URL_TEMPLATE;
+import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_CLIENT_URL_TEMPLATE;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -55,7 +55,6 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
 
     private static final int MAX_TIME = 90000;
 
-    private SystemPropertiesProvider propertiesProvider;
     private Client client;
     private NodeCommandDao nodeCommandDao;
     private OSDao osDao;
@@ -65,7 +64,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public VM getVM(String ip, String fqn, String osType) {
-        String url = MessageFormat.format(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE), ip) + VM_PATH;
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, ip) + VM_PATH;
         WebResource webResource = client.resource(url);
         VM vm = webResource.accept(MediaType.APPLICATION_XML).get(VM.class);
         vm.setFqn(fqn);
@@ -80,7 +79,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
 
     public void execute(VM vm) throws NodeExecutionException {
         try {
-            String url = MessageFormat.format(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE),
+            String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
                     vm.getExecuteChefConectionUrl())
                     + EXECUTE_PATH;
             WebResource webResource = client.resource(url);
@@ -95,7 +94,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public List<Attribute> configure(VM vm, List<Attribute> configuration) {
-        String url = MessageFormat.format(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE),
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
                 vm.getExecuteChefConectionUrl())
                 + CONFIG_PATH;
         WebResource webResource = client.resource(url);
@@ -110,7 +109,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public Attribute configureProperty(VM vm, Attribute attribute) {
-        String url = MessageFormat.format(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE),
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
                 vm.getExecuteChefConectionUrl())
                 + CONFIG_PATH;
         WebResource webResource = client.resource(url);
@@ -150,7 +149,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
     }
 
     public void checkIfSdcNodeIsReady(String ip) throws NodeExecutionException {
-        String url = MessageFormat.format(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE), ip) + VM_PATH;
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, ip) + VM_PATH;
 
         WebResource webResource = client.resource(url);
         String response = "response";
@@ -192,14 +191,6 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
     public void setOsDao(OSDao osDao) {
         this.osDao = osDao;
-    }
-
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
     }
 
     /**

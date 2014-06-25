@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>sdc-server</artifactId>
-        <version>2.1.0</version>
+        <version>2.1.1</version>
     </parent>
 
     <properties>
@@ -34,6 +34,26 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--<dependency>
+           <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+           <version>1.2.12</version>
+        </dependency>-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -43,6 +63,12 @@
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>openstack-tcloud-schemas</artifactId>
+            <version>2.3.3</version>
+            <type>jar</type>
         </dependency>
 
         <dependency>
@@ -120,10 +146,6 @@
             <artifactId>jersey-multipart</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -160,20 +182,9 @@
     </dependencies>
 
     <build>
+        <finalName>sdc</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
 
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
             <!-- Modulo de validacion de token -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -192,26 +203,7 @@
                     <schemaDirectory>${basedir}/src/main/resources/keystone/</schemaDirectory>
                 </configuration>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.codehaus.enunciate</groupId>
-                <artifactId>maven-enunciate-plugin</artifactId>
-                <version>1.23</version>
-                <configuration>
-                    <configFile>src/build/enunciate.xml</configFile>
-            <docsDir>${project.build.directory}/docs</docsDir>
-                    <exports>
-                        <jaxws.client.library.binaries>client.jar</jaxws.client.library.binaries>
-                    </exports>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-            <goal>docs</goal>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>  -->
+
         </plugins>
     </build>
 

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	default-autowire="no">
 
 	<bean id="commandExecutor" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.util.CommandExecutorShellImpl">
 	</bean>
+	
+	<bean id="openStackRegion" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegionImpl">
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider"></property>
+	</bean>
+	
+	
 
 
 	<bean id="baseInstallableInstanceManager" lazy-init="true"
@@ -39,8 +47,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="puppetInstallator" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl">
-		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="client" ref="httpClient" />
+		<property name="openStackRegion" ref="openStackRegion"/>
 	</bean>
 
 	<bean id="httpClient" lazy-init="true"
@@ -73,26 +81,23 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="baseInstallableManager" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.manager.impl.BaseInstallableManager">
 		<property name="commandExecutor" ref="commandExecutor" />
-		<property name="propertiesProvider" ref="systemPropertiesProvider" />
+		<property name="openStackRegion" ref="openStackRegion" />
 		<property name="fileDao" ref="fileDao" />
 	</bean>
 
-	<bean id="chefNodeManager" lazy-init="true"
-		class="com.telefonica.euro_iaas.sdc.manager.impl.ChefNodeManagerImpl">
-		<property name="chefNodeDao" ref="chefNodeDao" />
-		<property name="productInstanceDao" ref="productInstanceDao" />
-	</bean>
-	<bean id="chefClientManager" lazy-init="true"
-		class="com.telefonica.euro_iaas.sdc.manager.impl.ChefClientManagerImpl">
+	<bean id="nodeManager" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.NodeManagerImpl">
 		<property name="chefClientDao" ref="chefClientDao" />
 		<property name="productInstanceDao" ref="productInstanceDao" />
 		<property name="chefNodeDao" ref="chefNodeDao" />
+		<property name="client" ref="httpClient" />
+		<property name="openStackRegion" ref="openStackRegion" />	
+		
 	</bean>
 
 	<!-- UTILS CLASSES -->
 	<bean id="recipeNamingGenerator" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.util.RecipeNamingGeneratorImpl">
-		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 	</bean>
 
 	<bean id="rsaSigner" lazy-init="true"
@@ -102,7 +107,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="mixlibAuthenticationDigester" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigesterImpl">
 		<property name="signer" ref="rsaSigner"></property>
-		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 	</bean>
 
 
@@ -113,6 +117,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="digester" ref="mixlibAuthenticationDigester"></property>
 		<property name="clientConfig" ref="clientConfig"></property>
+		<property name="openStackRegion" ref="openStackRegion" />	
 	</bean>
 	
 	<bean id="restClient" class="com.sun.jersey.api.client.Client"
@@ -126,17 +131,16 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="digester" ref="mixlibAuthenticationDigester"></property>
 		<property name="clientConfig" ref="clientConfig"></property>
+		<property name="openStackRegion" ref="openStackRegion" />	
 	</bean>
 
 	<bean id="fileDao" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.dao.impl.FileDaoWebDavImpl">
-		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="client" ref="restClient" />
 	</bean>
 
 	<bean id="sdcClientUtils" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.util.SDCClientUtilsImpl">
-		<property name="propertiesProvider" ref="systemPropertiesProvider"></property>
 		<property name="client" ref="restClient" />
 		<property name="nodeCommandDao" ref="nodeCommandDao" />
 		<property name="osDao" ref="osDao" />

@@ -30,10 +30,12 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 
 import javax.persistence.EntityNotFoundException;
+import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -57,12 +59,11 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         setType(type);
     }
 
-    public Task delete(String vdc, String chefClientName) throws InvalidExecutionException {
+    public Task delete(String vdc, String chefClientName, String token) throws InvalidExecutionException {
         try {
 
             String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
-            WebResource wr = getClient().resource(url);
-            WebResource.Builder builder = wr.accept(getType()).type(getType());
+            Builder builder = createWebResource (url, token, vdc);
             // builder = addCallback(builder, callback);
             return builder.delete(Task.class);
 
@@ -73,13 +74,13 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         }
     }
 
-    public ChefClient load(String vdc, String chefClientName) throws ResourceNotFoundException {
+    public ChefClient load(String vdc, String chefClientName, String token) throws ResourceNotFoundException {
 
         String url = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
 
-            WebResource wr = getClient().resource(url);
+            Builder wr = createWebResource (url, token, vdc);
 
             return wr.accept(getType()).get(ChefClient.class);
 
@@ -90,13 +91,13 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         }
     }
 
-    public ChefClient loadByHostname(String vdc, String hostname) throws ResourceNotFoundException {
+    public ChefClient loadByHostname(String vdc, String hostname, String token) throws ResourceNotFoundException {
 
         String url = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENTHOSTNAME_PATH, vdc, hostname);
 
-            WebResource wr = getClient().resource(url);
+            Builder wr = createWebResource (url, token, vdc);
 
             return wr.accept(getType()).get(ChefClient.class);
 

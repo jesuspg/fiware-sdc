@@ -1,6 +1,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
     <import resource="spring-jersey-config.xml"/>
     <import resource="classpath:/spring-db-config.xml"/>
@@ -11,5 +11,5 @@
     <import resource="classpath:/spring-properties-config.xml"/>
     <import resource="classpath:/spring-tx-config.xml"/>
     <import resource="classpath:/spring-task-config.xml"/>
-    <import resource="classpath:/spring-security-config.xml"/>
+   <import resource="classpath:/spring-security-config.xml"/>
 </beans>

@@ -46,6 +46,7 @@ public class ChefClientServiceImplTest {
     ChefClientService chefClientService;
     String type = "application/json";
     String baseHost = "baseHost";
+    String token = "token";
     Client client = mock(Client.class);
 
     @Before
@@ -70,9 +71,10 @@ public class ChefClientServiceImplTest {
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
-        ChefClient resultChefClient = chefClientService.load(vdc, chefClientName);
+        ChefClient resultChefClient = chefClientService.load(vdc, chefClientName, token);
 
         // then
         assertNotNull(resultChefClient);
@@ -99,9 +101,10 @@ public class ChefClientServiceImplTest {
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
-        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName);
+        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName,token);
 
         // then
         assertNotNull(resultChefClient);
@@ -128,7 +131,7 @@ public class ChefClientServiceImplTest {
 
         Task task = null;
         try {
-            task = chefClientService.delete(vdc, chefClientName);
+            task = chefClientService.delete(vdc, chefClientName,token);
         } catch (InvalidExecutionException e) {
             fail();
         }
