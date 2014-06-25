@@ -1,12 +1,13 @@
-# FI-WARE SDC [![Build Status](https://travis-ci.org/telefonicaid/fiware-sdc.svg)](https://travis-ci.org/telefonicaid/fiware-sdc) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-sdc/badge.png)](https://coveralls.io/r/jesuspg/fiware-sdc)
+# FI-WARE SDC [![Build Status](https://travis-ci.org/telefonicaid/fiware-sdc.svg)](https://travis-ci.org/telefonicaid/fiware-sdc) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-sdc/badge.png)](https://coveralls.io/r/jesuspg/fiware-sdc) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+
 
 ## Software Deployment and Configuration
 
 
 
-###SDC Build and Installation
+###SDC Installation
 
-This guide tries to define the procedure to build and install the SDC  in a machine, including its requirements and possible troubleshooting that we could find during the installation. We have to talk about two nodes, one including the core functionality of the enabler itself and the other one which allocated the chef server.
+This guide tries to define the procedure to install the SDC  in a machine, including its requirements and possible troubleshooting that we could find during the installation. We have to talk about two nodes, one including the core functionality of the enabler itself and the other one which allocated the chef server.
 
 ### Requirements
 
@@ -16,36 +17,10 @@ In order to execute the SDC, it is needed to have previously installed the follo
  * Chef server [http://wiki.opscode.com/display/chef/Installing+Chef+Server]. For CentOS it is possible to follow the following instructions[http://blog.frameos.org/2011/05/19/installing-chef-server-0-10-in-rhel-6-scientificlinux-6/]
 
 * SDC node
- * open jdk 7
  * Tomcat  7.X.X [http://tomcat.apache.org/download-70.cgi]
  * PostgreSQL [http://www.postgresql.org/]
  * Webdav
 
-
-### Building instructions
-It is a a maven application:
-
-- Compile, launch test and build all modules
-
-        $ mvn clean install
-- Create a zip with distribution in target/sdc-server-dist.zip
-
-        $ mvn assembly:assembly -DskipTests
-
-- You can generate a rpm o debian packages (using profiles in pom)
-
-    for debian/ubuntu:
-
-        $ mvn install -Pdebian -DskipTests
-        (created target/sdc-server-XXXXX.deb)
-
-    for centOS:
-
-      $ mvn package -P rpm -DskipTests
-      (created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
-
-
-## Installation instructions
 ### Chef server
 #### Chef server Installation
 The installation of the chef-server involves to install the chef-server package, which can be obtained in [http://www.getchef.com/chef/install/]. We can just execute
@@ -133,6 +108,29 @@ Then we need to create the database tables for the sdc. To do that obtain the fi
   psql -d sdc -a -f db-initial.sql
   psql -d sdc -a -f db-changelog.sql
 
+### Apache Tomcat configuration
+
+#### Install Tomcat 7
+Install Tomcat 7 together with standard Tomcat samples, documentation, and management web apps:
+
+    yum install tomcat7-webapps tomcat7-docs-webapp tomcat7-admin-webapps
+
+Start/Stop/Restart Tomcat 7 as a service:
+
+    sudo service tomcat7 start
+
+stop:
+
+    sudo service tomcat7 stop
+
+restart:
+
+    sudo service tomcat7 restart
+
+Add Tomcat 7 service to the autostart
+
+    sudo chkconfig tomcat7 on
+
 
 #### Install and configure WebDav
 
@@ -186,7 +184,7 @@ After, we introduce the WebDAV section into the Virtual host:
     # But we apply different settings
     <Location /webdav>
       Dav on
-      AuthType Basic  
+      AuthType Basic
       AuthName "SDC Server Webdav"
       AuthUserFile /etc/apache2/passwd/passwords
       Require user root
@@ -198,30 +196,21 @@ We reconfigure apache and reload it
 
 In order to test if the webdav has been configured in a good way, with a explorer go to http://{IP}/webdav/. Finally, create the directories product and application in the webdav. This directories will be visible trough the url: http://{IP}/webdav/product and http://{IP}/webdav/application
 
-#### Configure SDC application
-Once the prerequisites are satisfied, you change the context file. To do that, change sdc.xml found in distribution file and store it in folder $SDC_HOME/webapps/.
+#### Install SDC applications
+Once the prerequisites are satisfied, you shall create the context file. To do that, change sdc.xml found in distribution file and store it in folder $CATALINA_HOME/conf/Catalina/localhost.
 
 See the snipet bellow to know how it works:
 
-
-    <New id="sdc" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg>jdbc/sdc</Arg>
-        <Arg>
-
-            <New class="org.postgresql.ds.PGSimpleDataSource">
-                <Set name="User"> <database user> </Set>
-                <Set name="Password"> <database password> </Set>
-                <Set name="DatabaseName"> <database name>   </Set>
-                <Set name="ServerName"> <IP/hostname> </Set>
-                <Set name="PortNumber">5432</Set>
-            </New>
-
-        </Arg>
-    </New>
-
+    <Context path="/sdc" docBase="war path" reloadable="true" debug="5">
+      <Resource name="jdbc/sdc" auth="Container" type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"  <!-- select the driver-->
+       url="jdbc:postgresql://localhost:5432/sdc" <!-- select the connection url-->
+       username="postgres" password="postgres" <!-- select the user/password-->
+       maxActive="20" maxIdle="10" maxWait="-1"/>
+    </Context>
 
 You also have to add the provided scripts found in the dist file (in folder /opt/sdc/scripts/) in the same folder (or everywhere you want if you prefer to change the default configuration).
 
+Include the library postgresql-8.4-702.jdbc4.jar in $CATALINA_HOME
 
 #### Configure SDC application
 The configuration of SDC is in configuration_properties table. There, it is required to configure:
