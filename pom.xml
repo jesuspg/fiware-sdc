@@ -16,7 +16,7 @@
         <!-- This properties will be added to sonar as manual measures -->
         <product.area.name>Industrial IoT</product.area.name>
         <product.name>FIWARE</product.name>
-        <product.release>3.2.3</product.release>
+        <product.release>3.4.3</product.release>
 
         <assembly-directory>target/distribution</assembly-directory>
 
@@ -76,7 +76,7 @@
         <copyright.year>2012</copyright.year>
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.7</jvm.version>
+        <jvm.version>1.6</jvm.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <logback.version>1.1.2</logback.version>
@@ -138,12 +138,12 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.2</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
