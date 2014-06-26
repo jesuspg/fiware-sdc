@@ -4,7 +4,7 @@
 
     <appender name="sdcAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/sdc.log</file>
+        <file>${jetty.base}/logs/sdc.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${catalina.base}/logs/sdc.%d{yyyy-MM-dd}.gz</fileNamePattern>
@@ -17,7 +17,7 @@
 
     <appender name="puppetAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/puppet.log</file>
+        <file>${jetty.base}/logs/puppet.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${catalina.base}/logs/puppet.%d{yyyy-MM-dd}.gz</fileNamePattern>
@@ -30,7 +30,7 @@
 
     <appender name="chefAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/chef.log</file>
+        <file>${jetty.base}/logs/chef.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${catalina.base}/logs/chef.%d{yyyy-MM-dd}.gz</fileNamePattern>
@@ -43,7 +43,7 @@
 
     <appender name="authentication"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/authentication.log</file>
+        <file>${jetty.base}/logs/authentication.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${catalina.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
