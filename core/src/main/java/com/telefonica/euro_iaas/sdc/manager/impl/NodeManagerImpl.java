@@ -151,8 +151,8 @@ public class NodeManagerImpl implements NodeManager {
         } catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
-            log.info(errorMsg);
-            throw new ChefClientExecutionException(errorMsg, e);
+            log.warn(errorMsg);
+//            throw new ChefClientExecutionException(errorMsg, e);
         } catch (Exception e2) {
             String errorMsg = "The ChefClient " + chefClientName + " was not found in the system " + e2.getMessage();
             log.info(errorMsg);
