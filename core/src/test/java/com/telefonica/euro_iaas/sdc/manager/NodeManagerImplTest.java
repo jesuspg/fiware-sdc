@@ -135,7 +135,7 @@ public class NodeManagerImplTest {
 
     }
 
-    @Test/*(expected = NodeExecutionException.class)*/
+    @Test
     public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException, CanNotCallChefException, EntityNotFoundException, ClientProtocolException, IOException {
 
         when(chefNodeDao.loadNode("testError", "token")).thenThrow(CanNotCallChefException.class);
