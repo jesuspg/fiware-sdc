@@ -67,7 +67,9 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
 
     /*
      * @Id
+     * 
      * @GeneratedValue(strategy = GenerationType.AUTO) private Long id;
+     * 
      * @ManyToOne(optional=false) private ProductRelease productRelease;
      */
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "productInstance",
@@ -106,7 +108,9 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      * @param application
      *            a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
      * @param status
-     *            a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
+     *            a
+     *            {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status}
+     *            object.
      */
     public ProductInstance(ProductRelease productRelease, Status status, VM vm, String vdc) {
         super(status);
@@ -124,7 +128,9 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
      * @param application
      *            a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
      * @param status
-     *            a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
+     *            a
+     *            {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status}
+     *            object.
      */
     public ProductInstance(ProductRelease productRelease, Set<Artifact> artifacts, Status status, VM vm, String vdc) {
         super(status);
@@ -212,6 +218,20 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
 
     public int compareTo(ProductInstance o) {
         return this.getProductRelease().getProduct().getName().compareTo(o.getProductRelease().getProduct().getName());
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ProductInstance]");
+        sb.append("[productRelease = ").append(this.productRelease).append("]");
+        sb.append("[artifact = ").append(this.artifact).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

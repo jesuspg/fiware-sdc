@@ -43,8 +43,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Defines the object return in an asynchronous request to the system. Provides some information to know the result of
- * the task and how to find the created resource.
+ * Defines the object return in an asynchronous request to the system. Provides
+ * some information to know the result of the task and how to find the created
+ * resource.
  * 
  * @author Sergio Arroyo
  */
@@ -72,14 +73,14 @@ public class Task implements Serializable {
     @XmlElement(required = false)
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "owner_href")),
-        @AttributeOverride(name = "name", column = @Column(name = "owner_name")),
-        @AttributeOverride(name = "type", column = @Column(name = "owner_type")) })
+            @AttributeOverride(name = "name", column = @Column(name = "owner_name")),
+            @AttributeOverride(name = "type", column = @Column(name = "owner_type")) })
     private TaskReference owner;
     @XmlElement(required = false)
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "result_href")),
-        @AttributeOverride(name = "name", column = @Column(name = "result_name")),
-        @AttributeOverride(name = "type", column = @Column(name = "result_type")) })
+            @AttributeOverride(name = "name", column = @Column(name = "result_name")),
+            @AttributeOverride(name = "type", column = @Column(name = "result_type")) })
     private TaskReference result;
 
     @XmlAttribute(required = true)
@@ -278,6 +279,29 @@ public class Task implements Serializable {
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[Task]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[href = ").append(this.href).append("]");
+        sb.append("[error = ").append(this.error).append("]");
+        sb.append("[owner = ").append(this.owner).append("]");
+        sb.append("[result = ").append(this.result).append("]");
+        sb.append("[startTime = ").append(this.startTime).append("]");
+        sb.append("[endTime = ").append(this.endTime).append("]");
+        sb.append("[expireTime = ").append(this.expireTime).append("]");
+        sb.append("[status = ").append(this.status).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

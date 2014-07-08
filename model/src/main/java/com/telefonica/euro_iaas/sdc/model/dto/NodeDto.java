@@ -25,15 +25,15 @@
 package com.telefonica.euro_iaas.sdc.model.dto;
 
 public class NodeDto {
-    
+
     private String group;
     private String softwareName;
     private String version;
-    
-    public NodeDto(){
-        
+
+    public NodeDto() {
+
     }
-    
+
     public NodeDto(String group, String softwareName, String version) {
         super();
         this.group = group;
@@ -64,8 +64,20 @@ public class NodeDto {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    
-    
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[NodeDto]");
+        sb.append("[group = ").append(this.group).append("]");
+        sb.append("[softwareName = ").append(this.softwareName).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
 
 }
