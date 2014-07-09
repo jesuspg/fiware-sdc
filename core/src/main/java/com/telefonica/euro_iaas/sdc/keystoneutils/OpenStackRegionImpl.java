@@ -99,15 +99,15 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     }
 
-    
-    public String getPuppetEndPoint( String token) throws OpenStackException  {
+    @Override
+    public String getPuppetWrapperEndPoint( String token) throws OpenStackException  {
     	String defaulRegion = this.getDefaultRegion(token);
     	log.info ("Get url for puppet for default region " + defaulRegion);
     	String url;
         try {
-            url = getEndPointByNameAndRegionName("puppetmaster", defaulRegion, token);
+            url = getEndPointByNameAndRegionName("puppetwrapper", defaulRegion, token);
         } catch (OpenStackException e) {
-            String msn = "It is not possible to obtain the Puppet Master endpoint";
+            String msn = "It is not possible to obtain the Puppet Wrapper endpoint";
             log.info(msn);
             throw new OpenStackException (msn);
             		

@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.MDC;
 
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
@@ -53,7 +54,7 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task upgrade(String vdc, String name, String version, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(upgradePath, vdc, name, version);
-        Builder builder = createWebResource (url, token, vdc);
+        Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.put(Task.class);
     }
@@ -64,7 +65,7 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task configure(String vdc, String name, String callback, List<Attribute> arguments, String token) {
         String url = getBaseHost() + MessageFormat.format(configPath, vdc, name);
-        Builder builder = createWebResource (url, token, vdc);
+        Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         Attributes attributes = new Attributes();
         attributes.addAll(arguments);
@@ -79,7 +80,7 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task uninstall(String vdc, String name, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(uninstallPath, vdc, name);
-        Builder builder = createWebResource (url, token, vdc);
+        Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.delete(Task.class);
     }
@@ -135,16 +136,18 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
     public void setUninstallPath(String uninstallPath) {
         this.uninstallPath = uninstallPath;
     }
-    
 
-    
-    protected Builder createWebResource (String url, String token, String tenant) {        
-    	WebResource webResource = getClient().resource(url);
-    	Builder builder = webResource.accept(getType()).type(getType());
-     	builder.header("X-Auth-Token", token);
-    	builder.header("Tenant-Id", tenant);
-    	return builder;
-    	
+    protected Builder createWebResource(String url, String token, String tenant) {
+        WebResource webResource = getClient().resource(url);
+        Builder builder = webResource.accept(getType()).type(getType());
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", tenant);
+
+        String txId = MDC.get("txId");
+        if (txId != null) {
+            builder.header("txId", tenant);
+        }
+        return builder;
 
     }
 }

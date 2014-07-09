@@ -117,9 +117,10 @@ public class VM {
      * @param domain
      */
     /*
-     * public VM(String hostname, String domain) { this.ip = ""; this.fqn = ""; if (hostname == null) { this.hostname =
-     * ""; } else { this.hostname = hostname; } if (domain == null) { this.domain = ""; } else { this.domain = domain; }
-     * }
+     * public VM(String hostname, String domain) { this.ip = ""; this.fqn = "";
+     * if (hostname == null) { this.hostname = ""; } else { this.hostname =
+     * hostname; } if (domain == null) { this.domain = ""; } else { this.domain
+     * = domain; } }
      */
 
     /**
@@ -194,7 +195,8 @@ public class VM {
     /**
      * Decides if chef can work with this VM or if doesn't.
      * 
-     * @return <code>true</code> if Chef can work with the available information for this VM
+     * @return <code>true</code> if Chef can work with the available information
+     *         for this VM
      */
     public Boolean canWorkWithChef() {
         return !StringUtils.isEmpty(hostname) && !StringUtils.isEmpty(domain);
@@ -203,16 +205,18 @@ public class VM {
     /**
      * Decides if SDC can interact with Installators or not.
      * 
-     * @return <code>true</code> if Installators can work with the available information for this VM
+     * @return <code>true</code> if Installators can work with the available
+     *         information for this VM
      */
     public Boolean canWorkWithInstallatorServer() {
         return !StringUtils.isEmpty(hostname);
     }
-    
+
     /**
      * Decides if SDC Server can communicate with VM or if can't
      * 
-     * @return <code>true</code> if SDC can communicate with VM with the available information for this VM
+     * @return <code>true</code> if SDC can communicate with VM with the
+     *         available information for this VM
      */
     public Boolean canWorkWithNodes() {
         return !StringUtils.isEmpty(ip);
@@ -322,6 +326,7 @@ public class VM {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -337,6 +342,7 @@ public class VM {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -371,14 +377,21 @@ public class VM {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
      */
-    @Override
     public String toString() {
-        return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip + ", fqn=" + fqn + ", osType=" + osType
-                + "]";
+        StringBuilder sb = new StringBuilder("[[VM]");
+        sb.append("[ip = ").append(this.ip).append("]");
+        sb.append("[hostname = ").append(this.hostname).append("]");
+        sb.append("[domain = ").append(this.domain).append("]");
+        sb.append("[fqn = ").append(this.fqn).append("]");
+        sb.append("[osType = ").append(this.osType).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

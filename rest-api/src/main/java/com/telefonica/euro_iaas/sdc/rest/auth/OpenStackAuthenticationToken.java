@@ -57,11 +57,11 @@ public class OpenStackAuthenticationToken {
     /**
      * The token ID.
      */
-    private static String token;
+    private String token;
     /**
      * The tenant ID.
      */
-    private static String tenantId;
+    private String tenantId;
     /**
      * The expiration date of the token.
      */
@@ -98,6 +98,11 @@ public class OpenStackAuthenticationToken {
     private static long offset;
 
     OpenStackAuthenticationToken(ArrayList<Object> params) {
+
+        initialize(params);
+    }
+
+    public void initialize(ArrayList<Object> params) {
         this.token = "";
         this.tenantId = "";
         this.url = (String) params.get(0);

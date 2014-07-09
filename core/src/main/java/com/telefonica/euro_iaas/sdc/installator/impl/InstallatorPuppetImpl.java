@@ -27,15 +27,22 @@ package com.telefonica.euro_iaas.sdc.installator.impl;
 import static java.text.MessageFormat.format;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -47,6 +54,7 @@ import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class InstallatorPuppetImpl implements Installator {
@@ -62,24 +70,42 @@ public class InstallatorPuppetImpl implements Installator {
 
         String puppetUrl = null;
         try {
-            puppetUrl = openStackRegion.getPuppetEndPoint(token);
+            puppetUrl = openStackRegion.getPuppetWrapperEndPoint(token);
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
-        HttpPost postInstall = new HttpPost(puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
-                + product.getProduct().getName() + "/" + product.getVersion());
+        HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/"+ vm.getHostname() + "/"
+                + action);
 
         postInstall.addHeader("Content-Type", "application/json");
+        
+        NodeDto nodeDto = new NodeDto(vdc,product.getProduct().getName(),product.getVersion());
+        ObjectMapper mapper = new ObjectMapper();
+        StringEntity input;
+        
+        try {
+            input = new StringEntity(mapper.writeValueAsString(nodeDto));
+        } catch (JsonGenerationException e2) {
+            throw new SdcRuntimeException(e2);
+        } catch (JsonMappingException e2) {
+            throw new SdcRuntimeException(e2);
+        } catch (UnsupportedEncodingException e2) {
+            throw new SdcRuntimeException(e2);
+        } catch (IOException e2) {
+            throw new SdcRuntimeException(e2);
+        }
+        
+        input.setContentType("application/json");
+        postInstall.setEntity(input);
 
-        System.out.println("puppetURL: " + puppetUrl + action + "/" + vdc + "/" + vm.getHostname() + "/"
-                + product.getProduct().getName() + "/" + product.getVersion());
+//        System.out.println("puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
+//                + action);
 
         HttpResponse response;
 
         log.info("Calling puppetWrapper install");
-        log.debug("connecting to puppetURL: "+puppetUrl
-                + action + "/" + vdc + "/" + vm.getHostname() + "/" + product.getProduct().getName() + "/"
-                + product.getVersion());
+        log.info("connecting to puppetURL: "+"puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
+                + action);
         try {
             response = client.execute(postInstall);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -94,15 +120,14 @@ public class InstallatorPuppetImpl implements Installator {
             log.debug("statusCode:"+ statusCode);
             
             log.info("Calling puppetWrapper generate");
-            log.debug(puppetUrl + "generate/"
-                    + vm.getHostname());
+            log.info(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
 
             // generate files in puppet master
-            HttpPost postGenerate = new HttpPost(puppetUrl + "generate/" + vm.getHostname());
+            HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
 
-            postGenerate.addHeader("Content-Type", "application/json");
+            getGenerate.addHeader("Content-Type", "application/json");
 
-            response = client.execute(postGenerate);
+            response = client.execute(getGenerate);
             statusCode = response.getStatusLine().getStatusCode();
             entity = response.getEntity();
             EntityUtils.consume(entity);

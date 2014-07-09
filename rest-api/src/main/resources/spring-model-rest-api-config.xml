@@ -1,67 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-       default-autowire="no">-->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
-       default-autowire="no">
-       
-    <bean id="productInstanceDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-autowire="no">
 
-    <!-- RESOURCES -->
+	<bean id="productInstanceDao" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl" />
 
-    <bean id="productResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
-        <property name="productManager" ref="productManager"/>
-        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-    </bean>
-    
-    <bean id="productReleaseResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl">
-        <property name="validator" ref="productResourceValidator"/>
-        <property name="generalValidator" ref="generalResourceValidator"/>
-        <property name="productReleaseManager" ref="productReleaseManager"/>
-        <property name="productManager" ref="productManager"/>
-    </bean>
-    
-    <bean id="productInstanceResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.resources.ProductInstanceResourceImpl">
-        <property name="validator" ref="productInstanceResourceValidator"/>
-        <property name="taskManager" ref="taskManager"/>
-        <property name="productManager" ref="productManager"/>
-        <property name="productInstanceAsyncManager" ref="productInstanceAsyncManager"/>
-    </bean>
-    
-    <bean id="nodeResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.resources.NodeResourceImpl">
-        <property name="taskManager" ref="taskManager"/>
-        <property name="nodeManager" ref="nodeManager"/>
-        <property name="nodeAsyncManager" ref="nodeAsyncManager"/>
-    </bean>
-    
-     <bean id="taskResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.resources.TaskResourceImpl">
-        <property name="taskManager" ref="taskManager"/>
-    </bean>
+	<!-- RESOURCES -->
 
-    <!-- ===========
-    == VALIDATORS ==
-    ================ -->
+	<bean id="productResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
+		<property name="productManager" ref="productManager" />
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
+	</bean>
 
-    <bean id="generalResourceValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidatorImpl">
-    </bean>
-    <bean id="productResourceValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidatorImpl">
-        <property name="generalValidator" ref="generalResourceValidator"/>
-    </bean>
-    <bean id="productInstanceResourceValidator" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidatorImpl">
-        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"></property>
-    </bean>
+	<bean id="productReleaseResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl">
+		<property name="validator" ref="productResourceValidator" />
+		<property name="generalValidator" ref="generalResourceValidator" />
+		<property name="productReleaseManager" ref="productReleaseManager" />
+		<property name="productManager" ref="productManager" />
+	</bean>
+
+	<bean id="productInstanceResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductInstanceResourceImpl">
+		<property name="validator" ref="productInstanceResourceValidator" />
+		<property name="taskManager" ref="taskManager" />
+		<property name="productManager" ref="productManager" />
+		<property name="productInstanceAsyncManager" ref="productInstanceAsyncManager" />
+	</bean>
+
+	<bean id="nodeResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.NodeResourceImpl">
+		<property name="taskManager" ref="taskManager" />
+		<property name="nodeManager" ref="nodeManager" />
+		<property name="nodeAsyncManager" ref="nodeAsyncManager" />
+	</bean>
+
+	<bean id="taskResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.TaskResourceImpl">
+		<property name="taskManager" ref="taskManager" />
+	</bean>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="traceInterceptor"
+			pointcut="execution(* com.telefonica.euro_iaas.sdc.rest.resources..*(..))" />
+		<aop:advisor advice-ref="traceInterceptor"
+			pointcut="execution(* com.telefonica.euro_iaas.sdc.installator.impl..*(..))" />
+		<aop:advisor advice-ref="traceInterceptor"
+			pointcut="execution(* com.telefonica.euro_iaas.sdc.dao.impl..*(..))" />
+		<aop:advisor advice-ref="traceInterceptor"
+			pointcut="execution(* com.telefonica.euro_iaas.sdc.manager.impl..*(..))" />
+	</aop:config>
+
+	<bean name="traceInterceptor"
+		class="com.telefonica.euro_iaas.sdc.rest.aspects.TraceInterceptor">
+		<property name="enterMessage"
+			value="ENTER: $[targetClassShortName].$[methodName]($[arguments])" />
+		<property name="exitMessage"
+			value="EXIT: $[targetClassShortName].$[methodName](): $[returnValue]" />
+		<property name="useDynamicLogger" value="true" />
+	</bean>
+
+
+	<!-- =========== == VALIDATORS == ================ -->
+
+	<bean id="generalResourceValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidatorImpl">
+	</bean>
+	<bean id="productResourceValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidatorImpl">
+		<property name="generalValidator" ref="generalResourceValidator" />
+	</bean>
+	<bean id="productInstanceResourceValidator" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidatorImpl">
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider"></property>
+	</bean>
 </beans>

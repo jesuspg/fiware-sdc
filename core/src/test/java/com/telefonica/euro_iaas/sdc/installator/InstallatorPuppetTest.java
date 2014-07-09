@@ -26,25 +26,22 @@ package com.telefonica.euro_iaas.sdc.installator;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.protocol.HTTP;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.test.annotation.ExpectedException;
 
-import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
@@ -109,7 +106,7 @@ public class InstallatorPuppetTest {
         puppetInstallator = new InstallatorPuppetImpl();
         puppetInstallator.setClient(client);
         puppetInstallator.setOpenStackRegion(openStackRegion);
-        when (openStackRegion.getPuppetEndPoint("token")).thenReturn("http://");
+        when (openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
    
     }
     
@@ -123,9 +120,10 @@ public class InstallatorPuppetTest {
     }
     
     @Test(expected = InstallatorException.class)
-    public void testCallService_FAIL() throws InstallatorException, NodeExecutionException{
+    public void testCallService_FAIL() throws InstallatorException, NodeExecutionException, OpenStackException{
         
         when(statusLine.getStatusCode()).thenReturn(500);
+//        when(openStackRegion.getPuppetWrapperEndPoint(anyString())).thenReturn("http://testurl.es");
         
         puppetInstallator.callService(host,"test",productRelease, "install", "token");
         

@@ -33,6 +33,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,10 +46,8 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
-
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-
 
 /**
  * The Class OpenStackAuthenticationFilter.
@@ -136,12 +135,14 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
             throws IOException, ServletException {
 
-        final boolean debug = logger.isDebugEnabled();
+        final boolean info = logger.isInfoEnabled();
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
+
+        MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
 
         if (pathInfo.equals("/") || pathInfo.equals("/extensions")) {
             /**
@@ -157,10 +158,16 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             try {
                 String token = header;
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
+                String txId = request.getHeader("txId");
+                if (txId != null) {
+                    MDC.put("txId", txId);
+
+                }
+
                 // String tenantId = request.getPathInfo().split("/")[3];
 
-                if (debug) {
-                    logger.debug("OpenStack Authentication Authorization header " + "found for user '" + token
+                if (info) {
+                    logger.info("OpenStack Authentication Authorization header " + "found for user '" + token
                             + "' and tenant " + tenantId);
                 }
 
@@ -169,8 +176,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
                 Authentication authResult = authenticationManager.authenticate(authRequest);
 
-                if (debug) {
-                    logger.debug("Authentication success: " + authResult);
+                if (info) {
+                    logger.info("Authentication success: " + authResult);
                 }
 
                 PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
@@ -190,8 +197,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             } catch (AuthenticationException failed) {
                 SecurityContextHolder.clearContext();
 
-                if (debug) {
-                    logger.debug("Authentication request for failed: " + failed);
+                if (info) {
+                    logger.info("Authentication request for failed: " + failed);
                 }
 
                 rememberMeServices.loginFail(request, response);
