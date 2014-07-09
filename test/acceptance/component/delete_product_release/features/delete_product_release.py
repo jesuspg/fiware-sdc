@@ -29,6 +29,7 @@ def setup_scenario(scenario):
 @step(u'Given a created product with name "([^"]*)" and release "([^"]*)"')
 def given_a_created_product_with_name_group1(step, product_id, product_release):
 
+    world.attributes = {}
     body = dict_to_xml(default_product(name=product_id))
     response = api_utils.add_new_product(headers=world.headers, body=body)
     assert_true(response.ok, response.content)
