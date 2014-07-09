@@ -8,6 +8,9 @@ puppet-wrapper/acceptance_tests/testreport
 .project
 .settings
 
+rest-api/catalina.base_IS_UNDEFINED/
+rest-api/jetty.base_IS_UNDEFINED/
+
 # Package Files #
 #*.jar
 *.war

@@ -44,7 +44,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 /**
  * Represents an artifact to be installed on a ProductRelease.
  * 
@@ -223,7 +222,7 @@ public class Artifact {
         }
         return atts;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -249,12 +248,30 @@ public class Artifact {
 
         return true;
     }
+
     @Override
-   public int hashCode() {
-       final int prime = 31;
-       int result = 1;
-       result = prime * result + ((id == null) ? 0 : id.hashCode());
-       return result;
-   }
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[Artifact]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[productInstance = ").append(this.productInstance).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
 
 }

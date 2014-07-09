@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 
 /**
- * DTO to receive the complete information when a product release is going to be installed.
+ * DTO to receive the complete information when a product release is going to be
+ * installed.
  * 
  * @author Sergio Arroyo
  */
@@ -120,4 +121,21 @@ public class ProductInstanceDto {
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ProductInstanceDto]");
+        sb.append("[product = ").append(this.product).append("]");
+        sb.append("[vm = ").append(this.vm).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

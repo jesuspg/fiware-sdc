@@ -135,7 +135,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
             throws IOException, ServletException {
 
-        final boolean debug = logger.isDebugEnabled();
+        final boolean info = logger.isInfoEnabled();
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
 
@@ -166,8 +166,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
                 // String tenantId = request.getPathInfo().split("/")[3];
 
-                if (debug) {
-                    logger.debug("OpenStack Authentication Authorization header " + "found for user '" + token
+                if (info) {
+                    logger.info("OpenStack Authentication Authorization header " + "found for user '" + token
                             + "' and tenant " + tenantId);
                 }
 
@@ -176,8 +176,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
                 Authentication authResult = authenticationManager.authenticate(authRequest);
 
-                if (debug) {
-                    logger.debug("Authentication success: " + authResult);
+                if (info) {
+                    logger.info("Authentication success: " + authResult);
                 }
 
                 PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
@@ -197,8 +197,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             } catch (AuthenticationException failed) {
                 SecurityContextHolder.clearContext();
 
-                if (debug) {
-                    logger.debug("Authentication request for failed: " + failed);
+                if (info) {
+                    logger.info("Authentication request for failed: " + failed);
                 }
 
                 rememberMeServices.loginFail(request, response);

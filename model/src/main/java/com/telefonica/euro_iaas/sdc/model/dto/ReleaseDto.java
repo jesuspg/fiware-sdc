@@ -105,4 +105,19 @@ public class ReleaseDto {
         this.version = version;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ReleaseDto]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[type = ").append(this.type).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

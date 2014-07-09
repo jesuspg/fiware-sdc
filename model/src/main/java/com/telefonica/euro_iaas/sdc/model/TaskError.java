@@ -122,4 +122,20 @@ public class TaskError {
         this.venodrSpecificErrorCode = venodrSpecificErrorCode;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[TaskError]");
+        sb.append("[message = ").append(this.message).append("]");
+        sb.append("[majorErrorCode = ").append(this.majorErrorCode).append("]");
+        sb.append("[minorErrorCode = ").append(this.minorErrorCode).append("]");
+        sb.append("[venodrSpecificErrorCode = ").append(this.venodrSpecificErrorCode).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }
