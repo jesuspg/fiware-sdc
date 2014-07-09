@@ -33,7 +33,9 @@ import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
 public class TraceInterceptor extends CustomizableTraceInterceptor {
 
     protected void writeToLog(Log logger, String message, Throwable ex) {
-        if (message.contains("ENTER")) {
+        if(ex!=null){
+            logger.error(ex);
+        }else if (message.contains("ENTER")) {
             logger.info(message);
         } else if (message.contains("EXIT")) {
             logger.debug(message);
