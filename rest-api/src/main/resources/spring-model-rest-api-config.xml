@@ -61,13 +61,22 @@
 			pointcut="execution(* com.telefonica.euro_iaas.sdc.manager.impl..*(..))" />
 	</aop:config>
 
-	<bean name="traceInterceptor"
+	<!--bean name="traceInterceptor"
 		class="com.telefonica.euro_iaas.sdc.rest.aspects.TraceInterceptor">
 		<property name="enterMessage"
 			value="ENTER: $[targetClassShortName].$[methodName]($[arguments])" />
 		<property name="exitMessage"
 			value="EXIT: $[targetClassShortName].$[methodName](): $[returnValue]" />
 		<property name="useDynamicLogger" value="true" />
+	</bean-->
+	
+	<bean name="traceInterceptor"
+		class="com.telefonica.euro_iaas.sdc.rest.aspects.TraceInterceptor">
+		<property name="enterMessage"
+			value="comp=SDC - $[targetClassShortName] | op=$[methodName] | msg=ENTER: $[targetClassShortName].$[methodName]($[arguments])" />
+		<property name="exitMessage"
+			value="comp=SDC - $[targetClassShortName] | op=$[methodName] | msg=EXIT: $[targetClassShortName].$[methodName](): $[returnValue]" />
+		<property name="loggerName" value="aspectLogger" />
 	</bean>
 
 
