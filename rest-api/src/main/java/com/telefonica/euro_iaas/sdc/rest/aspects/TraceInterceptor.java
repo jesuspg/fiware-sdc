@@ -26,13 +26,16 @@ package com.telefonica.euro_iaas.sdc.rest.aspects;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
+import org.jboss.logging.Logger;
 import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
 
 @SuppressWarnings("serial")
 public class TraceInterceptor extends CustomizableTraceInterceptor {
 
     protected void writeToLog(Log logger, String message, Throwable ex) {
-        if (message.contains("ENTER")) {
+        if(ex!=null){
+            logger.error(ex);
+        }else if (message.contains("ENTER")) {
             logger.info(message);
         } else if (message.contains("EXIT")) {
             logger.debug(message);
