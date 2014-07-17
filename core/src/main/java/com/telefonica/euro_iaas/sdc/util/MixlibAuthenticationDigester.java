@@ -27,6 +27,8 @@ package com.telefonica.euro_iaas.sdc.util;
 import java.util.Date;
 import java.util.Map;
 
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
+
 /**
  * Provides the mechanism to create headers to authenticate against Chef server.
  * 
@@ -51,5 +53,5 @@ public interface MixlibAuthenticationDigester {
      *            the url where the private key is.
      * @return the headers.
      */
-    public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl);
+    public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl)  throws SdcRuntimeException;
 }

@@ -174,7 +174,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
 
@@ -214,7 +214,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -252,7 +252,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -290,7 +290,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -329,7 +329,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -364,7 +364,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+     
     }
     
     @Test
@@ -400,7 +400,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+     
     }
     
     @Test

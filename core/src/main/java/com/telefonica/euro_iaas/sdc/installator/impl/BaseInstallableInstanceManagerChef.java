@@ -181,10 +181,11 @@ public class BaseInstallableInstanceManagerChef {
      * Checks if the Node is already registered in ChefServer.
      * @param hostname
      */
-    public void isNodeRegistered(String hostname, String token) {
+    public void isNodeRegistered(String hostname, String token) throws SdcRuntimeException{
         try {
             chefNodeDao.isNodeRegistered(hostname, token);
         } catch (CanNotCallChefException e) {
+        	log.error(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }

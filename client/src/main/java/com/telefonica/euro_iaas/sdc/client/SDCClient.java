@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceSyncService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefClientServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ChefNodeServiceImpl;
@@ -38,11 +39,12 @@ import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceI
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductReleaseServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.SdcClientConfigImp;
 import com.telefonica.euro_iaas.sdc.client.services.impl.TaskServiceImpl;
 
 public class SDCClient {
 
-    private static Client client = new Client();
+    private static SdcClientConfigImp client = new SdcClientConfigImp();
 
     /**
      * Get the service to work with product instances.

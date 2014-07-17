@@ -30,6 +30,9 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -40,6 +43,7 @@ import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -54,13 +58,14 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
  */
 public class ProductInstanceServiceImpl extends AbstractInstallableService implements ProductInstanceService {
 
+	 private static Logger log = LoggerFactory.getLogger(ProductInstanceServiceImpl.class.getName());
     /**
      * @param client
      * @param baseHost
      * @param type
      */
-    public ProductInstanceServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public ProductInstanceServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
+    	setSdcClientConfig (clientConfig) ;
         setBaseHost(baseHost);
         setType(type);
         setUpgradePath(ClientConstants.UPGRADE_PRODUCT_INSTANCE_PATH);
@@ -73,7 +78,10 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      */
 
     public Task install(String vdc, ProductInstanceDto product, String callback, String token) {
+    	log.info("Install " + vdc + " procut " + product);
         String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_PRODUCT_INSTANCE_PATH, vdc);
+        log.info(url);
+
         WebResource.Builder builder = createWebResource (url, token, vdc);
         builder.entity(product);
         builder = addCallback(builder, callback);
