@@ -34,6 +34,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
@@ -42,6 +43,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
@@ -49,12 +51,19 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 
 public class ProductInstanceServiceImplTest {
+	SdcClientConfig client = mock (SdcClientConfig.class);
+	
+	@Before
+	public void setUp () {
+		Client c = mock (Client.class);
+        when(client.getClient()).thenReturn(c);
+	}
 
     @Test
     public void shouldReturnTaskWithProductInstanceServiceInstall() {
         // given
 
-        Client client = mock(Client.class);
+    	
         String baseHost = "localhost";
         String type = "application/json";
         ProductInstanceService productInstanceService = new ProductInstanceServiceImpl(client, baseHost, type);
@@ -70,7 +79,7 @@ public class ProductInstanceServiceImplTest {
         WebResource.Builder builder = mock(WebResource.Builder.class);
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.entity(productDto)).thenReturn(builder);
@@ -81,7 +90,7 @@ public class ProductInstanceServiceImplTest {
 
         // then
         assertNotNull(resultTask);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).header("callback", urlCallback);
         verify(builder).post(Task.class);
@@ -91,7 +100,7 @@ public class ProductInstanceServiceImplTest {
     public void shouldReturnTaskWithProductInstanceServiceInstallArtifact() {
         // given
 
-        Client client = mock(Client.class);
+      
         Task expectedTask = new Task();
         String baseHost = "localhost";
         String type = "application/json";
@@ -109,7 +118,7 @@ public class ProductInstanceServiceImplTest {
 
         // when
 
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.entity(artifact)).thenReturn(builder);
@@ -119,7 +128,7 @@ public class ProductInstanceServiceImplTest {
 
         // then
         assertNotNull(task);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).header("callback", urlCallback);
         verify(builder).post(Task.class);
@@ -128,8 +137,6 @@ public class ProductInstanceServiceImplTest {
     @Test
     public void shouldReturnTaskWithProductInstanceServiceUnInstallArtifact() {
         // given
-
-        Client client = mock(Client.class);
         Task expectedTask = new Task();
         String baseHost = "localhost";
         String type = "application/json";
@@ -146,7 +153,7 @@ public class ProductInstanceServiceImplTest {
         WebResource.Builder builder = mock(WebResource.Builder.class);
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.entity(artifact)).thenReturn(builder);
@@ -156,7 +163,7 @@ public class ProductInstanceServiceImplTest {
 
         // then
         assertNotNull(task);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).header("callback", urlCallback);
         verify(builder).delete(Task.class);
@@ -165,7 +172,6 @@ public class ProductInstanceServiceImplTest {
     @Test
     public void shouldReturnAListOfProductInstance() {
         // given
-        Client client = mock(Client.class);
         String baseHost = "localhost";
         String type = "application/json";
 
@@ -202,7 +208,7 @@ public class ProductInstanceServiceImplTest {
         WebResource.Builder builder = mock(WebResource.Builder.class);
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.queryParams(searchParams)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
@@ -221,7 +227,6 @@ public class ProductInstanceServiceImplTest {
     @Test
     public void shouldLoadProductInstanceByName() {
         // given
-        Client client = mock(Client.class);
         String baseHost = "localhost";
         String type = "application/json";
         String vdc = "my_vdc";
@@ -236,7 +241,7 @@ public class ProductInstanceServiceImplTest {
         ProductInstance expectedProductInstance = new ProductInstance();
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
 
@@ -250,7 +255,7 @@ public class ProductInstanceServiceImplTest {
         }
 
         // then
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         assertNotNull(productInstance);
         verify(webResource).accept(type);
         verify(builder).get(ProductInstance.class);
@@ -259,7 +264,7 @@ public class ProductInstanceServiceImplTest {
     @Test
     public void shouldLoadProductInstanceByUrl() {
         // given
-        Client client = mock(Client.class);
+
         String baseHost = "localhost";
         String type = "application/json";
         String vdc = "my_vdc";
@@ -274,7 +279,7 @@ public class ProductInstanceServiceImplTest {
         ProductInstance expectedProductInstance = new ProductInstance();
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.header(any(String.class), any(Object.class))).thenReturn(builder);
@@ -289,7 +294,7 @@ public class ProductInstanceServiceImplTest {
         }
 
         // then
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         assertNotNull(productInstance);
         verify(webResource).accept(type);
         verify(builder).get(ProductInstance.class);

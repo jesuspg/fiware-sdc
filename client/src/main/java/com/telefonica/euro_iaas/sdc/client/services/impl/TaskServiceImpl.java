@@ -40,6 +40,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedException;
 import com.telefonica.euro_iaas.sdc.client.model.Tasks;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.client.services.TaskService;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
@@ -59,8 +60,8 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      * @param baseHost
      * @param type
      */
-    public TaskServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public TaskServiceImpl(SdcClientConfig sSdcClientConfig, String baseHost, String type) {
+    	this.setSdcClientConfig(sSdcClientConfig);
         setBaseHost(baseHost);
         setType(type);
     }
@@ -72,8 +73,8 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      * @param waitingPeriod
      * @param maxWaiting
      */
-    public TaskServiceImpl(Client client, String baseHost, String type, Long waitingPeriod, Long maxWaiting) {
-        setClient(client);
+    public TaskServiceImpl(SdcClientConfig sSdcClientConfig, String baseHost, String type, Long waitingPeriod, Long maxWaiting) {
+    	this.setSdcClientConfig(sSdcClientConfig);
         setBaseHost(baseHost);
         setType(type);
         this.waitingPeriod = waitingPeriod;

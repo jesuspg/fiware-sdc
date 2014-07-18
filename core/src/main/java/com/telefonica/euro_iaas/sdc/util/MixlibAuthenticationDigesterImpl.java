@@ -41,6 +41,7 @@ import java.util.TimeZone;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 
 /**
@@ -66,7 +67,7 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
     /**
      * {@inheritDoc}
      */
-    public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl) {
+    public Map<String, String> digest(String method, String path, String body, Date timestamp, String id, String pkUrl) throws SdcRuntimeException{
         try {
             DateFormat df = new SimpleDateFormat(CHEF_DATE_FORMAT);
             df.setTimeZone(TimeZone.getTimeZone(CHEF_TIME_ZONE));
@@ -92,7 +93,7 @@ public class MixlibAuthenticationDigesterImpl implements MixlibAuthenticationDig
             }
             return headers;
         } catch (Exception e) {
-            throw new SdcRuntimeException();
+            throw new SdcRuntimeException("Error to obtain the diggest " + e.getMessage());
         }
     }
 

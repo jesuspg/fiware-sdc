@@ -27,12 +27,18 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.MDC;
 
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
@@ -47,6 +53,7 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
     private String upgradePath;
     private String configPath;
     private String uninstallPath;
+	private SdcClientConfig clientConfig;
 
     /**
      * See {@link ApplicationInstanceService#upgrade(String, Long, String, String)} or
@@ -150,4 +157,6 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
         return builder;
 
     }
+
+
 }

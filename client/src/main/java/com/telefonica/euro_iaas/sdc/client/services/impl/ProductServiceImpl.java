@@ -40,6 +40,7 @@ import com.telefonica.euro_iaas.sdc.client.exception.InsertResourceException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.Products;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -51,10 +52,10 @@ import com.telefonica.euro_iaas.sdc.model.Product;
  */
 public class ProductServiceImpl extends AbstractBaseService implements ProductService {
 
-    public ProductServiceImpl(Client client, String baseUrl, String mediaType) {
+    public ProductServiceImpl(SdcClientConfig clientConfig, String baseUrl, String mediaType) {
         setBaseHost(baseUrl);
         setType(mediaType);
-        setClient(client);
+        setSdcClientConfig(clientConfig); 
     }
 
     /**

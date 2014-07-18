@@ -29,21 +29,28 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public class ProductReleaseServiceImplTest {
-
+	SdcClientConfig client = mock (SdcClientConfig.class);
+	
+	@Before
+	public void setUp () {
+		Client c = mock (Client.class);
+        when(client.getClient()).thenReturn(c);
+	}
     @Test
     public void shouldAddProductRelease() {
         // given
-        Client client = mock(Client.class);
         String baseHost = "http://localhost";
         String type = "application/json";
         String token = "token";
@@ -64,7 +71,7 @@ public class ProductReleaseServiceImplTest {
         WebResource.Builder builder = mock(WebResource.Builder.class);
         // when
 
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.post(ProductRelease.class, productReleaseDto)).thenReturn(productReleaseCreated);
