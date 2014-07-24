@@ -69,7 +69,10 @@ public class NodeManagerImpl implements NodeManager {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete (java.lang.String, java.lang.String)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete
+     * (java.lang.String, java.lang.String)
      */
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
@@ -101,36 +104,37 @@ public class NodeManagerImpl implements NodeManager {
 
     private void puppetDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
-        HttpDelete delete;
+        HttpDelete delete = null;
         try {
             delete = new HttpDelete(openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName);
         } catch (OpenStackException e2) {
-            log.info(e2.getMessage());
-            throw new NodeExecutionException(e2);
+            log.warn(e2.getMessage());
         }
 
-        delete.setHeader("Content-Type", "application/json");
+        if (delete != null) {
+            delete.setHeader("Content-Type", "application/json");
 
-        HttpResponse response;
+            HttpResponse response;
 
-        try {
-            response = client.execute(delete);
-            int statusCode = response.getStatusLine().getStatusCode();
-            HttpEntity entity = response.getEntity();
-            EntityUtils.consume(entity);
+            try {
+                response = client.execute(delete);
+                int statusCode = response.getStatusLine().getStatusCode();
+                HttpEntity entity = response.getEntity();
+                EntityUtils.consume(entity);
 
-            if (statusCode != 200) {
-                String msg = format("[puppet delete node] response code was: {0}", statusCode);
-                log.info(msg);
-                throw new NodeExecutionException(msg);
+                if (statusCode != 200) {
+                    String msg = format("[puppet delete node] response code was: {0}", statusCode);
+                    log.info(msg);
+                    throw new NodeExecutionException(msg);
+                }
+                log.info("Node succesfully deleted from pupper master");
+            } catch (IOException e) {
+                log.info(e.getMessage());
+                throw new NodeExecutionException(e);
+            } catch (IllegalStateException e1) {
+                log.info(e1.getMessage());
+                throw new NodeExecutionException(e1);
             }
-            log.info("Node succesfully deleted from pupper master");
-        } catch (IOException e) {
-            log.info(e.getMessage());
-            throw new NodeExecutionException(e);
-        } catch (IllegalStateException e1) {
-            log.info(e1.getMessage());
-            throw new NodeExecutionException(e1);
         }
 
     }
@@ -162,7 +166,10 @@ public class NodeManagerImpl implements NodeManager {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll()
+     * 
+     * @see
+     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll
+     * ()
      */
     public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
             ChefClientExecutionException {
@@ -183,7 +190,10 @@ public class NodeManagerImpl implements NodeManager {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientload(java.lang.String, java.lang.String)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientload
+     * (java.lang.String, java.lang.String)
      */
     public ChefClient chefClientload(String chefClientName, String token) throws ChefClientExecutionException,
             EntityNotFoundException {
@@ -192,7 +202,9 @@ public class NodeManagerImpl implements NodeManager {
         try {
             chefClient = chefClientDao.getChefClient(chefClientName, token);
         } catch (EntityNotFoundException e) {
-            // String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
+            // String message =
+            // " An error ocurred invoing the Chef server to load ChefClient named "
+            // + chefClientName;
             // log.info(message);
             throw e;
         } catch (Exception e) {
