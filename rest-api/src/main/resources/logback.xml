@@ -104,7 +104,11 @@
     </logger>
 
     <root>
+<<<<<<< HEAD
         <level value="INFO"/>
+=======
+        <level value="ERROR"/>
+>>>>>>> a07791e2c07a46d2b9c00f6133a8a55dbcd5ef87
         <appender-ref ref="sdcAppender"/>
     </root>
 
