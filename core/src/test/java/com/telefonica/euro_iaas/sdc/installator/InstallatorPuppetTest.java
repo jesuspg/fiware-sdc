@@ -24,24 +24,32 @@
 
 package com.telefonica.euro_iaas.sdc.installator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
@@ -53,6 +61,7 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -67,8 +76,22 @@ public class InstallatorPuppetTest {
     private ProductInstance productInstance;
     private OS os;
     private HttpResponse response;
+    private HttpEntity entity;
     private StatusLine statusLine;
     private OpenStackRegion openStackRegion;
+    
+    String GET_NODES = "[ {\"name\" : \"aaaa-dddfafff-1-000081.novalocal\", "+
+	"\"deactivated\" : null, "+
+	"\"catalog_timestamp\" : null, " +
+	"\"facts_timestamp\" : \"2014-08-27T09:39:36.438Z\","+
+	"\"report_timestamp\" : null "+
+	"}, {"+
+	"\"name\" : \"abasd-tt-1-000081.novalocal\","+
+	"\"deactivated\" : null, "+
+	"\"catalog_timestamp\" : \"2014-08-27T10:34:02.892Z\","+
+	"\"facts_timestamp\" : \"2014-08-27T10:35:07.365Z\","+
+	"\"report_timestamp\" : null"+
+	"}]";
     
     
     @Before
@@ -91,13 +114,17 @@ public class InstallatorPuppetTest {
         
         client = mock(HttpClient.class);
         response=mock(HttpResponse.class);
+        entity=mock(HttpEntity.class);
         statusLine = mock(StatusLine.class);
         openStackRegion = mock (OpenStackRegion.class);
 
-        
         when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(response);
+        when(response.getEntity()).thenReturn(entity);
+        String source = "";
+        InputStream in = IOUtils.toInputStream(source, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
         when(response.getStatusLine()).thenReturn(statusLine);
-        
+      
         
         propertiesProvider = mock(SystemPropertiesProvider.class);
         when(propertiesProvider.getProperty("PUPPET_MASTER_URL")).thenReturn(
@@ -111,11 +138,11 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testCallService_all_OK() throws InstallatorException, NodeExecutionException{
+    public void testGenerateFilesinPuppetMaster() throws InstallatorException, NodeExecutionException{
         
         when(statusLine.getStatusCode()).thenReturn(200);
         
-        puppetInstallator.callService(host,"test",productRelease, "install", "token");
+        puppetInstallator.generateFilesinPuppetMaster(host,"test",productRelease, "install", "token");
         
     }
     
@@ -125,7 +152,7 @@ public class InstallatorPuppetTest {
         when(statusLine.getStatusCode()).thenReturn(500);
 //        when(openStackRegion.getPuppetWrapperEndPoint(anyString())).thenReturn("http://testurl.es");
         
-        puppetInstallator.callService(host,"test",productRelease, "install", "token");
+        puppetInstallator.generateFilesinPuppetMaster(host,"test",productRelease, "install", "token");
         
     }
     
@@ -134,7 +161,76 @@ public class InstallatorPuppetTest {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         
-        puppetInstallator.callService(host,"test",productRelease, "install", "token");
+        puppetInstallator.generateFilesinPuppetMaster(host,"test",productRelease, "install", "token");
+        
+    }
+    
+    @Test
+    public void testIsNodeDeployed() throws OpenStackException, CanNotCallChefException, IOException {
+        
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        puppetInstallator.isNodeRegistered("aaaa-dddfafff-1-000081", "token");
+        
+    }
+    
+    @Test
+    public void testLoadNode() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException {
+        
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        PuppetNode node = puppetInstallator.loadNode("aaaa-dddfafff-1-000081", "token");
+        assertNotNull(node);
+        assertEquals (node.getName(), "aaaa-dddfafff-1-000081.novalocal");
+        
+    }
+    
+    @Test
+    public void testIsRecipedExecuted() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException, NodeExecutionException {
+        
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        VM   vm = new VM("aaaa-dddfafff-1-000081", "ip", "abasd-tt-1-000081", "domain");
+        puppetInstallator.MAX_TIME=10000;
+        puppetInstallator.isRecipeExecuted(vm, "recipe", "token");
+      
+        
+    }
+    
+    @Test
+    public void testIsRecipedNoExecuted() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException, NodeExecutionException {
+        
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        puppetInstallator.MAX_TIME=10000;
+        VM   vm = new VM("aaaa-dddfafff-1-000081", "ip", "aaaa-dddfafff-1-000081", "domain");
+        puppetInstallator.isRecipeExecuted(vm, "recipe", "token");
+      
+        
+    }
+    
+    @Test(expected = InstallatorException.class)
+    public void testLoadNodeNoExists() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException {
+        
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        puppetInstallator.loadNode("noexists", "token");
+      
         
     }
 
