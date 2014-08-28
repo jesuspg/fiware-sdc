@@ -210,8 +210,9 @@ public class InstallatorPuppetImpl implements Installator {
 
                 Thread.sleep(time);
                 
-                PuppetNode node = loadNode (vm.getHostname(), token);       		
-        		if (node.getCatalogTimestamp ()!=null) {
+                PuppetNode node = loadNode (vm.getHostname(), token);
+                log.debug ("get time catalog " + node.getCatalogTimestamp ());
+        		if (node.getCatalogTimestamp ()!=null && !node.getCatalogTimestamp ().equals("null")) {
         			isExecuted = true;
         		}
                 time = time +incremental_time;
@@ -287,7 +288,6 @@ public class InstallatorPuppetImpl implements Installator {
             HttpGet getGenerate = new HttpGet(url);
             HttpResponse resp= client.execute(getGenerate);
             String response = EntityUtils.toString(resp.getEntity());       
-            log.info(response);
             return response;
         } catch (Exception e) {
           	log.warn(e.getMessage());
@@ -317,6 +317,7 @@ public class InstallatorPuppetImpl implements Installator {
             	
             } 
         }
+        log.debug ("Node  " + hostname + " is registered in ChefServer");
     }
 
     @Override

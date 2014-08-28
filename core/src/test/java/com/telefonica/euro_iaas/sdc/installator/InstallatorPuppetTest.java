@@ -206,7 +206,7 @@ public class InstallatorPuppetTest {
         
     }
     
-    @Test
+    @Test(expected = NodeExecutionException.class)
     public void testIsRecipedNoExecuted() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException, NodeExecutionException {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);

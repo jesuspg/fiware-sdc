@@ -128,7 +128,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             throw new OpenStackException (msn);
             		
         }
-        return "http:" +url+":8080";
+        return "http://" +url+":8080";
     }
     
     public String getChefServerEndPoint( String token) throws OpenStackException  {
