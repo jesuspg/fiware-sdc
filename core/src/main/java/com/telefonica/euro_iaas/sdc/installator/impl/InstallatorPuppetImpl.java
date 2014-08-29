@@ -90,22 +90,30 @@ public class InstallatorPuppetImpl implements Installator {
     
     private String NODE_NOT_FOUND_PATTERN ="404";
     private String NODES_PATH ="/nodes";
-    public static int MAX_TIME = 90000;
+    public static int MAX_TIME = 360000;
  
 
     public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
-            throws InstallatorException {
+            throws InstallatorException, NodeExecutionException {
     	try {
     	    generateFilesinPuppetMaster (vm, vdc, product, action, token);
     	} catch (InstallatorException e) {
     		log.warn ("It is not possible to generate the manifests in the puppet master " + e.getMessage());
+    		throw new InstallatorException(e.getMessage());
     	}
     	
+    	try {
+    		isRecipeExecuted(vm,product.getProduct().getName(),token);
+        } catch (NodeExecutionException e) {
+            // even if execution fails want to unassign the recipe
+        	log.debug(e.getMessage());
+            throw new NodeExecutionException(e.getMessage());
+        }
     
         try {
 			isRecipeExecuted(vm,product.getProduct().getName(),token);
 		} catch (NodeExecutionException e) {
-			log.warn ("It is not possible to generate the manifests in the puppet master " + e.getMessage());
+			log.warn ("It is not possible execute the recipe " + product.getProduct().getName() + " in node " + vm.getHostname() );
 		}
 
     }
@@ -297,6 +305,7 @@ public class InstallatorPuppetImpl implements Installator {
     public void isNodeRegistered (String hostname, String token) throws CanNotCallChefException {
         String response = "RESPONSE";
         int time = 10000;
+        int check_time=10000;
         while (!response.contains(hostname)) {
                       
             try {
@@ -306,9 +315,9 @@ public class InstallatorPuppetImpl implements Installator {
                     log.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
-                Thread.sleep(time);
+                Thread.sleep(check_time);
                 response = getNodes (token);      
-                time += time;
+                time = time+ check_time;
             } catch (Exception e) {
             	log.warn(e.getMessage());
             	String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
