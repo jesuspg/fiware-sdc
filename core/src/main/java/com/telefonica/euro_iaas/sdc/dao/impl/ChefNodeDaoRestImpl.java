@@ -256,21 +256,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     log.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
-<<<<<<< HEAD
-                log.info("more");
-                Thread.sleep(time);
-                
-                Map<String, String> header = getHeaders("GET", path, "");
-                System.out.println (chefServerUrl + path);
-                log.info(chefServerUrl + path);
-
-                log.info("web resource");
-=======
                 Thread.sleep(checkTime);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
- 
->>>>>>> 153f93d7ac366c052e90183173f57c58b11e300e
+
                 WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
                 for (String key : header.keySet()) {             
