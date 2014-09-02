@@ -27,24 +27,9 @@ package com.telefonica.euro_iaas.sdc.installator.impl;
 import static java.text.MessageFormat.format;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.text.MessageFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.ws.rs.core.MediaType;
-
-
-
-
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -58,12 +43,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallPuppetException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
@@ -74,11 +55,9 @@ import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
-import com.telefonica.euro_iaas.sdc.util.Configuration;
 
 public class InstallatorPuppetImpl implements Installator {
   
@@ -113,7 +92,7 @@ public class InstallatorPuppetImpl implements Installator {
         try {
 			isRecipeExecuted(vm,product.getProduct().getName(),token);
 		} catch (NodeExecutionException e) {
-			log.warn ("It is not possible execute the recipe " + product.getProduct().getName() + " in node " + vm.getHostname() );
+			log.warn ("It is not possible execute the module " + product.getProduct().getName() + " in node " + vm.getHostname() );
 		}
 
     }
@@ -200,26 +179,25 @@ public class InstallatorPuppetImpl implements Installator {
         }
     }
     
-    public void isRecipeExecuted(VM vm, String recipe, String token) throws NodeExecutionException, InstallatorException {
+    public void isRecipeExecuted(VM vm, String module, String token) throws NodeExecutionException, InstallatorException {
     	
     	boolean isExecuted = false;
         int time = 5000;
         int incremental_time=10000;
-        Date fechaAhora = new Date();
         while (!isExecuted) {
         	log.info("MAX_TIME: " + MAX_TIME + " and time: " + time);
             try {
                 if (time > MAX_TIME) {
-                    String errorMesg = "Recipe " + recipe + " coub not be executed in " + vm.getChefClientName();
+                    String errorMesg = "Module " + module + " could not be executed in " + vm.getHostname();
                     log.info(errorMesg);
                    // unassignRecipes(vm, recipe, token);
                     throw new NodeExecutionException(errorMesg);
                 }
 
-                Thread.sleep(time);
+                Thread.sleep(incremental_time);
                 
                 PuppetNode node = loadNode (vm.getHostname(), token);
-                log.debug ("get time catalog " + node.getCatalogTimestamp ());
+                log.debug ("Get time catalog " + node.getCatalogTimestamp ());
         		if (node.getCatalogTimestamp ()!=null && !node.getCatalogTimestamp ().equals("null")) {
         			isExecuted = true;
         		}
@@ -228,14 +206,14 @@ public class InstallatorPuppetImpl implements Installator {
             }  catch (InterruptedException ie) {
             	log.warn (ie.getMessage());
                 throw new NodeExecutionException(ie);
-            } catch (CanNotCallChefException e) {
+            } catch (CanNotCallPuppetException e) {
             	log.warn (e.getMessage());
             	throw new NodeExecutionException(e);
 			} 
         }
     }
     
-    public PuppetNode loadNode(String hostname, String token) throws CanNotCallChefException, InstallatorException {
+    public PuppetNode loadNode(String hostname, String token) throws CanNotCallPuppetException, InstallatorException {
 
     	String stringNodes = "";
     	log.info("loadNode " + hostname);
@@ -302,7 +280,7 @@ public class InstallatorPuppetImpl implements Installator {
           	throw new SdcRuntimeException ("It is not possible to connect with puppet server Url" + e.getMessage());
         } 
     }
-    public void isNodeRegistered (String hostname, String token) throws CanNotCallChefException {
+    public void isNodeRegistered (String hostname, String token) throws CanNotCallPuppetException {
         String response = "RESPONSE";
         int time = 10000;
         int check_time=10000;
@@ -313,7 +291,7 @@ public class InstallatorPuppetImpl implements Installator {
                 if (time > MAX_TIME) {
                     String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
                     log.info(errorMesg);
-                    throw new CanNotCallChefException(errorMesg);
+                    throw new CanNotCallPuppetException(errorMesg);
                 }
                 Thread.sleep(check_time);
                 response = getNodes (token);      
@@ -322,7 +300,7 @@ public class InstallatorPuppetImpl implements Installator {
             	log.warn(e.getMessage());
             	String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
                 log.info(errorMesg);
-                throw new CanNotCallChefException(errorMesg);
+                throw new CanNotCallPuppetException(errorMesg);
             	
             } 
         }
@@ -337,8 +315,8 @@ public class InstallatorPuppetImpl implements Installator {
         }
 		try {
 			this.isNodeRegistered(vm.getHostname(), token);
-		} catch (CanNotCallChefException e) {
-			String errorMesg = "Node  " + vm.getHostname() + " is not registered in ChefServer";
+		} catch (CanNotCallPuppetException e) {
+			String errorMesg = "Node  " + vm.getHostname() + " is not registered in ChefServer " + e.getMessage();
             log.info(errorMesg);
             throw new InvalidInstallProductRequestException(errorMesg);
 		}

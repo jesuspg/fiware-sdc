@@ -50,6 +50,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
+import com.telefonica.euro_iaas.sdc.exception.CanNotCallPuppetException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
@@ -166,7 +167,7 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testIsNodeDeployed() throws OpenStackException, CanNotCallChefException, IOException {
+    public void testIsNodeDeployed() throws OpenStackException, CanNotCallPuppetException, IOException {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -178,7 +179,7 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testLoadNode() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException {
+    public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -192,7 +193,7 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testIsRecipedExecuted() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException, NodeExecutionException {
+    public void testIsRecipedExecuted() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException, NodeExecutionException {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -222,7 +223,7 @@ public class InstallatorPuppetTest {
     }
     
     @Test(expected = InstallatorException.class)
-    public void testLoadNodeNoExists() throws OpenStackException, CanNotCallChefException, IOException, InstallatorException {
+    public void testLoadNodeNoExists() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
         
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");

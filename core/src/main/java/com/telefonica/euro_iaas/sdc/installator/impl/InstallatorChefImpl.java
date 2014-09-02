@@ -175,7 +175,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                     throw new NodeExecutionException(errorMesg);
                 }
                
-                Thread.sleep(time);
+                Thread.sleep(checkTime);
                
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
                 
