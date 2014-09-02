@@ -298,7 +298,7 @@ public class InstallatorPuppetImpl implements Installator {
                 time = time+ check_time;
             } catch (Exception e) {
             	log.warn(e.getMessage());
-            	String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
+            	String errorMesg = "Node  " + hostname + " is not registered the puppet master " + e.getMessage();
                 log.info(errorMesg);
                 throw new CanNotCallPuppetException(errorMesg);
             	
@@ -316,7 +316,7 @@ public class InstallatorPuppetImpl implements Installator {
 		try {
 			this.isNodeRegistered(vm.getHostname(), token);
 		} catch (CanNotCallPuppetException e) {
-			String errorMesg = "Node  " + vm.getHostname() + " is not registered in ChefServer " + e.getMessage();
+			String errorMesg = "Node  " + vm.getHostname() + " is not registered in the puppet master " + e.getMessage();
             log.info(errorMesg);
             throw new InvalidInstallProductRequestException(errorMesg);
 		}
