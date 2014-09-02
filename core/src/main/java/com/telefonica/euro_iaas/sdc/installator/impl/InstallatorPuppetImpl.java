@@ -304,7 +304,7 @@ public class InstallatorPuppetImpl implements Installator {
             	
             } 
         }
-        log.debug ("Node  " + hostname + " is registered in ChefServer");
+        log.debug ("Node  " + hostname + " is registered in puppet master");
     }
 
     @Override
