@@ -156,7 +156,7 @@ public class InstallatorPuppetImpl implements Installator {
     @Override
     public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
             String token) throws InstallatorException, NodeExecutionException {
-        // TODO Auto-generated method stub
+        // TODO Auto-generatedd method stub
 
     }
 
