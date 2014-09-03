@@ -66,5 +66,5 @@ public class ProductDaoJpaImpl extends AbstractBaseDao<Product, String> implemen
         Criteria baseCriteria = session.createCriteria(Product.class);
         return setOptionalPagination(criteria, baseCriteria).list();
     }
-
+    
 }

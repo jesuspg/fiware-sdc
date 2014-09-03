@@ -68,6 +68,7 @@
 	<bean id="productManager" lazy-init="true" parent="baseInstallableManager"
 		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
 		<property name="productDao" ref="productDao" />
+		<property name="productReleaseManager" ref="productReleaseManager" />
 	</bean>
 	<bean id="productReleaseManager" lazy-init="true"
 		parent="baseInstallableManager"

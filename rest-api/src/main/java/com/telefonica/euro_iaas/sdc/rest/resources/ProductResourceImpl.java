@@ -99,6 +99,24 @@ public class ProductResourceImpl implements ProductResource {
         }
         return filterProducts(productManager.findByCriteria(criteria));
     }
+    
+    @Path("/release")
+    @Override
+    public List<Product> findAllProductAndRelease(Integer page, Integer pageSize, String orderBy, String orderType) {
+        ProductSearchCriteria criteria = new ProductSearchCriteria();
+
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
+        return filterProducts(productManager.findProductAndReleaseByCriteria(criteria));
+    }
 
     private List<Product> filterProducts(List<Product> products) {
         List<Product> filterProducts = new ArrayList<Product>();
