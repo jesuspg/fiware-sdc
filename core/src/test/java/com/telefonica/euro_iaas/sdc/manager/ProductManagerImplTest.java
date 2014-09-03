@@ -75,7 +75,8 @@ public class ProductManagerImplTest extends TestCase {
         createdProduct.addMetadata(new Metadata("key","value"));
         
         productDao = mock(ProductDao.class);
-        when(productDao.create(any(Product.class))).thenReturn(createdProduct);    
+        when(productDao.create(any(Product.class))).thenReturn(createdProduct);   
+        
     }
     
     /**

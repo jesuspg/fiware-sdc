@@ -82,6 +82,25 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+    
+    /**
+     * Retrieve all Products + ProductRelease available created in the system.
+     * 
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return the created OS instances.
+     */
+    @GET
+    @Path("/{pName}")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    List<Product> findAllProductAndRelease(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product.
