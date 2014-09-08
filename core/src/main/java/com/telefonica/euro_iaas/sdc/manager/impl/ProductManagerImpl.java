@@ -39,8 +39,8 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.xmlsolutions.annotation.UseCase;
@@ -126,7 +126,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         prCriteria.setPage(criteria.getPage());
         prCriteria.setPageSize(criteria.getPageSize());
         prCriteria.setOrderBy(criteria.getOrderBy());
-        prCriteria.setOrderBy(criteria.getOrderType());
+        prCriteria.setOrderType(criteria.getOrderType());
 
         List<ProductAndReleases> result = new ArrayList<ProductAndReleases>();
         for (Product p : productList) {
@@ -164,5 +164,9 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
      */
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
+    }
+
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
     }
 }

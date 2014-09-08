@@ -21,6 +21,12 @@
 		<property name="productManager" ref="productManager" />
 		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
 	</bean>
+	
+	<bean id="productAndReleaseResource" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductAndReleaseResourceImpl">
+		<property name="productManager" ref="productManager" />
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
+	</bean>
 
 	<bean id="productReleaseResource" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResourceImpl">
