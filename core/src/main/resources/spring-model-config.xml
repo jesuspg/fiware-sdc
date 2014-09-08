@@ -65,11 +65,7 @@
 
 	<!-- CATALOG MANAGER -->
 
-	<bean id="productManager" lazy-init="true" parent="baseInstallableManager"
-		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
-		<property name="productDao" ref="productDao" />
-		<property name="productReleaseManager" ref="productReleaseManager" />
-	</bean>
+	
 	<bean id="productReleaseManager" lazy-init="true"
 		parent="baseInstallableManager"
 		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductReleaseManagerImpl">
@@ -77,6 +73,11 @@
 		<property name="productDao" ref="productDao" />
 		<property name="productReleaseDao" ref="productReleaseDao" />
 		<property name="validator" ref="productReleaseValidator" />
+	</bean>
+	<bean id="productManager" lazy-init="true" parent="baseInstallableManager"
+		class="com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl">
+		<property name="productDao" ref="productDao" />
+		<property name="productReleaseManager" ref="productReleaseManager" />
 	</bean>
 
 	<bean id="baseInstallableManager" lazy-init="true"

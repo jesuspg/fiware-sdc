@@ -35,57 +35,30 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
-import com.telefonica.euro_iaas.sdc.model.Attribute;
-import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
-/**
- * default ProductResource implementation.
- * 
- * @author Sergio Arroyo
- */
-@Path("/catalog/product")
+@Path("/catalog/productandrelease")
 @Component
 @Scope("request")
-public class ProductResourceImpl implements ProductResource {
+public class ProductAndReleaseResourceImpl implements ProductAndReleaseResource {
 
-    // @InjectParam("productManager")
+    private ProductManager productManager;
 
     public static String PUBLIC_METADATA = "public";
     public static String TENANT_METADATA = "tenant_id";
 
-    private ProductManager productManager;
-
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger("ProductResourceImpl");
+    private static Logger log = Logger.getLogger("ProductAndReleaseResourceImpl");
 
-    /**
-     * Insert a product into SDC Databse.
-     * 
-     * @param product
-     * @return product
-     */
-    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
-
-        return productManager.insert(product);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
+    public List<ProductAndReleases> findAllProductAndRelease(Integer page, Integer pageSize, String orderBy,
+            String orderType) {
         ProductSearchCriteria criteria = new ProductSearchCriteria();
 
         if (page != null && pageSize != null) {
@@ -98,27 +71,27 @@ public class ProductResourceImpl implements ProductResource {
         if (!StringUtils.isEmpty(orderType)) {
             criteria.setOrderBy(orderType);
         }
-        return filterProducts(productManager.findByCriteria(criteria));
+        return filterProductsAndReleases(productManager.findProductAndReleaseByCriteria(criteria));
     }
-    
-    private List<Product> filterProducts(List<Product> products) {
-        List<Product> filterProducts = new ArrayList<Product>();
 
-        for (Product product : products) {
-            if (product.getMapMetadata().get(PUBLIC_METADATA) != null
-                    && product.getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
-                if (checkProduct(product)) {
-                    filterProducts.add(product);
+    private List<ProductAndReleases> filterProductsAndReleases(List<ProductAndReleases> productAndReleases) {
+        List<ProductAndReleases> filterProducts = new ArrayList<ProductAndReleases>();
+
+        for (ProductAndReleases productAndRelease : productAndReleases) {
+            if (productAndRelease.getProduct().getMapMetadata().get(PUBLIC_METADATA) != null
+                    && productAndRelease.getProduct().getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
+                if (checkProduct(productAndRelease.getProduct())) {
+                    filterProducts.add(productAndRelease);
                 }
             } else {
-                filterProducts.add(product);
+                filterProducts.add(productAndRelease);
             }
         }
 
         return filterProducts;
 
     }
-    
+
     private boolean checkProduct(Product product) {
         PaasManagerUser credentials = this.getCredentials();
         if (product.getMapMetadata().get(TENANT_METADATA) != null
@@ -137,51 +110,6 @@ public class ProductResourceImpl implements ProductResource {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Product load(String name) throws EntityNotFoundException {
-        return productManager.load(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
-        return productManager.load(name).getAttributes();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
-        return productManager.load(name).getMetadatas();
-    }
-
-    /**
-     * Delete the Product Resource.
-     * 
-     * @param name
-     * @throws ProductReleaseNotFoundException
-     * @throws ProductReleaseStillInstalledException
-     */
-    public void delete(String name) throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException {
-        Product product;
-        try {
-            product = productManager.load(name);
-        } catch (EntityNotFoundException e) {
-            throw new ProductReleaseNotFoundException(e);
-        }
-        productManager.delete(product);
-    }
-
-    /**
-     * @param productManager
-     *            the productManager to set
-     */
     public void setProductManager(ProductManager productManager) {
         this.productManager = productManager;
     }
