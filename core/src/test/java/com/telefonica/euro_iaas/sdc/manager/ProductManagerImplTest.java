@@ -44,8 +44,8 @@ import com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 
@@ -148,10 +148,8 @@ public class ProductManagerImplTest extends TestCase {
         when(productReleaseManager.findReleasesByCriteria((ProductReleaseSearchCriteria)anyObject())).thenReturn(productReleaseList1).thenReturn(productReleaseList2);
         
         ProductSearchCriteria criteria = new ProductSearchCriteria(1,1,"","");
-        List<ProductAndReleases> result=productManager.findProductAndReleaseByCriteria(criteria);
+        List<ProductAndReleaseDto> result=productManager.findProductAndReleaseByCriteria(criteria);
         
-        assertEquals(2, result.size());
-        assertEquals(2,result.get(0).getProductReleaseList().size());
-        assertEquals(1,result.get(1).getProductReleaseList().size());
+        assertEquals(3, result.size());
     }
 }

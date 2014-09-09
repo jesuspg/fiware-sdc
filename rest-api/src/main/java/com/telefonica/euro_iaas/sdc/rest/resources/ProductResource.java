@@ -44,7 +44,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 
 
 /**

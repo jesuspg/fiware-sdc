@@ -37,8 +37,8 @@ import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
@@ -57,7 +57,7 @@ public class ProductAndReleaseResourceImpl implements ProductAndReleaseResource 
     private static Logger log = Logger.getLogger("ProductAndReleaseResourceImpl");
 
     @Override
-    public List<ProductAndReleases> findAllProductAndRelease(Integer page, Integer pageSize, String orderBy,
+    public List<ProductAndReleaseDto> findAllProductAndRelease(Integer page, Integer pageSize, String orderBy,
             String orderType) {
         ProductSearchCriteria criteria = new ProductSearchCriteria();
 
@@ -74,10 +74,10 @@ public class ProductAndReleaseResourceImpl implements ProductAndReleaseResource 
         return filterProductsAndReleases(productManager.findProductAndReleaseByCriteria(criteria));
     }
 
-    private List<ProductAndReleases> filterProductsAndReleases(List<ProductAndReleases> productAndReleases) {
-        List<ProductAndReleases> filterProducts = new ArrayList<ProductAndReleases>();
+    private List<ProductAndReleaseDto> filterProductsAndReleases(List<ProductAndReleaseDto> productAndReleases) {
+        List<ProductAndReleaseDto> filterProducts = new ArrayList<ProductAndReleaseDto>();
 
-        for (ProductAndReleases productAndRelease : productAndReleases) {
+        for (ProductAndReleaseDto productAndRelease : productAndReleases) {
             if (productAndRelease.getProduct().getMapMetadata().get(PUBLIC_METADATA) != null
                     && productAndRelease.getProduct().getMapMetadata().get(PUBLIC_METADATA).equals("no")) {
                 if (checkProduct(productAndRelease.getProduct())) {

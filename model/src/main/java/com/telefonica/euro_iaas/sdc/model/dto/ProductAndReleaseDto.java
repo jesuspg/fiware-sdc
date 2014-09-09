@@ -22,38 +22,34 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.model;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.telefonica.euro_iaas.sdc.model.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.telefonica.euro_iaas.sdc.model.Product;
+
 @XmlRootElement
-public class ProductAndReleases {
+public class ProductAndReleaseDto {
 
     private Product product;
-    private List<ProductRelease> productReleaseList;
-
+    private String version;
+    
+    
     public Product getProduct() {
         return product;
     }
-
     public void setProduct(Product product) {
         this.product = product;
     }
-
-    public List<ProductRelease> getProductReleaseList() {
-        return productReleaseList;
+    public String getVersion() {
+        return version;
     }
-
-    public void setProductReleaseList(List<ProductRelease> productReleaseList) {
-        this.productReleaseList = productReleaseList;
+    public void setVersion(String version) {
+        this.version = version;
     }
-
     @Override
     public String toString() {
-        return "ProductAndReleases [product=" + product + ", productReleaseList=" + productReleaseList + "]";
+        return "ProductAndReleases [product=" + product + ", version=" + version + "]";
     }
     
     

@@ -39,8 +39,8 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.xmlsolutions.annotation.UseCase;
@@ -118,7 +118,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
      * {@inheritDoc}
      */
     @Override
-    public List<ProductAndReleases> findProductAndReleaseByCriteria(ProductSearchCriteria criteria) {
+    public List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria) {
         List<Product> productList = productDao.findByCriteria(criteria);
 
         ProductReleaseSearchCriteria prCriteria = new ProductReleaseSearchCriteria();
@@ -128,17 +128,20 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         prCriteria.setOrderBy(criteria.getOrderBy());
         prCriteria.setOrderType(criteria.getOrderType());
 
-        List<ProductAndReleases> result = new ArrayList<ProductAndReleases>();
+        List<ProductAndReleaseDto> result = new ArrayList<ProductAndReleaseDto>();
         for (Product p : productList) {
             if (!StringUtils.isEmpty(p.getName())) {
                 prCriteria.setProduct(p);
                 List<ProductRelease> productReleaseList = productReleaseManager.findReleasesByCriteria(prCriteria);
-                
-                ProductAndReleases productAndReleases= new ProductAndReleases();
-                productAndReleases.setProduct(p);
-                productAndReleases.setProductReleaseList(productReleaseList);
-                
-                result.add(productAndReleases);
+
+                for (ProductRelease pr : productReleaseList) {
+                    
+                    ProductAndReleaseDto productAndRelease = new ProductAndReleaseDto();
+                    productAndRelease.setProduct(p);
+                    productAndRelease.setVersion(pr.getVersion());
+
+                    result.add(productAndRelease);
+                }
             }
         }
 
