@@ -44,8 +44,8 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 

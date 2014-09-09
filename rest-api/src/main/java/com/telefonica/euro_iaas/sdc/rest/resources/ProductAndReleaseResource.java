@@ -31,7 +31,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.sdc.model.ProductAndReleases;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public interface ProductAndReleaseResource {
 
@@ -51,7 +52,7 @@ public interface ProductAndReleaseResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ProductAndReleases> findAllProductAndRelease(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
+    List<ProductAndReleaseDto> findAllProductAndRelease(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
 }
