@@ -23,6 +23,13 @@
                 <exclude>**/*.sh</exclude>
             </excludes>
         </fileSet>
+		<fileSet>
+            <directory>${project.basedir}/src/assembly/db</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>**/*.sh</exclude>
+            </excludes>
+        </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/assembly/jetty/bin</directory>
             <outputDirectory>/bin</outputDirectory>
