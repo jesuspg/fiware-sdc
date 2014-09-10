@@ -23,7 +23,7 @@
                 <exclude>**/*.sh</exclude>
             </excludes>
         </fileSet>
-		<fileSet>
+        <fileSet>
             <directory>${project.basedir}/src/assembly/db</directory>
             <outputDirectory>/</outputDirectory>
             <excludes>
