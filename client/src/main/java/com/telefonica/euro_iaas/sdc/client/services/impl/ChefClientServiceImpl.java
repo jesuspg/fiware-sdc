@@ -40,6 +40,7 @@ import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
@@ -53,8 +54,8 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
      * @param baseHost
      * @param type
      */
-    public ChefClientServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public ChefClientServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
+    	setSdcClientConfig (clientConfig) ;
         setBaseHost(baseHost);
         setType(type);
     }

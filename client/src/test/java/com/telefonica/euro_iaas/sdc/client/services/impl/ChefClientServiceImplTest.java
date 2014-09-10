@@ -38,6 +38,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
@@ -47,12 +48,15 @@ public class ChefClientServiceImplTest {
     String type = "application/json";
     String baseHost = "baseHost";
     String token = "token";
-    Client client = mock(Client.class);
+ 
+    SdcClientConfig client = mock (SdcClientConfig.class);
 
     @Before
     public void setUp() {
 
         chefClientService = new ChefClientServiceImpl(client, baseHost, type);
+        Client c = mock (Client.class);
+        when(client.getClient()).thenReturn(c);
     }
 
     @Test
@@ -68,7 +72,7 @@ public class ChefClientServiceImplTest {
         WebResource.Builder builder = mock(WebResource.Builder.class);
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
@@ -78,7 +82,7 @@ public class ChefClientServiceImplTest {
 
         // then
         assertNotNull(resultChefClient);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).get(ChefClient.class);
     }
@@ -98,7 +102,7 @@ public class ChefClientServiceImplTest {
         String url = baseHost + "/vdc/" + vdc + "/chefClient?hostname=" + chefClientName;
         // when
 
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
@@ -108,7 +112,7 @@ public class ChefClientServiceImplTest {
 
         // then
         assertNotNull(resultChefClient);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).get(ChefClient.class);
     }
@@ -124,7 +128,7 @@ public class ChefClientServiceImplTest {
         Task expectedTask = new Task();
 
         // when
-        when(client.resource(url)).thenReturn(webResource);
+        when(client.getClient().resource(url)).thenReturn(webResource);
         when(webResource.accept(type)).thenReturn(builder);
         when(builder.type(type)).thenReturn(builder);
         when(builder.delete(Task.class)).thenReturn(expectedTask);
@@ -138,7 +142,7 @@ public class ChefClientServiceImplTest {
 
         // then
         assertNotNull(task);
-        verify(client).resource(url);
+        verify(client.getClient()).resource(url);
         verify(webResource).accept(type);
         verify(builder).delete(Task.class);
     }

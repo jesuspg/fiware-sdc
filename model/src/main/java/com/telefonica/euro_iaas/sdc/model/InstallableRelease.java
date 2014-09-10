@@ -55,7 +55,9 @@ public class InstallableRelease {
     // Management
     /*
      * @SuppressWarnings("unused")
+     * 
      * @Version
+     * 
      * @XmlTransient private Long v;
      */
 
@@ -65,8 +67,10 @@ public class InstallableRelease {
     @Column(length = 2048)
     private String releaseNotes;
 
-    /*@OneToMany(cascade = CascadeType.ALL)
-    private List<Attribute> privateAttributes;*/
+    /*
+     * @OneToMany(cascade = CascadeType.ALL) private List<Attribute>
+     * privateAttributes;
+     */
 
     /**
      * Default constructor.
@@ -84,12 +88,13 @@ public class InstallableRelease {
      * @param privateAttributes
      *            the attributes available for this concrete release.
      */
-    //public InstallableRelease(String version, String releaseNotes, List<Attribute> privateAttributes) {
+    // public InstallableRelease(String version, String releaseNotes,
+    // List<Attribute> privateAttributes) {
     public InstallableRelease(String version, String releaseNotes) {
-                super();
+        super();
         this.version = version;
         this.releaseNotes = releaseNotes;
-        //this.privateAttributes = privateAttributes;
+        // this.privateAttributes = privateAttributes;
     }
 
     /**
@@ -125,23 +130,40 @@ public class InstallableRelease {
     /**
      * @return the privateAttributes
      */
-    /*public List<Attribute> getPrivateAttributes() {
-        return privateAttributes;
-    }*/
+    /*
+     * public List<Attribute> getPrivateAttributes() { return privateAttributes;
+     * }
+     */
 
     /**
      * @param privateAttributes
      *            the privateAttributes to set
      */
-    /*public void setPrivateAttributes(List<Attribute> privateAttributes) {
-        this.privateAttributes = privateAttributes;
-    }*/
+    /*
+     * public void setPrivateAttributes(List<Attribute> privateAttributes) {
+     * this.privateAttributes = privateAttributes; }
+     */
 
     /**
      * @return the id
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[InstallableRelease]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[releaseNotes = ").append(this.releaseNotes).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

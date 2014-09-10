@@ -47,6 +47,7 @@ import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.ProductReleases;
 import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
@@ -55,10 +56,10 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
  */
 public class ProductReleaseServiceImpl extends AbstractBaseService implements ProductReleaseService {
 
-    public ProductReleaseServiceImpl(Client client, String baseUrl, String mediaType) {
+    public ProductReleaseServiceImpl(SdcClientConfig clientConfig, String baseUrl, String mediaType) {
         setBaseHost(baseUrl);
         setType(mediaType);
-        setClient(client);
+        this.setSdcClientConfig(clientConfig);
     }
 
     /**

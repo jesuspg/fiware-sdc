@@ -7,7 +7,7 @@
     <artifactId>sdc-server</artifactId>
     <packaging>pom</packaging>
     <name>sdc-server</name>
-    <version>2.1.1</version>
+    <version>2.2.0-SNAPSHOT</version>
 
 
     <properties>
@@ -76,7 +76,7 @@
         <copyright.year>2012</copyright.year>
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.6</jvm.version>
+        <jvm.version>1.7</jvm.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
         <logback.version>1.1.2</logback.version>
@@ -215,7 +215,7 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>2.2.0</version>
                 <configuration>
-                    <repoToken>udY6EhQuSfSatLQWMYC5kSYde7qWchS0z</repoToken>
+                    <repoToken>tdMAvhh2nElpplTf7IcAFFcApBhdEFggZ</repoToken>
                     <sourceEncoding>UTF-8</sourceEncoding>
                 </configuration>
             </plugin>
@@ -265,7 +265,31 @@
                     <descriptor>src/assembly/distribution.xml</descriptor>
                 </configuration>
             </plugin>
+
+
+
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.12.1</version>
+                    <configuration>
+                        <configLocation>telefonica_checkstyle.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <failsOnViolations>true</failsOnViolations>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
     </build>
 
     <profiles>
@@ -280,11 +304,10 @@
                         <inherited>false</inherited>
                         <executions>
                             <execution>
-                                <inherited>false</inherited>
-                                <id>generate-rpm</id>
-                                <phase>package</phase>
+                                <id>build-rpm</id>
                                 <goals>
-                                    <goal>rpm</goal>
+                                    <!-- this goal automatically adds the rpm as Maven build artifact -->
+                                    <goal>attached-rpm</goal>
                                 </goals>
                             </execution>
                         </executions>

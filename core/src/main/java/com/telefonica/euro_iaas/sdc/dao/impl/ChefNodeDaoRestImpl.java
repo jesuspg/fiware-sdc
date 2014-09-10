@@ -148,7 +148,6 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             InputStream inputStream = wr.get(InputStream.class);
             String stringNode;
             stringNode = IOUtils.toString(inputStream);
-         
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
     
             ChefNode node = new ChefNode();
@@ -256,9 +255,11 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     log.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
+                log.info("more");
                 Thread.sleep(time);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
+                System.out.println (chefServerUrl + path);
                 log.info(chefServerUrl + path);
 
                 log.info("web resource");
@@ -280,6 +281,10 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             	log.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
                 
+            } catch (SdcRuntimeException e) {
+            	log.warn(e.getMessage());
+                throw new CanNotCallChefException(e);
+                
             } catch (InterruptedException e) {
                 String errorMsg = e.getMessage();
                 log.warn(e.getMessage());
@@ -288,8 +293,8 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         }
     }
     
-   private Map<String, String> getHeaders(String method, String path, String payload) {
-
+   private Map<String, String> getHeaders(String method, String path, String payload) throws SdcRuntimeException {
+	    log.info("get headers");
     	return digester.digest(method, path, payload, new Date(), propertiesProvider.getProperty(CHEF_CLIENT_ID),
                 propertiesProvider.getProperty(CHEF_CLIENT_PASS));
     }

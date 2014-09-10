@@ -104,7 +104,7 @@ public class InstallatorPuppetImpl implements Installator {
         HttpResponse response;
 
         log.info("Calling puppetWrapper install");
-        log.debug("connecting to puppetURL: "+"puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
+        log.info("connecting to puppetURL: "+"puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
                 + action);
         try {
             response = client.execute(postInstall);
@@ -120,7 +120,7 @@ public class InstallatorPuppetImpl implements Installator {
             log.debug("statusCode:"+ statusCode);
             
             log.info("Calling puppetWrapper generate");
-            log.debug(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
+            log.info(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
 
             // generate files in puppet master
             HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");

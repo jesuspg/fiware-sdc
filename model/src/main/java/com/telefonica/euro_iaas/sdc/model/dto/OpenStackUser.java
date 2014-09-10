@@ -131,4 +131,21 @@ public class OpenStackUser extends User {
     public void setDomain(String domain) {
         this.domain = domain;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[OpenStackUser]");
+        sb.append("[tenantId = ").append(this.tenantId).append("]");
+        sb.append("[tenantName = ").append(this.tenantName).append("]");
+        sb.append("[token = ").append(this.token).append("]");
+        sb.append("[domain = ").append(this.domain).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

@@ -211,4 +211,23 @@ public class ChefClient {
             // String name = nameAux.substring(1, nameAux.length());
             return nameAux.substring(1, nameAux.length());
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ChefClient]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[chefType = ").append(this.chefType).append("]");
+        sb.append("[jsonClass = ").append(this.jsonClass).append("]");
+        sb.append("[publickey = ").append(this.publickey).append("]");
+        sb.append("[_rev = ").append(this._rev).append("]");
+        sb.append("[admin = ").append(this.admin).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

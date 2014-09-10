@@ -152,6 +152,10 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(e);
+        } catch (Exception e) {
+                // by default restore the previous state when a runtime is thrown
+            restoreInstance(previousStatus, instance);
+                throw new SdcRuntimeException(e);
         }
 
     }
@@ -337,6 +341,17 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         }
         return instance;
     }
+    
+
+    public ProductInstance load(VM vm, ProductRelease productRelease, String vdc ) throws EntityNotFoundException {
+        ProductInstance instance = productInstanceDao.load(vm.getFqn() + "_" + productRelease.getProduct().getName() + "_"
+                + productRelease.getVersion());
+        if (!instance.getVdc().equals(vdc)) {
+            throw new EntityNotFoundException(ProductInstance.class, "vdc", vdc);
+        }
+        return instance;
+    }
+
 
     /**
      * {@inheritDoc}

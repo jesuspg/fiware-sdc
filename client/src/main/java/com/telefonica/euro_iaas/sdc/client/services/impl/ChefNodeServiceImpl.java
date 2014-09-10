@@ -35,6 +35,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNodeService {
@@ -44,8 +45,8 @@ public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNode
      * @param baseHost
      * @param type
      */
-    public ChefNodeServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public ChefNodeServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
+    	setSdcClientConfig (clientConfig) ;
         setBaseHost(baseHost);
         setType(type);
     }

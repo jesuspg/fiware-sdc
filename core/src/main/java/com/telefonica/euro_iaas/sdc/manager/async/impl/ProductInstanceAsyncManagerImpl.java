@@ -97,11 +97,18 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
 
         } catch (AlreadyInstalledException e) {
             String errorMsg = e.getMessage();
+            log.warn(errorMsg);
+            processErrorTask(vm, productRelease, task, e, errorMsg);
+
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            log.warn(errorMsg);
             processErrorTask(vm, productRelease, task, e, errorMsg);
 
         } catch (Throwable e) {
             String errorMsg = "The product " + productRelease.getProduct().getName() + "-"
-                    + productRelease.getVersion() + " can not be installed in" + vm;
+                    + productRelease.getVersion() + " can not be installed in" + vm + " " + e.getMessage();
+            log.warn(errorMsg);
             processErrorTask(vm, productRelease, task, e, errorMsg);
         } finally {
             notifyTask(callback, task);
@@ -109,7 +116,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     private void processErrorTask(VM vm, ProductRelease productRelease, Task task, Throwable e, String errorMsg) {
-        ProductInstance instance = getInstalledProduct(productRelease, vm);
+        ProductInstance instance = getInstalledProduct(productRelease, vm, task.getVdc());
         if (instance != null) {
             updateErrorTask(instance, task, errorMsg, e);
         } else {
@@ -275,17 +282,15 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
                 + " for more information");
     }
 
-    private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {
-        ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
-        criteria.setVm(vm);
-        criteria.setProductRelease(productRelease);
+    private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm, String vdc) {
         try {
-            return productInstanceManager.loadByCriteria(criteria);
-        } catch (EntityNotFoundException e) {
-            return null;
-        } catch (NotUniqueResultException e) {
-            return null;
-        }
+			return productInstanceManager.load(vm, productRelease, vdc);
+		} catch (EntityNotFoundException e1) {
+			log.warn("The instance is not found");
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return null;
+		}
     }
 
     private void notifyTask(String url, Task task) {

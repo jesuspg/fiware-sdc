@@ -35,8 +35,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents an available SO in the system. This entity does not provides any information about a concrete
- * installation.
+ * Represents an available SO in the system. This entity does not provides any
+ * information about a concrete installation.
  * 
  * @author Sergio Arroyo
  * @version $Id: $
@@ -215,6 +215,24 @@ public class OS {
         } else if (!osType.equals(other.osType))
             return false;
         return true;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[OS]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[v = ").append(this.v).append("]");
+        sb.append("[osType = ").append(this.osType).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

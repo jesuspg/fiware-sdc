@@ -157,8 +157,8 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         String[] credential = oSAuthToken.getCredentials();
 
-        log.debug("Keystone URL : " + keystoneURL);
-        log.debug("adminToken : " + credential[0]);
+        log.info("Keystone URL : " + keystoneURL);
+        log.info("adminToken : " + credential[0]);
 
         WebResource webResource = client.resource(keystoneURL);
         try {
