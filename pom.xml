@@ -93,7 +93,6 @@
         <!-- ehcache -->
         <ehcache.version>2.7.4</ehcache.version>
 
-
     </properties>
 
     <scm>
@@ -102,6 +101,7 @@
         <url>${scmURI}/${repoName}.git</url>
         <tag>HEAD</tag>
     </scm>
+
 
 
     <dependencyManagement>
