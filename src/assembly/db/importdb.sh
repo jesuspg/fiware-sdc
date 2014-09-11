@@ -49,4 +49,3 @@ do
 done
 
 pg_restore --host=${HOSTNAME} --port=${PORT} -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
-rm ${BACKUP_FILE}
