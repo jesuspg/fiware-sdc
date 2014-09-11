@@ -6,9 +6,10 @@
 HOSTNAME=130.206.80.119
 PORT=5432
 USERNAME=postgres
+PASSWORD=postgres
 FORMAT=custom
 BACKUP_FILE=export_sdc.backup
-DATABASE_NAME=sdc
+DATABASE_NAME=sdc_test_export
 
 function usage() { 
      SCRIPT=$(basename $0) 
@@ -20,18 +21,21 @@ function usage() {
      printf "\n" >&2 
      printf "    -h                    show usage\n" >&2 
      printf "    -v HOSTNAME           Optional parameter. Virtual Machine where the database is installed. Default value is ${HOSTNAME}\n" >&2 
+     printf "    -p PORT               Optional parameter. Port where the postgres database listens. Default value is ${PORT}\n" >&2 
      printf "    -b BACKUP_FILE        Optional paramdter. File where to keep the database backup. Default value is ${BACKUP_FILE}\n" >&2 
      printf "    -d DATABASE_NAME      Optional parameter. Database Name to make the export from. Default Value is ${DATABASE_NAME}\n" >&2 
-     #printf "    -r RELEASE            Optional parameter. Release for product. I.E. 0.ge58dffa \n" >&2 
      printf "\n" >&2 
      exit 1 
 }
 
-while getopts ":v:b:d:h" opt 
+while getopts ":v:p:b:d:h" opt 
 do 
      case $opt in 
          v) 
              HOSTNAME=${OPTARG} 
+             ;; 
+         p) 
+             PORT=${OPTARG} 
              ;; 
          b) 
              BACKUP_FILE=${OPTARG} 
@@ -39,15 +43,17 @@ do
          d) 
              DATABASE_NAME=${OPTARG} 
              ;;
-		 h) 
+	 h) 
              usage 
              ;; 
          *) 
-             echo "invalid argument: '${OPTARG}'" 
+             echo "invalid argument: '${OPTARG}'\n"
+	     echo "add -h argument for help" 
              exit 1 
              ;; 
      esac 
 done
 
-pg_dump --host=${HOSTNAME} --port=${PORT} --username=${USERNAME} --password --format=custom --blobs --verbose --file=${BACKUP_FILE} ${DATABASE_NAME}
+PGPASSWORD="${PASSWORD}" pg_dump -i -h ${HOSTNAME} -p ${PORT} -U ${USERNAME} -F c -b -v -f ${BACKUP_FILE} ${DATABASE_NAME}
+#pg_dump --host=${HOSTNAME} --port=${PORT} --username=${USERNAME} --password --format=custom --blobs --verbose --file=${BACKUP_FILE} ${DATABASE_NAME}
 
