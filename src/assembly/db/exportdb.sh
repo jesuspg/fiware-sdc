@@ -5,10 +5,8 @@
 #######################################################
 HOSTNAME=130.206.80.119
 PORT=5432
-USERNAME=postgres
-PASSWORD=postgres
 FORMAT=custom
-BACKUP_FILE=export_sdc.backup
+BACKUP_FILE=/tmp/export_sdc.backup
 DATABASE_NAME=sdc_test_export
 
 function usage() { 
@@ -54,6 +52,5 @@ do
      esac 
 done
 
-PGPASSWORD="${PASSWORD}" pg_dump -i -h ${HOSTNAME} -p ${PORT} -U ${USERNAME} -F c -b -v -f ${BACKUP_FILE} ${DATABASE_NAME}
-#pg_dump --host=${HOSTNAME} --port=${PORT} --username=${USERNAME} --password --format=custom --blobs --verbose --file=${BACKUP_FILE} ${DATABASE_NAME}
+pg_dump --host=${HOSTNAME} --port=${PORT} --format=custom --blobs --verbose --file=${BACKUP_FILE} ${DATABASE_NAME}
 

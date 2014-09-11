@@ -5,9 +5,8 @@
 #######################################################
 HOSTNAME=130.206.80.119
 PORT=5432
-USERNAME=postgres
 FORMAT=custom
-BACKUP_FILE=export_sdc.backup
+BACKUP_FILE=/tmp/export_sdc.backup
 EXISTING_DATABASE_NAME=postgres
 
 function usage() {
@@ -49,4 +48,5 @@ do
      esac
 done
 
-pg_restore --host=${HOSTNAME} --port=${PORT} --username=${USERNAME} --no-password -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
+pg_restore --host=${HOSTNAME} --port=${PORT} -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
+rm ${BACKUP_FILE}
