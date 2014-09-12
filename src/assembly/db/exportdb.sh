@@ -7,7 +7,7 @@ HOSTNAME=130.206.80.119
 PORT=5432
 FORMAT=custom
 BACKUP_FILE=/tmp/export_sdc.backup
-DATABASE_NAME=sdc_test_export
+DATABASE_NAME=sdc
 
 function usage() { 
      SCRIPT=$(basename $0) 
