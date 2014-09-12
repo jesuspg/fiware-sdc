@@ -127,12 +127,13 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm, token);
-                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+//                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+                    puppetInstallator.callService(instance, vm, attributes, INSTALL, token);
                 } else {
                     chefInstallator.validateInstalatorData(vm, token);
                     //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL, token);
-                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");d
                 }
             }
 
