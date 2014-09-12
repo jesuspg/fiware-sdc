@@ -133,7 +133,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                     chefInstallator.validateInstalatorData(vm, token);
                     //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL, token);
-                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");d
+                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 
