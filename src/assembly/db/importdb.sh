@@ -1,13 +1,12 @@
 #!/bin/bash
 
 #######################################################
-###       Script to make an import of a database    ###
+###       Script to make an export of a database    ###
 #######################################################
 HOSTNAME=130.206.80.119
 PORT=5432
-USERNAME=postgres
 FORMAT=custom
-BACKUP_FILE=export_sdc.backup
+BACKUP_FILE=/tmp/export_sdc.backup
 EXISTING_DATABASE_NAME=postgres
 
 function usage() {
@@ -19,19 +18,21 @@ function usage() {
      printf "Options:\n" >&2
      printf "\n" >&2
      printf "    -h                    show usage\n" >&2
-     printf "    -v HOSTNAME           Optional paramter. Virtual Machine where the database is installed. Default value is ${HOSTNAME}\n" >&2
-     printf "    -b BACKUP_FILE        Optional paramter.File where to keep the database backup. Default value is ${BACKUP_FILE}\n" >&2
-     #printf "    -d DATABASE_NAME      Mandatory paramter. Database Name to make the export from\n" >&2
-     #printf "    -r RELEASE            Optional parameter. Release for product. I.E. 0.ge58dffa \n" >&2
+     printf "    -v HOSTNAME           Optional parameter. Virtual Machine where the database is installed. Default value is ${HOSTNAME}\n" >&2
+     printf "    -p PORT               Optional parameter. Port where the postgres database listens. Default value is ${PORT}\n" >&2
+     printf "    -b BACKUP_FILE        Optional parameter.File where to keep the database backup. Default value is ${BACKUP_FILE}\n" >&2
      printf "\n" >&2
      exit 1
 }
 
-while getopts ":v:b:h" opt
+while getopts ":v:p:b:h" opt
 do
      case $opt in
          v)
              HOSTNAME=${OPTARG}
+             ;;
+         p)
+             PORT=${OPTARG}
              ;;
          b)
              BACKUP_FILE=${OPTARG}
@@ -41,10 +42,10 @@ do
              ;;
          *)
              echo "invalid argument: '${OPTARG}'"
+             echo "add -h argument for help"
              exit 1
              ;;
      esac
 done
 
-pg_restore --host=${HOSTNAME} --port=${PORT} --username=${USERNAME} --password -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
-#pg_restore --host=130.206.80.119 --port=5432 --username=postgres --password -d postgres -C desarrollo_sdc_test_export.backup
+pg_restore --host=${HOSTNAME} --port=${PORT} -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
