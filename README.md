@@ -186,7 +186,7 @@ After, we introduce the WebDAV section into the Virtual host:
     # But we apply different settings
     <Location /webdav>
       Dav on
-      AuthType Basic
+      AuthType Basic  
       AuthName "SDC Server Webdav"
       AuthUserFile /etc/apache2/passwd/passwords
       Require user root

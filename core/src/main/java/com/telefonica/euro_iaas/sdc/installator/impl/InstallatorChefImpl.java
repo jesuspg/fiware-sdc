@@ -165,12 +165,12 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         int time = 5000;
         Date fechaAhora = new Date();
         while (!isExecuted) {
-            System.out.println("MAX_TIME: " + MAX_TIME + " and time: " + time);
+        	log.info("MAX_TIME: " + MAX_TIME + " and time: " + time);
             try {
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + process + " coub not be executed in " + vm.getChefClientName();
                     log.info(errorMesg);
-                    unassignRecipes(vm, recipe, token);
+                   // unassignRecipes(vm, recipe, token);
                     throw new NodeExecutionException(errorMesg);
                 }
                
@@ -197,9 +197,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 throw new NodeExecutionException(e);
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
-            } catch (InstallatorException ie2){
+            } /*catch (InstallatorException ie2){
                 throw new NodeExecutionException(ie2);
-            }
+            }*/
         }
     }
 

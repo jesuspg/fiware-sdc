@@ -93,7 +93,6 @@
         <!-- ehcache -->
         <ehcache.version>2.7.4</ehcache.version>
 
-
     </properties>
 
     <scm>
@@ -267,7 +266,6 @@
             </plugin>
 
 
-
         </plugins>
 
         <pluginManagement>
@@ -282,8 +280,10 @@
                         <encoding>UTF-8</encoding>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
-                        <failsOnViolations>true</failsOnViolations>
                         <linkXRef>false</linkXRef>
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+
                     </configuration>
                 </plugin>
 
