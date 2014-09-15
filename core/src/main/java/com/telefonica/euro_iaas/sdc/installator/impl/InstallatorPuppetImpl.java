@@ -289,7 +289,7 @@ public class InstallatorPuppetImpl implements Installator {
             try {
                 log.info("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
-                    String errorMesg = "Node  " + hostname + " is not registered in the puppet master";
+                    String errorMesg = "Node  " + hostname + "  is not registered in the puppet master";
                     log.info(errorMesg);
                     throw new CanNotCallPuppetException(errorMesg);
                 }
@@ -298,7 +298,7 @@ public class InstallatorPuppetImpl implements Installator {
                 time = time+ check_time;
             } catch (Exception e) {
             	log.warn(e.getMessage());
-            	String errorMesg = "Node  " + hostname + " is not registered the puppet master " + e.getMessage();
+            	String errorMesg = "Node  " + hostname + "  is not registered the puppet master " + e.getMessage();
                 log.info(errorMesg);
                 throw new CanNotCallPuppetException(errorMesg);
             	
