@@ -289,7 +289,7 @@ public class InstallatorPuppetImpl implements Installator {
             try {
                 log.info("Checking node : " + hostname + " time:" + time);
                 if (time > MAX_TIME) {
-                    String errorMesg = "Node  " + hostname + " is not registered in ChefServer";
+                    String errorMesg = "Node  " + hostname + " is not registered in puppet master";
                     log.info(errorMesg);
                     throw new CanNotCallPuppetException(errorMesg);
                 }
