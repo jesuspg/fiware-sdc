@@ -104,6 +104,7 @@
     </logger>
 
     <root>
+
         <level value="INFO"/>
         <appender-ref ref="sdcAppender"/>
     </root>
