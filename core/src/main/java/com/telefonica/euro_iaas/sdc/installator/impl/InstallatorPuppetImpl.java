@@ -60,7 +60,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class InstallatorPuppetImpl implements Installator {
-  
+
     private static Logger log = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
 
     private HttpClient client;
@@ -95,25 +95,57 @@ public class InstallatorPuppetImpl implements Installator {
 			log.warn ("It is not possible execute the module " + product.getProduct().getName() + " in node " + vm.getHostname() );
 		}
 
+
     }
     
     public void generateFilesinPuppetMaster (VM vm, String vdc, ProductRelease product, String action, String token) 
     throws InstallatorException {
     	String puppetUrl = null;
+        callPuppetMaster(vm, vdc, product, action, token, null);
+
+    }
+
+
+
+    @Override
+    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
+            String token) throws InstallatorException, NodeExecutionException {
+        
+        callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token, attributes);
+    }
+
+    @Override
+    public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
+            NodeExecutionException {
+        // TODO Auto-generated method stub
+
+    }
+
+  
+
+    private void callPuppetMaster(VM vm, String vdc, ProductRelease product, String action, String token,
+            List<Attribute> attributes) throws InstallatorException {
+        String puppetUrl = null;
+
         try {
             puppetUrl = openStackRegion.getPuppetWrapperEndPoint(token);
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
-        HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/"+ vm.getHostname() + "/"
-                + action);
+        HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
-        
-        NodeDto nodeDto = new NodeDto(vdc,product.getProduct().getName(),product.getVersion());
+
+        NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
         ObjectMapper mapper = new ObjectMapper();
         StringEntity input;
-        
+
         try {
             input = new StringEntity(mapper.writeValueAsString(nodeDto));
         } catch (JsonGenerationException e2) {
@@ -125,18 +157,18 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (IOException e2) {
             throw new SdcRuntimeException(e2);
         }
-        
+
         input.setContentType("application/json");
         postInstall.setEntity(input);
 
-//        System.out.println("puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
-//                + action);
+        // System.out.println("puppetURL: " + puppetUrl + "v2/node/"+
+        // vm.getHostname() + "/"
+        // + action);
 
         HttpResponse response;
 
-        log.info("Calling puppetWrapper install");
-        log.info("connecting to puppetURL: "+"puppetURL: " + puppetUrl + "v2/node/"+ vm.getHostname() + "/"
-                + action);
+        log.info("Calling puppetWrapper "+action);
+        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
         try {
             response = client.execute(postInstall);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -144,17 +176,17 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                String msg=format("[puppet install] response code was: {0}", statusCode);
+                String msg = format("[puppet "+action+"] response code was: {0}", statusCode);
                 log.warn(msg);
                 throw new InstallatorException(format(msg));
             }
-            log.debug("statusCode:"+ statusCode);
-            
+            log.debug("statusCode:" + statusCode);
+
             log.info("Calling puppetWrapper generate");
-            log.info(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
+            log.info(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
             // generate files in puppet master
-            HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/"+vm.getHostname()+"/generate");
+            HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
             getGenerate.addHeader("Content-Type", "application/json");
 
@@ -164,12 +196,11 @@ public class InstallatorPuppetImpl implements Installator {
             EntityUtils.consume(entity);
 
             if (statusCode != 200) {
-                String msg=format("generate files response code was: {0}", statusCode);
+                String msg = format("generate files response code was: {0}", statusCode);
                 log.warn(msg);
-                throw new InstallatorException(format(msg,
-                        statusCode));
+                throw new InstallatorException(format(msg, statusCode));
             }
-            log.debug("statusCode:"+ statusCode);
+            log.debug("statusCode:" + statusCode);
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new InstallatorException(e);
@@ -234,29 +265,11 @@ public class InstallatorPuppetImpl implements Installator {
        
     }
 
+
     public void setClient(HttpClient client) {
         this.client = client;
     }
 
-    @Override
-    public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
-            String token) throws InstallatorException, NodeExecutionException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
-            NodeExecutionException {
-        // TODO Auto-generated method stub
-
-    }
     
     private String getNodes (String token) throws SdcRuntimeException{
     	String puppetServerUrl = null;
@@ -321,6 +334,7 @@ public class InstallatorPuppetImpl implements Installator {
             throw new InvalidInstallProductRequestException(errorMesg);
 		}
     }
+
 
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {
         this.openStackRegion = openStackRegion;
