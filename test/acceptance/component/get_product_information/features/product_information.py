@@ -28,6 +28,11 @@ def setup_scenario(scenario):
     world.metadatas = None
 
 
+@before.outline
+def setup_outline(param1, param2, param3, param4):
+    setup_scenario(None)
+
+
 @step(u'Given a created product with name "([^"]*)"')
 def given_a_created_product_with_name_group1(step, product_id):
 
@@ -125,7 +130,7 @@ def then_the_product_is_retrieved(step):
 @step(u'Then I obtain an "([^"]*)"')
 def then_i_obtain_an_group1(step, error_code):
 
-    assert_equals(str(world.response.status_code), error_code, world.response.content)
+    assert_equals(str(world.response.status_code), error_code)
     world.headers = set_default_headers(world.token_id, world.tenant_id)
 
 
