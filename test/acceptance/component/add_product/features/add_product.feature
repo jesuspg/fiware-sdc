@@ -149,7 +149,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_233 | product with testing purposes | application/json  | dependencies  | tomcat                |
     | testing_attributes_234 | product with testing purposes | application/xml   | dependencies  | tomcat mysql nodejs   |
 
-  @CLAUDIA-3747 @CLAUDIA-3746
+  @skip @CLAUDIA-3747 @CLAUDIA-3746
   Scenario Outline: Add new product using incorrect metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -173,7 +173,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_333 | product with testing purposes | application/json  | dependencies  |                  | 400         |
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
-  @CLAUDIA-3742 @CLAUDIA-3741 @CLAUDIA-3740
+  @skip @CLAUDIA-3742 @CLAUDIA-3741 @CLAUDIA-3740
   Scenario Outline: Add a new product with incorrect parameters
 
     Given a product with name "<product_name>" with description "<description>"
@@ -213,7 +213,7 @@ Feature: Add a new product in the catalogue
     | testing_product01 | product with testing purposes | application/json  | 415         | application/json1   |
     | testing_product02 | product with testing purposes | application/json  | 415         | application/testing |
 
-
+  @auth
   Scenario Outline: Add a new product with incorrect token
 
     Given a product with name "<product_name>" with description "<description>"

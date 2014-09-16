@@ -15,7 +15,7 @@ Feature: Get a product release from the catalogue
       | testing_release01 | 1.0.0           | application/json  |
       | testing_release02 | 1.0.0           | application/xml   |
 
-
+    @skip @CLAUDIA-3754
     Scenario Outline: Get product release from non existent product
       Given a created product with name "<product_name>" and release "<product_release>"
       When I retrieve the product release "<another_product_release>" information assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
@@ -41,7 +41,7 @@ Feature: Get a product release from the catalogue
       | testing_release02 | 1.0.0           | application/xml   | follow_me             | 404         |
 
 
-
+    @auth
     Scenario Outline: Get a product release with incorrect token
 
       Given a created product with name "<product_name>" and release "<product_release>"
@@ -56,6 +56,7 @@ Feature: Get a product release from the catalogue
       | testing_delete02 | application/json  | 401         | 891855f21b2f1567afb966d3ceee1295 | 1.0.0           |
       | testing_delete03 | application/json  | 401         |                                  | 1.0.0           |
 
+    @skip @CLAUDIA-4115
     Scenario Outline: Cause a Not acceptable error when I get product release with Content Type header invalid
 
       Given a created product with name "<product_name>" and release "<product_release>"

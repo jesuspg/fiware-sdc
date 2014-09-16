@@ -54,7 +54,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  @CLAUDIA-3733
+  @skip @CLAUDIA-3733
   Scenario Outline: Retrieve metadatas from a not existent product
 
     Given a created product with all data and name "<product_name>"
@@ -67,8 +67,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  | testing_information        | 404         |
     | testing_information02  | application/xml   | Testing_information02      | 404         |
 
-
-
+  @skip @CLAUDIA-4115
   Scenario Outline: Cause a Not acceptable error when I Retrieve a product metadatas with Content Type header invalid
 
     Given a created product with all data and name "<product_name>"
@@ -82,7 +81,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  | 415         | application/json1   |
     | testing_information05  | application/json  | 415         | application/testing |
 
-
+  @auth
   Scenario Outline: Retrieve a product metadatas with incorrect token
 
     Given a created product with all data and name "<product_name>"

@@ -58,6 +58,7 @@ Feature: Add a new product release in the catalogue
       | testing_release02 | 1.0.0           | application/xml   | follow_me             | 404         |
 
 
+    @skip @CLAUDIA-3750
     Scenario Outline: Add a new product release in the catalogue from product with incorrect parameters
       Given a created product with all data and name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
@@ -97,7 +98,7 @@ Feature: Add a new product release in the catalogue
     | testing_delete01  | application/json  | 415         | application/json1   | 1.0.0           |
     | testing_delete05  | application/json  | 415         | application/testing | 1.0.0           |
 
-
+     @auth
      Scenario Outline: Add a new product release in the catalogue from product with all data with accept parameter incorrect
       Given a created product with all data and name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
