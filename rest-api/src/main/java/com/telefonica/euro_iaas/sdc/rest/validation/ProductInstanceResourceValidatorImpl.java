@@ -39,6 +39,8 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.OpenStackUser;
@@ -54,12 +56,14 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
 
     private SystemPropertiesProvider systemPropertiesProvider;
     private OpenStackRegion openStackRegion;
+    private GeneralResourceValidator generalValidator;
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator#validateInsert()
      */
-    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException {
+    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException, InvalidProductException {
+    	validateFields (product);
         OpenStackUser user = getCredentials();
 
         List<String> ips = new ArrayList<String>();
@@ -76,6 +80,40 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
             throw new UnauthorizedOperationException(message);
         }
 
+    }
+    
+    private void validateFields (ProductInstanceDto product) throws InvalidProductException {
+    	
+    	if (product.getProduct()== null ) {
+    		throw new InvalidProductException("The product is null");
+    	}
+    	
+    	if (product.getVm()== null ) {
+    		throw new InvalidProductException("The product is null");
+    	}
+    	try {
+			generalValidator.validateName(product.getVdc());
+		} catch (InvalidNameException e) {
+			throw new InvalidProductException("The product vdc is not valid " + e.getMessage());
+		}
+		
+		try {
+			generalValidator.validateVesion(product.getProduct().getVersion());
+		} catch (InvalidNameException e) {
+			throw new InvalidProductException("The product version is not valid " + e.getMessage());
+		}
+		
+		try {
+			generalValidator.validateName(product.getVm().getHostname());
+		} catch (InvalidNameException e) {
+			throw new InvalidProductException("The hostnmae is null " + e.getMessage());
+		}
+		
+		try {
+			generalValidator.validateName(product.getVm().getFqn());
+		} catch (InvalidNameException e) {
+			throw new InvalidProductException("The fqn is null " + e.getMessage());
+		}
     }
 
     /**
@@ -188,5 +226,13 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     
     public void setOpenStackRegion (OpenStackRegion openStackRegion) {
     	this.openStackRegion = openStackRegion;
+    }
+    
+    /**
+     * @param generalValidator
+     *            the generalValidator to set
+     */
+    public void setGeneralValidator(GeneralResourceValidator generalValidator) {
+        this.generalValidator = generalValidator;
     }
 }

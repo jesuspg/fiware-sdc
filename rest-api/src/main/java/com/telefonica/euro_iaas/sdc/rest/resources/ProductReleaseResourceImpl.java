@@ -99,9 +99,17 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
             generalValidator.validateName(pName);
         } catch (InvalidNameException e) {
+        	log.warning("InvalidEntityException: " + e.getMessage());
         	throw new APIException(new InvalidEntityException(e.getMessage()));
         }
         productReleaseDto.setProductName(pName);
+        
+        try {
+			productReleaseManager.load(new Product(pName, "description"), productReleaseDto.getVersion());
+		} catch (EntityNotFoundException e1) {
+			log.warning("EntityNotFoundException: " + e1.getMessage());
+        	throw new APIException(new EntityNotFoundException(ProductRelease.class, pName, e1));
+		}
 
         log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
                 + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
@@ -110,18 +118,25 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
                 productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
                 productReleaseDto.getTransitableReleases());
+    
         try {
         	validator.validateInsert(productRelease);
         } catch (InvalidEntityException e) {
+        	log.warning("InvalidEntityException: " + e.getMessage());
         	throw new APIException(new InvalidEntityException(e.getMessage()));
+		} catch (EntityNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
+			throw new APIException(new EntityNotFoundException(Product.class, e.getMessage(), e));
 		}
         
         log.info(productRelease.toString());
         try {
 			return productReleaseManager.insert(productRelease);
 		} catch (AlreadyExistsProductReleaseException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
 		} catch (InvalidProductReleaseException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new InvalidEntityException(e.getMessage()));
 		}
     }
@@ -137,6 +152,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
 			validator.validateInsert(multiPart);
 		} catch (InvalidMultiPartRequestException e1) {
+			log.warning("InvalidEntityException: " + e1.getMessage());
 			throw new APIException(new InvalidEntityException(e1.getMessage()));
 		}
 
@@ -223,11 +239,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 		try {
 			product = productManager.load(pName);
 		} catch (EntityNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(Product.class, pName, e));
 		}
         try {
 			return productReleaseManager.load(product, version);
 		} catch (EntityNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version, e));// TODO Auto-generated catch block
 
 		}
@@ -245,6 +263,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
             product = productManager.load(pName);
         } catch (EntityNotFoundException e) {
+        	log.warning("EntityNotFoundException: " + e.getMessage());
         	throw new APIException(new EntityNotFoundException(Product.class, pName, e));
         }
 
@@ -252,14 +271,17 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
             productRelease = productReleaseManager.load(product, version);
         } catch (EntityNotFoundException e) {
+        	log.warning("EntityNotFoundException: " + e.getMessage());
         	throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
         }
 
         try {
 			productReleaseManager.delete(productRelease);
 		} catch (ProductReleaseNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
 		} catch (ProductReleaseStillInstalledException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
 		}
     }
@@ -358,8 +380,10 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
 			return productReleaseManager.update(productRelease, cookbook, installable, getCredentials().getToken());
 		} catch (ProductReleaseNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(ProductRelease.class, productRelease.getProduct().getName(),  e));
 		} catch (InvalidProductReleaseException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new InvalidEntityException(e.getMessage()));
 		}
     }

@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
@@ -66,6 +67,7 @@ public interface ProductResourceValidator {
     /**
      * Verify if the ProductRelase could be inserted
      * @throws AlreadyExistsEntityException 
+     * @throws AlreadyExistsEntityException 
      * 
      * @aparam product (name, version, type)
     * @throws InvalidApplicationReleaseUpdateRequestException
@@ -77,6 +79,8 @@ public interface ProductResourceValidator {
      * 
      * @param productRelease
      * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException 
+     * @throws EntityNotFoundException 
      */
-	void validateInsert(ProductRelease productRelease) throws InvalidEntityException;
+	void validateInsert(ProductRelease productRelease) throws InvalidEntityException, EntityNotFoundException;
 }

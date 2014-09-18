@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.MultiPart;
@@ -49,6 +50,8 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     private GeneralResourceValidator generalValidator;
     private ProductManager productManager;
     
+    private static Logger log = Logger.getLogger("ProductResourceValidatorImpl");
+    
     public void validateUpdate(ReleaseDto releaseDto, MultiPart multiPart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException {
 
@@ -68,9 +71,15 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
-    public void validateInsert (ProductRelease productRelease ) throws InvalidEntityException {
+    public void validateInsert (ProductRelease productRelease ) throws InvalidEntityException, EntityNotFoundException {
     	
-    	validateInsert (productRelease.getProduct());
+    	if (!productManager.exist(productRelease.getProduct().getName())) {
+    		log.warning("The product " + productRelease.getProduct().getName() + " no exists");
+    		throw new EntityNotFoundException(Product.class, "The product " +
+    		    productRelease.getProduct().getName() + " no exists", productRelease);
+    	}
+    	
+    	commonValidation (productRelease.getProduct());
     	try {
 			generalValidator.validateVesion(productRelease.getVersion());
 		} catch (InvalidNameException e) {
@@ -81,43 +90,38 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     
     public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException {
     	
-        try {
-        	
-        	if (productManager.exist(product.getName())) {
-        		throw new AlreadyExistsEntityException("The product " + product.getName() + " already exists");
-        	}
-            generalValidator.validateName(product.getName());
-         
-            if (!(product.getMapMetadata().isEmpty())) {
-                validateMetadata(product.getMetadatas());
-            }
-        } catch (InvalidNameException e) {
-            throw new InvalidEntityException(e.getMessage());
-        } catch (InvalidProductException ipe) {
-            throw new InvalidEntityException(ipe.getMessage());
-        }
+    	if (productManager.exist(product.getName())) {
+    		log.warning ("The product " + product.getName() + " already exist");
+    		throw new AlreadyExistsEntityException("The product " + product.getName() + " already exist");
+    	}
+    	
+    	commonValidation (product);
 
     }
     
+    private void commonValidation (Product product) throws InvalidEntityException {
+    	 try {
+             generalValidator.validateName(product.getName());
+          
+             if (!(product.getMapMetadata() == null && product.getMapMetadata().isEmpty())) {
+                 validateMetadata(product.getMetadatas());
+             }
+         } catch (InvalidNameException e) {
+             throw new InvalidEntityException(e.getMessage());
+         } catch (InvalidProductException ipe) {
+             throw new InvalidEntityException(ipe.getMessage());
+         }
+    }
+
+    
     private void validateMetadata(List<Metadata> metadatas) throws InvalidProductException {
-        int open_port_value;
         for (int i=0; i < metadatas.size(); i++) {
             Metadata metadata = metadatas.get(i);
             
             if (metadata.getKey().equals("open_ports")){
             	List<String> ports = getPorts((String)metadata.getValue());
             	for (String port: ports) {
-                try { 
-                    open_port_value  = Integer.parseInt(port);                   
-                    } catch(NumberFormatException e) { 
-                        String msg = "The open_ports metadata is not a number";
-                        throw new InvalidProductException(msg);
-                    }
-                
-                   if ((open_port_value < 0) && ( open_port_value > 65535)) {
-                       String msg = "The open_ports value is not in the interval [0-65535]";
-                       throw new InvalidProductException(msg);
-                   }
+            		checkPortMetadata (port);
             	}
 
             } else if (metadata.getKey().equals("installator")) {
@@ -125,11 +129,34 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"chef\" or \"puppet\"";
                     throw new InvalidProductException(msg);
                 }
-            } else if (metadata.getKey().equals("dependecies")) {           
+            } else if (metadata.getKey().equals("dependencies")) {    
+            	checkDependence (metadata.getKey());
             }
         }
     
     }
+    
+    private void checkPortMetadata (String port) throws InvalidProductException {
+    	int openPortValue;
+    	try { 
+    		openPortValue  = Integer.parseInt(port);                   
+            } catch(NumberFormatException e) { 
+                String msg = "The open_ports metadata is not a number";
+                throw new InvalidProductException(msg);
+            }
+        
+           if ((openPortValue < 0) && ( openPortValue > 65535)) {
+               String msg = "The open_ports value is not in the interval [0-65535]";
+               throw new InvalidProductException(msg);
+           }
+    }
+    
+    private void checkDependence (String dependence) throws InvalidProductException {
+    	if (!productManager.exist(dependence)) {
+    		 String msg = "The product " + dependence + " does not exist and it is a dependence";
+             throw new InvalidProductException(msg);
+    	}
+    } 
     
     private List<String> getPorts (String portString) {
     	StringTokenizer st = new StringTokenizer(portString);

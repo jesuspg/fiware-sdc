@@ -84,16 +84,20 @@ public class ProductResourceImpl implements ProductResource {
     	try {
 			validator.validateInsert(product);
 		} catch (InvalidEntityException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new InvalidEntityException(e.getMessage()));
 		} catch (AlreadyExistsEntityException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
 		}
         try {
         	productReturn = productManager.insert(product);
         	return productReturn;
 		} catch (AlreadyExistsEntityException e) {
+			log.warning("AlreadyExistsEntityException: " + e.getMessage());
 			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
 		} catch (InvalidEntityException e) {
+			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new InvalidEntityException(e.getMessage()));
 		}
     }
@@ -162,6 +166,7 @@ public class ProductResourceImpl implements ProductResource {
         try {
 			return productManager.load(name);
 		} catch (EntityNotFoundException e) {
+			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(Product.class,name, e));
 		}
     }
@@ -194,6 +199,7 @@ public class ProductResourceImpl implements ProductResource {
         try {
             product = productManager.load(name);
         } catch (EntityNotFoundException e) {
+        	log.warning("EntityNotFoundException: " + e.getMessage());
         	throw new APIException(new EntityNotFoundException(Product.class,name, e));
         }
         productManager.delete(product);

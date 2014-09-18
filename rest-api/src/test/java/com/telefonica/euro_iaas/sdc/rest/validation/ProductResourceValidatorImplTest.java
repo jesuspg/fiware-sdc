@@ -191,6 +191,15 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
         productResourceValidator.validateInsert(product);
     }
     
+    @Test(expected=InvalidEntityException.class)
+    public void testValidateMetadataDependenceError() throws Exception {
+        String name="t";
+        product.setName(name);
+        Metadata meta = new Metadata ("dependencies", "noexistproduct");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
 
     
     @Test(expected=InvalidEntityException.class)
@@ -224,6 +233,22 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
         product.setName("1");
         productRelease.setProduct(product);
         productRelease.setVersion(version);
+        when (productManager.exist(any(String.class))).thenReturn(true);
+        productResourceValidator.validateInsert(productRelease);
+    }
+    
+    @Test
+    public void testValidateProductRelase() throws Exception {
+   
+    	  product.setName("1");
+    	ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
+                 productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
+                 productReleaseDto.getTransitableReleases());
+     
+      
+        productRelease.setProduct(product);
+        productRelease.setVersion("1.0");
+        when (productManager.exist(any(String.class))).thenReturn(true);
         productResourceValidator.validateInsert(productRelease);
     }
 }

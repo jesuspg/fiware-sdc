@@ -35,7 +35,7 @@ public enum ErrorCode {
             "The environment is being used by an instance",
             "(.*)InvalidEntityException: (.*)is being used(.*)",
             403),
-    NAME_NO_VALID(41, "The name is not valid", "(.*)InvalidEntityException:(.*)", 400),
+    NAME_NO_VALID(41, "The entity is not valid", "(.*)InvalidEntityException:(.*)", 400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     DEFAULT(500, "Internal SDC Server error", "(?s).*", 500);
 
