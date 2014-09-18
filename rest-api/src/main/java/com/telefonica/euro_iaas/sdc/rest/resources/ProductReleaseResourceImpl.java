@@ -45,7 +45,9 @@ import org.springframework.stereotype.Component;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
@@ -62,6 +64,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 
@@ -91,12 +94,12 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @return proudctRelease
      */
     public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
-            throws AlreadyExistsProductReleaseException, InvalidProductReleaseException {
+        throws APIException {
 
         try {
             generalValidator.validateName(pName);
         } catch (InvalidNameException e) {
-            throw new InvalidProductReleaseException(e.getMessage());
+        	throw new APIException(new InvalidEntityException(e.getMessage()));
         }
         productReleaseDto.setProductName(pName);
 
@@ -107,9 +110,20 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
                 productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
                 productReleaseDto.getTransitableReleases());
-
+        try {
+        	validator.validateInsert(productRelease);
+        } catch (InvalidEntityException e) {
+        	throw new APIException(new InvalidEntityException(e.getMessage()));
+		}
+        
         log.info(productRelease.toString());
-        return productReleaseManager.insert(productRelease);
+        try {
+			return productReleaseManager.insert(productRelease);
+		} catch (AlreadyExistsProductReleaseException e) {
+			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+		} catch (InvalidProductReleaseException e) {
+			throw new APIException(new InvalidEntityException(e.getMessage()));
+		}
     }
 
     /**
@@ -118,10 +132,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @throws InvalidProductReleaseUpdateRequestException
      * @throws InvalidMultiPartRequestException
      */
-    public ProductRelease insert(MultiPart multiPart) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException, InvalidMultiPartRequestException {
-
-        validator.validateInsert(multiPart);
+    public ProductRelease insert(MultiPart multiPart)  throws APIException{
+        
+        try {
+			validator.validateInsert(multiPart);
+		} catch (InvalidMultiPartRequestException e1) {
+			throw new APIException(new InvalidEntityException(e1.getMessage()));
+		}
 
         File cookbook = null;
         File installable = null;
@@ -132,13 +149,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
                 + productReleaseDto.getVersion());
 
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
-
-        /*
-         * for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1;
-         * i++) {
-         * product.addAttribute(productReleaseDto.getPrivateAttributes().get
-         * (i)); }
-         */
 
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
                 productReleaseDto.getReleaseNotes(),
@@ -160,7 +170,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             throw new RuntimeException(e);
         }
 
-        return productReleaseManager.insert(productRelease, cookbook, installable, getCredentials().getToken());
+        try {
+			return productReleaseManager.insert(productRelease, cookbook, installable, getCredentials().getToken());
+		} catch (AlreadyExistsProductReleaseException e) {
+			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+		} catch (InvalidProductReleaseException e) {
+			throw new APIException(new InvalidEntityException(e.getMessage()));
+		}
     }
 
     /**
@@ -202,17 +218,26 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * {@inheritDoc}
      */
     @Override
-    public ProductRelease load(String pName, String version) throws EntityNotFoundException {
-        Product product = productManager.load(pName);
-        return productReleaseManager.load(product, version);
+    public ProductRelease load(String pName, String version) throws APIException {
+        Product product;
+		try {
+			product = productManager.load(pName);
+		} catch (EntityNotFoundException e) {
+			throw new APIException(new EntityNotFoundException(Product.class, pName, e));
+		}
+        try {
+			return productReleaseManager.load(product, version);
+		} catch (EntityNotFoundException e) {
+			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version, e));// TODO Auto-generated catch block
+
+		}
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void delete(String pName, String version) throws ProductReleaseNotFoundException,
-            ProductReleaseStillInstalledException {
+    public void delete(String pName, String version) throws APIException {
 
         log.log(Level.INFO, "Delete ProductRelease. ProductName : " + pName + " ProductVersion : " + version);
 
@@ -220,17 +245,23 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
             product = productManager.load(pName);
         } catch (EntityNotFoundException e) {
-            throw new ProductReleaseNotFoundException(e);
+        	throw new APIException(new EntityNotFoundException(Product.class, pName, e));
         }
 
         ProductRelease productRelease;
         try {
             productRelease = productReleaseManager.load(product, version);
         } catch (EntityNotFoundException e) {
-            throw new ProductReleaseNotFoundException(e);
+        	throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
         }
 
-        productReleaseManager.delete(productRelease);
+        try {
+			productReleaseManager.delete(productRelease);
+		} catch (ProductReleaseNotFoundException e) {
+			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
+		} catch (ProductReleaseStillInstalledException e) {
+			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
+		}
     }
 
     /*
@@ -240,7 +271,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * findTransitable(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ProductRelease> findTransitable(String pName, String version) throws EntityNotFoundException {
+    public List<ProductRelease> findTransitable(String pName, String version) throws APIException {
         return load(pName, version).getTransitableReleases();
     }
 
@@ -255,8 +286,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @return productRelease
      * @throws InvalidProductReleaseUpdateRequestException 
      */
-    public ProductRelease update(MultiPart multiPart) throws ProductReleaseNotFoundException,
-            InvalidProductReleaseException, InvalidMultiPartRequestException, InvalidProductReleaseUpdateRequestException {
+    public ProductRelease update(MultiPart multiPart) throws APIException {
 
         ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
         log.log(Level.INFO,
@@ -272,13 +302,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             product.setDescription(productReleaseDto.getProductDescription());
         }
 
-        /*
-         * if (productReleaseDto.getPrivateAttributes() != null) { for (int i =
-         * 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
-         * product
-         * .addAttribute(productReleaseDto.getPrivateAttributes().get(i)); } }
-         */
-
         productRelease.setProduct(product);
 
         if (productReleaseDto.getVersion() != null) {
@@ -289,13 +312,6 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         if (productReleaseDto.getReleaseNotes() != null) {
             productRelease.setReleaseNotes(productReleaseDto.getReleaseNotes());
         }
-
-        // PrivateAttributes
-        /*
-         * if (productReleaseDto.getPrivateAttributes() != null) {
-         * productRelease
-         * .setPrivateAttributes(productReleaseDto.getPrivateAttributes()); }
-         */
 
         // SupportedOS
         if (productReleaseDto.getSupportedOS() != null) {
@@ -310,7 +326,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         ReleaseDto releaseDto = new ReleaseDto(productReleaseDto.getProductName(), productReleaseDto.getVersion(),
                 "product");
 
-        validator.validateUpdate(releaseDto, multiPart);
+        try {
+			validator.validateUpdate(releaseDto, multiPart);
+		} catch (InvalidMultiPartRequestException e1) {
+			throw new APIException(new InvalidEntityException(e1.getMessage()));
+		} catch (InvalidProductReleaseUpdateRequestException e1) {
+			throw new APIException(new InvalidEntityException(e1.getMessage()));// TODO Auto-generated catch block
+		}
 
         File cookbook = null;
         File installable = null;
@@ -333,7 +355,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             throw new SdcRuntimeException(e);
         }
 
-        return productReleaseManager.update(productRelease, cookbook, installable, getCredentials().getToken());
+        try {
+			return productReleaseManager.update(productRelease, cookbook, installable, getCredentials().getToken());
+		} catch (ProductReleaseNotFoundException e) {
+			throw new APIException(new EntityNotFoundException(ProductRelease.class, productRelease.getProduct().getName(),  e));
+		} catch (InvalidProductReleaseException e) {
+			throw new APIException(new InvalidEntityException(e.getMessage()));
+		}
     }
 
     private File getFileFromBodyPartEntity(BodyPartEntity bpe, File file) {

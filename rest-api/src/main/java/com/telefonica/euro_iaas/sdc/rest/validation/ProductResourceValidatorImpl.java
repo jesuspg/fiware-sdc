@@ -24,22 +24,30 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
+import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
+import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
 public class ProductResourceValidatorImpl extends MultipartValidator implements ProductResourceValidator {
 
     private GeneralResourceValidator generalValidator;
+    private ProductManager productManager;
     
     public void validateUpdate(ReleaseDto releaseDto, MultiPart multiPart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException {
@@ -60,13 +68,29 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
-    
-    public void validateInsert(Product product) throws InvalidEntityException {
+    public void validateInsert (ProductRelease productRelease ) throws InvalidEntityException {
+    	
+    	validateInsert (productRelease.getProduct());
+    	try {
+			generalValidator.validateVesion(productRelease.getVersion());
+		} catch (InvalidNameException e) {
+			throw new InvalidEntityException(e.getMessage());
+		}
 
+    }
+    
+    public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException {
+    	
         try {
+        	
+        	if (productManager.exist(product.getName())) {
+        		throw new AlreadyExistsEntityException("The product " + product.getName() + " already exists");
+        	}
             generalValidator.validateName(product.getName());
-            if (!(product.getMapAttributes().isEmpty()))
+         
+            if (!(product.getMapMetadata().isEmpty())) {
                 validateMetadata(product.getMetadatas());
+            }
         } catch (InvalidNameException e) {
             throw new InvalidEntityException(e.getMessage());
         } catch (InvalidProductException ipe) {
@@ -81,17 +105,20 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
             Metadata metadata = metadatas.get(i);
             
             if (metadata.getKey().equals("open_ports")){
+            	List<String> ports = getPorts((String)metadata.getValue());
+            	for (String port: ports) {
                 try { 
-                    open_port_value  = Integer.parseInt(metadata.getValue());                   
-                } catch(NumberFormatException e) { 
-                    String msg = "The open_ports metadata is not a number";
-                    throw new InvalidProductException(msg);
-                }
+                    open_port_value  = Integer.parseInt(port);                   
+                    } catch(NumberFormatException e) { 
+                        String msg = "The open_ports metadata is not a number";
+                        throw new InvalidProductException(msg);
+                    }
                 
-               if ((0 < open_port_value) && ( open_port_value < 65535)) {
-                   String msg = "The open_ports value is not in the interval [0-65535]";
-                   throw new InvalidProductException(msg);
-               }
+                   if ((open_port_value < 0) && ( open_port_value > 65535)) {
+                       String msg = "The open_ports value is not in the interval [0-65535]";
+                       throw new InvalidProductException(msg);
+                   }
+            	}
 
             } else if (metadata.getKey().equals("installator")) {
                 if (!(metadata.getValue().equals("chef")) &&  !(metadata.getValue().equals("puppet"))){
@@ -104,12 +131,26 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     
     }
     
+    private List<String> getPorts (String portString) {
+    	StringTokenizer st = new StringTokenizer(portString);
+    	List<String> ports = new ArrayList ();
+
+		while (st.hasMoreElements()) {
+			ports.add((String)st.nextElement());
+		}
+		return ports;
+
+    }
+    
     /**
      * @param generalValidator
      *            the generalValidator to set
      */
     public void setGeneralValidator(GeneralResourceValidator generalValidator) {
         this.generalValidator = generalValidator;
+    }
+    public void setProductManager (ProductManager productManager) {
+    	this.productManager = productManager;
     }
     
 

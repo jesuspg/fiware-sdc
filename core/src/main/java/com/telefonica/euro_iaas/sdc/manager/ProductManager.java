@@ -57,6 +57,13 @@ public interface ProductManager {
      *             if the product instance does not exists
      */
     Product load(String name) throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    boolean exist(String name);
 
     /**
      * Retrieve all Product created in the system.

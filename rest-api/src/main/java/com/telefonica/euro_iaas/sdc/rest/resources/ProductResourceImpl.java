@@ -46,6 +46,8 @@ import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
+import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -64,6 +66,7 @@ public class ProductResourceImpl implements ProductResource {
     public static String TENANT_METADATA = "tenant_id";
 
     private ProductManager productManager;
+    private ProductResourceValidator validator;
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
@@ -75,9 +78,24 @@ public class ProductResourceImpl implements ProductResource {
      * @param product
      * @return product
      */
-    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
-
-        return productManager.insert(product);
+    public Product insert(Product product) throws APIException {
+    	 
+    	Product productReturn = null;
+    	try {
+			validator.validateInsert(product);
+		} catch (InvalidEntityException e) {
+			throw new APIException(new InvalidEntityException(e.getMessage()));
+		} catch (AlreadyExistsEntityException e) {
+			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+		}
+        try {
+        	productReturn = productManager.insert(product);
+        	return productReturn;
+		} catch (AlreadyExistsEntityException e) {
+			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+		} catch (InvalidEntityException e) {
+			throw new APIException(new InvalidEntityException(e.getMessage()));
+		}
     }
 
     /**
@@ -140,8 +158,12 @@ public class ProductResourceImpl implements ProductResource {
      * {@inheritDoc}
      */
     @Override
-    public Product load(String name) throws EntityNotFoundException {
-        return productManager.load(name);
+    public Product load(String name) throws APIException {
+        try {
+			return productManager.load(name);
+		} catch (EntityNotFoundException e) {
+			throw new APIException(new EntityNotFoundException(Product.class,name, e));
+		}
     }
 
     /**
@@ -167,12 +189,12 @@ public class ProductResourceImpl implements ProductResource {
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException
      */
-    public void delete(String name) throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException {
+    public void delete(String name)  throws APIException {
         Product product;
         try {
             product = productManager.load(name);
         } catch (EntityNotFoundException e) {
-            throw new ProductReleaseNotFoundException(e);
+        	throw new APIException(new EntityNotFoundException(Product.class,name, e));
         }
         productManager.delete(product);
     }
@@ -187,6 +209,10 @@ public class ProductResourceImpl implements ProductResource {
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+    
+    public void setValidator (ProductResourceValidator validator) {
+    	this.validator=validator;
     }
 
 }

@@ -114,6 +114,16 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public Product load(String name) throws EntityNotFoundException {
         return productDao.load(name);
     }
+    
+   
+    public boolean exist(String name) {
+        try {
+			load(name);
+			return true;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+    }
 
     @Override
     public void delete(Product product) {

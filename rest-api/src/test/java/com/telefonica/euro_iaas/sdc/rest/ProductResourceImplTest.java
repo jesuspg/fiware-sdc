@@ -50,12 +50,16 @@ public class ProductResourceImplTest {
     public static String PRODUCT_NAME = "Product::server";
     public static String PRODUCT_VERSION = "Product::version";
     ProductResourceImpl productResource = null;
+    ProductResourceValidator productResourceValidator=null;
 
     @Before
     public void setUp() throws Exception {
         productResource = new ProductResourceImpl();
         ProductManager productManager = mock(ProductManager.class);
+        productResourceValidator = mock(ProductResourceValidator.class);
         productResource.setProductManager(productManager);
+        doNothing().when(productResourceValidator).validateInsert(any(Product.class));
+        productResource.setValidator(productResourceValidator);
         Product product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 

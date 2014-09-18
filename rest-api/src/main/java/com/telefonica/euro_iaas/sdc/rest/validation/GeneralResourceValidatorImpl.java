@@ -37,15 +37,32 @@ public class GeneralResourceValidatorImpl implements GeneralResourceValidator {
 
     public void validateName(String name) throws InvalidNameException {
     
-        if ((name == null) || (name.isEmpty())) {
-            String message =" The name " + name + " is NULL or EMPTY";
-            throw new InvalidNameException(message, name);
-        }
+    	validateString (name);
         
-        if (name.length() > 256){
+        if (name.length() >  255){
             String message =" The length of name  " + name + " is bigger than 256 characters";
             throw new InvalidNameException(message, name);
         }
         
     }
+
+    private void validateString (String name) throws InvalidNameException {
+    
+        if ((name == null) || (name.isEmpty()) || name.equals("")) {
+            String message =" The name " + name + " is NULL or EMPTY";
+            throw new InvalidNameException(message, name);
+        }
+
+    }
+
+	@Override
+	public void validateVesion(String name) throws InvalidNameException {
+		validateString (name);
+        
+        if (name.length() >  128){
+            String message =" The length of name  " + name + " is bigger than 256 characters";
+            throw new InvalidNameException(message, name);
+        }
+		
+	}
 }
