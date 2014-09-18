@@ -18,6 +18,7 @@
 
 	<bean id="productResource" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl">
+		<property name="validator" ref="productResourceValidator" />
 		<property name="productManager" ref="productManager" />
 		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
 	</bean>
@@ -88,6 +89,7 @@
 	<bean id="productResourceValidator" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidatorImpl">
 		<property name="generalValidator" ref="generalResourceValidator" />
+		<property name="productManager" ref="productManager" />
 	</bean>
 	<bean id="productInstanceResourceValidator" lazy-init="true"
 		class="com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidatorImpl">
