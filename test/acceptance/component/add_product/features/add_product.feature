@@ -124,6 +124,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_63 | product with testing purposes | application/json  |
     | testing_attributes_64 | product with testing purposes | application/xml   |
 
+  @skip @CLAUDIA-3748 @CLAUDIA-4129
   Scenario Outline: Add new product changing the default metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -135,21 +136,25 @@ Feature: Add a new product in the catalogue
 
     Examples:
 
-    | product_name           | description                   | accept_parameter  | key           | value                 |
-    | testing_attributes_223 | product with testing purposes | application/json  | image         | vm_1                  |
-    | testing_attributes_224 | product with testing purposes | application/xml   | cookbook_url  | http://www.test.org   |
-    | testing_attributes_225 | product with testing purposes | application/json  | cloud         | yes                   |
-    | testing_attributes_226 | product with testing purposes | application/json  | cloud         | no                    |
-    | testing_attributes_227 | product with testing purposes | application/xml   | installator   | puppet                |
-    | testing_attributes_228 | product with testing purposes | application/xml   | installator   | chef                  |
-    | testing_attributes_229 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091       |
-    | testing_attributes_230 | product with testing purposes | application/xml   | open_ports    | 80                    |
-    | testing_attributes_231 | product with testing purposes | application/json  | public        | yes                   |
-    | testing_attributes_232 | product with testing purposes | application/xml   | public        | no                    |
-    | testing_attributes_233 | product with testing purposes | application/json  | dependencies  | tomcat                |
-    | testing_attributes_234 | product with testing purposes | application/xml   | dependencies  | tomcat mysql nodejs   |
+    | product_name           | description                   | accept_parameter  | key           | value                                        |
+    | testing_attributes_223 | product with testing purposes | application/json  | image         | vm_1                                         |
+    | testing_attributes_224 | product with testing purposes | application/json  | image         |                                              |
+    | testing_attributes_225 | product with testing purposes | application/xml   | cookbook_url  | http://www.test.org                          |
+    | testing_attributes_226 | product with testing purposes | application/json  | cookbook_url  |                                              |
+    | testing_attributes_227 | product with testing purposes | application/json  | cloud         | yes                                          |
+    | testing_attributes_228 | product with testing purposes | application/json  | cloud         | no                                           |
+    | testing_attributes_230 | product with testing purposes | application/xml   | installator   | puppet                                       |
+    | testing_attributes_231 | product with testing purposes | application/xml   | installator   | chef                                         |
+    | testing_attributes_233 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091                              |
+    | testing_attributes_234 | product with testing purposes | application/xml   | open_ports    | 80                                           |
+    | testing_attributes_235 | product with testing purposes | application/json  | open_ports    |                                              |
+    | testing_attributes_236 | product with testing purposes | application/json  | public        | yes                                          |
+    | testing_attributes_237 | product with testing purposes | application/xml   | public        | no                                           |
+    | testing_attributes_239 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
+    | testing_attributes_240 | product with testing purposes | application/xml   | dependencies  | testing_attributes_224 testing_attributes_225|
+    | testing_attributes_241 | product with testing purposes | application/json  | dependencies  |                                              |
 
-  @skip @CLAUDIA-3747 @CLAUDIA-3746
+  @test @skip @CLAUDIA-3748 @CLAUDIA-4130
   Scenario Outline: Add new product using incorrect metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -166,14 +171,16 @@ Feature: Add a new product in the catalogue
     | testing_attributes_325 | product with testing purposes | application/json  | cloud         |                  | 400         |
     | testing_attributes_326 | product with testing purposes | application/json  | cloud         | test             | 400         |
     | testing_attributes_327 | product with testing purposes | application/xml   | installator   | test             | 400         |
+    | testing_attributes_336 | product with testing purposes | application/json  | installator   |                  | 400         |
     | testing_attributes_329 | product with testing purposes | application/json  | open_ports    | 111111111111111  | 400         |
+    | testing_attributes_335 | product with testing purposes | application/json  | open_ports    | 80 test          | 400         |
     | testing_attributes_330 | product with testing purposes | application/xml   | open_ports    | test             | 400         |
     | testing_attributes_331 | product with testing purposes | application/json  | public        |                  | 400         |
     | testing_attributes_332 | product with testing purposes | application/xml   | public        | test             | 400         |
     | testing_attributes_333 | product with testing purposes | application/json  | dependencies  |                  | 400         |
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
-  @skip @CLAUDIA-3742 @CLAUDIA-3741 @CLAUDIA-3740
+
   Scenario Outline: Add a new product with incorrect parameters
 
     Given a product with name "<product_name>" with description "<description>"
