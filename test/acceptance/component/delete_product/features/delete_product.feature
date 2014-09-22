@@ -53,7 +53,7 @@ Feature: Delete a product in the catalogue
     | testing_delete01  | application/json  |
     | testing_delete02  | application/xml   |
 
-  @skip @CLAUDIA-3733
+
   Scenario Outline: Delete a not existent product
 
     Given a created product with all data and name "<product_name>"
@@ -64,7 +64,7 @@ Feature: Delete a product in the catalogue
 
     | product_name      | accept_parameter  | another_product_name  | Error_code  |
     | testing_delete01  | application/json  | testing_delete        | 404         |
-    | testing_delete02  | application/xml   | testing_delete02      | 404         |
+    | testing_delete02  | application/xml   | testing_delete        | 404         |
 
 
   Scenario Outline: Cause a Not acceptable error when I delete a product with Content Type header invalid

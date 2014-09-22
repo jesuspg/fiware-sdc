@@ -28,7 +28,6 @@ Feature: Delete a product release in the catalogue
       | testing_release02 | 1.0.0           | application/xml   | 1.0                     | 404         |
 
 
-    @skip @CLAUDIA-3754
     Scenario Outline: Delete a non existent product release in the catalogue
       Given a created product with name "<product_name>" and release "<product_release>"
       When I delete the product release "<product_release>" assigned to the "<another_product_name>" with accept parameter "<accept_parameter>" response

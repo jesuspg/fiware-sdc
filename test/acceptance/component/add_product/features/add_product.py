@@ -38,6 +38,16 @@ def given_a_product_with_name_group1_with_description_group2(step, product_name,
 
     world.product_description = product_description
 
+@step(u'another product with name "([^"]*)" with description "([^"]*)"')
+def another_product_with_name_group1_with_description_group2(step, product_name, product_description):
+    world.product_name = product_name
+    world.product_description = product_description
+
+@step(u'a created product with name "([^"]*)" with description "([^"]*)"')
+def a_created_product_with_name_group1_with_description_group2(step, product_name, product_description):
+    world.product_name = product_name
+    world.product_description = product_description
+    when_i_add_the_new_product_with_group1_response(step, world.headers[ACCEPT_HEADER])
 
 @step(u'When I add the new product with accept parameter "([^"]*)" response')
 def when_i_add_the_new_product_with_group1_response(step, accept_content):

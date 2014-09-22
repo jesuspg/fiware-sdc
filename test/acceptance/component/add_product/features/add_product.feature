@@ -124,7 +124,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_63 | product with testing purposes | application/json  |
     | testing_attributes_64 | product with testing purposes | application/xml   |
 
-  @skip @CLAUDIA-3748 @CLAUDIA-4129
+  @skip @CLAUDIA-3748
   Scenario Outline: Add new product changing the default metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -143,18 +143,18 @@ Feature: Add a new product in the catalogue
     | testing_attributes_226 | product with testing purposes | application/json  | cookbook_url  |                                              |
     | testing_attributes_227 | product with testing purposes | application/json  | cloud         | yes                                          |
     | testing_attributes_228 | product with testing purposes | application/json  | cloud         | no                                           |
-    | testing_attributes_230 | product with testing purposes | application/xml   | installator   | puppet                                       |
-    | testing_attributes_231 | product with testing purposes | application/xml   | installator   | chef                                         |
-    | testing_attributes_233 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091                              |
-    | testing_attributes_234 | product with testing purposes | application/xml   | open_ports    | 80                                           |
-    | testing_attributes_235 | product with testing purposes | application/json  | open_ports    |                                              |
-    | testing_attributes_236 | product with testing purposes | application/json  | public        | yes                                          |
-    | testing_attributes_237 | product with testing purposes | application/xml   | public        | no                                           |
-    | testing_attributes_239 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
-    | testing_attributes_240 | product with testing purposes | application/xml   | dependencies  | testing_attributes_224 testing_attributes_225|
-    | testing_attributes_241 | product with testing purposes | application/json  | dependencies  |                                              |
+    | testing_attributes_229 | product with testing purposes | application/xml   | installator   | puppet                                       |
+    | testing_attributes_230 | product with testing purposes | application/xml   | installator   | chef                                         |
+    | testing_attributes_231 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091                              |
+    | testing_attributes_232 | product with testing purposes | application/xml   | open_ports    | 80                                           |
+    | testing_attributes_233 | product with testing purposes | application/json  | open_ports    |                                              |
+    | testing_attributes_234 | product with testing purposes | application/json  | public        | yes                                          |
+    | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
+    | testing_attributes_236 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
+    | testing_attributes_237 | product with testing purposes | application/xml   | dependencies  | testing_attributes_224 testing_attributes_225|
+    | testing_attributes_238 | product with testing purposes | application/json  | dependencies  |                                              |
 
-  @test @skip @CLAUDIA-3748 @CLAUDIA-4130
+  @skip @CLAUDIA-3748 @CLAUDIA-4130
   Scenario Outline: Add new product using incorrect metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -192,6 +192,21 @@ Feature: Add a new product in the catalogue
     | product_name      | description                   | accept_parameter  | Error_code  |
     |                   | product with testing purposes | application/json  | 400         |
     | LONG_ID           | product with testing purposes | application/xml   | 400         |
+
+
+  Scenario Outline: Add new product with name already registered
+
+    Given a created product with name "<product_name>" with description "<description>"
+    And another product with name "<another_product_name>" with description "<description>"
+    When I add the new product with accept parameter "<accept_parameter>" response
+    Then I obtain an "<error_code>"
+
+    Examples:
+
+    | product_name          | another_product_name  | description                   | accept_parameter  | error_code  |
+    | testing_attributes_01 | testing_attributes_01 | product with testing purposes | application/json  | 409         |
+    | testing_attributes_02 | testing_attributes_02 | product with testing purposes | application/xml   | 409         |
+
 
   Scenario Outline: Cause a Not acceptable error when I add a product into the catalogue with Accept header invalid
 
