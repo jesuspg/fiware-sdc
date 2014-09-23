@@ -158,7 +158,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
             Metadata metadata = metadatas.get(i);
             
             if (metadata.getKey().equals("open_ports")){
-            	List<String> ports = getPorts((String)metadata.getValue());
+            	List<String> ports = getFields((String)metadata.getValue());
             	for (String port: ports) {
             		checkPortMetadata (port);
             	}
@@ -201,13 +201,20 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     }
     
     private void checkDependence (String dependence) throws InvalidProductException {
-    	if (!productManager.exist(dependence)) {
-    		 String msg = "The product " + dependence + " does not exist and it is a dependence";
-             throw new InvalidProductException(msg);
+    	if (dependence.isEmpty()) {
+    		return;
+    	}
+    	List<String> dependeces = getFields(dependence);
+    	
+    	for (String depen: dependeces ) {
+    		if (!productManager.exist(depen)) {
+       		 String msg = "The product " + dependence + " does not exist and it is a dependence";
+                throw new InvalidProductException(msg);
+    		}
     	}
     } 
     
-    private List<String> getPorts (String portString) {
+    private List<String> getFields(String portString) {
     	StringTokenizer st = new StringTokenizer(portString);
     	List<String> ports = new ArrayList ();
 
