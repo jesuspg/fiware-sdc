@@ -124,7 +124,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_63 | product with testing purposes | application/json  |
     | testing_attributes_64 | product with testing purposes | application/xml   |
 
-  @skip @CLAUDIA-3748
+  @skip @CLAUDIA-3748 @test
   Scenario Outline: Add new product changing the default metadatas
 
     Given a product with name "<product_name>" with description "<description>"
