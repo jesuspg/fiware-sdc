@@ -6,10 +6,11 @@ from commons.authentication import get_token
 from commons.rest_utils import RestUtils
 from commons.product_body import simple_product_body, product_with_attributes, product_with_metadata, \
     product_with_all_parameters
-from commons.utils import dict_to_xml, xml_to_dict, set_default_headers
+from commons.utils import dict_to_xml, xml_to_dict, set_default_headers, response_body_to_dict
 from commons.constants import CONTENT_TYPE, CONTENT_TYPE_JSON, PRODUCT_NAME, PRODUCT_DESCRIPTION, PRODUCT, \
-    ACCEPT_HEADER, LONG_ID, AUTH_TOKEN_HEADER, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS, KEY, DESCRIPTION, VALUE
-from nose.tools import assert_equals, assert_true, assert_in
+    ACCEPT_HEADER, LONG_ID, AUTH_TOKEN_HEADER, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS, KEY, DESCRIPTION, VALUE, \
+    TENANT_ID_HEADER, METADATA_TENANT_ID, PRODUCTS
+from nose.tools import assert_equals, assert_true, assert_in, assert_false
 
 api_utils = RestUtils()
 
@@ -121,6 +122,9 @@ def and_the_following_metadatas(step):
         if examples[DESCRIPTION] != 'None':
             metadata[DESCRIPTION] = examples[DESCRIPTION]
 
+        if METADATA_TENANT_ID == metadata[KEY]:
+            metadata[VALUE] = metadata[VALUE].replace('CURRENT', world.headers[TENANT_ID_HEADER])
+
         world.metadatas.append(metadata)
 
 
@@ -143,6 +147,29 @@ def when_i_add_the_new_product_with_all_the_parameters_with_accept_parameter_gro
                                                    metadata=world.metadatas, attributes=world.attributes))
 
     world.response = api_utils.add_new_product(headers=world.headers, body=body)
+
+
+@step(u'the product visibility is "([^"]*)"')
+def the_product_visibility_is_group1(step, visibility):
+    world.response = api_utils.retrieve_product_list(headers=world.headers)
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
+
+    response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
+                                          xml_root_element_name=PRODUCTS)
+
+    exist = False
+    for product in response_body[PRODUCT]:
+        if product[PRODUCT_NAME] == world.product_name:
+            exist = True
+
+    if visibility == 'visible':
+        assert_true(exist, "Product is not visible and it should")
+    else:
+        #Delete hidden product
+        response = api_utils.delete_product(headers=world.headers, product_id=world.product_name)
+        assert_true(response.ok, 'RESPONSE: {}'.format(response.content))
+
+        assert_false(exist, "Product is visible and it shouldn't")
 
 
 @step(u'Then I obtain an "([^"]*)"')
