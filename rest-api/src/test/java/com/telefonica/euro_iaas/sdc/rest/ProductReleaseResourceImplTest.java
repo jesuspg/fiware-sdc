@@ -37,6 +37,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.OS;
@@ -57,6 +58,8 @@ public class ProductReleaseResourceImplTest {
     public static String PRODUCT_NAME = "Product::server";
     public static String PRODUCT_VERSION = "Product::version";
     private ProductReleaseResourceImpl productReleaseResource = null;
+    private ProductManager productManager;
+    private ProductReleaseManager productReleaseManager;
 
     /**
      * Prepare method.
@@ -66,8 +69,8 @@ public class ProductReleaseResourceImplTest {
     @Before
     public void setUp() throws Exception {
         productReleaseResource = new ProductReleaseResourceImpl();
-        ProductReleaseManager productReleaseManager = mock(ProductReleaseManager.class);
-        ProductManager productManager = mock(ProductManager.class);
+        productReleaseManager = mock(ProductReleaseManager.class);
+        productManager = mock(ProductManager.class);
         ProductResourceValidator productResourceValidator = mock(ProductResourceValidator.class);
         GeneralResourceValidator generalResourceValidator = mock(GeneralResourceValidator.class);
         productReleaseResource.setValidator(productResourceValidator);
@@ -103,6 +106,8 @@ public class ProductReleaseResourceImplTest {
         productReleaseDto.setVersion(PRODUCT_VERSION);
         productReleaseDto.setReleaseNotes("prueba ReelaseNotes");
 
+        when (productReleaseManager.load(any(Product.class), any(String.class))).thenThrow
+            (new EntityNotFoundException(ProductReleaseDto.class, PRODUCT_NAME, productReleaseDto));
         ProductRelease productRelease = productReleaseResource.insert(PRODUCT_NAME, productReleaseDto);
         assertEquals(productRelease.getProduct().getName(), PRODUCT_NAME);
         assertEquals(productRelease.getVersion(), PRODUCT_VERSION);

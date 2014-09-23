@@ -95,49 +95,38 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      */
     public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
         throws APIException {
-
-        try {
-            generalValidator.validateName(pName);
-        } catch (InvalidNameException e) {
-        	log.warning("InvalidEntityException: " + e.getMessage());
-        	throw new APIException(new InvalidEntityException(e.getMessage()));
-        }
-        productReleaseDto.setProductName(pName);
-        
-        try {
-			productReleaseManager.load(new Product(pName, "description"), productReleaseDto.getVersion());
-		} catch (EntityNotFoundException e1) {
-			log.warning("EntityNotFoundException: " + e1.getMessage());
-        	throw new APIException(new EntityNotFoundException(ProductRelease.class, pName, e1));
-		}
-
-        log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
-                + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
-        Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
-
-        ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
-                productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
-                productReleaseDto.getTransitableReleases());
-    
-        try {
-        	validator.validateInsert(productRelease);
+    	ProductRelease productRelease = null;
+    	try {
+        	validator.validateInsert(pName, productReleaseDto);
         } catch (InvalidEntityException e) {
         	log.warning("InvalidEntityException: " + e.getMessage());
-        	throw new APIException(new InvalidEntityException(e.getMessage()));
+        	throw new APIException(new InvalidEntityException(productReleaseDto, e));
 		} catch (EntityNotFoundException e) {
 			log.warning("EntityNotFoundException: " + e.getMessage());
 			throw new APIException(new EntityNotFoundException(Product.class, e.getMessage(), e));
 		}
-        
+		 log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
+	                + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
+
+		try {
+			Product product = productManager.load(pName);
+			productRelease = new ProductRelease(productReleaseDto.getVersion(),
+		                productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
+		                productReleaseDto.getTransitableReleases());
+		} catch (EntityNotFoundException e1) {
+			log.warning("EntityNotFoundException: " + e1.getMessage());
+			throw new APIException(new EntityNotFoundException(Product.class, e1.getMessage(), e1));
+		}
+
         log.info(productRelease.toString());
         try {
 			return productReleaseManager.insert(productRelease);
 		} catch (AlreadyExistsProductReleaseException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+			throw new APIException(new AlreadyExistsEntityException(Product.class, e));
 		} catch (InvalidProductReleaseException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new InvalidEntityException(e.getMessage()));
+			throw new APIException(new InvalidEntityException(productRelease, e));
 		}
     }
 
@@ -153,7 +142,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 			validator.validateInsert(multiPart);
 		} catch (InvalidMultiPartRequestException e1) {
 			log.warning("InvalidEntityException: " + e1.getMessage());
-			throw new APIException(new InvalidEntityException(e1.getMessage()));
+			throw new APIException(new InvalidEntityException(multiPart, e1));
 		}
 
         File cookbook = null;
@@ -189,9 +178,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
 			return productReleaseManager.insert(productRelease, cookbook, installable, getCredentials().getToken());
 		} catch (AlreadyExistsProductReleaseException e) {
-			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+			throw new APIException(new AlreadyExistsEntityException(productRelease, e));
 		} catch (InvalidProductReleaseException e) {
-			throw new APIException(new InvalidEntityException(e.getMessage()));
+			throw new APIException(new InvalidEntityException(productRelease, e));
 		}
     }
 
@@ -266,7 +255,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         	log.warning("EntityNotFoundException: " + e.getMessage());
         	throw new APIException(new EntityNotFoundException(Product.class, pName, e));
         }
-
+ 
         ProductRelease productRelease;
         try {
             productRelease = productReleaseManager.load(product, version);
@@ -351,9 +340,9 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
 			validator.validateUpdate(releaseDto, multiPart);
 		} catch (InvalidMultiPartRequestException e1) {
-			throw new APIException(new InvalidEntityException(e1.getMessage()));
+			throw new APIException(new InvalidEntityException(releaseDto, e1));
 		} catch (InvalidProductReleaseUpdateRequestException e1) {
-			throw new APIException(new InvalidEntityException(e1.getMessage()));// TODO Auto-generated catch block
+			throw new APIException(new InvalidEntityException(releaseDto, e1));// TODO Auto-generated catch block
 		}
 
         File cookbook = null;
@@ -384,7 +373,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 			throw new APIException(new EntityNotFoundException(ProductRelease.class, productRelease.getProduct().getName(),  e));
 		} catch (InvalidProductReleaseException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new InvalidEntityException(e.getMessage()));
+			throw new APIException(new InvalidEntityException(productRelease, e));
 		}
     }
 

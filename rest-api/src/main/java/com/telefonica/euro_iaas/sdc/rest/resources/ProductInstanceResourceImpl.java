@@ -91,18 +91,20 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      */
     public Task install(String vdc, ProductInstanceDto product, String callback) {
 
-        // validator.validateInsert(product);
 			try {
 				validator.validateInsert(product);
 			} catch (UnauthorizedOperationException e) {
 				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(e.getMessage()));
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
 			} catch (OpenStackException e) {
 				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(e.getMessage()));
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
 			} catch (InvalidProductException e) {
 				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(e.getMessage()));
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (EntityNotFoundException e) {
+				log.warning ("The entity does not exist " + e.getMessage() );
+				throw new APIException(e);
 			}
 			
 			Product p=null;

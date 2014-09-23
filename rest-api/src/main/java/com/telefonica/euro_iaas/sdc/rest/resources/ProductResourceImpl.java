@@ -85,20 +85,20 @@ public class ProductResourceImpl implements ProductResource {
 			validator.validateInsert(product);
 		} catch (InvalidEntityException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new InvalidEntityException(e.getMessage()));
+			throw new APIException(new InvalidEntityException(Product.class, e));
 		} catch (AlreadyExistsEntityException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+			throw new APIException(new AlreadyExistsEntityException(Product.class, e));
 		}
         try {
         	productReturn = productManager.insert(product);
         	return productReturn;
 		} catch (AlreadyExistsEntityException e) {
 			log.warning("AlreadyExistsEntityException: " + e.getMessage());
-			throw new APIException(new AlreadyExistsEntityException(e.getMessage()));
+			throw new APIException(new AlreadyExistsEntityException(Product.class, e));
 		} catch (InvalidEntityException e) {
 			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new InvalidEntityException(e.getMessage()));
+			throw new APIException(new InvalidEntityException(product, e));
 		}
     }
 
@@ -176,7 +176,12 @@ public class ProductResourceImpl implements ProductResource {
      */
     @Override
     public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
-        return productManager.load(name).getAttributes();
+        try {
+        	return productManager.load(name).getAttributes();
+        } catch (EntityNotFoundException e) {
+        	log.warning("EntityNotFoundException: " + e.getMessage());
+        	throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
     }
 
     /**
@@ -184,7 +189,13 @@ public class ProductResourceImpl implements ProductResource {
      */
     @Override
     public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
-        return productManager.load(name).getMetadatas();
+        try {
+        	return productManager.load(name).getMetadatas();
+        } catch (EntityNotFoundException e) {
+        	log.warning("EntityNotFoundException: " + e.getMessage());
+        	throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+       
     }
 
     /**

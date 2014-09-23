@@ -39,16 +39,19 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 public class ProductResourceValidatorImpl extends MultipartValidator implements ProductResourceValidator {
 
     private GeneralResourceValidator generalValidator;
     private ProductManager productManager;
+    private ProductReleaseManager productReleaseManager;
     
     private static Logger log = Logger.getLogger("ProductResourceValidatorImpl");
     
@@ -71,28 +74,64 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
-    public void validateInsert (ProductRelease productRelease ) throws InvalidEntityException, EntityNotFoundException {
-    	
-    	if (!productManager.exist(productRelease.getProduct().getName())) {
-    		log.warning("The product " + productRelease.getProduct().getName() + " no exists");
-    		throw new EntityNotFoundException(Product.class, "The product " +
-    		    productRelease.getProduct().getName() + " no exists", productRelease);
-    	}
-    	
-    	commonValidation (productRelease.getProduct());
+    public void validateInsert (String pName, ProductReleaseDto productRelease ) throws InvalidEntityException, EntityNotFoundException {
+    
     	try {
-			generalValidator.validateVesion(productRelease.getVersion());
-		} catch (InvalidNameException e) {
-			throw new InvalidEntityException(e.getMessage());
+            generalValidator.validateName(pName);
+            generalValidator.validateVesion(productRelease.getVersion());
+        } catch (InvalidNameException e) {
+        	log.warning("InvalidEntityException: " + e.getMessage());
+        	throw new InvalidEntityException(new InvalidEntityException(productRelease, e));
+        }
+   
+      
+        Product product =null;
+        try {
+			product = productManager.load(pName);
+			
+		} catch (Exception e1) {
+			log.warning("EntityNotFoundException: " + e1.getMessage());
+			throw new InvalidEntityException(new EntityNotFoundException(Product.class, productRelease.getProductName(), e1));
 		}
-
+        
+        try {
+			productReleaseManager.load(product, productRelease.getVersion());
+			String mes = "The product release " + productRelease.getProductName()+ " version " +
+			    productRelease.getVersion()+ " already exists";
+			throw new InvalidEntityException(new AlreadyExistsEntityException(ProductRelease.class, new Exception (mes)));
+		} catch (EntityNotFoundException e1) {
+			log.warning("EntityNotFoundException: " + e1.getMessage());
+		}
     }
+    
+    public void validateLoad (ReleaseDto releaseDto) throws EntityNotFoundException {
+    	
+    	Product product = null;
+    	
+    	 try {
+ 			product = productManager.load(releaseDto.getName());
+ 			
+ 		} catch (Exception e1) {
+ 			log.warning("EntityNotFoundException: " + e1.getMessage());
+ 			throw new APIException(new EntityNotFoundException(Product.class, releaseDto.getName(), e1));
+ 		}
+        
+         try {
+ 			productReleaseManager.load(product, releaseDto.getVersion());
+ 		} catch (EntityNotFoundException e1) {
+ 			log.warning("EntityNotFoundException: " + e1.getMessage());
+ 			throw new APIException(new EntityNotFoundException(ProductRelease.class, releaseDto.getName(), e1));
+ 		}
+    	
+    }
+    
     
     public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException {
     	
     	if (productManager.exist(product.getName())) {
-    		log.warning ("The product " + product.getName() + " already exist");
-    		throw new AlreadyExistsEntityException("The product " + product.getName() + " already exist");
+    		String mens = "Entity already exist : " + product.getName();
+    		log.warning (mens);
+    		throw new AlreadyExistsEntityException(Product.class, new Exception (mens));
     	}
     	
     	commonValidation (product);
@@ -107,9 +146,9 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                  validateMetadata(product.getMetadatas());
              }
          } catch (InvalidNameException e) {
-             throw new InvalidEntityException(e.getMessage());
+        	 throw new InvalidEntityException(product, e);
          } catch (InvalidProductException ipe) {
-             throw new InvalidEntityException(ipe.getMessage());
+        	 throw new InvalidEntityException(product, ipe);
          }
     }
 
@@ -131,6 +170,21 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                 }
             } else if (metadata.getKey().equals("dependencies")) {    
             	checkDependence (metadata.getKey());
+            } else if (metadata.getKey().equals("public")) {    
+            	 if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
+                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
+                     throw new InvalidProductException(msg);
+                 }
+            } else if (metadata.getKey().equals("cloud")) {    
+            	if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
+                    String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
+                    throw new InvalidProductException(msg);
+                }
+            }  else if (metadata.getKey().equals("cloud")) {    
+            	if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
+                    String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
+                    throw new InvalidProductException(msg);
+                }
             }
         }
     
@@ -179,6 +233,13 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     public void setProductManager (ProductManager productManager) {
     	this.productManager = productManager;
     }
+    
+    public void setProductReleaseManager (ProductReleaseManager productReleaseManager) {
+    	this.productReleaseManager = productReleaseManager;
+    }
+    
+    
+    
     
 
 }

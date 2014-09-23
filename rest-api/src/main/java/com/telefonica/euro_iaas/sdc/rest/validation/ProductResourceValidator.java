@@ -32,6 +32,7 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
 /**
@@ -77,10 +78,18 @@ public interface ProductResourceValidator {
 
     /**
      * 
+     * @param pName 
      * @param productRelease
      * @throws InvalidEntityException
      * @throws AlreadyExistsEntityException 
      * @throws EntityNotFoundException 
      */
-	void validateInsert(ProductRelease productRelease) throws InvalidEntityException, EntityNotFoundException;
+	void validateInsert(String pName, ProductReleaseDto productRelease) throws InvalidEntityException, EntityNotFoundException;
+	
+	/**
+	 * 
+	 * @param releaseDto
+	 * @throws EntityNotFoundException
+	 */
+	 public void validateLoad (ReleaseDto releaseDto) throws EntityNotFoundException;
 }

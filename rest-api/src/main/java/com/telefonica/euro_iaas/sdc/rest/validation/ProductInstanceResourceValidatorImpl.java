@@ -39,11 +39,13 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.OpenStackUser;
+import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 import com.telefonica.euro_iaas.sdc.util.Configuration;
@@ -57,16 +59,20 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     private SystemPropertiesProvider systemPropertiesProvider;
     private OpenStackRegion openStackRegion;
     private GeneralResourceValidator generalValidator;
+    private ProductResourceValidator productResourceValidator;
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator#validateInsert()
      */
-    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException, InvalidProductException {
+    public void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, 
+        OpenStackException, InvalidProductException, EntityNotFoundException {
     	validateFields (product);
-        OpenStackUser user = getCredentials();
+    	productResourceValidator.validateLoad(product.getProduct());
+    //	PaasManagerUser user = getCredentials();
+       // OpenStackUser user = getCredentials();
 
-        List<String> ips = new ArrayList<String>();
+     /*   List<String> ips = new ArrayList<String>();
         List<String> serversIds = findAllServers(user);
 
         for (int i = 0; i < serversIds.size(); i++) {
@@ -78,7 +84,7 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
             String message = " The Server with ip " + product.getVm().getIp() + " does not belong to user with token "
                     + user.getToken();
             throw new UnauthorizedOperationException(message);
-        }
+        }*/
 
     }
     
@@ -91,14 +97,15 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     	if (product.getVm()== null ) {
     		throw new InvalidProductException("The product is null");
     	}
-    	try {
-			generalValidator.validateName(product.getVdc());
-		} catch (InvalidNameException e) {
-			throw new InvalidProductException("The product vdc is not valid " + e.getMessage());
-		}
 		
 		try {
 			generalValidator.validateVesion(product.getProduct().getVersion());
+		} catch (InvalidNameException e) {
+			throw new InvalidProductException("The product version is not valid " + e.getMessage());
+		}
+		
+		try {
+			generalValidator.validateVesion(product.getProduct().getName());
 		} catch (InvalidNameException e) {
 			throw new InvalidProductException("The product version is not valid " + e.getMessage());
 		}
@@ -116,15 +123,22 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
 		}
     }
 
-    /**
-     * Get the Credentials (FIWARE) from the Spring SecurityContext
-     */
-    private OpenStackUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            return (OpenStackUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } else {
-            return null;
-        }
+    
+    public String getToken () {
+    	PaasManagerUser user = getCredentials();
+    	if (user == null) {
+    		return "";
+    	} else {
+    		return user.getToken();
+    	}
+    	
+    }
+    public PaasManagerUser getCredentials() {
+    	try {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	} catch (Exception e) {
+    	    return null;
+    	}
     }
 
     /**
@@ -134,10 +148,10 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      * @return
      * @throws OpenStackException 
      */
-    private List<String> findAllServers(OpenStackUser user) throws OpenStackException {
+    private List<String> findAllServers(PaasManagerUser user) throws OpenStackException {
         // http://130.206.80.63:8774/v2/ebe6d9ec7b024361b7a3882c65a57dda/servers
         String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),user.getToken() ) 
-                + Configuration.VERSION_PROPERTY + user.getTenantId()
+                + user.getTenantId()
                 + "/servers";
         String output = getResourceOpenStack(url, user.getToken());
 
@@ -153,7 +167,7 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      * @return
      * @throws OpenStackException 
      */
-    private String findServerIP(OpenStackUser user, String serverId) throws OpenStackException {
+    private String findServerIP(PaasManagerUser user, String serverId) throws OpenStackException {
         String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),user.getToken() ) 
                 + Configuration.VERSION_PROPERTY + user.getTenantId()
                 + "/servers/" + serverId;
@@ -224,6 +238,10 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
     
+    /**
+     * 
+     * @param openStackRegion
+     */
     public void setOpenStackRegion (OpenStackRegion openStackRegion) {
     	this.openStackRegion = openStackRegion;
     }
@@ -235,4 +253,10 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     public void setGeneralValidator(GeneralResourceValidator generalValidator) {
         this.generalValidator = generalValidator;
     }
+    
+    public void setProductResourceValidator(ProductResourceValidator productResourceValidator) {
+        this.productResourceValidator = productResourceValidator;
+    }
+
+
 }

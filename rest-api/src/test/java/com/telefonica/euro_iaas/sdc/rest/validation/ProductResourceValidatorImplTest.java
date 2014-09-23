@@ -38,8 +38,10 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
@@ -54,6 +56,7 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
     private ProductReleaseDto productReleaseDto;
     private Product product;
     private ProductManager productManager;
+    private ProductReleaseManager productReleaseManager;
     private GeneralResourceValidatorImpl generalValidator;
     
     ReleaseDto releaseDto;
@@ -65,9 +68,11 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
         productResourceValidator = new ProductResourceValidatorImpl();
         productManager = mock (ProductManager.class);
         generalValidator = new GeneralResourceValidatorImpl();
-        
+        productReleaseManager = mock(ProductReleaseManager.class);
         productResourceValidator.setGeneralValidator(generalValidator);
         productResourceValidator.setProductManager(productManager);
+        productResourceValidator.setProductReleaseManager(productReleaseManager);
+        
         when (productManager.exist(any(String.class))).thenReturn(false);
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
@@ -199,6 +204,24 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
         product.addMetadata(meta);
         productResourceValidator.validateInsert(product);
     }
+    
+    @Test
+    public void testValidatePublic() throws Exception {
+        String name="t";
+        product.setName(name);
+        Metadata meta = new Metadata ("public", "yes");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+    
+    @Test(expected=InvalidEntityException.class)
+    public void testValidatePublicError() throws Exception {
+        String name="t";
+        product.setName(name);
+        Metadata meta = new Metadata ("public", "novalid");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
 
 
     
@@ -229,26 +252,28 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils{
              "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
              "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
              "12345678901234567";
-        ProductRelease productRelease = new ProductRelease ();
-        product.setName("1");
-        productRelease.setProduct(product);
+        ProductReleaseDto productRelease = new ProductReleaseDto ();
+        productRelease.setProductName("1");
         productRelease.setVersion(version);
+        when (productReleaseManager.load(any(Product.class), any(String.class))).
+            thenThrow(new EntityNotFoundException (ProductRelease.class, "", productRelease));
         when (productManager.exist(any(String.class))).thenReturn(true);
-        productResourceValidator.validateInsert(productRelease);
+        productResourceValidator.validateInsert("name", productRelease);
     }
     
     @Test
     public void testValidateProductRelase() throws Exception {
    
-    	  product.setName("1");
-    	ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
-                 productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
-                 productReleaseDto.getTransitableReleases());
+    	product.setName("1");
+    	ProductReleaseDto productRelease = new ProductReleaseDto();
      
       
-        productRelease.setProduct(product);
+        productRelease.setProductName(product.getName());
         productRelease.setVersion("1.0");
+      
         when (productManager.exist(any(String.class))).thenReturn(true);
-        productResourceValidator.validateInsert(productRelease);
+        when (productReleaseManager.load(any(Product.class), any(String.class))).
+            thenThrow(new EntityNotFoundException (ProductRelease.class, "", productRelease));
+        productResourceValidator.validateInsert("name", productRelease);
     }
 }
