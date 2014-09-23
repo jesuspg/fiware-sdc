@@ -85,6 +85,7 @@ Feature: Add a new product release in the catalogue
       | testing_release01 | 1.0.0           | 1.0.0                    | application/json  | 409         |
       | testing_release02 | 2.0.0           | 2.0.0                    | application/xml   | 409         |
 
+    @auth
     Scenario Outline: Add a new product release in the catalogue a product with incorrect token
 
       Given a created product with all data and name "<product_name>"
@@ -112,7 +113,7 @@ Feature: Add a new product release in the catalogue
     | testing_delete01  | application/json  | 415         | application/json1   | 1.0.0           |
     | testing_delete05  | application/json  | 415         | application/testing | 1.0.0           |
 
-     @auth
+
      Scenario Outline: Add a new product release in the catalogue from product with all data with accept parameter incorrect
       Given a created product with all data and name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
