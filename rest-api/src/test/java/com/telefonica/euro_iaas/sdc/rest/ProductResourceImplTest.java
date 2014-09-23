@@ -81,7 +81,7 @@ public class ProductResourceImplTest {
         List<ProductRelease> lProductRelease = new ArrayList<ProductRelease>();
         lProductRelease.add(productRelease);
 
-        when(productManager.insert(any(Product.class))).thenReturn(product);
+        when(productManager.insert(any(Product.class), any(String.class))).thenReturn(product);
         when(productManager.load(any(String.class))).thenReturn(product);
         doNothing().when(productManager).delete(any(Product.class));
 

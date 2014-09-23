@@ -90,8 +90,9 @@ public class ProductResourceImpl implements ProductResource {
 			log.warning("InvalidEntityException: " + e.getMessage());
 			throw new APIException(new AlreadyExistsEntityException(Product.class, e));
 		}
+
         try {
-        	productReturn = productManager.insert(product);
+        	productReturn = productManager.insert(product, getTenantId ());
         	return productReturn;
 		} catch (AlreadyExistsEntityException e) {
 			log.warning("AlreadyExistsEntityException: " + e.getMessage());
@@ -159,6 +160,14 @@ public class ProductResourceImpl implements ProductResource {
             return null;
         }
 
+    }
+    
+    private String getTenantId () {
+    	if (getCredentials() == null) {
+    		return "";
+    	} else {
+    		return getCredentials().getTenantId();
+    	}
     }
 
     /**

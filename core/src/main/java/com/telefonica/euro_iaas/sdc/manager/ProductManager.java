@@ -42,10 +42,11 @@ public interface ProductManager {
     /**
      * Insert the Product in SDC Database
      * @param product
+     * @param string 
      * @return
      * @throws AlreadyExistsEntityException
      */
-    Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException;
+    Product insert(Product product, String string) throws AlreadyExistsEntityException, InvalidEntityException;
     
     /**
      * Find the ProductInstance using the given id.
