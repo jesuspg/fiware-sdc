@@ -183,7 +183,7 @@ def then_the_metadatas_product_contain_default_metadatas(step):
     else:
         response_body = xml_to_dict(world.response.content)[PRODUCT_METADATAS]
         print response_body
-        assert_equals(len(response_body[METADATA]), 5)
+        assert_equals(len(response_body[METADATA]), 6)
 
 
 @step(u'Then the metadatas product are retrieved')

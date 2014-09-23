@@ -124,7 +124,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_63 | product with testing purposes | application/json  |
     | testing_attributes_64 | product with testing purposes | application/xml   |
 
-  @skip @CLAUDIA-3748 @CLAUDIA-4136
+
   Scenario Outline: Add new product changing the default metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -149,7 +149,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_232 | product with testing purposes | application/xml   | open_ports    | 80                                           |
     | testing_attributes_233 | product with testing purposes | application/json  | open_ports    |                                              |
     | testing_attributes_234 | product with testing purposes | application/json  | public        | yes                                          |
-#    | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
+    | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
     | testing_attributes_236 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
     | testing_attributes_237 | product with testing purposes | application/xml   | dependencies  | testing_attributes_224 testing_attributes_225|
     | testing_attributes_238 | product with testing purposes | application/json  | dependencies  |                                              |
@@ -158,14 +158,13 @@ Feature: Add a new product in the catalogue
     | testing_attributes_241 | product with testing purposes | application/json  | tenant_id     |                                              |
 
 
-  @skip @CLAUDIA-4136
   Scenario Outline: Add new product changing the default metadatas: public and tenant_id
 
     Given a product with name "<product_name>" with description "<description>"
     And the following metadatas
     | key         | value             | description         |
     | <key>       | <value>           | None                |
-    | tenant_id   | <value_tenant_id> | Tenant-ID           |
+    | tenant_id   | <value_tenant_id> | None                |
     When I add the new product with metadatas, with accept parameter "<accept_parameter>" response
     Then the product is created
     And the product visibility is "<visibility>"
@@ -179,11 +178,10 @@ Feature: Add a new product in the catalogue
     | testing_attributes_245 | product with testing purposes | application/json  | public        | yes   |                              | visible     |
     | testing_attributes_246 | product with testing purposes | application/xml   | public        | no    | CURRENT                      | visible     |
     | testing_attributes_247 | product with testing purposes | application/xml   | public        | no    | 000000000000000022           | hidden      |
-    | testing_attributes_248 | product with testing purposes | application/xml   | public        | no    | 000000000000000022 CURRENT   | visible     |
+#    | testing_attributes_248 | product with testing purposes | application/xml   | public        | no    | 000000000000000022 CURRENT   | visible     | # @CLAUDIA-4130
     | testing_attributes_249 | product with testing purposes | application/json  | public        | no    |                              | hidden      |
 
 
-  @skip @CLAUDIA-3748 @CLAUDIA-4130
   Scenario Outline: Add new product using incorrect metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -196,7 +194,6 @@ Feature: Add a new product in the catalogue
     Examples:
 
     | product_name           | description                   | accept_parameter  | key           | value            | Error_code  |
-    | testing_attributes_324 | product with testing purposes | application/xml   | cookbook_url  | hehehehe         | 400         |
     | testing_attributes_325 | product with testing purposes | application/json  | cloud         |                  | 400         |
     | testing_attributes_326 | product with testing purposes | application/json  | cloud         | test             | 400         |
     | testing_attributes_327 | product with testing purposes | application/xml   | installator   | test             | 400         |
@@ -206,7 +203,6 @@ Feature: Add a new product in the catalogue
     | testing_attributes_330 | product with testing purposes | application/xml   | open_ports    | test             | 400         |
     | testing_attributes_331 | product with testing purposes | application/json  | public        |                  | 400         |
     | testing_attributes_332 | product with testing purposes | application/xml   | public        | test             | 400         |
-    | testing_attributes_333 | product with testing purposes | application/json  | dependencies  |                  | 400         |
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
 

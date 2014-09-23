@@ -54,7 +54,7 @@ Feature: Get product attributes
     | testing_information01  | application/json  |
     | testing_information02  | application/xml   |
 
-  @skip @CLAUDIA-3733
+
   Scenario Outline: Retrieve metadatas from a not existent product
 
     Given a created product with all data and name "<product_name>"
