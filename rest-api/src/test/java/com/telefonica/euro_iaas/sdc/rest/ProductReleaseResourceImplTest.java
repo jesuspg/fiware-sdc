@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.sdc.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -122,6 +123,20 @@ public class ProductReleaseResourceImplTest {
     @Test
     public void testDelete() throws Exception {
         productReleaseResource.delete(PRODUCT_NAME, PRODUCT_VERSION);
+
+    }
+    
+    @Test
+    public void testLoad() throws Exception {
+        productReleaseResource.load(PRODUCT_NAME, PRODUCT_VERSION);
+
+    }
+    
+    @Test
+    public void testFindAll() throws Exception {
+        List<ProductRelease> productReleases = productReleaseResource.
+            findAll("name", "osType", new Integer(1),  new Integer(1), "orderBy", "orderType");
+        assertNotNull (productReleases);
 
     }
 }

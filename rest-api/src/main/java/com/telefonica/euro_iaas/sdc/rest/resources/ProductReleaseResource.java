@@ -73,18 +73,6 @@ public interface ProductReleaseResource {
         throws APIException;
 
     /**
-     * @param multiPart
-     * @return
-     * @throws AlreadyExistsProductReleaseException
-     * @throws InvalidProductReleaseException
-     * @throws InvalidMultiPartRequestException
-     */
-    @POST
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes("multipart/mixed")
-    ProductRelease insert(MultiPart multiPart) throws APIException;
-
-    /**
      * Retrieve all available versions of the given product.
      * 
      * @param osType
@@ -140,32 +128,6 @@ public interface ProductReleaseResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
         throws APIException;
-
-    /**
-     * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
-     * 
-     * @param multipart
-     *            which includes
-     *            <ol>
-     *            <li>The ProductReleaseDto: contains the information about the product</li>
-     *            <li>The cookbook: a tar file containing the whole cookbook.</li>
-     *            <li>The binary files: if the product needs some files which isn't in the OS repositories, a tar file
-     *            containing the structure will be deploying in a webdav.</li>
-     *            </ol>
-     * @throws ProductReleaseNotFoundException
-     *             if the Product Release does not exists
-     * @throws InvalidProductReleaseException
-     *             if the Product Release is still installed on some VMs
-     * @throws InvalidProductReleaseUpdateRequestException
-     *             if the Product is invalid
-     * @throws InvalidMultiPartRequestException
-     *             fi the Multipart is Invalid
-     */
-    @PUT
-    @Path("/{version}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes("multipart/mixed")
-    ProductRelease update(MultiPart multipart)  throws APIException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
