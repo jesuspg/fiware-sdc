@@ -142,6 +142,9 @@ public class ProductResourceImpl implements ProductResource {
 
     private boolean checkProduct(Product product) {
         PaasManagerUser credentials = this.getCredentials();
+        if (credentials == null) {
+        	return false;
+        }
         if (product.getMapMetadata().get(TENANT_METADATA) != null
                 && product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
             return true;

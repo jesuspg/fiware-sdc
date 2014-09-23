@@ -72,7 +72,7 @@ public class OpenStackAuthenticationProviderTest {
 
     }
 
-   // @Test
+    @Test
     public void shouldCreatesNewTokenAndValidateWhenAdminTokenIsNotAuthorized() {
         // given
 
