@@ -169,7 +169,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                     throw new InvalidProductException(msg);
                 }
             } else if (metadata.getKey().equals("dependencies")) {    
-            	checkDependence (metadata.getKey());
+            	checkDependence (metadata.getValue());
             } else if (metadata.getKey().equals("public")) {    
             	 if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
                      String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
@@ -180,12 +180,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
                     throw new InvalidProductException(msg);
                 }
-            }  else if (metadata.getKey().equals("cloud")) {    
-            	if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
-                    String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
-                    throw new InvalidProductException(msg);
-                }
-            }
+            }  
         }
     
     }
