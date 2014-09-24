@@ -21,29 +21,37 @@
  * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
  * </p>
  */
+package com.telefonica.euro_iaas.sdc.rest.aspects;
 
-/**
- * 
- */
-package com.telefonica.euro_iaas.sdc.rest.validation;
+import static org.junit.Assert.*;
 
-import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * @author jesus.movilla
- *
- */
-public interface GeneralResourceValidator {
+import org.junit.Before;
+import org.junit.Test;
 
-    /**
-     * Verify if the name is not empty and if is smaller than 256 characters
-     * @param name
-     */
-    void validateName(String name) throws InvalidNameException;
+public class TraceInterceptorTest {
+	
+	private TraceInterceptor traceInterceptor;
+	
+	
+	
+	@Before 
+	public void setUp () {
+		traceInterceptor = new TraceInterceptor();
+	}
 
-    /**
-     * 
-     * @param version
-     */
-	void validateVesion(String version) throws InvalidNameException;
+	@Test
+	public void testWriteToLogLogStringThrowable() {
+		Log log = LogFactory.getLog (TraceInterceptorTest.class);
+		traceInterceptor.writeToLog(log, "message", new Exception ());
+	}
+
+	@Test
+	public void testIsInterceptorEnabledMethodInvocationLog() {
+		boolean result = traceInterceptor.isInterceptorEnabled(null, null);
+		assertTrue (result);
+	}
+
 }

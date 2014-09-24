@@ -87,7 +87,7 @@ public class ProductManagerImplTest extends TestCase {
         productManager.setProductDao(productDao);
         
         when(productDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Product.class, "name", product.getName()));
-        Product createdProduct = productManager.insert(product);
+        Product createdProduct = productManager.insert(product, "");
         assertEquals(createdProduct.getMetadatas().size(), 6); 
     }
     
@@ -100,7 +100,7 @@ public class ProductManagerImplTest extends TestCase {
         productManager.setProductDao(productDao);
         
         when(productDao.load(any(String.class))).thenReturn(product);
-        Product createdProduct = productManager.insert(product);
+        Product createdProduct = productManager.insert(product, "");
         assertEquals(createdProduct.getName(), product.getName()); 
     }
 }

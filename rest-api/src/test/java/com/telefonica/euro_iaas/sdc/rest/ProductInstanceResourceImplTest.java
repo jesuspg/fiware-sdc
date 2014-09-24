@@ -54,6 +54,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.resources.ProductInstanceResourceImpl;
+import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
 
 public class ProductInstanceResourceImplTest {
 
@@ -67,6 +68,7 @@ public class ProductInstanceResourceImplTest {
     ProductInstanceResourceImpl productInstanceResource = null;
     ProductInstanceAsyncManager productInstanceAsyncManager = null;
     Product product = null;
+    ProductInstanceResourceValidator validator = null;
 
     @Before
     public void setUp() throws Exception {
@@ -76,11 +78,14 @@ public class ProductInstanceResourceImplTest {
         productManager = mock(ProductManager.class);
         productInstanceAsyncManager = mock(ProductInstanceAsyncManager.class);
         TaskManager taskManager = mock(TaskManager.class);
+        validator = mock (ProductInstanceResourceValidator.class);
         productInstanceResource.setProductManager(productManager);
         productInstanceResource.setProductReleaseManager(productReleaseManager);
         productInstanceResource.setProductInstanceAsyncManager(productInstanceAsyncManager);
         productInstanceResource.setTaskManager(taskManager);
-
+        productInstanceResource.setValidator(validator);
+      
+        
         ReleaseDto productReleaseDto = new ReleaseDto();
         productReleaseDto.setName("Product::server");
         productReleaseDto.setType("type");

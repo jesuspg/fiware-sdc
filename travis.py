@@ -19,7 +19,7 @@ class Config():
             sys.exit()
 
         serversNodes = settings.getElementsByTagName("servers")
-        if not serversNodes:
+        if not serversNodes: 
             serversNode = parent_node.createElement("servers")
             settings.appendChild(serversNode)
         else:

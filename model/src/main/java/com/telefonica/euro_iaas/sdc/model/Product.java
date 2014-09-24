@@ -167,6 +167,8 @@ public class Product {
     public Product(String name, String description) {
         this.name = name;
         this.description = description;
+        attributes = new ArrayList<Attribute>();
+        metadatas = new ArrayList<Metadata>();
     }
 
     /**

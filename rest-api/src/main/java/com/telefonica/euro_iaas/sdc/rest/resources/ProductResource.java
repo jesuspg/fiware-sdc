@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 
 /**
@@ -63,7 +64,7 @@ public interface ProductResource {
     @POST
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Product insert(Product product)  throws AlreadyExistsEntityException, InvalidEntityException;
+    Product insert(Product product)  throws APIException;
 
     /**
      * Retrieve all Products available created in the system.

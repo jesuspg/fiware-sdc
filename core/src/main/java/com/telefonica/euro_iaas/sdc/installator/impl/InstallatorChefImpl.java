@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
@@ -51,6 +54,7 @@ import com.telefonica.euro_iaas.sdc.util.IpToVM;
 public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef implements Installator {
     
     private IpToVM ip2vm;
+    private static Logger log = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token)
@@ -94,7 +98,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
             }
         } catch (NodeExecutionException e) {
-            // even if execution fails want to unassign the recipe
+            log.warn ("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
         }
     }
@@ -115,8 +119,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
-            // unassignRecipes(vm, recipe);
-            // even if execution fails want to unassign the recipe
+        	log.warn ("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
         }
     }
@@ -136,8 +139,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             String restoreRecipe = recipeNamingGenerator.getRestoreRecipe(productInstance);
             callChefUpgrade(restoreRecipe, vm, token);
         } catch (NodeExecutionException e) {
+        	log.warn ("Error in the execution of the node " + e.getMessage());
             throw new InstallatorException(e);
         } catch (InstallatorException ex) {
+        	log.warn ("Error in the execution of the node " + ex.getMessage());
             throw new InstallatorException(ex);
         }
     }
