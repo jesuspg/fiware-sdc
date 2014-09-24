@@ -38,13 +38,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.glassfish.jersey.media.multipart.BodyPartEntity;
+import org.glassfish.jersey.media.multipart.MultiPart;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
-import com.sun.jersey.multipart.BodyPartEntity;
-import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
@@ -73,9 +72,7 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
-    @InjectParam("productReleaseManager")
     private ProductReleaseManager productReleaseManager;
-    @InjectParam("productManager")
     private ProductManager productManager;
 
     private ProductResourceValidator validator;
@@ -134,10 +131,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         Product product = new Product(productReleaseDto.getProductName(), productReleaseDto.getProductDescription());
 
         /*
-         * for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1;
-         * i++) {
-         * product.addAttribute(productReleaseDto.getPrivateAttributes().get
-         * (i)); }
+         * for (int i = 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
+         * product.addAttribute(productReleaseDto.getPrivateAttributes().get (i)); }
          */
 
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getVersion(),
@@ -235,9 +230,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#
-     * findTransitable(java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource# findTransitable(java.lang.String,
+     * java.lang.String)
      */
     @Override
     public List<ProductRelease> findTransitable(String pName, String version) throws EntityNotFoundException {
@@ -247,16 +241,17 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     /**
      * Update the ProductRelease (productReleaseDto, cookbooks, installable).
      * 
-     * @param multipart
+     * @param multiPart
      * @throws ProductReleaseNotFoundException
      * @throws InvalidProductReleaseException
      * @throws InvalidProductReleaseException
      * @throws InvalidMultiPartRequestException
      * @return productRelease
-     * @throws InvalidProductReleaseUpdateRequestException 
+     * @throws InvalidProductReleaseUpdateRequestException
      */
     public ProductRelease update(MultiPart multiPart) throws ProductReleaseNotFoundException,
-            InvalidProductReleaseException, InvalidMultiPartRequestException, InvalidProductReleaseUpdateRequestException {
+            InvalidProductReleaseException, InvalidMultiPartRequestException,
+            InvalidProductReleaseUpdateRequestException {
 
         ProductReleaseDto productReleaseDto = multiPart.getBodyParts().get(0).getEntityAs(ProductReleaseDto.class);
         log.log(Level.INFO,
@@ -273,9 +268,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
 
         /*
-         * if (productReleaseDto.getPrivateAttributes() != null) { for (int i =
-         * 0; productReleaseDto.getPrivateAttributes().size() < 1; i++) {
-         * product
+         * if (productReleaseDto.getPrivateAttributes() != null) { for (int i = 0;
+         * productReleaseDto.getPrivateAttributes().size() < 1; i++) { product
          * .addAttribute(productReleaseDto.getPrivateAttributes().get(i)); } }
          */
 
@@ -292,8 +286,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         // PrivateAttributes
         /*
-         * if (productReleaseDto.getPrivateAttributes() != null) {
-         * productRelease
+         * if (productReleaseDto.getPrivateAttributes() != null) { productRelease
          * .setPrivateAttributes(productReleaseDto.getPrivateAttributes()); }
          */
 

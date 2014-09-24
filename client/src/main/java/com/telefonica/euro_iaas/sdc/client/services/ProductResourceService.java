@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.client.services;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 
 /**

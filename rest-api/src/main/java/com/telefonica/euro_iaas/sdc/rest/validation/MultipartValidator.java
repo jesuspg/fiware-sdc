@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 
 public class MultipartValidator {

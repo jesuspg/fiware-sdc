@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import java.util.List;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
@@ -40,7 +41,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 public class ProductResourceValidatorImpl extends MultipartValidator implements ProductResourceValidator {
 
     private GeneralResourceValidator generalValidator;
-    
+
     public void validateUpdate(ReleaseDto releaseDto, MultiPart multiPart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException {
 
@@ -60,7 +61,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
-    
+
     public void validateInsert(Product product) throws InvalidEntityException {
 
         try {
@@ -74,36 +75,36 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         }
 
     }
-    
+
     private void validateMetadata(List<Metadata> metadatas) throws InvalidProductException {
         int open_port_value;
-        for (int i=0; i < metadatas.size(); i++) {
+        for (int i = 0; i < metadatas.size(); i++) {
             Metadata metadata = metadatas.get(i);
-            
-            if (metadata.getKey().equals("open_ports")){
-                try { 
-                    open_port_value  = Integer.parseInt(metadata.getValue());                   
-                } catch(NumberFormatException e) { 
+
+            if (metadata.getKey().equals("open_ports")) {
+                try {
+                    open_port_value = Integer.parseInt(metadata.getValue());
+                } catch (NumberFormatException e) {
                     String msg = "The open_ports metadata is not a number";
                     throw new InvalidProductException(msg);
                 }
-                
-               if ((0 < open_port_value) && ( open_port_value < 65535)) {
-                   String msg = "The open_ports value is not in the interval [0-65535]";
-                   throw new InvalidProductException(msg);
-               }
+
+                if ((0 < open_port_value) && (open_port_value < 65535)) {
+                    String msg = "The open_ports value is not in the interval [0-65535]";
+                    throw new InvalidProductException(msg);
+                }
 
             } else if (metadata.getKey().equals("installator")) {
-                if (!(metadata.getValue().equals("chef")) &&  !(metadata.getValue().equals("puppet"))){
+                if (!(metadata.getValue().equals("chef")) && !(metadata.getValue().equals("puppet"))) {
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"chef\" or \"puppet\"";
                     throw new InvalidProductException(msg);
                 }
-            } else if (metadata.getKey().equals("dependecies")) {           
+            } else if (metadata.getKey().equals("dependecies")) {
             }
         }
-    
+
     }
-    
+
     /**
      * @param generalValidator
      *            the generalValidator to set
@@ -111,6 +112,5 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     public void setGeneralValidator(GeneralResourceValidator generalValidator) {
         this.generalValidator = generalValidator;
     }
-    
 
 }

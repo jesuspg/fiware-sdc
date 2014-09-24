@@ -29,11 +29,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -41,13 +45,14 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public class ProductReleaseServiceImplTest {
-	SdcClientConfig client = mock (SdcClientConfig.class);
-	
-	@Before
-	public void setUp () {
-		Client c = mock (Client.class);
+    SdcClientConfig client = mock(SdcClientConfig.class);
+
+    @Before
+    public void setUp() {
+        Client c = mock(Client.class);
         when(client.getClient()).thenReturn(c);
-	}
+    }
+
     @Test
     public void shouldAddProductRelease() {
         // given
@@ -67,14 +72,17 @@ public class ProductReleaseServiceImplTest {
         productReleaseCreated.setProduct(product);
 
         String url = "http://localhost/catalog/product/tomcat/release/";
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        WebTarget webResource = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+
+        Response response = mock(Response.class);
         // when
 
-        when(client.getClient().resource(url)).thenReturn(webResource);
-        when(webResource.accept(type)).thenReturn(builder);
-        when(builder.type(type)).thenReturn(builder);
-        when(builder.post(ProductRelease.class, productReleaseDto)).thenReturn(productReleaseCreated);
+        when(client.getClient().target(url)).thenReturn(webResource);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
+        when(builder.post(Entity.entity(productReleaseDto, type))).thenReturn(response);
+        when(response.readEntity(ProductRelease.class)).thenReturn(productReleaseCreated);
 
         ProductRelease productRelease = productReleaseService.add(productReleaseDto, token, tenant);
 

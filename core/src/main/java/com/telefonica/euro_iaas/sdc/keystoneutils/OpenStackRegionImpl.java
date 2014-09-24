@@ -29,22 +29,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import java.util.logging.Logger;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
-import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
-import com.telefonica.euro_iaas.sdc.keystoneutils.RegionCache;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
-
 
 /**
  * This class implements OpenStackRegion interface.<br>
@@ -60,7 +59,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
      * Default constructor. It creates a jersey client.
      */
     public OpenStackRegionImpl() {
-        client = Client.create();
+        client = ClientBuilder.newClient();
     }
 
     /**
@@ -77,7 +76,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
-        	log.info ("Get url for " + type + " in region " +regionName + " : " + url);
+            log.info("Get url for " + type + " in region " + regionName + " : " + url);
             return url;
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
@@ -94,77 +93,77 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     public String getTokenAdmin() throws OpenStackException {
 
-        ClientResponse response = getEndPointsThroughTokenRequest();
-        return parseToken(response.getEntity(String.class));
+        Response response = getEndPointsThroughTokenRequest();
+        return parseToken(response.readEntity(String.class));
 
     }
 
     @Override
-    public String getPuppetWrapperEndPoint( String token) throws OpenStackException  {
-    	String defaulRegion = this.getDefaultRegion(token);
-    	log.info ("Get url for puppet for default region " + defaulRegion);
-    	String url;
+    public String getPuppetWrapperEndPoint(String token) throws OpenStackException {
+        String defaulRegion = this.getDefaultRegion(token);
+        log.info("Get url for puppet for default region " + defaulRegion);
+        String url;
         try {
             url = getEndPointByNameAndRegionName("puppetwrapper", defaulRegion, token);
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the Puppet Wrapper endpoint";
             log.info(msn);
-            throw new OpenStackException (msn);
-            		
+            throw new OpenStackException(msn);
+
         }
         return url;
     }
-    
-    public String getChefServerEndPoint( String token) throws OpenStackException  {
-    	
-    	String defaulRegion = this.getDefaultRegion(token);
-    	log.info ("Get url for chef-server for default region " + defaulRegion);
-    	String url;
+
+    public String getChefServerEndPoint(String token) throws OpenStackException {
+
+        String defaulRegion = this.getDefaultRegion(token);
+        log.info("Get url for chef-server for default region " + defaulRegion);
+        String url;
         try {
             url = getEndPointByNameAndRegionName("chef-server", defaulRegion, token);
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the Puppet Master endpoint";
             log.info(msn);
-            throw new OpenStackException (msn);
-            		
+            throw new OpenStackException(msn);
+
         }
         return url;
     }
-    
+
     public String getWebdavPoint(String token) throws OpenStackException {
-    	String defaulRegion = this.getDefaultRegion(token);
-    	log.info ("Get url for webdav for default region " + defaulRegion);
-    	String url;
+        String defaulRegion = this.getDefaultRegion(token);
+        log.info("Get url for webdav for default region " + defaulRegion);
+        String url;
         try {
             url = getEndPointByNameAndRegionName("webdav", defaulRegion, token);
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the Puppet Master endpoint";
             log.info(msn);
-            throw new OpenStackException (msn);
-            		
+            throw new OpenStackException(msn);
+
         }
         return url;
     }
-    
-    public String getDefaultRegion (String token) throws OpenStackException {
-    	log.info("Get defautl region for token " + token);
-        
+
+    public String getDefaultRegion(String token) throws OpenStackException {
+        log.info("Get defautl region for token " + token);
+
         List<String> regions = null;
         try {
-            regions = getRegionNames (token);
+            regions = getRegionNames(token);
             log.info("regions " + regions + " " + regions.size());
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the SDC endpoint";
             log.info(msn);
-            throw new OpenStackException (msn);
+            throw new OpenStackException(msn);
         }
-        
+
         return regions.get(0);
     }
 
     @Override
     public List<String> getRegionNames(String token) throws OpenStackException {
-    	log.info("getRegionNames" );
+        log.info("getRegionNames");
         String tokenAdmin = this.getTokenAdmin();
         log.info("token admin" + tokenAdmin);
         String responseJSON = callToKeystone(token, tokenAdmin);
@@ -173,28 +172,27 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
 
     private String callToKeystone(String token, String tokenAdmin) throws OpenStackException {
-        ClientResponse response = getJSONWithEndpoints(token, tokenAdmin);
-        return response.getEntity(String.class);
+        Response response = getJSONWithEndpoints(token, tokenAdmin);
+        return response.readEntity(String.class);
 
     }
 
-    private ClientResponse getJSONWithEndpoints(String token, String tokenadmin) throws OpenStackException {
+    private Response getJSONWithEndpoints(String token, String tokenadmin) throws OpenStackException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens/" + token
                 + "/endpoints";
 
-        WebResource webResource = client.resource(url);
+        WebTarget webResource = client.target(url);
         log.info("url " + url);
-        WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
+        Invocation.Builder builder = webResource.request(MediaType.APPLICATION_JSON);
         builder.header("X-Auth-Token", tokenadmin);
 
-        ClientResponse response = builder.get(ClientResponse.class);
+        Response response = builder.get();
 
         int code = response.getStatus();
         log.info("code " + code);
 
         if (code != 200) {
-            String message = "Failed : HTTP (url:" + url + ") error code : " + code + " body: "
-                    + response.getEntity(String.class);
+            String message = "Failed : HTTP (url:" + url + ") error code : " + code + " body: " + response.toString();
 
             if (code == 501) {
                 log.info(message);
@@ -208,7 +206,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String token, String response, String type, String regionName) throws OpenStackException {
+    private String parseEndpoint(String token, String response, String type, String regionName)
+            throws OpenStackException {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -228,7 +227,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
                 String regionName1 = endpointJson.get("region").toString();
 
                 if (type.equals(name1)) {
-                    
+
                     url = endpointJson.get("publicURL").toString();
                     urlMap.put(regionName1, url);
                     if ((regionName != null) && (regionName.equals(regionName1))) {
@@ -278,8 +277,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
 
         }
-       ;
-        return urlMap.get( this.getDefaultRegion(token));
+        ;
+        return urlMap.get(this.getDefaultRegion(token));
     }
 
     /**
@@ -352,7 +351,6 @@ public class OpenStackRegionImpl implements OpenStackRegion {
      * Parse region name, with compatibility with essex,grizzly.
      * 
      * @param response
-     * @param name
      * @return
      */
     private String parseToken(String response) {
@@ -371,13 +369,13 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return token;
     }
 
-    public ClientResponse getEndPointsThroughTokenRequest() throws OpenStackException {
+    public Response getEndPointsThroughTokenRequest() throws OpenStackException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens";
         log.info("actionUri: " + url);
 
-        ClientResponse response;
+        Response response;
 
-        WebResource wr = client.resource(url);
+        WebTarget wr = client.target(url);
 
         String adminUser = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_USER);
         String adminPass = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_PASS);
@@ -387,15 +385,14 @@ public class OpenStackRegionImpl implements OpenStackRegion {
                 + "passwordCredentials\":{\"username\": \"" + adminUser + "\"," + " \"password\": \"" + adminPass
                 + "\"}}}";
 
-        WebResource.Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
-                .entity(payload);
+        Invocation.Builder builder = wr.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
 
-        response = builder.post(ClientResponse.class);
+        response = builder.post(Entity.text(payload));
 
         int httpCode = response.getStatus();
         if (httpCode != 200) {
             String message = "Error calling OpenStack for valid token. " + "Status " + httpCode + ": "
-                    + response.getEntity(String.class);
+                    + response.readEntity(String.class);
             log.info(message);
             throw new OpenStackException(message);
         }

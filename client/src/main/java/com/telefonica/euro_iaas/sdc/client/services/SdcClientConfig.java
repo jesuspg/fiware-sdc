@@ -24,13 +24,10 @@
 
 package com.telefonica.euro_iaas.sdc.client.services;
 
+import javax.ws.rs.client.Client;
 
+public interface SdcClientConfig {
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.ClientConfig;
-
-public interface SdcClientConfig extends ClientConfig {
-
-	Client getClient ();
+    Client getClient();
 
 }

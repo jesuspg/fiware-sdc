@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
@@ -60,12 +61,12 @@ public interface ProductResourceValidator {
      *             if all the objects are null
      */
     void validateInsert(MultiPart multipart) throws InvalidMultiPartRequestException;
-    
+
     /**
      * Verify if the ProductRelase could be inserted
      * 
      * @aparam product (name, version, type)
-    * @throws InvalidApplicationReleaseUpdateRequestException
+     * @throws InvalidApplicationReleaseUpdateRequestException
      *             if all the objects are null
      */
     void validateInsert(Product product) throws InvalidEntityException;

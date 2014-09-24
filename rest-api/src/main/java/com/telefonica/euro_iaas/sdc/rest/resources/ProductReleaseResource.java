@@ -37,7 +37,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;

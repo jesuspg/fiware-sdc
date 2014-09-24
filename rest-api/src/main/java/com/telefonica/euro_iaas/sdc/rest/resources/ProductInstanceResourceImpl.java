@@ -36,11 +36,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -67,13 +66,9 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValid
 @Scope("request")
 public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
-    @InjectParam("productInstanceAsyncManager")
     private ProductInstanceAsyncManager productInstanceAsyncManager;
-    @InjectParam("productReleaseManager")
     private ProductReleaseManager productReleaseManager;
-    @InjectParam("productManager")
     private ProductManager productManager;
-    @InjectParam("taskManager")
     private TaskManager taskManager;
 
     private ProductInstanceResourceValidator validator;
@@ -95,7 +90,8 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             Task task = createTask(MessageFormat.format("Install product {0} in  VM {1}{2}", product.getProduct()
                     .getName(), product.getVm().getHostname(), product.getVm().getDomain()), vdc);
 
-            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken (), task, callback);
+            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken(), task,
+                    callback);
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -117,7 +113,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.uninstall(productInstance, getToken (), task, callback);
+        productInstanceAsyncManager.uninstall(productInstance, getToken(), task, callback);
         return task;
     }
 
@@ -137,13 +133,13 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             // work around to fix problem with lazy init when validator looks
             // for transitable releases.
             productInstance.getProductRelease().getTransitableReleases().size();
-            ProductRelease newRelease = productReleaseManager.load(
-                productInstance.getProductRelease().getProduct(), version);
+            ProductRelease newRelease = productReleaseManager.load(productInstance.getProductRelease().getProduct(),
+                    version);
             Task task = createTask(MessageFormat.format("Upgrade product {0} in  VM {1}{2} from version {3} to {4}",
                     productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                     productInstance.getVm().getDomain(), productInstance.getProductRelease().getVersion(), version),
                     vdc);
-            productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken (), task, callback);
+            productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken(), task, callback);
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -162,6 +158,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     /**
      * Configure the productInstance with attributes.
+     * 
      * @param vdc
      * @param productInstance
      * @param arguments
@@ -173,7 +170,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.configure(productInstance, arguments, getToken (), task, callback);
+        productInstanceAsyncManager.configure(productInstance, arguments, getToken(), task, callback);
         return task;
     }
 
@@ -256,7 +253,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
     }
-   
+
     /**
      * @param productReleaseManager
      *            the productReleaseManager to set
@@ -264,7 +261,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setProductInstanceAsyncManager(ProductInstanceAsyncManager productInstanceAsyncManager) {
         this.productInstanceAsyncManager = productInstanceAsyncManager;
     }
-    
+
     /**
      * @param taskManager
      *            the taskManager to set
@@ -272,22 +269,22 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
-    
-    
-    public String getToken () {
-    	PaasManagerUser user = getCredentials();
-    	if (user == null) {
-    		return "";
-    	} else {
-    		return user.getToken();
-    	}
-    	
+
+    public String getToken() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getToken();
+        }
+
     }
+
     public PaasManagerUser getCredentials() {
-    	try {
+        try {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	} catch (Exception e) {
-    	    return null;
-    	}
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -30,11 +30,11 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.OS;
@@ -48,7 +48,7 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
     private ProductReleaseDto productReleaseDto;
     private Product product;
     private GeneralResourceValidatorImpl generalValidator;
-    
+
     ReleaseDto releaseDto;
 
     @Before
@@ -57,9 +57,9 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         product = new Product();
         productResourceValidator = new ProductResourceValidatorImpl();
         generalValidator = new GeneralResourceValidatorImpl();
-        
+
         productResourceValidator.setGeneralValidator(generalValidator);
-        
+
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
         releaseDto.setVersion("0.1.1");
@@ -77,8 +77,10 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
         Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
 
-        /*List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productReleaseDto.setPrivateAttributes(privateAttributes);*/
+        /*
+         * List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
+         * productReleaseDto.setPrivateAttributes(privateAttributes);
+         */
     }
 
     @Test
@@ -122,27 +124,26 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
         // productResourceValidator.validateUpdate(releaseDto,multiPart);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsNull() throws Exception {
-        String name=null;
+        String name = null;
         productResourceValidator.validateInsert(product);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsEmpty() throws Exception {
-        String name="";
+        String name = "";
         product.setName(name);
         productResourceValidator.validateInsert(product);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsLOngerThan256Characters() throws Exception {
-        String name=
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567";
+        String name = "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567";
         product.setName(name);
         productResourceValidator.validateInsert(product);
     }
