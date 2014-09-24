@@ -26,24 +26,20 @@ def init_vars():
     world.instance_attributes = None
 
 
-@before.each_feature
 def setup_feature(feature):
     world.token_id, world.tenant_id = get_token()
 
 
-@before.each_scenario
 def setup_scenario(scenario):
     init_vars()
     world.headers = set_default_headers(world.token_id, world.tenant_id)
     api_utils.delete_all_testing_products(world.headers)
 
 
-@before.outline
 def setup_outline(param1, param2, param3, param4):
     setup_scenario(None)
 
 
-@after.all
 def tear_down(scenario):
     world.token_id, world.tenant_id = get_token()
     world.headers = set_default_headers(world.token_id, world.tenant_id)
