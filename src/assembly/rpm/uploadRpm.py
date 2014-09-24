@@ -21,18 +21,12 @@ USERNAME_VALUE = 'henar'
 PWD_VALUE = 'llela1va'
 KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 
-#TENANT_NAME_VALUE = '00000000000000000000000000000192'
-#USERNAME_VALUE = 'arobres@tid.es'
-#PWD_VALUE = 'testing'
-#KEYSTONE_URL = 'http://130.206.80.57:4731/v2.0/tokens'
-
 #HEADERS
-AUTH_TOKEN_HEADER = u'X-Auth-Token'
+AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
 #REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-#RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-2.2.0-SNAPSHOT20140923114214.noarch.rpm'
-RPM_LOCATION = 'prueba.txt'
+RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-2.2.0-SNAPSHOT20140923114214.noarch.rpm'
 
 def get_token():
     body = {AUTH: {TENANT_NAME: TENANT_NAME_VALUE, PASSWORD_CREDENTIALS: {USERNAME: USERNAME_VALUE,
@@ -45,14 +39,15 @@ def get_token():
     print 'Tokenid: ' + token_id
     return token_id
 	
+token_id = get_token()
 
 def upload_rpm():
     #url = REPOSITORY_URL
     print 'Uploading rpm to ' + REPOSITORY_URL
-    files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {AUTH_TOKEN_HEADER: get_token()})}
-    #files = {'file': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'})}
-    r = requests.post(REPOSITORY_URL, files=files)
-    print 'Status Code of uploading rpm ' + r.status_code
+    files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
+    AUTH_TOKEN_HEADERS = {AUTH_TOKEN_HEADER : token_id}
+    print AUTH_TOKEN_HEADERS
+    r = requests.request(method='post', url=REPOSITORY_URL, files=files, headers=AUTH_TOKEN_HEADERS)
+    print r.status_code
 
-get_token()
 upload_rpm()
