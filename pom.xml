@@ -24,7 +24,7 @@
 
         <scmURI>git@github.com:telefonicaid</scmURI>
         <ciURI>http://ci-fiware-01.hi.inet</ciURI>
-        <nexusURI>http://130.206.80.169</nexusURI>
+        <nexusURI>http://130.206.80.85</nexusURI>
         <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
