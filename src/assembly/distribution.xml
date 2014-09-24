@@ -25,14 +25,14 @@
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/assembly/db</directory>
-            <outputDirectory>/</outputDirectory>
-            <excludes>
-                <exclude>**/*.sh</exclude>
-            </excludes>
+            <outputDirectory>/db</outputDirectory>
+	        <includes>
+                <include>*.sh</include>
+            </includes>
         </fileSet>
 		<fileSet>
             <directory>${project.basedir}/src/assembly/rpm</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/rpm</outputDirectory>
             <includes>
                 <include>*.py</include>
             </includes>
