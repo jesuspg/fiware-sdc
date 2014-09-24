@@ -10,7 +10,7 @@
     <version>2.2.0-SNAPSHOT</version>
 
 
-    <properties>
+    <properties> 
 
         <!-- TDigital PROPERTIES -->
         <!-- This properties will be added to sonar as manual measures -->
