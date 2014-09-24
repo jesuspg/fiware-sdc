@@ -30,6 +30,13 @@
                 <exclude>**/*.sh</exclude>
             </excludes>
         </fileSet>
+		<fileSet>
+            <directory>${project.basedir}/src/assembly/rpm</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*.py</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/assembly/jetty/bin</directory>
             <outputDirectory>/bin</outputDirectory>
