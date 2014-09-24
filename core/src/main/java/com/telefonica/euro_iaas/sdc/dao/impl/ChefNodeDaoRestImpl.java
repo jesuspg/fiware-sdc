@@ -239,6 +239,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
         String response = "RESPONSE";
         int time = 10000;
+        int checkTime = 10000;
         while (!response.contains(hostname)) {
 
             try {
@@ -267,6 +268,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 response = IOUtils.toString(wr.get(InputStream.class));
                 log.info(response);
                 time += time;
+
             } catch (IOException e) {
                 log.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
@@ -281,6 +283,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }
+        log.info("Node  " + hostname + " is registered in ChefServer");
     }
 
     private Map<String, String> getHeaders(String method, String path, String payload) throws SdcRuntimeException {

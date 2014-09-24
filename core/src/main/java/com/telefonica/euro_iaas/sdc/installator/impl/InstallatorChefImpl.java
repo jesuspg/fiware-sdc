@@ -163,6 +163,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     public void isRecipeExecuted(VM vm, String process, String recipe, String token) throws NodeExecutionException {
         boolean isExecuted = false;
         int time = 5000;
+        int checkTime = 10000;
         Date fechaAhora = new Date();
         while (!isExecuted) {
         	log.info("MAX_TIME: " + MAX_TIME + " and time: " + time);
@@ -174,7 +175,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                     throw new NodeExecutionException(errorMesg);
                 }
                
-                Thread.sleep(time);
+                Thread.sleep(checkTime);
                
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
                 
@@ -190,7 +191,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                         throw new NodeExecutionException( new ChefRecipeExecutionException(message));
                     }*/
                 }
-                time += time;
+                time = time + checkTime;
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
