@@ -28,7 +28,8 @@ def check_if_product_is_in_list(response, product_release):
         if product_and_release[PRODUCT][PRODUCT_NAME] == world.product_name:
             if product_release is None or product_and_release[VERSION] == product_release:
                 found = True
-                assert_equals(product_and_release[PRODUCT][PRODUCT_METADATAS], DEFAULT_METADATA[METADATA],
+                for metadata in DEFAULT_METADATA[METADATA]:
+                    assert_in(metadata, product_and_release[PRODUCT][PRODUCT_METADATAS],
                               "Metadata are not the expected!")
                 if world.attributes is not None:
                     assert_equals(product_and_release[PRODUCT][PRODUCT_ATTRIBUTES], world.attributes,
