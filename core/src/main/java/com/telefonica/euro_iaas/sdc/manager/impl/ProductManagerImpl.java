@@ -57,7 +57,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     private ProductReleaseManager productReleaseManager;
     private static Logger log = Logger.getLogger("ProductManagerImpl");
 
-    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+    public Product insert(Product product, String tenantId) throws AlreadyExistsEntityException, InvalidEntityException {
 
         Product productOut;
         try {
@@ -71,6 +71,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             metadatas.add(new Metadata("cloud", "yes"));
             metadatas.add(new Metadata("installator", "chef"));
             metadatas.add(new Metadata("open_ports", "80 22"));
+            metadatas.add(new Metadata("tenant_id", tenantId));
 
             List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
             defaultmetadatas.add(new Metadata("image", "df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
@@ -78,6 +79,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             defaultmetadatas.add(new Metadata("cloud", "yes"));
             defaultmetadatas.add(new Metadata("installator", "chef"));
             defaultmetadatas.add(new Metadata("open_ports", "80 22"));
+            defaultmetadatas.add(new Metadata("tenant_id", tenantId));
 
             for (Metadata external_metadata : product.getMetadatas()) {
                 boolean defaultmetadata = false;
@@ -155,6 +157,16 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public Product load(String name) throws EntityNotFoundException {
         return productDao.load(name);
     }
+    
+   
+    public boolean exist(String name) {
+        try {
+			load(name);
+			return true;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+    }
 
     @Override
     public void delete(Product product) {
@@ -172,4 +184,5 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
     }
+
 }

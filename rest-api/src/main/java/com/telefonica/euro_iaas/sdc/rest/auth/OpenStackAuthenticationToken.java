@@ -173,6 +173,11 @@ public class OpenStackAuthenticationToken {
         i = payload.indexOf("tenant");
         j = payload.indexOf(">", i);
         tenantId = payload.substring(i - 1, j + 1);
+        
+        if (tenantId == null || tenantId.isEmpty() ) {
+        	log.error("Tenant format unknown:\n " + tenantId);
+            throw new RuntimeException("Tenant format unknown:\n " + tenantId);
+        }
 
         // Regular Expression (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
         // as a Java string "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"

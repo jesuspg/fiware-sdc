@@ -47,8 +47,8 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
+import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
@@ -246,6 +246,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
         String response = "RESPONSE";
         int time = 10000;
+        int checkTime = 10000;
         while (!response.contains(hostname)) {
                       
             try {
@@ -255,25 +256,18 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                     log.info(errorMesg);
                     throw new CanNotCallChefException(errorMesg);
                 }
-                log.info("more");
-                Thread.sleep(time);
+                Thread.sleep(checkTime);
                 
                 Map<String, String> header = getHeaders("GET", path, "");
-                System.out.println (chefServerUrl + path);
-                log.info(chefServerUrl + path);
 
-                log.info("web resource");
                 WebResource webResource = clientConfig.getClient().resource(chefServerUrl + path);
                 Builder wr = webResource.accept(MediaType.APPLICATION_JSON);
-                for (String key : header.keySet()) {
-                    System.out.println(key + ":" + header.get(key));
+                for (String key : header.keySet()) {             
                     wr = wr.header(key, header.get(key));
                 }
-                
-                log.info("geting");
+
                 response = IOUtils.toString(wr.get(InputStream.class));
-                log.info(response);
-                time += time;
+                time =time+checkTime;
             } catch (UniformInterfaceException e) {
             	log.warn(e.getMessage());
                 throw new CanNotCallChefException(e);
@@ -291,6 +285,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
                 throw new CanNotCallChefException(errorMsg, e);
             }
         }
+        log.info("Node  " + hostname + " is registered in ChefServer");
     }
     
    private Map<String, String> getHeaders(String method, String path, String payload) throws SdcRuntimeException {

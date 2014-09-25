@@ -53,7 +53,7 @@ Feature: Get all products from catalog
     | testing_list07  | application/json  |
     | testing_list08  | application/xml   |
 
-
+  @auth
   Scenario Outline: Retrieve list products with incorrect token
 
     Given a created product with all data and name "<product_name>"

@@ -43,10 +43,11 @@ public interface ProductManager {
     /**
      * Insert the Product in SDC Database
      * @param product
+     * @param string 
      * @return
      * @throws AlreadyExistsEntityException
      */
-    Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException;
+    Product insert(Product product, String string) throws AlreadyExistsEntityException, InvalidEntityException;
     
     /**
      * Find the ProductInstance using the given id.
@@ -58,6 +59,13 @@ public interface ProductManager {
      *             if the product instance does not exists
      */
     Product load(String name) throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    boolean exist(String name);
 
     /**
      * Retrieve all Product created in the system.

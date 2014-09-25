@@ -71,4 +71,7 @@ public interface OpenStackRegion {
 	String getWebdavPoint(String token) throws OpenStackException;
 	
 	String getNovaEndPoint(String regionName, String token) throws OpenStackException ;
+
+
+	String getPuppetDBEndPoint(String token) throws OpenStackException;
 }

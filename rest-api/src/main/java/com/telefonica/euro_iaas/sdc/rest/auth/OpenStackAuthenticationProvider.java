@@ -270,7 +270,6 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
 
         PaasManagerUser user = null;
-
         String tenantId = authentication.getCredentials().toString();
 
         if (SYSTEM_FIWARE.equals(system)) {

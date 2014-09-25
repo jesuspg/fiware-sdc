@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
@@ -51,6 +54,7 @@ import com.telefonica.euro_iaas.sdc.util.IpToVM;
 public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef implements Installator {
     
     private IpToVM ip2vm;
+    private static Logger log = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token)
@@ -94,7 +98,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
             }
         } catch (NodeExecutionException e) {
-            // even if execution fails want to unassign the recipe
+            log.warn ("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
         }
     }
@@ -115,8 +119,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
-            // unassignRecipes(vm, recipe);
-            // even if execution fails want to unassign the recipe
+        	log.warn ("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
         }
     }
@@ -136,8 +139,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             String restoreRecipe = recipeNamingGenerator.getRestoreRecipe(productInstance);
             callChefUpgrade(restoreRecipe, vm, token);
         } catch (NodeExecutionException e) {
+        	log.warn ("Error in the execution of the node " + e.getMessage());
             throw new InstallatorException(e);
         } catch (InstallatorException ex) {
+        	log.warn ("Error in the execution of the node " + ex.getMessage());
             throw new InstallatorException(ex);
         }
     }
@@ -163,18 +168,19 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     public void isRecipeExecuted(VM vm, String process, String recipe, String token) throws NodeExecutionException {
         boolean isExecuted = false;
         int time = 5000;
+        int checkTime = 10000;
         Date fechaAhora = new Date();
         while (!isExecuted) {
-            System.out.println("MAX_TIME: " + MAX_TIME + " and time: " + time);
+        	log.info("MAX_TIME: " + MAX_TIME + " and time: " + time);
             try {
                 if (time > MAX_TIME) {
                     String errorMesg = "Recipe " + process + " coub not be executed in " + vm.getChefClientName();
                     log.info(errorMesg);
-                    unassignRecipes(vm, recipe, token);
+                   // unassignRecipes(vm, recipe, token);
                     throw new NodeExecutionException(errorMesg);
                 }
                
-                Thread.sleep(time);
+                Thread.sleep(checkTime);
                
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
                 
@@ -190,16 +196,16 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                         throw new NodeExecutionException( new ChefRecipeExecutionException(message));
                     }*/
                 }
-                time += time;
+                time = time + checkTime;
             } catch (EntityNotFoundException e) {
                 throw new NodeExecutionException(e);
             } catch (CanNotCallChefException e) {
                 throw new NodeExecutionException(e);
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
-            } catch (InstallatorException ie2){
+            } /*catch (InstallatorException ie2){
                 throw new NodeExecutionException(ie2);
-            }
+            }*/
         }
     }
 

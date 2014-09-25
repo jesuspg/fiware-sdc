@@ -25,10 +25,14 @@
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
 /**
@@ -63,10 +67,29 @@ public interface ProductResourceValidator {
     
     /**
      * Verify if the ProductRelase could be inserted
+     * @throws AlreadyExistsEntityException 
+     * @throws AlreadyExistsEntityException 
      * 
      * @aparam product (name, version, type)
     * @throws InvalidApplicationReleaseUpdateRequestException
      *             if all the objects are null
      */
-    void validateInsert(Product product) throws InvalidEntityException;
+    void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException;
+
+    /**
+     * 
+     * @param pName 
+     * @param productRelease
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException 
+     * @throws EntityNotFoundException 
+     */
+	void validateInsert(String pName, ProductReleaseDto productRelease) throws InvalidEntityException, EntityNotFoundException;
+	
+	/**
+	 * 
+	 * @param releaseDto
+	 * @throws EntityNotFoundException
+	 */
+	 public void validateLoad (ReleaseDto releaseDto) throws EntityNotFoundException;
 }

@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.rest.resources;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -38,6 +39,9 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
@@ -55,6 +59,9 @@ import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
+import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
 
 /**
@@ -77,16 +84,39 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     private TaskManager taskManager;
 
     private ProductInstanceResourceValidator validator;
+    private static Logger log = Logger.getLogger("ProductInstanceResourceImpl");
 
     /**
      * {@inheritDoc}
      */
     public Task install(String vdc, ProductInstanceDto product, String callback) {
 
-        // validator.validateInsert(product);
-        try {
-            Product p = productManager.load(product.getProduct().getName());
-            ProductRelease loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
+			try {
+				validator.validateInsert(product);
+			} catch (UnauthorizedOperationException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (OpenStackException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (InvalidProductException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (EntityNotFoundException e) {
+				log.warning ("The entity does not exist " + e.getMessage() );
+				throw new APIException(e);
+			}
+			
+			Product p=null;
+            ProductRelease loadedProduct = null;
+			try {
+				p = productManager.load(product.getProduct().getName());
+				loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
+			} catch (EntityNotFoundException e) {
+				throw new APIException(new EntityNotFoundException(null, e.getMessage(), e));
+	
+			}
+            
             List<Attribute> attributes = product.getAttributes();
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
@@ -97,9 +127,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
             productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken (), task, callback);
             return task;
-        } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(e);
-        }
+  
     }
 
     /**
@@ -290,4 +318,6 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     	    return null;
     	}
     }
+    
+ 
 }
