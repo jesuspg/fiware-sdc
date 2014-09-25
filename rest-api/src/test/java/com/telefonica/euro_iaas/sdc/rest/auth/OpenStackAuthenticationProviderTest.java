@@ -96,13 +96,15 @@ public class OpenStackAuthenticationProviderTest {
         when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
         when(client.target("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
         when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource.request().header(anyString(), anyString())).thenReturn(builder);
+        when(webResource.request()).thenReturn(builder);
+        when(builder.header(anyString(), anyString())).thenReturn(builder);
         when(builder.header(eq("X-Auth-Token"), anyString())).thenReturn(builder);
         when(builder.get()).thenReturn(response401);
         when(response401.getStatus()).thenReturn(401);
 
         when(webResource2.path(any(String.class))).thenReturn(webResource2);
-        when(webResource2.request().header(anyString(), anyString())).thenReturn(builder2);
+        when(webResource2.request()).thenReturn(builder2);
+        when(builder2.header(anyString(), anyString())).thenReturn(builder2);
         when(builder2.header(eq("X-Auth-Token"), anyString())).thenReturn(builder2);
         when(builder2.get(AuthenticateResponse.class)).thenReturn(authenticateResponse);
 

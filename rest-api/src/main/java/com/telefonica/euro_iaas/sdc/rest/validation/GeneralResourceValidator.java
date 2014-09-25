@@ -40,4 +40,10 @@ public interface GeneralResourceValidator {
      * @param name
      */
     void validateName(String name) throws InvalidNameException;
+
+    /**
+     * 
+     * @param version
+     */
+	void validateVesion(String version) throws InvalidNameException;
 }

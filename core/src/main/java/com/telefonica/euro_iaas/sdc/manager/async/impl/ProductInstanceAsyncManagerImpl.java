@@ -55,6 +55,8 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
+import com.telefonica.euro_iaas.sdc.util.Configuration;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
 
 /**
@@ -64,7 +66,7 @@ import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
  */
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
     private static Logger log = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class);
-    
+    private SystemPropertiesProvider systemPropertiesProvider;
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
   
@@ -239,16 +241,22 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
-                productInstance.getName(), // the name
-                productInstance.getVm().getHostname(), // the hostname
-                productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
+        // the
                                                                                                        // product
-        task.setResult(new TaskReference(piResource));
+        task.setResult(new TaskReference(getUrlResourceTaks (productInstance)));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
         taskManager.updateTask(task);
+
+    }
+    
+    private String getUrlResourceTaks (ProductInstance productInstance) {
+    	 String piResource = MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)+PRODUCT_INSTANCE_BASE_PATH,
+                 productInstance.getName(), // the name
+                 productInstance.getVm().getHostname(), // the hostname
+                 productInstance.getVm().getDomain(), // the domain
+                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc());
+    	 return piResource;
     }
 
     /*
@@ -256,14 +264,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
-        // productInstance.getId(), // the id
-                productInstance.getName(), // the id
-                productInstance.getVm().getHostname(), // the hostname
-                productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc()); // the
-                                                                                                       // product
-        task.setResult(new TaskReference(piResource));
+        task.setResult(new TaskReference(getUrlResourceTaks (productInstance)));
         updateErrorTask(task, message, t);
     }
 
@@ -324,5 +325,10 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
     }
+    
+    public void setSystemPropertiesProvider (SystemPropertiesProvider systemPropertiesProvider) {
+    	this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+    
 
 }

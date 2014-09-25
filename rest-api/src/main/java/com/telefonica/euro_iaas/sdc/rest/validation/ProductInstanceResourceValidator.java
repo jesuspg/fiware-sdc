@@ -27,6 +27,8 @@
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
@@ -45,6 +47,8 @@ public interface ProductInstanceResourceValidator {
      * 
      * @throws UnauthorizedOperationException
      * @throws OpenStackException 
+     * @throws InvalidProductException 
+     * @throws EntityNotFoundException 
      */
-    void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException;
+    void validateInsert(ProductInstanceDto product) throws UnauthorizedOperationException, OpenStackException, InvalidProductException, EntityNotFoundException;
 }

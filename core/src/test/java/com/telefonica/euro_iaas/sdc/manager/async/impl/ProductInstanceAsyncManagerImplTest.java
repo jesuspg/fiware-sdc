@@ -72,11 +72,13 @@ public class ProductInstanceAsyncManagerImplTest {
 
     @Before
     public void setUp() throws EntityNotFoundException {
-        
+    	SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         productInstanceAsyncManager = new ProductInstanceAsyncManagerImpl();
         productInstanceAsyncManager.setTaskManager(taskManager);
         productInstanceAsyncManager.setTaskNotificator(taskNotificator);
         productInstanceAsyncManager.setProductInstanceManager(productInstanceManager);
+        productInstanceAsyncManager.setSystemPropertiesProvider(systemPropertiesProvider);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
     }
 
     @Test
