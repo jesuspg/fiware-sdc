@@ -2,6 +2,7 @@ __author__ = 'jmmovilla'
 
 import requests
 import json
+import os
 
 #AUTHENTICATION CONSTANTS
 AUTH = u'auth'
@@ -16,9 +17,14 @@ ID = u'id'
 
 #AUTHENTICATION
 AUTHENTICATION_HEADERS = {'content-type': 'application/json', 'Accept': 'application/json'}
-TENANT_NAME_VALUE = 'thalesgroup'
-USERNAME_VALUE = 'henar'
-PWD_VALUE = 'llela1va'
+TENANT_NAME_VALUE = os.environ['OS_TENANT_NAME_VALUE']
+USERNAME_VALUE = os.environ['OS_USERNAME_VALUE']
+PASSWORD_VALUE = os.environ['OS_PASSWORD_VALUE']
+
+#TENANT_NAME_VALUE = 'thalesgroup'
+#USERNAME_VALUE = 'henar'
+#PWD_VALUE = 'llela1va'
+
 KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 
 #HEADERS
@@ -29,8 +35,12 @@ REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
 RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-2.2.0-SNAPSHOT20140923114214.noarch.rpm'
 
 def get_token():
+    print TENANT_NAME_VALUE
+    print USERNAME_VALUE
+    print PASSWORD_VALUE
+	
     body = {AUTH: {TENANT_NAME: TENANT_NAME_VALUE, PASSWORD_CREDENTIALS: {USERNAME: USERNAME_VALUE,
-                                                                           PASSWORD: PWD_VALUE}}}
+                                                                           PASSWORD: PASSWORD_VALUE}}}
     body = json.dumps(body)
     print 'Body to request token: ' + body
     r = requests.request(method='post', url=KEYSTONE_URL, data=body, headers=AUTHENTICATION_HEADERS)
