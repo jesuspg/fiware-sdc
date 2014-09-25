@@ -56,7 +56,7 @@ def then_the_product_release_is_deleted(step):
 @step(u'Then I obtain an "([^"]*)"')
 def then_i_obtain_an_group1(step, error_code):
 
-    assert_equals(str(world.response.status_code), error_code, world.response.status_code)
+    assert_equals(str(world.response.status_code), error_code)
     world.headers = set_default_headers(world.token_id, world.tenant_id)
 
 

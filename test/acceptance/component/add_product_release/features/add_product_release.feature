@@ -4,6 +4,8 @@ Feature: Add a new product release in the catalogue
     I want to be able to add a new product release in the catalogue
     so that I can create version to products
 
+
+    @happy_path
     Scenario Outline: Add a new product release in the catalogue
       Given a created product with name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
@@ -45,7 +47,7 @@ Feature: Add a new product release in the catalogue
       | testing_release01 | 1.0.0           | application/json  |
       | testing_release02 | 1.0.0           | application/xml   |
 
-    @skip @CLAUDIA-3754
+
     Scenario Outline: add a new release with non-existent product in the catalogue
       Given a created product with all data and name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<another_product_name>" with accept parameter "<accept_parameter>" response
@@ -58,7 +60,7 @@ Feature: Add a new product release in the catalogue
       | testing_release02 | 1.0.0           | application/xml   | follow_me             | 404         |
 
 
-    Scenario Outline: Add a new product release in the catalogue from product with incorrect parameters
+    Scenario Outline: Add a new product release in the catalogue with incorrect parameters
       Given a created product with all data and name "<product_name>"
       When I create the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
       Then I obtain an "<Error_code>"
@@ -68,8 +70,22 @@ Feature: Add a new product release in the catalogue
       | product_name      | product_release | accept_parameter  | Error_code  |
       | testing_release01 | LONG_ID         | application/json  | 400         |
       | testing_release02 | LONG_ID         | application/xml   | 400         |
+      | testing_release03 |                 | application/xml   | 400         |
 
 
+    Scenario Outline: Create a new release with version already registered for that product
+      Given a created product with all data and name "<product_name>"
+      And a created product release "<product_release>" assigned to the "<product_name>")
+      When I create the product release "<another_product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
+      Then I obtain an "<error_code>"
+
+      Examples:
+
+      | product_name      | product_release | another_product_release  | accept_parameter  | error_code  |
+      | testing_release01 | 1.0.0           | 1.0.0                    | application/json  | 409         |
+      | testing_release02 | 2.0.0           | 2.0.0                    | application/xml   | 409         |
+
+    @auth
     Scenario Outline: Add a new product release in the catalogue a product with incorrect token
 
       Given a created product with all data and name "<product_name>"

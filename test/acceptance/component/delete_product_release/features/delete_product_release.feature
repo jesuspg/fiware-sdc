@@ -28,7 +28,6 @@ Feature: Delete a product release in the catalogue
       | testing_release02 | 1.0.0           | application/xml   | 1.0                     | 404         |
 
 
-    @skip @CLAUDIA-3754
     Scenario Outline: Delete a non existent product release in the catalogue
       Given a created product with name "<product_name>" and release "<product_release>"
       When I delete the product release "<product_release>" assigned to the "<another_product_name>" with accept parameter "<accept_parameter>" response
@@ -41,7 +40,7 @@ Feature: Delete a product release in the catalogue
       | testing_release02 | 1.0.0           | application/xml   | follow_me             | 404         |
 
 
-
+    @auth
     Scenario Outline: Delete a product release with incorrect token
 
       Given a created product with name "<product_name>" and release "<product_release>"
@@ -69,7 +68,7 @@ Feature: Delete a product release in the catalogue
     | testing_delete01  | application/json  | 415         | application/json1   | 1.0.0           |
     | testing_delete05  | application/json  | 415         | application/testing | 1.0.0           |
 
-
+     @skip @CLAUDIA-4115
      Scenario Outline: Delete product release with incorrect Accept header
       Given a created product with name "<product_name>" and release "<product_release>"
       When I delete the product release "<product_release>" assigned to the "<product_name>" with accept parameter "<accept_parameter>" response
