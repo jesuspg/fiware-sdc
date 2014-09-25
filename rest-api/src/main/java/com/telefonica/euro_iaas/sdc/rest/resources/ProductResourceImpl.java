@@ -45,6 +45,7 @@ import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
@@ -122,7 +123,7 @@ public class ProductResourceImpl implements ProductResource {
         }
         return filterProducts(productManager.findByCriteria(criteria));
     }
-
+    
     private List<Product> filterProducts(List<Product> products) {
         List<Product> filterProducts = new ArrayList<Product>();
 
@@ -140,7 +141,7 @@ public class ProductResourceImpl implements ProductResource {
         return filterProducts;
 
     }
-
+    
     private boolean checkProduct(Product product) {
         PaasManagerUser credentials = this.getCredentials();
         if (credentials == null) {
