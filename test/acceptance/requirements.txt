@@ -1,5 +1,8 @@
 nose
 xmldict
+xmltodict
+requests
+lxml
 lettuce==0.2.19
 ujson
 Fabric==1.8.3
