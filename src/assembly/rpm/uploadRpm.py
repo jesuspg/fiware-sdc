@@ -21,10 +21,6 @@ TENANT_NAME_VALUE = os.environ['OS_TENANT_NAME_VALUE']
 USERNAME_VALUE = os.environ['OS_USERNAME_VALUE']
 PASSWORD_VALUE = os.environ['OS_PASSWORD_VALUE']
 
-#TENANT_NAME_VALUE = 'thalesgroup'
-#USERNAME_VALUE = 'henar'
-#PWD_VALUE = 'llela1va'
-
 KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 
 #HEADERS
