@@ -29,13 +29,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.xmlsolutions.annotation.UseCase;
 
@@ -48,6 +54,7 @@ import com.xmlsolutions.annotation.UseCase;
 public class ProductManagerImpl extends BaseInstallableManager implements ProductManager {
 
     private ProductDao productDao;
+    private ProductReleaseManager productReleaseManager;
     private static Logger log = Logger.getLogger("ProductManagerImpl");
 
     public Product insert(Product product, String tenantId) throws AlreadyExistsEntityException, InvalidEntityException {
@@ -88,7 +95,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             }
             product.setMetadatas(metadatas);
             productOut = productDao.create(product);
-        } 
+        }
         return productOut;
     }
 
@@ -107,6 +114,40 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     @Override
     public List<Product> findByCriteria(ProductSearchCriteria criteria) {
         return productDao.findByCriteria(criteria);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria) {
+        List<Product> productList = productDao.findByCriteria(criteria);
+
+        ProductReleaseSearchCriteria prCriteria = new ProductReleaseSearchCriteria();
+
+        prCriteria.setPage(criteria.getPage());
+        prCriteria.setPageSize(criteria.getPageSize());
+        prCriteria.setOrderBy(criteria.getOrderBy());
+        prCriteria.setOrderType(criteria.getOrderType());
+
+        List<ProductAndReleaseDto> result = new ArrayList<ProductAndReleaseDto>();
+        for (Product p : productList) {
+            if (!StringUtils.isEmpty(p.getName())) {
+                prCriteria.setProduct(p);
+                List<ProductRelease> productReleaseList = productReleaseManager.findReleasesByCriteria(prCriteria);
+
+                for (ProductRelease pr : productReleaseList) {
+                    
+                    ProductAndReleaseDto productAndRelease = new ProductAndReleaseDto();
+                    productAndRelease.setProduct(p);
+                    productAndRelease.setVersion(pr.getVersion());
+
+                    result.add(productAndRelease);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -139,6 +180,9 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
-    
-    
+
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
+    }
+
 }

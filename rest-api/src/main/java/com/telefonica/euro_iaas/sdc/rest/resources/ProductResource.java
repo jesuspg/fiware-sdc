@@ -44,8 +44,8 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
-
 
 /**
  * Provides a rest api to works with Product.
@@ -83,7 +83,8 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
-
+    
+    
     /**
      * Retrieve the selected Product.
      * 
