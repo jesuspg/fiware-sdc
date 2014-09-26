@@ -26,7 +26,9 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.client.Client;
@@ -81,7 +83,7 @@ public class ProductReleaseServiceImplTest {
         when(client.getClient().target(url)).thenReturn(webResource);
         when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
-        when(builder.post(Entity.entity(productReleaseDto, type))).thenReturn(response);
+        when(builder.post(any(Entity.class))).thenReturn(response);
         when(response.readEntity(ProductRelease.class)).thenReturn(productReleaseCreated);
 
         ProductRelease productRelease = productReleaseService.add(productReleaseDto, token, tenant);
@@ -90,6 +92,9 @@ public class ProductReleaseServiceImplTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct().getName(), "tomcat");
         assertEquals(productRelease.getVersion(), "6");
+
+        verify(webResource).request(type);
+        verify(builder).post(any(Entity.class));
 
     }
 }

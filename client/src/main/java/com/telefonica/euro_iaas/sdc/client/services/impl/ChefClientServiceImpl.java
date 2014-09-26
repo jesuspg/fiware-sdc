@@ -73,7 +73,7 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
 
             Invocation.Builder wr = createWebResource(url, token, vdc);
 
-            return wr.accept(getType()).get(ChefClient.class);
+            return wr.get(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);

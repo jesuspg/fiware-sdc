@@ -83,9 +83,10 @@ public class ProductInstanceServiceImplTest {
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.header("callback", urlCallback)).thenReturn(builder);
-        when(builder.post((Entity.entity(productDto, type)))).thenReturn(response);
+        when(builder.post(any(Entity.class))).thenReturn(response);
         when(response.readEntity(Task.class)).thenReturn(task);
 
         Task resultTask = productInstanceService.install(vdc, productDto, urlCallback, token);
@@ -93,9 +94,10 @@ public class ProductInstanceServiceImplTest {
         // then
         assertNotNull(resultTask);
         verify(client.getClient()).target(url);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).header("callback", urlCallback);
-        verify(builder).post((Entity.entity(productDto, type)));
+        verify(builder).post(any(Entity.class));
     }
 
     @Test
@@ -121,9 +123,10 @@ public class ProductInstanceServiceImplTest {
         // when
 
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.header("callback", urlCallback)).thenReturn(builder);
-        when(builder.post(Entity.entity(artifact, type))).thenReturn(response);
+        when(builder.post(any(Entity.class))).thenReturn(response);
         when(response.readEntity(Task.class)).thenReturn(expectedTask);
 
         Task task = productInstanceService.installArtifact(vdc, productInstanceId, artifact, urlCallback, token);
@@ -131,9 +134,10 @@ public class ProductInstanceServiceImplTest {
         // then
         assertNotNull(task);
         verify(client.getClient()).target(url);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).header("callback", urlCallback);
-        verify(builder).post(Entity.entity(artifact, type));
+        verify(builder).post(any(Entity.class));
     }
 
     @Test
@@ -156,7 +160,8 @@ public class ProductInstanceServiceImplTest {
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.header("callback", urlCallback)).thenReturn(builder);
         when(builder.delete(Task.class)).thenReturn(expectedTask);
 
@@ -165,7 +170,8 @@ public class ProductInstanceServiceImplTest {
         // then
         assertNotNull(task);
         verify(client.getClient()).target(url);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).header("callback", urlCallback);
         verify(builder).delete(Task.class);
     }
@@ -199,7 +205,8 @@ public class ProductInstanceServiceImplTest {
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
 
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
 
         when(builder.get(ProductInstances.class)).thenReturn(expectedList);
 
@@ -208,7 +215,8 @@ public class ProductInstanceServiceImplTest {
 
         // then
         assertNotNull(list);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).get(ProductInstances.class);
     }
 
@@ -230,7 +238,8 @@ public class ProductInstanceServiceImplTest {
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
 
         when(builder.get(ProductInstance.class)).thenReturn(expectedProductInstance);
 
@@ -244,7 +253,8 @@ public class ProductInstanceServiceImplTest {
         // then
         verify(client.getClient()).target(url);
         assertNotNull(productInstance);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).get(ProductInstance.class);
     }
 
@@ -267,7 +277,8 @@ public class ProductInstanceServiceImplTest {
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.header(any(String.class), any(Object.class))).thenReturn(builder);
 
         when(builder.get(ProductInstance.class)).thenReturn(expectedProductInstance);
@@ -282,7 +293,8 @@ public class ProductInstanceServiceImplTest {
         // then
         verify(client.getClient()).target(url);
         assertNotNull(productInstance);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).get(ProductInstance.class);
     }
 }

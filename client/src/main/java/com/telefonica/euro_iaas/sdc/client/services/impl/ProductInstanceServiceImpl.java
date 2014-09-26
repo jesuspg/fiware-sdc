@@ -30,6 +30,7 @@ import java.util.List;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,8 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
 
         Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
-        return builder.post(Entity.entity(product, getType())).readEntity(Task.class);
+        Response response = builder.post(Entity.entity(product, getType()));
+        return response.readEntity(Task.class);
 
     }
 
@@ -129,7 +131,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         webResource.queryParam("status", status);
         webResource.queryParam("product", productName);
 
-        return webResource.request().accept(getType()).get(ProductInstances.class);
+        return webResource.request(getType()).accept(getType()).get(ProductInstances.class);
 
     }
 

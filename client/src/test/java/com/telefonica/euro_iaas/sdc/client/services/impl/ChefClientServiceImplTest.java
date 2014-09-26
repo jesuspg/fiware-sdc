@@ -75,7 +75,7 @@ public class ChefClientServiceImplTest {
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
-        when(webResource.request().accept(type)).thenReturn(builder);
+        when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
@@ -84,7 +84,8 @@ public class ChefClientServiceImplTest {
         // then
         assertNotNull(resultChefClient);
         verify(client.getClient()).target(url);
-        verify(webResource).request().accept(type);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).get(ChefClient.class);
     }
 
