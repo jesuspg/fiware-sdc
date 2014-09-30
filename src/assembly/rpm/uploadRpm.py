@@ -3,6 +3,7 @@ __author__ = 'jmmovilla'
 import requests
 import json
 import os
+import sys
 
 #AUTHENTICATION CONSTANTS
 AUTH = u'auth'
@@ -28,7 +29,7 @@ AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
 #REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-2.2.0-SNAPSHOT*.noarch.rpm'
+RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-' + str(sys.argv[1]) + '*.noarch.rpm'
 
 def get_token():
     print TENANT_NAME_VALUE
@@ -44,12 +45,14 @@ def get_token():
     token_id = response[ACCESS][TOKEN][ID]
     print 'Tokenid: ' + token_id
     return token_id
-	
+
+print "Paas Version "  + str(sys.argv[1])	
 token_id = get_token()
 
 def upload_rpm():
     #url = REPOSITORY_URL
     print 'Uploading rpm to ' + REPOSITORY_URL
+    print 'Rpm location: ' + RPM_LOCATION
     files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
     AUTH_TOKEN_HEADERS = {AUTH_TOKEN_HEADER : token_id}
     print AUTH_TOKEN_HEADERS
