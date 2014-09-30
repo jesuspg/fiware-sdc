@@ -10,7 +10,7 @@
     <version>2.2.0-SNAPSHOT</version>
 
 
-    <properties> 
+    <properties>
 
         <!-- TDigital PROPERTIES -->
         <!-- This properties will be added to sonar as manual measures -->
@@ -325,6 +325,15 @@
                         <includeTestResources>true</includeTestResources>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
 
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.17</version>
+                    <configuration>
+                        <argLine>-Xmx1024m</argLine>
                     </configuration>
                 </plugin>
 
