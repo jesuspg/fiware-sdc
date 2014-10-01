@@ -21,7 +21,6 @@ AUTHENTICATION_HEADERS = {'content-type': 'application/json', 'Accept': 'applica
 TENANT_NAME_VALUE = os.environ['OS_TENANT_NAME_VALUE']
 USERNAME_VALUE = os.environ['OS_USERNAME_VALUE']
 PASSWORD_VALUE = os.environ['OS_PASSWORD_VALUE']
-
 KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 
 #HEADERS
