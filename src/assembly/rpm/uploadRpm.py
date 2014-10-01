@@ -27,7 +27,6 @@ KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 #HEADERS
 AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
-#REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
 RPM_LOCATION = str(sys.argv[1])
 
