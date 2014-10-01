@@ -3,6 +3,7 @@ __author__ = 'jmmovilla'
 import requests
 import json
 import os
+import sys
 
 #AUTHENTICATION CONSTANTS
 AUTH = u'auth'
@@ -20,17 +21,16 @@ AUTHENTICATION_HEADERS = {'content-type': 'application/json', 'Accept': 'applica
 TENANT_NAME_VALUE = os.environ['OS_TENANT_NAME_VALUE']
 USERNAME_VALUE = os.environ['OS_USERNAME_VALUE']
 PASSWORD_VALUE = os.environ['OS_PASSWORD_VALUE']
-
 KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 
 #HEADERS
 AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
-#REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-2.2.0-SNAPSHOT*.noarch.rpm'
+RPM_LOCATION = str(sys.argv[1])
 
 def get_token():
+    '''Obtains a token from keystone to upload rpm afterwards'''
     print TENANT_NAME_VALUE
     print USERNAME_VALUE
     print PASSWORD_VALUE
@@ -44,12 +44,14 @@ def get_token():
     token_id = response[ACCESS][TOKEN][ID]
     print 'Tokenid: ' + token_id
     return token_id
-	
+
+print "Paas Version "  + str(sys.argv[1])	
 token_id = get_token()
 
 def upload_rpm():
-    #url = REPOSITORY_URL
+    '''Uploads the rpm to the repository'''
     print 'Uploading rpm to ' + REPOSITORY_URL
+    print 'Rpm location: ' + RPM_LOCATION
     files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
     AUTH_TOKEN_HEADERS = {AUTH_TOKEN_HEADER : token_id}
     print AUTH_TOKEN_HEADERS
