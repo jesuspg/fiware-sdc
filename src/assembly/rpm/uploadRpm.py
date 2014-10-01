@@ -29,7 +29,7 @@ AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
 #REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-RPM_LOCATION = './target/rpm/fiware-sdc/RPMS/noarch/fiware-sdc-' + str(sys.argv[1]) + '*.noarch.rpm'
+RPM_LOCATION = str(sys.argv[1])
 
 def get_token():
     print TENANT_NAME_VALUE
