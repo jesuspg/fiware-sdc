@@ -30,8 +30,8 @@ AUTH_TOKEN_HEADER = u'x-Auth-Token'
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
 RPM_LOCATION = str(sys.argv[1])
 
-# This method obtains a token from keystone to upload rpm afterwards
 def get_token():
+    '''Obtains a token from keystone to upload rpm afterwards'''
     print TENANT_NAME_VALUE
     print USERNAME_VALUE
     print PASSWORD_VALUE
@@ -49,8 +49,8 @@ def get_token():
 print "Paas Version "  + str(sys.argv[1])	
 token_id = get_token()
 
-#This method uploads the rpm to the repository
 def upload_rpm():
+    '''Uploads the rpm to the repository'''
     print 'Uploading rpm to ' + REPOSITORY_URL
     print 'Rpm location: ' + RPM_LOCATION
     files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
