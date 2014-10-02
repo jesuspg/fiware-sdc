@@ -145,9 +145,11 @@ public class InstallatorPuppetImpl implements Installator {
         NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
         ObjectMapper mapper = new ObjectMapper();
         StringEntity input;
+        String payload="";
 
         try {
             input = new StringEntity(mapper.writeValueAsString(nodeDto));
+            payload=mapper.writeValueAsString(nodeDto);
         } catch (JsonGenerationException e2) {
             throw new SdcRuntimeException(e2);
         } catch (JsonMappingException e2) {
@@ -169,6 +171,7 @@ public class InstallatorPuppetImpl implements Installator {
 
         log.info("Calling puppetWrapper "+action);
         log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
+        log.info("payload: "+payload);
         try {
             response = client.execute(postInstall);
             int statusCode = response.getStatusLine().getStatusCode();
