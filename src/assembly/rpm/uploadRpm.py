@@ -4,6 +4,8 @@ import requests
 import json
 import os
 import sys
+import ntpath
+import subprocess
 
 #AUTHENTICATION CONSTANTS
 AUTH = u'auth'
@@ -52,7 +54,9 @@ def upload_rpm():
     '''Uploads the rpm to the repository'''
     print 'Uploading rpm to ' + REPOSITORY_URL
     print 'Rpm location: ' + RPM_LOCATION
-    files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
+    return_code = subprocess.call("mv " + RPM_LOCATION + " .", shell=True)
+    RPM_NAME = ntpath.basename(RPM_LOCATION)
+    files = {'file': (RPM_NAME, open(RPM_NAME, 'rb'), {'Expires': '0'})}
     AUTH_TOKEN_HEADERS = {AUTH_TOKEN_HEADER : token_id}
     print AUTH_TOKEN_HEADERS
     r = requests.request(method='post', url=REPOSITORY_URL, files=files, headers=AUTH_TOKEN_HEADERS)
