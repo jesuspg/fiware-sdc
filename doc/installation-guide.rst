@@ -1,9 +1,9 @@
-
 SDC Build and Installation
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
+
 
 Requirements
-~~~~~~~~~~~~
+------------
 
 In order to execute the SDC, it is needed to have previously installed
 the following software:
@@ -21,7 +21,7 @@ the following software:
 -  Webdav
 
 Building instructions
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 It is a a maven application:
 
@@ -51,6 +51,7 @@ It is a a maven application:
    | $ mvn package -P rpm -DskipTests
    |  (created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
 
+
 Installation instructions
 -------------------------
 
@@ -76,8 +77,9 @@ hostaname.domainame. In case it is not configure, you can do it
 
     hostname chef-server.localdomain
 
-| and include it in the /etc/hosts
-| After that, it is required to configure the certificates and other
+and include it in the /etc/hosts
+
+After that, it is required to configure the certificates and other
 staff in the chef-server, with chef-server-ctl. This command will set up
 all of the required components, including Erchef, RabbitMQ, and
 PostgreSQL.
@@ -93,11 +95,12 @@ the following command:
 
     sudo chef-server-ctl test
 
-| After that, you can obtain the different certificates for the
+After that, you can obtain the different certificates for the
 different clients in /etc/chef-server. There you can find a
 chef-validator.pem (needed for all the nodes), the chef-server-gui for
 the GUI.. You can copy them in order to use them later.
-| The next step is to configure a client in the chef-server so that you
+
+The next step is to configure a client in the chef-server so that you
 can execute the chef-server CLI. To do that, you need to install the
 chef-client
 
@@ -112,12 +115,13 @@ default
 
     knife configure --initial
 
-| The validation\_key attribute in the knife.rb file must specify the
+The validation\_key attribute in the knife.rb file must specify the
 path to the validation key. The validation\_client\_name attribute
 defaults to chef-validator (which is the chef-validator.pem private key
 created by the open source Chef server on startup). When prompted for
 the URL for the Chef server, use the FQDN for the Chef server
-| Once you have a client configured, you can run the CLI. Just one
+
+Once you have a client configured, you can run the CLI. Just one
 example:
 
 ::
@@ -131,100 +135,116 @@ The FI-WARE cookbook repository is in FI-WARE SVN repository. To upload
 the recipes into the chef server you need:
 
 -  To dowload the svn repository:
-    svn checkout
-   https://forge.fi-ware.org/scmrepos/svn/testbed/trunk/cookbooks
+
+::
+
+   svn checkout https://forge.fi-ware.org/scmrepos/svn/testbed/trunk/cookbooks
+
 -  Inside the cookbooks folder, create a file update with the following
-   content. It will update the repository and upload into the
-   chef-server
+   content. It will update the repository and upload into the chef-server
+
+::
+
     svn update
     knife cookbook upload --all -o BaseRecipes/
     knife cookbook upload --all -o BaseSoftware/
     knife cookbook upload --all -o GESoftware/
 
-Database configuration
-~~~~~~~~~~~~~~~~~~~~~~
 
-| The SDC node needs to have PostgreSQL installed in service mode and a
+Database configuration
+----------------------
+
+The SDC node needs to have PostgreSQL installed in service mode and a
 database created called SDC. For CentOS, these are the instructions:
-| Firsly, it is required to install the PostgreSQL
+
+Firstly, it is required to install the PostgreSQL
 [http://wiki.postgresql.org/wiki/YUM_Installation\ ].
-| 
-| yum install postgreql postgresql-server posgresql-cotrib
-| 
+
+:: 
+    yum install postgreql postgresql-server posgresql-cotrib
+
 
 Start Postgresql
-^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~
 
-| Type the following commands to install the postgresql as service and
+Type the following commands to install the postgresql as service and
 restarted
-| 
 
-chkconfig --add postgresql
+::
 
-chkconfig postgresql on
+    chkconfig --add postgresql
+    chkconfig postgresql on
+    service postgresql initdb
+    service postgresql start
 
-service postgresql initdb
-
-service postgresql start
-
-.. raw:: html
-
-   </pre>
-
-| Then, you need to configure postgresql to allow for accessing. In
+Then, you need to configure postgresql to allow for accessing. In
 /var/lib/pgsql/data/postgresql.conf
-|  listen\_addresses = '0.0.0.0'
-| in /var/lib/pgsql/data/pg\_hba.conf, change the table at the end of the file to look like:
-|  
- #TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
- #"local" is for Unix domain socket connections only
-  local   all       all                               ident
- # IPv4 local connections:
-   host   all       all         127.0.0.1/32          md5
- # IPv6 local connections:
-   host   all       all         ::1/128               md5
 
-| Restart the postgres
-|  service postgresql restart
+::
+
+    listen\_addresses = '0.0.0.0'
+
+In /var/lib/pgsql/data/pg\_hba.conf, change the table at the end of the file to
+look like:
+
+::
+
+    #TYPE   DATABASE  USER        CIDR-ADDRESS          METHOD
+    #"local" is for Unix domain socket connections only
+    local   all       all                               ident
+    # IPv4 local connections:
+    host    all       all         127.0.0.1/32          md5
+    # IPv6 local connections:
+    host    all       all         ::1/128               md5
+
+
+Restart the postgres service postgresql restart
+
 
 Create the DB
 ^^^^^^^^^^^^^
 
-| Connect to Postgresql Server using
-| 
+Connect to Postgresql Server using:
 
-su - postgres
-=============
+::
 
-.. raw:: html
+    su - postgres
 
-   </pre>
-
-| Connect as postgres to the postgres database and set the password for
+Connect as postgres to the postgres database and set the password for
 user postgres using alter user as below:
-| 
-| $ psql postgres postgres;
-| $ alter user postgres with password 'postgres';
-| 
 
-| Create the SDC DB
-| 
-| createdb sdc
-| 
+::
 
-| Check that the database has been created correctly:
-|  su - postgres
-|  psql -U postgres sdc -h localhost
+    $ psql postgres postgres
+    > alter user postgres with password 'postgres';
 
-| Then we need to create the database tables for the sdc. To do that
+
+Create the SDC DB
+
+::
+
+    > createdb sdc
+
+Check that the database has been created correctly:
+
+::
+
+   $ su - postgres
+   $ psql -U postgres sdc -h localhost
+
+Then we need to create the database tables for the sdc. To do that
 obtain the files from
 [https://github.com/telefonicaid/fiware-sdc/blob/develop/migrations/src/main/resources\ ]
 and execute
-|  psql -d sdc -a -f db-initial.sql
-|  psql -d sdc -a -f db-changelog.sql
+
+::
+
+   $ psql -d sdc -a -f db-initial.sql
+   $ psql -d sdc -a -f db-changelog.sql
+
 
 Install and configure WebDav
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These instructions are based on
 [http://www.howtoforge.com/how-to-set-up-webdav-with-apache2-on-centos-5.5\ ]
