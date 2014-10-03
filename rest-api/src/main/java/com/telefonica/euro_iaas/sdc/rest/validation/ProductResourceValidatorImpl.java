@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import com.sun.jersey.api.core.InjectParam;
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -52,9 +52,9 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     private GeneralResourceValidator generalValidator;
     private ProductManager productManager;
     private ProductReleaseManager productReleaseManager;
-    
+
     private static Logger log = Logger.getLogger("ProductResourceValidatorImpl");
-    
+
     public void validateUpdate(ReleaseDto releaseDto, MultiPart multiPart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException {
 
@@ -74,157 +74,157 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         validateMultipart(multiPart, productReleaseDto.getClass());
 
     }
-    public void validateInsert (String pName, ProductReleaseDto productRelease ) throws InvalidEntityException, EntityNotFoundException {
-    
-    	try {
+
+    public void validateInsert(String pName, ProductReleaseDto productRelease) throws InvalidEntityException,
+            EntityNotFoundException {
+
+        try {
             generalValidator.validateName(pName);
             generalValidator.validateVesion(productRelease.getVersion());
         } catch (InvalidNameException e) {
-        	log.warning("InvalidEntityException: " + e.getMessage());
-        	throw new InvalidEntityException(new InvalidEntityException(productRelease, e));
+            log.warning("InvalidEntityException: " + e.getMessage());
+            throw new InvalidEntityException(new InvalidEntityException(productRelease, e));
         }
-   
-      
-        Product product =null;
+
+        Product product = null;
         try {
-			product = productManager.load(pName);
-			
-		} catch (Exception e1) {
-			log.warning("EntityNotFoundException: " + e1.getMessage());
-			throw new InvalidEntityException(new EntityNotFoundException(Product.class, productRelease.getProductName(), e1));
-		}
-        
+            product = productManager.load(pName);
+
+        } catch (Exception e1) {
+            log.warning("EntityNotFoundException: " + e1.getMessage());
+            throw new InvalidEntityException(new EntityNotFoundException(Product.class,
+                    productRelease.getProductName(), e1));
+        }
+
         try {
-			productReleaseManager.load(product, productRelease.getVersion());
-			String mes = "The product release " + productRelease.getProductName()+ " version " +
-			    productRelease.getVersion()+ " already exists";
-			throw new InvalidEntityException(new AlreadyExistsEntityException(ProductRelease.class, new Exception (mes)));
-		} catch (EntityNotFoundException e1) {
-			log.warning("EntityNotFoundException: " + e1.getMessage());
-		}
+            productReleaseManager.load(product, productRelease.getVersion());
+            String mes = "The product release " + productRelease.getProductName() + " version "
+                    + productRelease.getVersion() + " already exists";
+            throw new InvalidEntityException(new AlreadyExistsEntityException(ProductRelease.class, new Exception(mes)));
+        } catch (EntityNotFoundException e1) {
+            log.warning("EntityNotFoundException: " + e1.getMessage());
+        }
     }
-    
-    public void validateLoad (ReleaseDto releaseDto) throws EntityNotFoundException {
-    	
-    	Product product = null;
-    	
-    	 try {
- 			product = productManager.load(releaseDto.getName());
- 			
- 		} catch (Exception e1) {
- 			log.warning("EntityNotFoundException: " + e1.getMessage());
- 			throw new APIException(new EntityNotFoundException(Product.class, releaseDto.getName(), e1));
- 		}
-        
-         try {
- 			productReleaseManager.load(product, releaseDto.getVersion());
- 		} catch (EntityNotFoundException e1) {
- 			log.warning("EntityNotFoundException: " + e1.getMessage());
- 			throw new APIException(new EntityNotFoundException(ProductRelease.class, releaseDto.getName(), e1));
- 		}
-    	
+
+    public void validateLoad(ReleaseDto releaseDto) throws EntityNotFoundException {
+
+        Product product = null;
+
+        try {
+            product = productManager.load(releaseDto.getName());
+
+        } catch (Exception e1) {
+            log.warning("EntityNotFoundException: " + e1.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, releaseDto.getName(), e1));
+        }
+
+        try {
+            productReleaseManager.load(product, releaseDto.getVersion());
+        } catch (EntityNotFoundException e1) {
+            log.warning("EntityNotFoundException: " + e1.getMessage());
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, releaseDto.getName(), e1));
+        }
+
     }
-    
-    
+
     public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException {
-    	
-    	if (productManager.exist(product.getName())) {
-    		String mens = "Entity already exist : " + product.getName();
-    		log.warning (mens);
-    		throw new AlreadyExistsEntityException(Product.class, new Exception (mens));
-    	}
-    	
-    	commonValidation (product);
+
+        if (productManager.exist(product.getName())) {
+            String mens = "Entity already exist : " + product.getName();
+            log.warning(mens);
+            throw new AlreadyExistsEntityException(Product.class, new Exception(mens));
+        }
+
+        commonValidation(product);
 
     }
-    
-    private void commonValidation (Product product) throws InvalidEntityException {
-    	 try {
-             generalValidator.validateName(product.getName());
-          
-             if (!(product.getMapMetadata() == null && product.getMapMetadata().isEmpty())) {
-                 validateMetadata(product.getMetadatas());
-             }
-         } catch (InvalidNameException e) {
-        	 throw new InvalidEntityException(product, e);
-         } catch (InvalidProductException ipe) {
-        	 throw new InvalidEntityException(product, ipe);
-         }
+
+    private void commonValidation(Product product) throws InvalidEntityException {
+        try {
+            generalValidator.validateName(product.getName());
+
+            if (!(product.getMapMetadata() == null && product.getMapMetadata().isEmpty())) {
+                validateMetadata(product.getMetadatas());
+            }
+        } catch (InvalidNameException e) {
+            throw new InvalidEntityException(product, e);
+        } catch (InvalidProductException ipe) {
+            throw new InvalidEntityException(product, ipe);
+        }
     }
 
-    
     private void validateMetadata(List<Metadata> metadatas) throws InvalidProductException {
-        for (int i=0; i < metadatas.size(); i++) {
+        for (int i = 0; i < metadatas.size(); i++) {
             Metadata metadata = metadatas.get(i);
-            
-            if (metadata.getKey().equals("open_ports")){
-            	List<String> ports = getFields((String)metadata.getValue());
-            	for (String port: ports) {
-            		checkPortMetadata (port);
-            	}
+
+            if (metadata.getKey().equals("open_ports")) {
+                List<String> ports = getFields((String) metadata.getValue());
+                for (String port : ports) {
+                    checkPortMetadata(port);
+                }
 
             } else if (metadata.getKey().equals("installator")) {
-                if (!(metadata.getValue().equals("chef")) &&  !(metadata.getValue().equals("puppet"))){
+                if (!(metadata.getValue().equals("chef")) && !(metadata.getValue().equals("puppet"))) {
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"chef\" or \"puppet\"";
                     throw new InvalidProductException(msg);
                 }
-            } else if (metadata.getKey().equals("dependencies")) {    
-            	checkDependence (metadata.getValue());
-            } else if (metadata.getKey().equals("public")) {    
-            	 if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
-                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
-                     throw new InvalidProductException(msg);
-                 }
-            } else if (metadata.getKey().equals("cloud")) {    
-            	if (!(metadata.getValue().equals("no")) &&  !(metadata.getValue().equals("yes"))){
+            } else if (metadata.getKey().equals("dependencies")) {
+                checkDependence(metadata.getValue());
+            } else if (metadata.getKey().equals("public")) {
+                if (!(metadata.getValue().equals("no")) && !(metadata.getValue().equals("yes"))) {
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
                     throw new InvalidProductException(msg);
                 }
-            }  
+            } else if (metadata.getKey().equals("cloud")) {
+                if (!(metadata.getValue().equals("no")) && !(metadata.getValue().equals("yes"))) {
+                    String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
+                    throw new InvalidProductException(msg);
+                }
+            }
         }
-    
+
     }
-    
-    private void checkPortMetadata (String port) throws InvalidProductException {
-    	int openPortValue;
-    	try { 
-    		openPortValue  = Integer.parseInt(port);                   
-            } catch(NumberFormatException e) { 
-                String msg = "The open_ports metadata is not a number";
+
+    private void checkPortMetadata(String port) throws InvalidProductException {
+        int openPortValue;
+        try {
+            openPortValue = Integer.parseInt(port);
+        } catch (NumberFormatException e) {
+            String msg = "The open_ports metadata is not a number";
+            throw new InvalidProductException(msg);
+        }
+
+        if ((openPortValue < 0) && (openPortValue > 65535)) {
+            String msg = "The open_ports value is not in the interval [0-65535]";
+            throw new InvalidProductException(msg);
+        }
+    }
+
+    private void checkDependence(String dependence) throws InvalidProductException {
+        if (dependence.isEmpty()) {
+            return;
+        }
+        List<String> dependeces = getFields(dependence);
+
+        for (String depen : dependeces) {
+            if (!productManager.exist(depen)) {
+                String msg = "The product " + dependence + " does not exist and it is a dependence";
                 throw new InvalidProductException(msg);
             }
-        
-           if ((openPortValue < 0) && ( openPortValue > 65535)) {
-               String msg = "The open_ports value is not in the interval [0-65535]";
-               throw new InvalidProductException(msg);
-           }
+        }
     }
-    
-    private void checkDependence (String dependence) throws InvalidProductException {
-    	if (dependence.isEmpty()) {
-    		return;
-    	}
-    	List<String> dependeces = getFields(dependence);
-    	
-    	for (String depen: dependeces ) {
-    		if (!productManager.exist(depen)) {
-       		 String msg = "The product " + dependence + " does not exist and it is a dependence";
-                throw new InvalidProductException(msg);
-    		}
-    	}
-    } 
-    
+
     private List<String> getFields(String portString) {
-    	StringTokenizer st = new StringTokenizer(portString);
-    	List<String> ports = new ArrayList ();
+        StringTokenizer st = new StringTokenizer(portString);
+        List<String> ports = new ArrayList();
 
-		while (st.hasMoreElements()) {
-			ports.add((String)st.nextElement());
-		}
-		return ports;
+        while (st.hasMoreElements()) {
+            ports.add((String) st.nextElement());
+        }
+        return ports;
 
     }
-    
+
     /**
      * @param generalValidator
      *            the generalValidator to set
@@ -232,16 +232,13 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     public void setGeneralValidator(GeneralResourceValidator generalValidator) {
         this.generalValidator = generalValidator;
     }
-    public void setProductManager (ProductManager productManager) {
-    	this.productManager = productManager;
+
+    public void setProductManager(ProductManager productManager) {
+        this.productManager = productManager;
     }
-    
-    public void setProductReleaseManager (ProductReleaseManager productReleaseManager) {
-    	this.productReleaseManager = productReleaseManager;
+
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
     }
-    
-    
-    
-    
 
 }

@@ -24,13 +24,10 @@
 
 package com.telefonica.euro_iaas.sdc.dao;
 
+import javax.ws.rs.client.Client;
 
+public interface PuppetClientConfig {
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.ClientConfig;
-
-public interface PuppetClientConfig extends ClientConfig {
-
-	Client getClient ();
+    Client getClient();
 
 }

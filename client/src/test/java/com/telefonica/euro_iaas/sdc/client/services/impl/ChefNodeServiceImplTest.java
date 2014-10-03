@@ -25,16 +25,16 @@
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
@@ -48,34 +48,31 @@ public class ChefNodeServiceImplTest {
     public void shouldDeleteNode() {
         // given
         Task expectedTask = new Task();
-        
+
         String chefNodeName = "nodeName";
         String vdc = "virtualDataCenter";
         String url = baseHost + "/vdc/" + vdc + "/node/" + chefNodeName;
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
-        SdcClientConfig client = mock (SdcClientConfig.class);
+        WebTarget webResource = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        SdcClientConfig client = mock(SdcClientConfig.class);
         ChefNodeServiceImpl chefNodeService = new ChefNodeServiceImpl(client, baseHost, type);
 
         // when
-        Client c = mock (Client.class);
+        Client c = mock(Client.class);
         when(client.getClient()).thenReturn(c);
-        when(client.getClient().resource(url)).thenReturn(webResource);
-        when(webResource.accept(type)).thenReturn(builder);
-        when(builder.type(type)).thenReturn(builder);
+        when(client.getClient().target(url)).thenReturn(webResource);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.delete(Task.class)).thenReturn(expectedTask);
 
         Task task = null;
-        try {
-            task = chefNodeService.delete(vdc, chefNodeName, token);
-        } catch (InvalidExecutionException e) {
-            fail();
-        }
+
+        task = chefNodeService.delete(vdc, chefNodeName, token);
 
         // then
         assertNotNull(task);
-        verify(client.getClient()).resource(url);
-        verify(webResource).accept(type);
+        verify(client.getClient()).target(url);
+        verify(webResource).request(type);
         verify(builder).delete(Task.class);
     }
 }

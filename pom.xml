@@ -10,7 +10,7 @@
     <version>2.2.0-SNAPSHOT</version>
 
 
-    <properties> 
+    <properties>
 
         <!-- TDigital PROPERTIES -->
         <!-- This properties will be added to sonar as manual measures -->
@@ -62,7 +62,10 @@
         <compilerShowWarnings>true</compilerShowWarnings>
         <compilerShowDeprecation>true</compilerShowDeprecation>
 
-        <jersey.version>1.17.1</jersey.version>
+        <!-- <jersey.version>1.17.1</jersey.version> -->
+
+        <jersey2.version>2.9</jersey2.version>
+
 
         <!-- hibernate -->
         <hibernate.version>4.1.8.Final</hibernate.version>
@@ -119,6 +122,9 @@
                 <version>1.9.5</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- jersey dependencies -->
+            <!--
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-client</artifactId>
@@ -134,6 +140,41 @@
                 <artifactId>jersey-json</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
+            -->
+
+            <!--JERSEY DEPENDENCIES -->
+
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet</artifactId>
+                <version>${jersey2.version}</version>
+
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-spring3</artifactId>
+                <version>${jersey2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey2.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
@@ -284,6 +325,15 @@
                         <includeTestResources>true</includeTestResources>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
 
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.17</version>
+                    <configuration>
+                        <argLine>-Xmx1024m</argLine>
                     </configuration>
                 </plugin>
 

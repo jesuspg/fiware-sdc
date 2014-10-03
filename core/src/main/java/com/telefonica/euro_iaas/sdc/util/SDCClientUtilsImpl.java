@@ -29,12 +29,12 @@ import static com.telefonica.euro_iaas.sdc.util.Configuration.CHEF_CLIENT_URL_TE
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
@@ -65,8 +65,8 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
 
     public VM getVM(String ip, String fqn, String osType) {
         String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, ip) + VM_PATH;
-        WebResource webResource = client.resource(url);
-        VM vm = webResource.accept(MediaType.APPLICATION_XML).get(VM.class);
+        WebTarget webResource = client.target(url);
+        VM vm = webResource.request(MediaType.APPLICATION_XML).get(VM.class);
         vm.setFqn(fqn);
         vm.setOsType(osType);
 
@@ -78,15 +78,10 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public void execute(VM vm) throws NodeExecutionException {
-        try {
-            String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
-                    vm.getExecuteChefConectionUrl())
-                    + EXECUTE_PATH;
-            WebResource webResource = client.resource(url);
-            webResource.accept(MediaType.APPLICATION_XML).post();
-        } catch (UniformInterfaceException e) {
-            throw new NodeExecutionException(e);
-        }
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, vm.getExecuteChefConectionUrl()) + EXECUTE_PATH;
+        WebTarget webResource = client.target(url);
+        Entity<Object> entity = Entity.entity(null, "application/x-ample");
+        webResource.request(MediaType.APPLICATION_XML).post(entity);
     }
 
     /**
@@ -94,13 +89,11 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public List<Attribute> configure(VM vm, List<Attribute> configuration) {
-        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
-                vm.getExecuteChefConectionUrl())
-                + CONFIG_PATH;
-        WebResource webResource = client.resource(url);
-        ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
-                .type(MediaType.APPLICATION_XML_TYPE).put(ClientResponse.class, configuration);
-        Attributes outputAttributes = response.getEntity(Attributes.class);
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, vm.getExecuteChefConectionUrl()) + CONFIG_PATH;
+        WebTarget webResource = client.target(url);
+        Response response = webResource.request(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
+                .accept(MediaType.APPLICATION_XML_TYPE).put(Entity.xml(configuration));
+        Attributes outputAttributes = response.readEntity(Attributes.class);
         return outputAttributes;
     }
 
@@ -109,17 +102,15 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
      */
 
     public Attribute configureProperty(VM vm, Attribute attribute) {
-        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE,
-                vm.getExecuteChefConectionUrl())
-                + CONFIG_PATH;
-        WebResource webResource = client.resource(url);
+        String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, vm.getExecuteChefConectionUrl()) + CONFIG_PATH;
+        WebTarget webResource = client.target(url);
         /*
          * return webResource.accept(MediaType.APPLICATION_XML) .type(MediaType.APPLICATION_XML).entity(configuration)
          * .put(Attributes.class);
          */
-        ClientResponse response = webResource.accept(MediaType.APPLICATION_XML).type(MediaType.APPLICATION_XML)
-                .put(ClientResponse.class, attribute);
-        Attribute outputAttribute = response.getEntity(Attribute.class);
+        Response response = webResource.request(MediaType.APPLICATION_XML).accept(MediaType.APPLICATION_XML)
+                .put(Entity.xml(attribute));
+        Attribute outputAttribute = response.readEntity(Attribute.class);
         return outputAttribute;
 
     }
@@ -151,7 +142,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
     public void checkIfSdcNodeIsReady(String ip) throws NodeExecutionException {
         String url = MessageFormat.format(CHEF_CLIENT_URL_TEMPLATE, ip) + VM_PATH;
 
-        WebResource webResource = client.resource(url);
+        WebTarget webResource = client.target(url);
         String response = "response";
         int time = 10000;
         while (!(response.contains("ip"))) {
@@ -163,7 +154,7 @@ public class SDCClientUtilsImpl implements SDCClientUtils {
                     throw new NodeExecutionException(errorMesg);
                 }
                 try {
-                    response = webResource.accept(MediaType.APPLICATION_XML).get(String.class);
+                    response = webResource.request(MediaType.APPLICATION_XML).get(String.class);
                 } catch (Exception e) {
                     System.out.println("The sdc client is not ready yet. time: " + time);
                 }

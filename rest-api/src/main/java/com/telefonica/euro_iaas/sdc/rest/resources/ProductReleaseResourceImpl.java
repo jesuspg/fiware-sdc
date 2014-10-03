@@ -24,11 +24,6 @@
 
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,27 +37,19 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
-import com.sun.jersey.multipart.BodyPartEntity;
-import com.sun.jersey.multipart.MultiPart;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
-import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
@@ -76,9 +63,7 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
-    @InjectParam("productReleaseManager")
     private ProductReleaseManager productReleaseManager;
-    @InjectParam("productManager")
     private ProductManager productManager;
 
     private ProductResourceValidator validator;
@@ -93,41 +78,40 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
      * @throws InvalidProductReleaseException
      * @return proudctRelease
      */
-    public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto)
-        throws APIException {
-    	ProductRelease productRelease = null;
-    	try {
-        	validator.validateInsert(pName, productReleaseDto);
+    public ProductRelease insert(String pName, ProductReleaseDto productReleaseDto) throws APIException {
+        ProductRelease productRelease = null;
+        try {
+            validator.validateInsert(pName, productReleaseDto);
         } catch (InvalidEntityException e) {
-        	log.warning("InvalidEntityException: " + e.getMessage());
-        	throw new APIException(new InvalidEntityException(productReleaseDto, e));
-		} catch (EntityNotFoundException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
-			throw new APIException(new EntityNotFoundException(Product.class, e.getMessage(), e));
-		}
-		 log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
-	                + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
+            log.warning("InvalidEntityException: " + e.getMessage());
+            throw new APIException(new InvalidEntityException(productReleaseDto, e));
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, e.getMessage(), e));
+        }
+        log.info("Inserting a new product release in the software catalogue " + productReleaseDto.getProductName()
+                + " " + productReleaseDto.getVersion() + " " + productReleaseDto.getProductDescription());
 
-		try {
-			Product product = productManager.load(pName);
-			productRelease = new ProductRelease(productReleaseDto.getVersion(),
-		                productReleaseDto.getReleaseNotes(), product, productReleaseDto.getSupportedOS(),
-		                productReleaseDto.getTransitableReleases());
-		} catch (EntityNotFoundException e1) {
-			log.warning("EntityNotFoundException: " + e1.getMessage());
-			throw new APIException(new EntityNotFoundException(Product.class, e1.getMessage(), e1));
-		}
+        try {
+            Product product = productManager.load(pName);
+            productRelease = new ProductRelease(productReleaseDto.getVersion(), productReleaseDto.getReleaseNotes(),
+                    product, productReleaseDto.getSupportedOS(), productReleaseDto.getTransitableReleases());
+        } catch (EntityNotFoundException e1) {
+            log.warning("EntityNotFoundException: " + e1.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, e1.getMessage(), e1));
+        }
 
         log.info(productRelease.toString());
+
         try {
-			return productReleaseManager.insert(productRelease);
-		} catch (AlreadyExistsProductReleaseException e) {
-			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new AlreadyExistsEntityException(Product.class, e));
-		} catch (InvalidProductReleaseException e) {
-			log.warning("InvalidEntityException: " + e.getMessage());
-			throw new APIException(new InvalidEntityException(productRelease, e));
-		}
+            return productReleaseManager.insert(productRelease);
+        } catch (AlreadyExistsProductReleaseException e) {
+            log.warning("InvalidEntityException: " + e.getMessage());
+            throw new APIException(new AlreadyExistsEntityException(Product.class, e));
+        } catch (InvalidProductReleaseException e) {
+            log.warning("InvalidEntityException: " + e.getMessage());
+            throw new APIException(new InvalidEntityException(productRelease, e));
+        }
     }
 
     /**
@@ -171,19 +155,22 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     @Override
     public ProductRelease load(String pName, String version) throws APIException {
         Product product;
-		try {
-			product = productManager.load(pName);
-		} catch (EntityNotFoundException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
-			throw new APIException(new EntityNotFoundException(Product.class, pName, e));
-		}
         try {
-			return productReleaseManager.load(product, version);
-		} catch (EntityNotFoundException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
-			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version, e));// TODO Auto-generated catch block
+            product = productManager.load(pName);
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, pName, e));
+        }
+        try {
+            return productReleaseManager.load(product, version);
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));// TODO
+                                                                                                                // Auto-generated
+                                                                                                                // catch
+                                                                                                                // block
 
-		}
+        }
     }
 
     /**
@@ -198,41 +185,39 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         try {
             product = productManager.load(pName);
         } catch (EntityNotFoundException e) {
-        	log.warning("EntityNotFoundException: " + e.getMessage());
-        	throw new APIException(new EntityNotFoundException(Product.class, pName, e));
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, pName, e));
         }
- 
+
         ProductRelease productRelease;
         try {
             productRelease = productReleaseManager.load(product, version);
         } catch (EntityNotFoundException e) {
-        	log.warning("EntityNotFoundException: " + e.getMessage());
-        	throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));
         }
 
         try {
-			productReleaseManager.delete(productRelease);
-		} catch (ProductReleaseNotFoundException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
-			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
-		} catch (ProductReleaseStillInstalledException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
-			throw new APIException(new EntityNotFoundException(ProductRelease.class, pName+"-"+version,  e));
-		}
+            productReleaseManager.delete(productRelease);
+        } catch (ProductReleaseNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));
+        } catch (ProductReleaseStillInstalledException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));
+        }
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource#
-     * findTransitable(java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource# findTransitable(java.lang.String,
+     * java.lang.String)
      */
     @Override
     public List<ProductRelease> findTransitable(String pName, String version) throws APIException {
         return load(pName, version).getTransitableReleases();
     }
 
-  
     /**
      * @param validator
      *            the validator to set

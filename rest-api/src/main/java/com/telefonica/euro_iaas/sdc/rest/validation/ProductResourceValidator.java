@@ -24,14 +24,14 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 
@@ -43,13 +43,12 @@ import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 public interface ProductResourceValidator {
 
     /**
-     * Verify if the ProductRelase could be updated
+     * Verify if the ProductRelase could be updated.
      * 
-     * @aparam ReleaseDto (name, version, type)
+     * @param ReleaseDto
+     *            (name, version, type)
      * @param MultiPart
      *            composed of three objects: ApplicationReleaseDto, File cookbook and File installable
-     * @throws InvalidApplicationReleaseUpdateRequestException
-     *             if all the objects are null
      */
     void validateUpdate(ReleaseDto rleleaseDto, MultiPart multipart) throws InvalidMultiPartRequestException,
             InvalidProductReleaseUpdateRequestException;
@@ -57,39 +56,33 @@ public interface ProductResourceValidator {
     /**
      * Verify if the ProductRelase could be inserted
      * 
-     * @aparam ReleaseDto (name, version, type)
      * @param MultiPart
      *            composed of three objects: ApplicationReleaseDto, File cookbook and File installable
-     * @throws InvalidApplicationReleaseUpdateRequestException
-     *             if all the objects are null
      */
     void validateInsert(MultiPart multipart) throws InvalidMultiPartRequestException;
-    
+
     /**
      * Verify if the ProductRelase could be inserted
-     * @throws AlreadyExistsEntityException 
-     * @throws AlreadyExistsEntityException 
      * 
-     * @aparam product (name, version, type)
-    * @throws InvalidApplicationReleaseUpdateRequestException
-     *             if all the objects are null
+     * @param product
+     *            (name, version, type)
+     * @throws AlreadyExistsEntityException
      */
     void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException;
 
     /**
-     * 
-     * @param pName 
+     * @param pName
      * @param productRelease
      * @throws InvalidEntityException
-     * @throws AlreadyExistsEntityException 
-     * @throws EntityNotFoundException 
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
      */
-	void validateInsert(String pName, ProductReleaseDto productRelease) throws InvalidEntityException, EntityNotFoundException;
-	
-	/**
-	 * 
-	 * @param releaseDto
-	 * @throws EntityNotFoundException
-	 */
-	 public void validateLoad (ReleaseDto releaseDto) throws EntityNotFoundException;
+    void validateInsert(String pName, ProductReleaseDto productRelease) throws InvalidEntityException,
+            EntityNotFoundException;
+
+    /**
+     * @param releaseDto
+     * @throws EntityNotFoundException
+     */
+    public void validateLoad(ReleaseDto releaseDto) throws EntityNotFoundException;
 }
