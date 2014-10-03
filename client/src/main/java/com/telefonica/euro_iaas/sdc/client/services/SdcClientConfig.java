@@ -26,8 +26,17 @@ package com.telefonica.euro_iaas.sdc.client.services;
 
 import javax.ws.rs.client.Client;
 
+/**
+ * Encapsulates method to get a secure rest client.
+ */
+
 public interface SdcClientConfig {
 
+    /**
+     * Return a client.
+     * 
+     * @return
+     */
     Client getClient();
 
 }
