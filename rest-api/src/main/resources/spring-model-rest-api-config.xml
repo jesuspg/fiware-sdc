@@ -42,6 +42,7 @@
 		<property name="validator" ref="productInstanceResourceValidator" />
 		<property name="taskManager" ref="taskManager" />
 		<property name="productManager" ref="productManager" />
+		<property name="productReleaseManager" ref="productReleaseManager" />
 		<property name="productInstanceAsyncManager" ref="productInstanceAsyncManager" />
 	</bean>
 
