@@ -48,7 +48,7 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-01 | 1.2.4           | puppet  |
 
 
-    @CLAUDIA-4134 @skip
+    @CLAUDIA-4134 @skip @CLAUDIA-4165 @CLAUDIA-4163
     Scenario Outline: Install a new product when cookbook does not exist
 
 	  Given a configuration management with "<cm_tool>"
@@ -90,7 +90,7 @@ Feature: Install product with E2E validations
       | puppet  | InvalidInstallProductRequestException |
 
 
-    @skip @CLAUDIA-4114b
+    @skip @CLAUDIA-4152 @CLAUDIA-4171
     Scenario Outline: Install a new product with "installation attributes"
 
       Given a configuration management with "<cm_tool>"
@@ -136,8 +136,8 @@ Feature: Install product with E2E validations
       Examples:
 
       | product_name                  | release	| cm_tool 	|
-      | qa-test-product-chef-att-01   | 1.2.3   | chef  	|
-      | qa-test-product-puppet-att-01 | 1.2.3   | puppet  |
+      | qa-test-product-chef-att-02   | 1.2.3   | chef  	|
+      | qa-test-product-puppet-att-02 | 1.2.3   | puppet  |
 
 
     @skip @CLAUDIA-4114
@@ -157,6 +157,7 @@ Feature: Install product with E2E validations
       | custom_att_01 | new_val_att_1   | Testing attributes  |
       | custom_att_02 | new_val_att_2   | Testing attributes  |
       When I install the product in the VM
+      Then the task is created
       And the task is performed
       And the product installation status is "INSTALLED"
       And the product has the correct attributes in the catalog
@@ -165,8 +166,8 @@ Feature: Install product with E2E validations
       Examples:
 
       | product_name                  | product_release | cm_tool |
-      | qa-test-product-chef-att-01   | 1.2.3 	        | chef  	|
-      | qa-test-product-puppet-att-01 | 1.2.3 	        | puppet  |
+      | qa-test-product-chef-att-03   | 1.2.3 	        | chef    |
+      | qa-test-product-puppet-att-03 | 1.2.3 	        | puppet  |
 
 
     Scenario Outline: Install a product release installed

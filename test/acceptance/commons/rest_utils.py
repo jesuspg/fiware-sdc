@@ -195,7 +195,8 @@ class RestUtils(object):
             return
 
         if not isinstance(product_list, list):
-            if 'testing' in product_list[PRODUCT_NAME] and 'testing_prov_' not in product_list[PRODUCT_NAME]:
+            if 'testing' in product_list[PRODUCT_NAME] and 'testing_prov_' not in product_list[PRODUCT_NAME]\
+                    and 'qa-test-product-' not in product_list[PRODUCT_NAME]:
                 delete_response = self.delete_product(headers=headers, product_id=product_list[PRODUCT_NAME])
 
                 if not delete_response.ok:
@@ -211,7 +212,8 @@ class RestUtils(object):
 
         else:
             for product in product_list:
-                if 'testing' in product[PRODUCT_NAME] and 'testing_prov_' not in product[PRODUCT_NAME]:
+                if 'testing' in product[PRODUCT_NAME] and 'testing_prov_' not in product[PRODUCT_NAME]\
+                        and 'qa-test-product-' not in product[PRODUCT_NAME]:
 
                     delete_response = self.delete_product(headers=headers, product_id=product[PRODUCT_NAME])
 

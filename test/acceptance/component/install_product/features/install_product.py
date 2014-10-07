@@ -195,7 +195,7 @@ def the_product_installation_status_is(step, status):
 @step(u'the product has the correct attributes in the catalog')
 def the_product_has_the_correct_attributes_in_the_catalog(step):
 
-    response = api_utils.retrieve_product_attributes(headers=world.headers, product_id=world.product_name)
+    response = api_utils.retrieve_product(headers=world.headers, product_id=world.product_name)
     assert_true(response.ok, 'RESPONSE: {}'.format(response.content))
 
 
