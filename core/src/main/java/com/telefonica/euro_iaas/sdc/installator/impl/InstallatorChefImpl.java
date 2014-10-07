@@ -71,6 +71,8 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         String recipe = "";
         
+        log.info("action: "+ action);
+        
         if ("install".equals(action)) {
             recipe = recipeNamingGenerator.getInstallRecipe(productInstance);
         } else if ("uninstall".equals(action)) {
@@ -84,6 +86,8 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }else{
             throw new InstallatorException("Missing Action");
         }
+        
+        log.info("recipe: "+ recipe);
         
         configureNode(vm, attributes, process, recipe, token);
         try {
@@ -113,6 +117,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }else{
            
         }
+        
+        log.info("action: "+ action);
+        log.info("recipe: "+ recipe);
 
         assignRecipes(vm, recipe, token);
         try {
@@ -128,15 +135,19 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         try {
             String backupRecipe = recipeNamingGenerator.getBackupRecipe(productInstance);
+            log.info("backup recipe: "+ backupRecipe);
             callChefUpgrade(backupRecipe, vm, token);
 
             String uninstallRecipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
+            log.info("uninstall recipe: "+ uninstallRecipe);
             callChefUpgrade(uninstallRecipe, vm, token);
 
             String installRecipe = recipeNamingGenerator.getInstallRecipe(productInstance);
+            log.info("install recipe: "+ installRecipe);
             callChefUpgrade(installRecipe, vm, token);
 
             String restoreRecipe = recipeNamingGenerator.getRestoreRecipe(productInstance);
+            log.info("restore recipe: "+ restoreRecipe);
             callChefUpgrade(restoreRecipe, vm, token);
         } catch (NodeExecutionException e) {
         	log.warn ("Error in the execution of the node " + e.getMessage());
