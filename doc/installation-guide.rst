@@ -26,7 +26,7 @@ It is a a maven application:
 
 -  Compile, launch test and build all modules
 
-   ::
+.. code::
 
        $ mvn clean install
 
@@ -49,7 +49,9 @@ It is a a maven application:
        (created target/sdc-server-XXXXX.deb)
 
    for centOS:
+   
 .. code::
+
    		$ mvn package -P rpm -DskipTests
    		(created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
 
