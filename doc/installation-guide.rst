@@ -16,7 +16,6 @@ the following software:
 
 -  SDC node
 -  open jdk 7
--  Tomcat 7.X.X [http://tomcat.apache.org/download-70.cgi\ ]
 -  PostgreSQL [http://www.postgresql.org/\ ]
 -  Webdav
 
@@ -27,29 +26,34 @@ It is a a maven application:
 
 -  Compile, launch test and build all modules
 
-   ::
+.. code::
 
        $ mvn clean install
 
 -  Create a zip with distribution in target/sdc-server-dist.zip
 
-   ::
+.. code ::
 
        $ mvn assembly:assembly -DskipTests
+       
+	   $ cp target/distribution/puppwrapper-dist {folder}
+       $ ./jetty.sh start on {folder}/puppetwrapper-dist/bin
 
 -  You can generate a rpm o debian packages (using profiles in pom)
 
    for debian/ubuntu:
 
-   ::
+.. code::
 
        $ mvn install -Pdebian -DskipTests
        (created target/sdc-server-XXXXX.deb)
 
    for centOS:
+   
+.. code::
 
-   | $ mvn package -P rpm -DskipTests
-   |  (created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
+   		$ mvn package -P rpm -DskipTests
+   		(created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
 
 
 Installation instructions
@@ -65,7 +69,7 @@ The installation of the chef-server involves to install the chef-server
 package, which can be obtained in
 [http://www.getchef.com/chef/install/\ ]. We can just execute
 
-::
+.. code::
 
     rpm -Uvh chef-server-package.rpm
 
@@ -73,7 +77,7 @@ Verify the the hostname for the Chef server by running the hostname
 command. The hostname for the Chef server must be a FQDN. This means
 hostaname.domainame. In case it is not configure, you can do it
 
-::
+.. code::
 
     hostname chef-server.localdomain
 
@@ -84,14 +88,14 @@ staff in the chef-server, with chef-server-ctl. This command will set up
 all of the required components, including Erchef, RabbitMQ, and
 PostgreSQL.
 
-::
+.. code::
 
     sudo chef-server-ctl reconfigure
 
 In order to test verify the installation of Chef Server 11.x by running
 the following command:
 
-::
+.. code::
 
     sudo chef-server-ctl test
 
@@ -104,14 +108,14 @@ The next step is to configure a client in the chef-server so that you
 can execute the chef-server CLI. To do that, you need to install the
 chef-client
 
-::
+.. code::
 
     curl -L https://www.opscode.com/chef/install.sh | sudo bash
 
 and configure it with the following command. You can accept all the
 default
 
-::
+.. code::
 
     knife configure --initial
 
@@ -124,7 +128,7 @@ the URL for the Chef server, use the FQDN for the Chef server
 Once you have a client configured, you can run the CLI. Just one
 example:
 
-::
+.. code::
 
     knife client list
 
@@ -136,14 +140,14 @@ the recipes into the chef server you need:
 
 -  To dowload the svn repository:
 
-::
+.. code::
 
    svn checkout https://forge.fi-ware.org/scmrepos/svn/testbed/trunk/cookbooks
 
 -  Inside the cookbooks folder, create a file update with the following
    content. It will update the repository and upload into the chef-server
 
-::
+.. code::
 
     svn update
     knife cookbook upload --all -o BaseRecipes/
@@ -160,7 +164,7 @@ database created called SDC. For CentOS, these are the instructions:
 Firstly, it is required to install the PostgreSQL
 [http://wiki.postgresql.org/wiki/YUM_Installation\ ].
 
-:: 
+.. code:: 
     yum install postgreql postgresql-server posgresql-cotrib
 
 
@@ -170,7 +174,7 @@ Start Postgresql
 Type the following commands to install the postgresql as service and
 restarted
 
-::
+.. code::
 
     chkconfig --add postgresql
     chkconfig postgresql on
@@ -180,14 +184,14 @@ restarted
 Then, you need to configure postgresql to allow for accessing. In
 /var/lib/pgsql/data/postgresql.conf
 
-::
+.. code::
 
     listen\_addresses = '0.0.0.0'
 
 In /var/lib/pgsql/data/pg\_hba.conf, change the table at the end of the file to
 look like:
 
-::
+.. code::
 
     #TYPE   DATABASE  USER        CIDR-ADDRESS          METHOD
     #"local" is for Unix domain socket connections only
@@ -206,14 +210,14 @@ Create the DB
 
 Connect to Postgresql Server using:
 
-::
+.. code::
 
     su - postgres
 
 Connect as postgres to the postgres database and set the password for
 user postgres using alter user as below:
 
-::
+.. code::
 
     $ psql postgres postgres
     > alter user postgres with password 'postgres';
@@ -221,13 +225,13 @@ user postgres using alter user as below:
 
 Create the SDC DB
 
-::
+.. code::
 
     > createdb sdc
 
 Check that the database has been created correctly:
 
-::
+.. code::
 
    $ su - postgres
    $ psql -U postgres sdc -h localhost
@@ -237,7 +241,7 @@ obtain the files from
 [https://github.com/telefonicaid/fiware-sdc/blob/develop/migrations/src/main/resources\ ]
 and execute
 
-::
+.. code::
 
    $ psql -d sdc -a -f db-initial.sql
    $ psql -d sdc -a -f db-changelog.sql
@@ -255,7 +259,7 @@ installed in the nodes.
 
 Make sure Apache2 is installed and the optional DAV modules are enabled
 
-::
+.. code::
 
      yum install httpd
      vi /etc/httpd/conf/httpd.conf
@@ -264,14 +268,14 @@ Make sure Apache2 is installed and the optional DAV modules are enabled
 
 Then create the system startup links for Apache and start it:
 
-::
+.. code::
 
     chkconfig --levels 235 httpd on
     /etc/init.d/httpd start<pre>
 
 Create a Virtual host in /etc/apache2/sites-available/sdc.com
 
-::
+.. code::
 
     <VirtualHost *:80>
      ServerAdmin webmaster@example.com
@@ -287,7 +291,7 @@ Create a Virtual host in /etc/apache2/sites-available/sdc.com
 We need now to create the directory where all the files managed by our
 WebDav are going to be:
 
-::
+.. code::
 
     mkdir /opt/sdc/webdav
     chown www-data /opt/sdc/webdav
@@ -299,7 +303,7 @@ Now we are interested in setup a Basic Authentication mechanism in our
 WebDav server. Enable the authentication module and create the password
 file
 
-::
+.. code::
 
     htpasswd -c /etc/apache2/passwd/passwords root
 
@@ -307,7 +311,7 @@ You will be prompted to introduce the password: temporal
 
 After, we introduce the WebDAV section into the Virtual host:
 
-::
+.. code::
 
     # Note Alias goes to our DocumentRoot. Alias /webdav /opt/sdc/webdav
     # But we apply different settings
@@ -320,7 +324,7 @@ After, we introduce the WebDAV section into the Virtual host:
 
 We reconfigure apache and reload it
 
-::
+.. code::
 
     apache2ctl configtest /etc/init.d/apache2 reload
 
@@ -340,7 +344,7 @@ $SDC\_HOME/webapps/.
 
 See the snipet bellow to know how it works:
 
-::
+.. code::
 
     <New id="sdc" class="org.eclipse.jetty.plus.jndi.Resource">
         <Arg>jdbc/sdc</Arg>
@@ -390,7 +394,7 @@ The last step involves to regiter the SDC and chef-server endpoints into
 the keystone endpoint catalogue. To do that, you should write into the
 config.js in the keystone-proxy the following lines:
 
-::
+.. code::
 
      {"endpoints": [
         {"adminURL": "http://sdc-ip:8080/sdc/rest",
@@ -426,7 +430,7 @@ chef-server. In the roadmap, it is considered to avoid all this process
 and to make possible any image to be SDC-aware, installing and
 configuring everything in booting status.
 
-::
+.. code::
 
     mkdir /etc/chef
     mkdir /var/log/chef
@@ -440,7 +444,7 @@ validation.pem should be obtained from the chef-server in the folder
 /etc/chef-server and its called chef-validator.pem and rename to
 validation.pem in the /etc/chef folder of the image
 
-::
+.. code::
 
     log_location           "/var/log/chef/client.log"
     ssl_verify_mode        :verify_none
@@ -451,7 +455,7 @@ validation.pem in the /etc/chef folder of the image
 
 Finally, to start chef-client in boot time
 
-::
+.. code::
 
     chef-client -i 60 -s 6
 
