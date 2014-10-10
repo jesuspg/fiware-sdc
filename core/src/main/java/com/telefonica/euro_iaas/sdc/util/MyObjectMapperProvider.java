@@ -27,8 +27,8 @@ package com.telefonica.euro_iaas.sdc.util;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -58,11 +58,11 @@ public class MyObjectMapperProvider implements ContextResolver<ObjectMapper> {
     }
 
     private static ObjectMapper createCombinedObjectMapper() {
-        return new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true)
-                .configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        return new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .enable(SerializationFeature.WRITE_NULL_MAP_VALUES)
+                .configure(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED, true)
                 .configure(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME, true)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .setAnnotationIntrospector(createJaxbJacksonAnnotationIntrospector());
     }
 
