@@ -56,6 +56,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     private IpToVM ip2vm;
     private static Logger log = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
+    
+    /* (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String, com.telefonica.euro_iaas.sdc.model.ProductRelease, java.lang.String, java.lang.String)
+     */
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token)
             throws InstallatorException {
@@ -63,6 +67,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance, com.telefonica.euro_iaas.sdc.model.dto.VM, java.util.List, java.lang.String, java.lang.String)
+     */
     public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
             String token) throws InstallatorException, NodeExecutionException {
 
@@ -106,6 +114,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }
     }
 
+    
+    /* (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance, java.lang.String, java.lang.String)
+     */
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
@@ -130,6 +142,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#upgrade(com.telefonica.euro_iaas.sdc.model.ProductInstance, com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String)
+     */
     @Override
     public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
         try {
@@ -244,6 +259,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         return last_recipeexecution_timestamp;
     }
 
+    /* (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#validateInstalatorData(com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String)
+     */
     @Override
     public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException,
             NodeExecutionException {
