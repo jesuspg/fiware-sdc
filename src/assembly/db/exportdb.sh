@@ -7,8 +7,8 @@ FORMAT=custom
 BACKUP_FILE=/tmp/export_sdc.backup
 
 vflag=false
-dflag=false
 pflag=false
+dflag=false
 
 function usage() { 
      SCRIPT=$(basename $0) 
@@ -19,10 +19,10 @@ function usage() {
      printf "Options:\n" >&2 
      printf "\n" >&2 
      printf "    -h                    show usage\n" >&2 
-     printf "    -v HOSTNAME           Optional parameter. Virtual Machine where the database is installed. Default value is ${HOSTNAME}\n" >&2 
-     printf "    -p PORT               Optional parameter. Port where the postgres database listens. Default value is ${PORT}\n" >&2 
-     printf "    -b BACKUP_FILE        Optional paramdter. File where to keep the database backup. Default value is ${BACKUP_FILE}\n" >&2 
-     printf "    -d DATABASE_NAME      Optional parameter. Database Name to make the export from. Default Value is ${DATABASE_NAME}\n" >&2 
+     printf "    -v HOSTNAME           Mandatory parameter. Virtual Machine where the database is installed.\n" >&2 
+     printf "    -p PORT               Mandatory parameter. Port where the postgres database listens.\n" >&2 
+     printf "    -b BACKUP_FILE        Mandatory paramdter. File where to keep the database backup.\n" >&2 
+     printf "    -d DATABASE_NAME      Mandatory parameter. Database Name to make the export from.\n" >&2 
      printf "\n" >&2 
      exit 1 
 }
