@@ -3,11 +3,12 @@
 #######################################################
 ###       Script to make an export of a database    ###
 #######################################################
-HOSTNAME=130.206.80.119
-PORT=5432
 FORMAT=custom
 BACKUP_FILE=/tmp/export_sdc.backup
-DATABASE_NAME=sdc
+
+vflag=false
+dflag=false
+pflag=false
 
 function usage() { 
      SCRIPT=$(basename $0) 
@@ -30,18 +31,18 @@ while getopts ":v:p:b:d:h" opt
 do 
      case $opt in 
          v) 
-             HOSTNAME=${OPTARG} 
+             vflag=true;HOSTNAME=${OPTARG} 
              ;; 
          p) 
-             PORT=${OPTARG} 
+             pflag=true;PORT=${OPTARG} 
              ;; 
          b) 
              BACKUP_FILE=${OPTARG} 
              ;; 
          d) 
-             DATABASE_NAME=${OPTARG} 
+             dflag=true;DATABASE_NAME=${OPTARG} 
              ;;
-	 h) 
+		 h) 
              usage 
              ;; 
          *) 
@@ -51,6 +52,24 @@ do
              ;; 
      esac 
 done
+
+if ! $vflag
+then
+    echo "-v must be included to specify host where the database is" >&2
+    exit 1
+fi
+
+if ! $pflag
+then
+    echo "-p must be included to specify database port" >&2
+    exit 1
+fi
+
+if ! $dflag
+then
+    echo "-d must be included to specify database name to be exported" >&2
+    exit 1
+fi
 
 pg_dump --host=${HOSTNAME} --port=${PORT} --format=custom --blobs --verbose --file=${BACKUP_FILE} ${DATABASE_NAME}
 
