@@ -30,6 +30,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 
 /**
@@ -80,4 +81,13 @@ public interface ProductManager {
      * @param product
      */
     void delete(Product product);
+
+    /**
+     * Find the products and product release that match with the given criteria.
+     * 
+     * @param criteria
+     *            the search criteria
+     * @return the list of elements that match with the criteria.
+     */
+    List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria);
 }

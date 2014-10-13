@@ -77,7 +77,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Metadata> metadatas;
-
+    
     /**
      * @return the attributes
      */
