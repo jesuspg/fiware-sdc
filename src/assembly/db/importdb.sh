@@ -3,11 +3,12 @@
 #######################################################
 ###       Script to make an export of a database    ###
 #######################################################
-HOSTNAME=130.206.80.119
-PORT=5432
 FORMAT=custom
 BACKUP_FILE=/tmp/export_sdc.backup
-EXISTING_DATABASE_NAME=postgres
+
+vflag=false
+pflag=false
+dflag=false
 
 function usage() {
      SCRIPT=$(basename $0)
@@ -17,27 +18,31 @@ function usage() {
      printf "\n" >&2
      printf "Options:\n" >&2
      printf "\n" >&2
-     printf "    -h                    show usage\n" >&2
-     printf "    -v HOSTNAME           Optional parameter. Virtual Machine where the database is installed. Default value is ${HOSTNAME}\n" >&2
-     printf "    -p PORT               Optional parameter. Port where the postgres database listens. Default value is ${PORT}\n" >&2
-     printf "    -b BACKUP_FILE        Optional parameter.File where to keep the database backup. Default value is ${BACKUP_FILE}\n" >&2
+     printf "    -h                         show usage\n" >&2
+     printf "    -v HOSTNAME                Mandatory parameter. Virtual Machine where the database is installed.\n" >&2
+     printf "    -p PORT                    Mandatory parameter. Port where the postgres database listens.\n" >&2
+     printf "    -b BACKUP_FILE             Mandatory parameter. File where to keep the database backup.\n" >&2
+     printf "    -d EXISTING_DATABASE_NAME  Mandatory parameter. Database Name to make the export from.\n" >&2 
      printf "\n" >&2
      exit 1
 }
 
-while getopts ":v:p:b:h" opt
+while getopts ":v:p:b:d:h" opt
 do
      case $opt in
          v)
-             HOSTNAME=${OPTARG}
+             vflag=true;HOSTNAME=${OPTARG} 
              ;;
          p)
-             PORT=${OPTARG}
+             pflag=true;PORT=${OPTARG}
              ;;
          b)
              BACKUP_FILE=${OPTARG}
              ;;
-         h)
+         d) 
+             dflag=true;EXISTING_DATABASE_NAME=${OPTARG} 
+             ;;
+		 h)
              usage
              ;;
          *)
@@ -47,5 +52,23 @@ do
              ;;
      esac
 done
+
+if ! $vflag
+then
+    echo "-v must be included to specify host where the database is" >&2
+    exit 1
+fi
+
+if ! $pflag
+then
+    echo "-p must be included to specify database port" >&2
+    exit 1
+fi
+
+if ! $dflag
+then
+    echo "-d must be included to specify the existing database name to be exported included in the ${BACKPUP_FILE}" >&2
+    exit 1
+fi
 
 pg_restore --host=${HOSTNAME} --port=${PORT} -d ${EXISTING_DATABASE_NAME} -C ${BACKUP_FILE}
