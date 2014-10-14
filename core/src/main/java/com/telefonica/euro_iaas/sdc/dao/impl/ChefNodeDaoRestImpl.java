@@ -191,7 +191,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
             for (String key : header.keySet()) {
                 wr = wr.header(key, header.get(key));
             }
-            Response response = wr.put(Entity.json(node.toJson()));
+            Response response = wr.put(Entity.json(payload));
 
             String stringNode = response.readEntity(String.class);
             JSONObject jsonNode = JSONObject.fromObject(stringNode);
