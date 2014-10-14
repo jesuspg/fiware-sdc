@@ -83,12 +83,12 @@ class ProvisioningSteps():
         response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER], with_attributes=True,
                                               xml_root_element_name=TASK)
 
-        assert_equals(response_body["@"+TASK_STATUS], TASK_STATUS_VALUE_RUNNING)
+        assert_equals(response_body[TASK_STATUS], TASK_STATUS_VALUE_RUNNING)
         assert_in(world.product_name, response_body[DESCRIPTION])
         assert_in(world.vm_hostname, response_body[DESCRIPTION])
         assert_equals(world.tenant_id, response_body[TASK_VDC])
 
-        m = re.search('/task/(.*)$', response_body["@"+TASK_HREF])
+        m = re.search('/task/(.*)$', response_body[TASK_HREF])
         world.task_id = m.group(1)
 
     def the_product_is_instantiated(self, step):

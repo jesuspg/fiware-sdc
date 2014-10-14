@@ -25,7 +25,7 @@ Feature: Install product with E2E validations
       | chef    |
       | puppet  |
 
-
+    @slow
     Scenario Outline: Install a new product with different releases
 
       Given a configuration management with "<cm_tool>"
@@ -48,7 +48,7 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-01 | 1.2.4           | puppet  |
 
 
-    @CLAUDIA-4134 @skip @CLAUDIA-4165 @CLAUDIA-4163
+    @skip @slow @CLAUDIA-4165 @CLAUDIA-4163
     Scenario Outline: Install a new product when cookbook does not exist
 
 	  Given a configuration management with "<cm_tool>"
@@ -69,7 +69,7 @@ Feature: Install product with E2E validations
       | testing_prov_no_cookbook_puppet | 1.0.1 	| puppet  	|
 
 
-    @skip @CLAUDIA-4137
+    @skip @slow @CLAUDIA-4137
     Scenario Outline: Install a existing product when VM hostname is not registered
 
 	  Given a configuration management with "<cm_tool>"
@@ -90,7 +90,7 @@ Feature: Install product with E2E validations
       | puppet  | InvalidInstallProductRequestException |
 
 
-    @skip @CLAUDIA-4152 @CLAUDIA-4171
+    @skip @slow @CLAUDIA-4152 @CLAUDIA-4171
     Scenario Outline: Install a new product with "installation attributes"
 
       Given a configuration management with "<cm_tool>"

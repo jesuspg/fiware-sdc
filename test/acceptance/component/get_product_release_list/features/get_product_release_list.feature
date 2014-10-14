@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-Feature: Delete a product release in the catalogue
+Feature: Get product release list from the catalogue
     As a fi-ware user
     I want to be able to obtain a product release list from a product
     so that I can know about all releases of my product

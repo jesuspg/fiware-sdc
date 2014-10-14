@@ -38,6 +38,7 @@ ACCEPT_HEADER_JSON = u'application/json'
 
 #PRODUCT RELEASE
 PRODUCT_RELEASE = u'productRelease'
+PRODUCT_RELEASE_LIST = u'productReleases'
 VERSION = u'version'
 
 #INCORRECT PARAMETERS
