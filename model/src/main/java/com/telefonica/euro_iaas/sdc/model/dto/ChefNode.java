@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.json.JSONObject;
 
 /**
@@ -37,6 +41,8 @@ import net.sf.json.JSONObject;
  * 
  * @author Sergio Arroyo
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ChefNode {
 
     private final static String RECIPE_ITEM_TEMPLATE = "recipe[{0}]";
@@ -324,21 +330,17 @@ public class ChefNode {
         return name;
 
         /*
-         * if (output[1].startsWith("\\.")){ String url =
-         * output[1].split("\"")[2]; String nameAux = url.split("nodes")[1];
-         * String name = nameAux.substring(1, nameAux.length()); return name; }
-         * else if (output[1].startsWith("\"")) { String url =
-         * output[1].split("\"")[2]; String nameAux = url.split("nodes")[1];
-         * String name = nameAux.substring(1, nameAux.length()); return name; }
-         * else { String url = output[1].split("\"")[2]; String nameAux =
-         * url.split("nodes")[1]; String name = nameAux.substring(1,
+         * if (output[1].startsWith("\\.")){ String url = output[1].split("\"")[2]; String nameAux =
+         * url.split("nodes")[1]; String name = nameAux.substring(1, nameAux.length()); return name; } else if
+         * (output[1].startsWith("\"")) { String url = output[1].split("\"")[2]; String nameAux = url.split("nodes")[1];
+         * String name = nameAux.substring(1, nameAux.length()); return name; } else { String url =
+         * output[1].split("\"")[2]; String nameAux = url.split("nodes")[1]; String name = nameAux.substring(1,
          * nameAux.length()); return name; }
          */
     }
 
     /**
-     * Constructs a <code>String</code> with all attributes in name = value
-     * format.
+     * Constructs a <code>String</code> with all attributes in name = value format.
      * 
      * @return a <code>String</code> representation of this object.
      */

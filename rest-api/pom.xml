@@ -174,8 +174,19 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-
         </dependency>
+
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+
+        <!--
+<dependency>
+<groupId>com.fasterxml.jackson.jaxrs</groupId>
+<artifactId>jackson-jaxrs-xml-provider</artifactId>
+</dependency>        -->
 
 
         <dependency>

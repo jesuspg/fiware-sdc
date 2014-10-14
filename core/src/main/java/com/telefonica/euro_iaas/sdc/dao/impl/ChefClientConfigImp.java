@@ -34,9 +34,12 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
+
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.jackson.JacksonFeature;
 
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
+import com.telefonica.euro_iaas.sdc.util.MyObjectMapperProvider;
 
 public class ChefClientConfigImp implements ChefClientConfig {
     HostnameVerifier hostnameVerifier;
@@ -80,7 +83,9 @@ public class ChefClientConfigImp implements ChefClientConfig {
     }
 
     public Client getClient() {
-        return ClientBuilder.newBuilder().sslContext(stx).hostnameVerifier(hostnameVerifier).build();
+        return JerseyClientBuilder.newBuilder().sslContext(stx).hostnameVerifier(hostnameVerifier)
+                .register(new JacksonFeature()).register(MyObjectMapperProvider.class).build();
+
     }
 
 }
