@@ -90,11 +90,20 @@
         <maven-license-plugin.version>1.2.5</maven-license-plugin.version>
 
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
-        <!-- sonar -->
-        <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
 
         <!-- ehcache -->
         <ehcache.version>2.7.4</ehcache.version>
+        
+        <!-- sonar -->
+        <sonar.host.url>http://ci-fiware-01.hi.inet/sonar</sonar.host.url>
+        <sonar.jdbc.url>jdbc:mysql://localhost:3306/sonar</sonar.jdbc.url>
+        <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
+        <sonar.jdbc.username>sonar</sonar.jdbc.username>
+        <sonar.jdbc.password>sonar</sonar.jdbc.password>
+        <!-- exclusions must be synchronized with cobertura-maven-plugin exclusions -->
+        <sonar.exclusions>com/telefonica/**/exception/**/*,com/telefonica/**/bootstrap/*,
+            com/telefonica/**/model/**/*, org/w3/**/*, org/openstack/**/*,com/telefonica/**/aspects/**/*</sonar.exclusions>
+        <sonar.dynamic>reuseReports</sonar.dynamic>
 
     </properties>
 
@@ -261,10 +270,12 @@
                             <ignore>org.openstack.docs.common.api.v1.*</ignore>
                         </ignores>
                         <excludes>
-                            <exclude>**/*Test*.class</exclude>
-                            <exclude>**/model/**.class</exclude>
-                            <exclude>org/openstack/**/*</exclude>
+                            <exclude>com/telefonica/**/exception/**/*</exclude>
+                            <exclude>com/telefonica/**/bootstrap/*</exclude>
+                            <exclude>com/telefonica/**/model/**/*</exclude>
+                            <exclude>com/telefonica/**/aspects/**/*</exclude>
                             <exclude>org/w3/**/*</exclude>
+                            <exclude>org/openstack/**/*</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
