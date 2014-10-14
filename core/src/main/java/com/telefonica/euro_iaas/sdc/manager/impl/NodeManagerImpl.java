@@ -76,6 +76,7 @@ public class NodeManagerImpl implements NodeManager {
      */
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
+        log.info("deleting node");
         try {
 
             puppetDelete(vdc, nodeName, token);
@@ -103,6 +104,8 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     private void puppetDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
+        
+        log.info("deleting node from puppet master");
 
         HttpDelete delete = null;
         try {
@@ -140,6 +143,8 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     private void chefClientDelete(String vdc, String chefClientName, String token) throws ChefClientExecutionException {
+        log.info("deleting node from chef server");;
+        
         ChefNode node;
         List<ProductInstance> productInstances = null;
         String hostname = null;
