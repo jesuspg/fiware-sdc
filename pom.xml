@@ -95,11 +95,6 @@
         <ehcache.version>2.7.4</ehcache.version>
         
         <!-- sonar -->
-        <sonar.host.url>http://ci-fiware-01.hi.inet/sonar</sonar.host.url>
-        <sonar.jdbc.url>jdbc:mysql://localhost:3306/sonar</sonar.jdbc.url>
-        <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
-        <sonar.jdbc.username>sonar</sonar.jdbc.username>
-        <sonar.jdbc.password>sonar</sonar.jdbc.password>
         <!-- exclusions must be synchronized with cobertura-maven-plugin exclusions -->
         <sonar.exclusions>com/telefonica/**/exception/**/*,com/telefonica/**/bootstrap/*,
             com/telefonica/**/model/**/*, org/w3/**/*, org/openstack/**/*,com/telefonica/**/aspects/**/*</sonar.exclusions>
