@@ -60,6 +60,7 @@ public class MyObjectMapperProvider implements ContextResolver<ObjectMapper> {
     private static ObjectMapper createCombinedObjectMapper() {
         return new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .enable(SerializationFeature.WRITE_NULL_MAP_VALUES)
+                .configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false)
                 .configure(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED, true)
                 .configure(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME, true)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
