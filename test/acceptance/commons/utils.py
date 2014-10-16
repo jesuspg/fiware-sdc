@@ -23,10 +23,20 @@ def xml_to_dict(xml_to_convert):
 
 def xml_to_dict_attr(xml_to_convert):
 
-    return xmltodict.parse(xml_to_convert)
+    return xmltodict.parse(xml_to_convert, attr_prefix='')
 
 
-def response_body_to_dict(http_response, accept_content_type, with_attributes=False, xml_root_element_name=None):
+def response_body_to_dict(http_response, accept_content_type, with_attributes=False, xml_root_element_name=None,
+                          is_list=False):
+    """
+    Method to convert a XML o JSON response in a Python dict
+    :param http_response: 'Requests (lib)' response
+    :param accept_content_type: Accept header value
+    :param with_attributes: For XML requests. If True, XML attributes will be processed
+    :param xml_root_element_name: For XML requests. XML root element in response.
+    :param is_list: For XML requests. If response is a list, a True value will delete list node name
+    :return: Python dict with response.
+    """
     if ACCEPT_HEADER_JSON in accept_content_type:
         try:
             return http_response.json()
@@ -38,7 +48,12 @@ def response_body_to_dict(http_response, accept_content_type, with_attributes=Fa
         else:
             assert xml_root_element_name is not None,\
                 "xml_root_element_name is a mandatory param when body is in XML and attributes are not considered"
-            return xml_to_dict(http_response.content)[xml_root_element_name]
+            response_body = xml_to_dict(http_response.content)[xml_root_element_name]
+
+            if is_list and response_body is not None:
+                response_body = response_body.popitem()[1]
+
+            return response_body
 
 
 def body_model_to_body_request(body_model, content_type, body_model_root_element=None):
@@ -98,6 +113,17 @@ def delete_keys_when_value_is_none(dict_del):
     return dict_del
 
 
+def replace_none_value_metadata_to_empty_string(list_of_metadatas):
+    """
+    In a metadata list, replace None value by empty string
+    :param list_of_metadatas:
+    :return:
+    """
+    for metadata in list_of_metadatas:
+        if metadata['value'] is None:
+            metadata['value'] = ''
+
+
 def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_to_be_finished=None, headers=None):
 
     rest_utils = RestUtils()
@@ -107,7 +133,7 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
         response = rest_utils.retrieve_task(headers=headers, vdc_id=vdc_id, task_id=task_id)
         response_body = response_body_to_dict(response, headers[ACCEPT_HEADER], with_attributes=True,
                                               xml_root_element_name=TASK)
-        status = response_body["@"+TASK_STATUS]
+        status = response_body[TASK_STATUS]
         print 'Waiting for task status. TIME: {}\n STATUS: {}'.format(count, status)
 
         if status == status_to_be_finished:

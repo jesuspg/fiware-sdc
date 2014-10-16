@@ -46,7 +46,7 @@ def the_product_instance_is_returned_in_the_list(step):
     #response_body = xml_to_dict(world.response.content)[PRODUCT_INSTANCE_LIST][PRODUCT_INSTANCE_RES]
     response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
                                           xml_root_element_name=PRODUCT_INSTANCE_LIST)
-    response_body = response_body[PRODUCT_INSTANCE_RES]
+    response_body = response_body
     assert_true(len(response_body) != 0)
     
     product_instance = None

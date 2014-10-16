@@ -5,9 +5,9 @@ from lettuce import step, world, before, after
 from commons.authentication import get_token
 from commons.rest_utils import RestUtils
 from commons.product_body import default_product, create_product_release
-from commons.utils import dict_to_xml, set_default_headers, xml_to_dict
+from commons.utils import dict_to_xml, set_default_headers, response_body_to_dict
 from commons.constants import CONTENT_TYPE, PRODUCT_NAME, ACCEPT_HEADER, AUTH_TOKEN_HEADER, CONTENT_TYPE_JSON, PRODUCT
-from commons.constants import PRODUCT_RELEASE_WITHOUT_RELEASES_RESPONSE, VERSION, PRODUCT_RELEASE
+from commons.constants import PRODUCT_RELEASE_WITHOUT_RELEASES_RESPONSE, VERSION, PRODUCT_RELEASE_LIST
 from nose.tools import assert_equals, assert_true
 
 api_utils = RestUtils()
@@ -50,7 +50,8 @@ def given_a_created_product_with_name_group1(step, product_id):
     world.product_id = response.json()[PRODUCT_NAME]
 
 
-@step(u'When I retrieve the product release "([^"]*)" list assigned to the "([^"]*)" with accept parameter "([^"]*)" response')
+@step(u'When I retrieve the product release "([^"]*)" list assigned to the "([^"]*)" '
+      u'with accept parameter "([^"]*)" response')
 def get_product_release(step, product_release, product_name, accept_content):
 
     world.headers[ACCEPT_HEADER] = accept_content
@@ -63,18 +64,11 @@ def get_product_release(step, product_release, product_name, accept_content):
 def then_the_product_release_list_is_received(step):
 
     assert_true(world.response.ok)
-    response_headers = world.response.headers
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
 
-    if response_headers[CONTENT_TYPE] == CONTENT_TYPE_JSON:
-        try:
-            response_body = world.response.json()[PRODUCT_RELEASE]
-        except Exception, e:
-            print str(e)
+    response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
+                                          xml_root_element_name=PRODUCT_RELEASE_LIST, is_list=True)
 
-    else:
-        response_body = xml_to_dict(world.response.content)['productReleases'][PRODUCT_RELEASE]
-
-    print response_body
     assert_equals(response_body[VERSION], world.product_release)
     assert_equals(response_body[PRODUCT][PRODUCT_NAME], world.product_name)
 
@@ -84,9 +78,8 @@ def then_no_product_releases_are_received(step):
 
     assert_true(world.response.ok)
     response_headers = world.response.headers
-    print world.response.content
     if response_headers[CONTENT_TYPE] == CONTENT_TYPE_JSON:
-        assert_equals('null', world.response.content)
+        assert_equals(len(world.response.json()), 0, 'RESPONSE: {}'.format(world.response.content))
     else:
         assert_equals(PRODUCT_RELEASE_WITHOUT_RELEASES_RESPONSE, world.response.content)
 
