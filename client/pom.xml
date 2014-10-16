@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>sdc-server</artifactId>
-        <version>2.1.1</version>
+        <version>2.2.0</version>
     </parent>
     <dependencies>
         <dependency>
@@ -20,6 +20,17 @@
 
         </dependency>
         <!--JERSEY DEPENDENCIES -->
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+        </dependency>
+
+        <!--
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
@@ -32,6 +43,8 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
         </dependency>
+        -->
+
         <!--/JERSEY DEPENDENCIES -->
         <dependency>
             <groupId>commons-lang</groupId>

@@ -24,6 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.rest;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -50,6 +51,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ArtifactDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.resources.ArtifactResourceImpl;
 
 public class ArtifactResourceImplTest {
@@ -59,6 +61,7 @@ public class ArtifactResourceImplTest {
     public static String KEY1 = "key1";
     public static String VALUE1 = "value1";
     public static String HREF = "href";
+    ArtifactAsyncManager artifactAsyncManager;
 
     ArtifactResourceImpl artifactResource = null;
 
@@ -67,7 +70,7 @@ public class ArtifactResourceImplTest {
         artifactResource = new ArtifactResourceImpl();
         TaskManager taskManager = mock(TaskManager.class);
         ProductInstanceAsyncManager productInstanceAsyncManager = mock(ProductInstanceAsyncManager.class);
-        ArtifactAsyncManager artifactAsyncManager = mock(ArtifactAsyncManager.class);
+        artifactAsyncManager = mock(ArtifactAsyncManager.class);
 
         artifactResource.setTaskManager(taskManager);
         artifactResource.setProductInstanceAsyncManager(productInstanceAsyncManager);
@@ -88,6 +91,11 @@ public class ArtifactResourceImplTest {
         when(productInstanceAsyncManager.load(any(String.class), any(String.class))).thenReturn(productIns);
         doNothing().when(artifactAsyncManager).deployArtifact(any(ProductInstance.class), any(Artifact.class), any(String.class),
                 any(Task.class), any(String.class));
+        doNothing().when(artifactAsyncManager).undeployArtifact(any(ProductInstance.class), any(String.class), any(String.class),
+                any(Task.class), any(String.class));
+        
+        
+        
 
     }
 
@@ -105,12 +113,24 @@ public class ArtifactResourceImplTest {
 
     @Test
     public void testDelete() throws Exception {
-
+    	Attribute att = new Attribute(KEY1, VALUE1, "description1");
+        List<Attribute> atts = new ArrayList<Attribute>();
+        atts.add(att);
+        String callback = "";
+        ArtifactDto artifactDto = new ArtifactDto("artifact", atts);
+        Task task = artifactResource.uninstall(VDC, "productIntanceName", artifactDto.getName(), callback);
+        assertEquals(task.getHref(), HREF);
     }
-
+    
     @Test
-    public void testList() throws Exception {
-
+    public void testFindAll() throws Exception {
+    	
+    	List<Artifact> artifacts = new ArrayList();
+    	artifacts.add(new Artifact());
+    	when(artifactAsyncManager.findByCriteria(any(ArtifactSearchCriteria.class))).thenReturn(artifacts);
+    	List<ArtifactDto> result = artifactResource.findAll(new Integer(1), new Integer(2), "", "", null, VDC, "productIntanceName");
+    	assertNotNull(result);
     }
+
 
 }

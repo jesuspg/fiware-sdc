@@ -27,19 +27,18 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InsertResourceException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.Products;
 import com.telefonica.euro_iaas.sdc.client.services.ProductService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
@@ -51,10 +50,10 @@ import com.telefonica.euro_iaas.sdc.model.Product;
  */
 public class ProductServiceImpl extends AbstractBaseService implements ProductService {
 
-    public ProductServiceImpl(Client client, String baseUrl, String mediaType) {
+    public ProductServiceImpl(SdcClientConfig clientConfig, String baseUrl, String mediaType) {
         setBaseHost(baseUrl);
         setType(mediaType);
-        setClient(client);
+        setSdcClientConfig(clientConfig);
     }
 
     /**
@@ -63,8 +62,11 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public Product add(Product product, String token, String tenant) throws InsertResourceException {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
         try {
-            Builder wr = createWebResource(url, token, tenant);
-            return wr.accept(getType()).type(getType()).entity(product).post(Product.class);
+            Invocation.Builder wr = createWebResource(url, token, tenant);
+
+            Response response = wr.accept(getType()).accept(getType()).post(Entity.entity(product, getType()));
+
+            return response.readEntity(Product.class);
         } catch (Exception e) {
             throw new InsertResourceException(Product.class, url);
         }
@@ -78,9 +80,9 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pname);
 
-        Builder wr = createWebResource(url, token, tenant);
+        Invocation.Builder wr = createWebResource(url, token, tenant);
 
-        wr.accept(getType()).type(getType()).delete(ClientResponse.class);
+        wr.accept(getType()).accept(getType()).delete();
     }
 
     /**
@@ -89,7 +91,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
     public Product load(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pName);
-        Builder wr = createWebResource(url, token, tenant);
+        Invocation.Builder wr = createWebResource(url, token, tenant);
         try {
             return wr.accept(getType()).get(Product.class);
         } catch (Exception e) {
@@ -104,17 +106,17 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
             String tenant) {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
 
-        WebResource wr = getClient().resource(url);
-        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        WebTarget wr = getClient().target(url);
+        Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
         builder.header("X-Auth-Token", token);
         builder.header("Tenant-Id", tenant);
-        MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams = addParam(searchParams, "page", page);
-        searchParams = addParam(searchParams, "pageSize", pageSize);
-        searchParams = addParam(searchParams, "orderBy", orderBy);
-        searchParams = addParam(searchParams, "orderType", orderType);
 
-        return wr.queryParams(searchParams).accept(getType()).get(Products.class);
+        wr.queryParam("page", page);
+        wr.queryParam("pageSize", pageSize);
+        wr.queryParam("orderBy", orderBy);
+        wr.queryParam("orderType", orderType);
+
+        return builder.get().readEntity(Products.class);
     }
 
     /**
@@ -122,7 +124,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      */
     public List<Attribute> loadAttributes(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_ATTRIBUTES, pName);
-        Builder wr = createWebResource(url, token, tenant);
+        Invocation.Builder wr = createWebResource(url, token, tenant);
         try {
             return wr.accept(getType()).get(Product.class).getAttributes();
         } catch (Exception e) {
@@ -136,7 +138,7 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
 
     public List<Metadata> loadMetadatas(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_METADATAS, pName);
-        Builder wr = createWebResource(url, token, tenant);
+        Invocation.Builder wr = createWebResource(url, token, tenant);
 
         try {
             return wr.accept(getType()).get(Product.class).getMetadatas();

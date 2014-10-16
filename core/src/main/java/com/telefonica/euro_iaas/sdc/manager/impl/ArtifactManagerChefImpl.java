@@ -26,6 +26,9 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ArtifactDao;
@@ -58,10 +61,11 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
 
     private ProductInstanceDao productInstanceDao;
     private ArtifactDao artifactDao;
-    // private ProductDao productDao;
-    // private IpToVM ip2vm;
+
     private ProductInstanceValidator validator;
     private Installator installator;
+    
+    private static Logger log = LoggerFactory.getLogger(ArtifactManagerChefImpl.class);
 
     /**
      * {@inheritDoc}
@@ -71,10 +75,11 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
 
     public ProductInstance deployArtifact(ProductInstance productInstance, Artifact artifact, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
+    	log.debug("Deploy artifact " + artifact.getName()+ " in product " + productInstance.getName() );
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateDeployArtifact(productInstance);
-
+            log.debug ("Validated productInsntace");
             productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
 
             // VM vm = productInstance.getVm();
@@ -82,6 +87,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
             installator
                     .callService(productInstance, productInstance.getVm(), artifact.getAttributes(), DEPLOY_ARTIFACT, token);
 
+            log.debug ("Artifact " + artifact.getName()+ " installed");
             productInstance.setStatus(Status.INSTALLED);
 
             // artifact.setProductInstance(productInstance);
@@ -97,16 +103,19 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
             return productInstance;
 
         } catch (InstallatorException e) {
+        	log.error(e.getMessage());
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
-            // restore the status
+        	log.error(e.getMessage());
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (NodeExecutionException e) {
+        	log.error(e.getMessage());
             restoreInstance(Status.ERROR, productInstance);
             throw e;
         } catch (AlreadyExistsEntityException e) {
+        	log.error(e.getMessage());
             throw new SdcRuntimeException(e);
         }
 
@@ -114,7 +123,8 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
 
     public ProductInstance undeployArtifact(ProductInstance productInstance, String artifactName, String token)
             throws NodeExecutionException, FSMViolationException, InstallatorException {
-        Status previousStatus = productInstance.getStatus();
+    	log.debug("UNDeploy artifact " + artifactName+ " in product " + productInstance.getName() );
+    	Status previousStatus = productInstance.getStatus();
         try {
             validator.validateDeployArtifact(productInstance);
 
@@ -125,6 +135,7 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
 
             installator.callService(productInstance, productInstance.getVm(), artifact.getAttributes(),
                     UNDEPLOY_ARTIFACT, token);
+            log.debug("UNDeployed artifact " + artifactName+ " in product " + productInstance.getName() );
 
             productInstance.setStatus(Status.INSTALLED);
 
@@ -142,13 +153,16 @@ public class ArtifactManagerChefImpl extends BaseInstallableInstanceManagerChef 
             return productInstance;
 
         } catch (InstallatorException e) {
+        	log.error(e.getMessage());
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (RuntimeException e) { // by runtime restore the previous state
             // restore the status
+        	log.error(e.getMessage());
             restoreInstance(previousStatus, productInstance);
             throw new SdcRuntimeException(e);
         } catch (NodeExecutionException e) {
+        	log.error(e.getMessage());
             restoreInstance(Status.ERROR, productInstance);
             throw e;
         }

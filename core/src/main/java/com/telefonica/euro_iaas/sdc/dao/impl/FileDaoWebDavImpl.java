@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +41,8 @@ import com.googlecode.sardine.DavResource;
 import com.googlecode.sardine.Sardine;
 import com.googlecode.sardine.SardineFactory;
 import com.googlecode.sardine.util.SardineException;
-import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.sdc.dao.FileDao;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-
 
 /**
  * Default implementation of FileDao.
@@ -52,7 +52,7 @@ import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 
 public class FileDaoWebDavImpl implements FileDao {
 
- //   SystemPropertiesProvider propertiesProvider;
+    // SystemPropertiesProvider propertiesProvider;
     Client client;
     Sardine sardine;
     private static Logger log = LoggerFactory.getLogger(FileDaoWebDavImpl.class);
@@ -63,8 +63,7 @@ public class FileDaoWebDavImpl implements FileDao {
     @Override
     public void createDirectory(String webdavDirectoryUrl) throws SardineException {
         Sardine sardine;
-        sardine = SardineFactory.begin(WEBDAV_USERNAME,
-                WEBDAV_PASSWD);
+        sardine = SardineFactory.begin(WEBDAV_USERNAME, WEBDAV_PASSWD);
         sardine.createDirectory(webdavDirectoryUrl);
         log.info(webdavDirectoryUrl + " CREATED ");
     }
@@ -75,8 +74,7 @@ public class FileDaoWebDavImpl implements FileDao {
     @Override
     public String insertFile(String webdavFileUrl, File installable) throws SardineException {
 
-        sardine = SardineFactory.begin(WEBDAV_USERNAME,
-                WEBDAV_PASSWD);
+        sardine = SardineFactory.begin(WEBDAV_USERNAME, WEBDAV_PASSWD);
         byte[] data;
         try {
             data = FileUtils.readFileToByteArray(new File(installable.getAbsolutePath()));
@@ -96,10 +94,9 @@ public class FileDaoWebDavImpl implements FileDao {
     @Override
     public void delete(String webdavUrl) throws SardineException {
 
-        sardine = SardineFactory.begin(WEBDAV_USERNAME,
-                WEBDAV_PASSWD);
+        sardine = SardineFactory.begin(WEBDAV_USERNAME, WEBDAV_PASSWD);
         sardine.delete(webdavUrl);
-        log.info( webdavUrl + " DELETED ");
+        log.info(webdavUrl + " DELETED ");
     }
 
     /**
@@ -108,18 +105,18 @@ public class FileDaoWebDavImpl implements FileDao {
     @Override
     public boolean directoryExists(String directoryBase, String webdavUrl) throws SardineException {
         boolean exist = false;
-        sardine = SardineFactory.begin(WEBDAV_USERNAME,
-                WEBDAV_PASSWD);
+        sardine = SardineFactory.begin(WEBDAV_USERNAME, WEBDAV_PASSWD);
 
         List<DavResource> resources = sardine.getResources(directoryBase);
         for (DavResource res : resources) {
             if (res.getAbsoluteUrl().equals(webdavUrl)) {
-                log.info( webdavUrl + " exists in " + directoryBase);
+                log.info(webdavUrl + " exists in " + directoryBase);
                 exist = true;
             }
         }
         return exist;
     }
+
     /**
      * @param client
      *            the client to set

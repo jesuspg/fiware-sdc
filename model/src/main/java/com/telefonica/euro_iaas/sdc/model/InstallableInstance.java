@@ -45,7 +45,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 /**
- * InstallableInstance represents an instance of an execution unit that is (or has been) installed.
+ * InstallableInstance represents an instance of an execution unit that is (or
+ * has been) installed.
  * 
  * @author Sergio Arroyo
  */
@@ -60,23 +61,14 @@ public class InstallableInstance {
     public final static String VDC_FIELD = "vdc";
 
     /**
-     * Defines the value of the different status the Application could be. See the diagram bellow to know the relations
-     * between the different states. <img src=
+     * Defines the value of the different status the Application could be. See
+     * the diagram bellow to know the relations between the different states.
+     * <img src=
      * "http://plantuml.com:80/plantuml/img/YzQALT3LjLFmp2ikISp9oSnBv-L2i96bKbFWCgafO8dGl4nCNJ2vWlIYn1Gi4ixvUMcPwQL5O2cuAdIBa5IXIo7RYkeC55ceTT5QiRnS65voBIhABq9t6LGGrKrGGNJtmDIYkmLT7DLeC0Lp5W00"
      * >
      */
     public enum Status {
-        INSTALLING,
-        INSTALLED,
-        ERROR,
-        UNINSTALLING,
-        UNINSTALLED,
-        CONFIGURING,
-        UPGRADING,
-        DEPLOYING_ARTEFACT,
-        ARTIFACT_DEPLOYED,
-        UNDEPLOYING_ARTIFACT,
-        ARTIFACT_UNDEPLOYED
+        INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED, CONFIGURING, UPGRADING, DEPLOYING_ARTEFACT, ARTIFACT_DEPLOYED, UNDEPLOYING_ARTIFACT, ARTIFACT_UNDEPLOYED
     };
 
     @Id
@@ -227,6 +219,7 @@ public class InstallableInstance {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -239,6 +232,7 @@ public class InstallableInstance {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -256,6 +250,25 @@ public class InstallableInstance {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[InstallableInstance]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[date = ").append(this.date).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[status = ").append(this.status).append("]");
+        sb.append("[vm = ").append(this.vm).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

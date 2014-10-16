@@ -26,6 +26,9 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -45,7 +48,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
  * @author Sergio Arroyo
  */
 public class ProductInstanceSyncServiceImpl implements ProductInstanceSyncService {
-
+	private static Logger log = LoggerFactory.getLogger(ProductInstanceSyncServiceImpl.class.getName());
     private ProductInstanceService productInstanceService;
     private TaskService taskService;
 
@@ -102,7 +105,10 @@ public class ProductInstanceSyncServiceImpl implements ProductInstanceSyncServic
 
     public ProductInstance install(String vdc, ProductInstanceDto product, String token) throws MaxTimeWaitingExceedException,
             InvalidExecutionException {
+    	log.debug ("vdc " + vdc + " product" + product.getProduct().getName());
         Task task = productInstanceService.install(vdc, product, null, token);
+        log.debug (task.getHref());
+        log.debug (task.getStatus().name());
         return this.waitForTask(task, token);
     }
 

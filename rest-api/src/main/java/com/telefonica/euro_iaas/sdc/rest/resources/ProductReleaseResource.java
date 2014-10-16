@@ -37,7 +37,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
@@ -47,6 +48,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 /**
  * @author jesus.movilla
@@ -69,20 +71,7 @@ public interface ProductReleaseResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease insert(@PathParam("pName") String pName, ProductReleaseDto productRelease)
-            throws AlreadyExistsProductReleaseException, InvalidProductReleaseException;
-
-    /**
-     * @param multiPart
-     * @return
-     * @throws AlreadyExistsProductReleaseException
-     * @throws InvalidProductReleaseException
-     * @throws InvalidMultiPartRequestException
-     */
-    @POST
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes("multipart/mixed")
-    ProductRelease insert(MultiPart multiPart) throws AlreadyExistsProductReleaseException,
-            InvalidProductReleaseException, InvalidMultiPartRequestException;
+        throws APIException;
 
     /**
      * Retrieve all available versions of the given product.
@@ -120,7 +109,7 @@ public interface ProductReleaseResource {
     @Path("/{version}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductRelease load(@PathParam("pName") String name, @PathParam("version") String version)
-            throws EntityNotFoundException;
+        throws APIException;
 
     /**
      * Delete the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
@@ -139,34 +128,7 @@ public interface ProductReleaseResource {
     @Path("/{version}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name, @PathParam("version") String version)
-            throws ProductReleaseNotFoundException, ProductReleaseStillInstalledException;
-
-    /**
-     * Update the ProductRelease in BBDD, the associated Recipe in chef server and the installable files in webdav.
-     * 
-     * @param multipart
-     *            which includes
-     *            <ol>
-     *            <li>The ProductReleaseDto: contains the information about the product</li>
-     *            <li>The cookbook: a tar file containing the whole cookbook.</li>
-     *            <li>The binary files: if the product needs some files which isn't in the OS repositories, a tar file
-     *            containing the structure will be deploying in a webdav.</li>
-     *            </ol>
-     * @throws ProductReleaseNotFoundException
-     *             if the Product Release does not exists
-     * @throws InvalidProductReleaseException
-     *             if the Product Release is still installed on some VMs
-     * @throws InvalidProductReleaseUpdateRequestException
-     *             if the Product is invalid
-     * @throws InvalidMultiPartRequestException
-     *             fi the Multipart is Invalid
-     */
-    @PUT
-    @Path("/{version}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes("multipart/mixed")
-    ProductRelease update(MultiPart multipart) throws ProductReleaseNotFoundException, InvalidProductReleaseException,
-            InvalidProductReleaseUpdateRequestException, InvalidMultiPartRequestException;
+        throws APIException;
 
     /**
      * Find all possible transitions for a concrete release. It means, the different version of a product which are
@@ -184,6 +146,6 @@ public interface ProductReleaseResource {
     @Path("/{version}/updatable")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductRelease> findTransitable(@PathParam("pName") String name, @PathParam("version") String version)
-            throws EntityNotFoundException;
+         throws APIException;
 
 }

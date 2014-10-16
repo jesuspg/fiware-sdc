@@ -34,16 +34,63 @@ import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
+/**
+ * @author alberts
+ *
+ */
 public interface Installator {
 
+    
+    /**
+     * Execute the service according to parameters
+     * @param vm
+     * @param vdc
+     * @param productRelease
+     * @param action
+     * @param token
+     * @throws InstallatorException
+     * @throws NodeExecutionException
+     */
     void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token) throws InstallatorException, NodeExecutionException;
     
+    /**
+     * Execute the service according to parameters
+     * @param productInstance
+     * @param vm
+     * @param attributes
+     * @param action
+     * @param token
+     * @throws InstallatorException
+     * @throws NodeExecutionException
+     */
     void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action, String token)
             throws InstallatorException, NodeExecutionException;
 
+    /**
+     * Execute the service according to parameters
+     * @param productInstance
+     * @param vm
+     * @param token
+     * @throws InstallatorException
+     */
     void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException;
 
+    /**
+     * Execute the service according to parameters
+     * @param productInstance
+     * @param action
+     * @param token
+     * @throws InstallatorException
+     * @throws NodeExecutionException
+     */
     void callService(ProductInstance productInstance, String action, String token) throws InstallatorException, NodeExecutionException;
     
+    /**
+     * Data Validation
+     * @param vm
+     * @param token
+     * @throws InvalidInstallProductRequestException
+     * @throws NodeExecutionException
+     */
     void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException, NodeExecutionException;
 }

@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,14 +36,16 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
@@ -60,7 +61,7 @@ public class SDCClientUtilsImplTest {
     SDCClientUtilsImpl sdcClientUtils;
     SystemPropertiesProvider propertiesProvider;
     Client client;
-    WebResource webResource;
+    WebTarget webResource;
     OSDao osDao1;
     NodeCommandDao nodeCommandDao;
 
@@ -70,15 +71,15 @@ public class SDCClientUtilsImplTest {
         propertiesProvider = mock(SystemPropertiesProvider.class);
         client = mock(Client.class);
         sdcClientUtils.setClient(client);
-       
-        webResource = mock(WebResource.class);
+
+        webResource = mock(WebTarget.class);
         osDao1 = mock(OSDao.class);
         sdcClientUtils.setOsDao(osDao1);
         nodeCommandDao = mock(NodeCommandDao.class);
         sdcClientUtils.setNodeCommandDao(nodeCommandDao);
 
         when(propertiesProvider.getProperty(CHEF_CLIENT_URL_TEMPLATE)).thenReturn("http://baseurl");
-        when(client.resource(anyString())).thenReturn(webResource);
+        when(client.target(anyString())).thenReturn(webResource);
 
     }
 
@@ -90,14 +91,13 @@ public class SDCClientUtilsImplTest {
         String fqn = "fqn";
         String osType = "linux";
         VM vm = new VM();
-        String url = "http://"+ ip+ ":9990/sdc-client/rest/vm";
+        String url = "http://" + ip + ":9990/sdc-client/rest/vm";
 
-
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
         // when
 
-        when(client.resource(url)).thenReturn(webResource);
-        when(webResource.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(client.target(url)).thenReturn(webResource);
+        when(webResource.request(MediaType.APPLICATION_XML)).thenReturn(builder);
         when(builder.get(VM.class)).thenReturn(vm);
 
         VM resultVM = sdcClientUtils.getVM(ip, fqn, osType);
@@ -105,8 +105,8 @@ public class SDCClientUtilsImplTest {
         assertNotNull(resultVM);
         assertEquals(resultVM.getFqn(), fqn);
         assertEquals(resultVM.getOsType(), osType);
-        verify(client).resource(url);
-        verify(webResource).accept(MediaType.APPLICATION_XML);
+        verify(client).target(url);
+        verify(webResource).request(MediaType.APPLICATION_XML);
         verify(builder).get(VM.class);
     }
 
@@ -159,26 +159,26 @@ public class SDCClientUtilsImplTest {
 
         String osType = "76";
         VM vm = new VM("fqn", "ip", "hostname", "domain", osType);
-        ClientResponse clientResponse1 = mock(ClientResponse.class);
+        Response clientResponse1 = mock(Response.class);
         List<NodeCommand> nodeCommands = new ArrayList<NodeCommand>(2);
         NodeCommand nodeCommand = new NodeCommand();
         nodeCommands.add(nodeCommand);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
         OS os1 = new OS();
 
         // when
         when(osDao1.load("76")).thenReturn(os1);
         when(nodeCommandDao.findByCriteria(any(NodeCommandSearchCriteria.class))).thenReturn(nodeCommands);
-        when(webResource.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
-        when(builder.type(MediaType.APPLICATION_XML)).thenReturn(builder);
-        when(builder.put(eq(ClientResponse.class), any(Attribute.class))).thenReturn(clientResponse1);
+        when(webResource.request(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.put(Entity.xml(any(Attribute.class)))).thenReturn(clientResponse1);
 
         sdcClientUtils.setNodeCommands(vm);
 
         // then
         verify(nodeCommandDao).findByCriteria(any(NodeCommandSearchCriteria.class));
-        verify(client).resource(anyString());
-        verify(builder).put(eq(ClientResponse.class), any(Attribute.class));
+        verify(client).target(anyString());
+        verify(builder).put(Entity.xml(any(Attribute.class)));
     }
 
     @Test

@@ -71,11 +71,12 @@ public class ProductRelease extends InstallableRelease {
      * @param supportedOOSS
      * @param transitableReleases
      */
-    //public ProductRelease(String version, String releaseNotes, List<Attribute> privateAttributes, Product product,
-      //      List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
-        //super(version, releaseNotes, privateAttributes);
-    public ProductRelease(String version, String releaseNotes, Product product,
-        List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
+    // public ProductRelease(String version, String releaseNotes,
+    // List<Attribute> privateAttributes, Product product,
+    // List<OS> supportedOOSS, List<ProductRelease> transitableReleases) {
+    // super(version, releaseNotes, privateAttributes);
+    public ProductRelease(String version, String releaseNotes, Product product, List<OS> supportedOOSS,
+            List<ProductRelease> transitableReleases) {
         super(version, releaseNotes);
         this.product = product;
         this.supportedOOSS = supportedOOSS;
@@ -83,20 +84,17 @@ public class ProductRelease extends InstallableRelease {
     }
 
     /**
-     * Merge the private attributes of a concrete version with the common attributes of the product
+     * Merge the private attributes of a concrete version with the common
+     * attributes of the product
      * 
      * @return
      */
-    /*public List<Attribute> getAttributes() {
-        List<Attribute> attr = new ArrayList<Attribute>();
-        if (getProduct().getAttributes() != null) {
-            attr.addAll(getProduct().getAttributes());
-        }
-        if (getPrivateAttributes() != null) {
-            attr.addAll(getPrivateAttributes());
-        }
-        return attr;
-    }*/
+    /*
+     * public List<Attribute> getAttributes() { List<Attribute> attr = new
+     * ArrayList<Attribute>(); if (getProduct().getAttributes() != null) {
+     * attr.addAll(getProduct().getAttributes()); } if (getPrivateAttributes()
+     * != null) { attr.addAll(getPrivateAttributes()); } return attr; }
+     */
 
     // /////// GETTERS AND SETTERS /////////
     /**
@@ -159,6 +157,7 @@ public class ProductRelease extends InstallableRelease {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -172,6 +171,7 @@ public class ProductRelease extends InstallableRelease {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -194,6 +194,21 @@ public class ProductRelease extends InstallableRelease {
         } else if (!getVersion().equals(other.getVersion()))
             return false;
         return true;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ProductRelease]");
+        sb.append("[product = ").append(this.product).append("]");
+        sb.append("[supportedOOSS = ").append(this.supportedOOSS).append("]");
+        sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

@@ -72,11 +72,13 @@ public class ProductInstanceAsyncManagerImplTest {
 
     @Before
     public void setUp() throws EntityNotFoundException {
-        
+    	SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         productInstanceAsyncManager = new ProductInstanceAsyncManagerImpl();
         productInstanceAsyncManager.setTaskManager(taskManager);
         productInstanceAsyncManager.setTaskNotificator(taskNotificator);
         productInstanceAsyncManager.setProductInstanceManager(productInstanceManager);
+        productInstanceAsyncManager.setSystemPropertiesProvider(systemPropertiesProvider);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
     }
 
     @Test
@@ -174,7 +176,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
 
@@ -214,7 +216,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -252,7 +254,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,"token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -290,7 +292,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes, "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -329,7 +331,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+       
     }
     
     @Test
@@ -364,7 +366,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+     
     }
     
     @Test
@@ -400,7 +402,7 @@ public class ProductInstanceAsyncManagerImplTest {
         // then
         assertEquals(task.getStatus(), Task.TaskStates.ERROR);
         verify(productInstanceManager).install(vm, vdc, productRelease, attributes,  "token");
-        verify(productInstanceManager).loadByCriteria(any(ProductInstanceSearchCriteria.class));
+     
     }
     
     @Test
