@@ -47,9 +47,9 @@ class RestUtils(object):
 
         url = pattern.format(**kwargs)
 
-        print "==============="
-        print "### REQUEST ###"
-        print 'METHOD: {}\nURL: {} \nHEADERS: {} \nBODY: {}'.format(method, url, headers, self.encoder.encode(body))
+        #print "==============="
+        #print "### REQUEST ###"
+        #print 'METHOD: {}\nURL: {} \nHEADERS: {} \nBODY: {}'.format(method, url, headers, self.encoder.encode(body))
 
         try:
             if headers[CONTENT_TYPE] == CONTENT_TYPE_JSON:
@@ -62,9 +62,9 @@ class RestUtils(object):
             print "Request {} to {} crashed: {}".format(method, url, str(e))
             return None
 
-        print "### RESPONSE ###"
-        print "HTTP RESPONSE CODE:", r.status_code
-        print 'HEADERS: {} \nBODY: {}'.format(r.headers, r.content)
+        #print "### RESPONSE ###"
+        #print "HTTP RESPONSE CODE:", r.status_code
+        #print 'HEADERS: {} \nBODY: {}'.format(r.headers, r.content)
 
         return r
 
