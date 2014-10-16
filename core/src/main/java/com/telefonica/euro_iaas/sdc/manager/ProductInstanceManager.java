@@ -136,6 +136,16 @@ public interface ProductInstanceManager {
      *             if the product instance does not exists
      */
     ProductInstance load(String vdc, Long id) throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param vm
+     * @param productRelease
+     * @param vdc
+     * @return
+     * @throws EntityNotFoundException
+     */
+    ProductInstance load(VM vm, ProductRelease productRelease, String vdc ) throws EntityNotFoundException; 
 
     /**
      * Find the ProductInstance by name.

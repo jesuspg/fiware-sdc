@@ -96,4 +96,19 @@ public class TaskReference {
         this.type = type;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[TaskReference]");
+        sb.append("[href = ").append(this.href).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[type = ").append(this.type).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

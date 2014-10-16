@@ -65,6 +65,11 @@ def given_a_created_product_with_all_data_and_name_group1(step, product_id):
     world.product_id = response.json()[PRODUCT_NAME]
 
 
+@step(u'a created product release "([^"]*)" assigned to the "([^"]*)')
+def a_created_product_release_group1_assigned_to_the_group2(step, product_release, product_name):
+    create_release_product(step, product_release, product_name, world.headers[ACCEPT_HEADER])
+
+
 @step(u'When I create the product release "([^"]*)" assigned to the "([^"]*)" with accept parameter "([^"]*)" response')
 def create_release_product(step, product_release, product_name, accept_content):
 
@@ -98,7 +103,7 @@ def then_the_product_release_is_created(step):
 @step(u'Then I obtain an "([^"]*)"')
 def then_i_obtain_an_group1(step, error_code):
 
-    assert_equals(str(world.response.status_code), error_code, world.response.status_code)
+    assert_equals(str(world.response.status_code), error_code, 'RESPONSE: {}'.format(world.response.content))
     world.headers = set_default_headers(world.token_id, world.tenant_id)
 
 

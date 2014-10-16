@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.json.JSONObject;
 
 /**
@@ -37,6 +41,8 @@ import net.sf.json.JSONObject;
  * 
  * @author Sergio Arroyo
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ChefNode {
 
     private final static String RECIPE_ITEM_TEMPLATE = "recipe[{0}]";
@@ -76,7 +82,7 @@ public class ChefNode {
     public boolean hasRecipe(String recipe) {
         return runlList.contains(MessageFormat.format(RECIPE_ITEM_TEMPLATE, recipe));
     }
-    
+
     public void addOverride(String key, String value) {
         overrides.put(key, value);
     }
@@ -92,7 +98,7 @@ public class ChefNode {
     public void addAttribute(String process, String key, String value) {
         attributes = addNewAttribute(attributes, process, key, value);
     }
-    
+
     public void addAutomaticAttribute(String process, String key, String value) {
         automaticAttributes = addNewAttribute(automaticAttributes, process, key, value);
     }
@@ -128,7 +134,7 @@ public class ChefNode {
     public void removeAttritube(String key) {
         attributes.remove(key);
     }
-    
+
     public void addAutomaticAttritube(String key, String value) {
         automaticAttributes.put(key, value);
     }
@@ -166,6 +172,7 @@ public class ChefNode {
     public void setOhai_time(String ohai_time) {
         this.ohai_time = ohai_time;
     }
+
     /**
      * @return the attributes
      */
@@ -180,7 +187,7 @@ public class ChefNode {
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
-    
+
     /**
      * @return the automaticAttributes
      */
@@ -195,7 +202,7 @@ public class ChefNode {
     public void setAutomaticAttributes(Map<String, Object> automaticAttributes) {
         this.automaticAttributes = automaticAttributes;
     }
-    
+
     /**
      * @return the overrides
      */
@@ -295,13 +302,13 @@ public class ChefNode {
         attributes = jsonNode.getJSONObject("normal");
         automaticAttributes = jsonNode.getJSONObject("automatic");
     }
-    
+
     @SuppressWarnings("unchecked")
     public String getChefNodeName(String stringChefNodes, String hostname) {
 
         String[] output = stringChefNodes.split("\"" + hostname);
         String name = "";
-        for (int i =1; i < output.length; i++){
+        for (int i = 1; i < output.length; i++) {
             if (output[i].startsWith("\"") && name.isEmpty()) {
                 String url = output[i].split("\"")[2];
                 String nameAux = url.split("nodes")[1];
@@ -310,7 +317,7 @@ public class ChefNode {
                 else
                     name = nameAux.substring(1, nameAux.length());
             }
-            if (output[i].startsWith(".") && name.isEmpty()){
+            if (output[i].startsWith(".") && name.isEmpty()) {
                 String url = output[i].split("\"")[2];
                 String nameAux = url.split("nodes")[1];
                 if (nameAux.startsWith("\\"))
@@ -319,25 +326,37 @@ public class ChefNode {
                     name = nameAux.substring(1, nameAux.length());
             }
         }
-        
+
         return name;
-        
-        /*if (output[1].startsWith("\\.")){
-            String url = output[1].split("\"")[2];
-            String nameAux = url.split("nodes")[1];
-            String name = nameAux.substring(1, nameAux.length());
-            return name;
-        } else  if (output[1].startsWith("\"")) {
-            String url = output[1].split("\"")[2];
-            String nameAux = url.split("nodes")[1];
-            String name = nameAux.substring(1, nameAux.length());
-            return name;
-        } else {
-            String url = output[1].split("\"")[2];
-            String nameAux = url.split("nodes")[1];
-            String name = nameAux.substring(1, nameAux.length());
-            return name;
-        }*/
+
+        /*
+         * if (output[1].startsWith("\\.")){ String url = output[1].split("\"")[2]; String nameAux =
+         * url.split("nodes")[1]; String name = nameAux.substring(1, nameAux.length()); return name; } else if
+         * (output[1].startsWith("\"")) { String url = output[1].split("\"")[2]; String nameAux = url.split("nodes")[1];
+         * String name = nameAux.substring(1, nameAux.length()); return name; } else { String url =
+         * output[1].split("\"")[2]; String nameAux = url.split("nodes")[1]; String name = nameAux.substring(1,
+         * nameAux.length()); return name; }
+         */
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ChefNode]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[ohai_time = ").append(this.ohai_time).append("]");
+        sb.append("[automaticAttributes = ").append(this.automaticAttributes).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("[overrides = ").append(this.overrides).append("]");
+        sb.append("[defaults = ").append(this.defaults).append("]");
+        sb.append("[runlList = ").append(this.runlList).append("]");
+        sb.append("[chefType = ").append(this.chefType).append("]");
+        sb.append("[jsonClass = ").append(this.jsonClass).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

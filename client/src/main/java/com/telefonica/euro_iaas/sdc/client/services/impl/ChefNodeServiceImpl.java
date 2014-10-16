@@ -26,42 +26,31 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 
 import java.text.MessageFormat;
 
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.Invocation;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
-import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNodeService {
 
     /**
-     * @param client
+     * @param clientConfig
      * @param baseHost
      * @param type
      */
-    public ChefNodeServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public ChefNodeServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
+        setSdcClientConfig(clientConfig);
         setBaseHost(baseHost);
         setType(type);
     }
 
-    public Task delete(String vdc, String chefNodeName, String token) throws InvalidExecutionException {
-        try {
+    public Task delete(String vdc, String chefNodeName, String token) {
 
-            String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFNODE_PATH, vdc, chefNodeName);
-            WebResource.Builder builder= createWebResource (url, token, vdc);
-            return builder.delete(Task.class);
-
-        } catch (UniformInterfaceException e) {
-            String errorMsg = " Error deleting a chefnode " + chefNodeName + " in vdc " + vdc + ". Description: "
-                    + e.getMessage();
-            throw new InvalidExecutionException(errorMsg);
-        }
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFNODE_PATH, vdc, chefNodeName);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
+        return builder.delete(Task.class);
 
     }
 

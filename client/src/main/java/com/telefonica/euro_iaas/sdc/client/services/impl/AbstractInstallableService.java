@@ -27,12 +27,15 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.MDC;
 
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
@@ -47,6 +50,7 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
     private String upgradePath;
     private String configPath;
     private String uninstallPath;
+    private SdcClientConfig clientConfig;
 
     /**
      * See {@link ApplicationInstanceService#upgrade(String, Long, String, String)} or
@@ -54,9 +58,9 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task upgrade(String vdc, String name, String version, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(upgradePath, vdc, name, version);
-        Builder builder = createWebResource(url, token, vdc);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
-        return builder.put(Task.class);
+        return builder.put(Entity.json(null), Task.class);
     }
 
     /**
@@ -65,13 +69,12 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task configure(String vdc, String name, String callback, List<Attribute> arguments, String token) {
         String url = getBaseHost() + MessageFormat.format(configPath, vdc, name);
-        Builder builder = createWebResource(url, token, vdc);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         Attributes attributes = new Attributes();
         attributes.addAll(arguments);
         // create Attributes object because Jersey can not write List<Attribute>
-        builder.entity(attributes);
-        return builder.put(Task.class);
+        return builder.put(Entity.entity(attributes, getType())).readEntity(Task.class);
     }
 
     /**
@@ -80,12 +83,12 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
      */
     public Task uninstall(String vdc, String name, String callback, String token) {
         String url = getBaseHost() + MessageFormat.format(uninstallPath, vdc, name);
-        Builder builder = createWebResource(url, token, vdc);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.delete(Task.class);
     }
 
-    protected Builder addCallback(Builder resource, String callback) {
+    protected Invocation.Builder addCallback(Invocation.Builder resource, String callback) {
         if (!StringUtils.isEmpty(callback)) {
             resource = resource.header("callback", callback);
         }
@@ -137,9 +140,9 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
         this.uninstallPath = uninstallPath;
     }
 
-    protected Builder createWebResource(String url, String token, String tenant) {
-        WebResource webResource = getClient().resource(url);
-        Builder builder = webResource.accept(getType()).type(getType());
+    protected Invocation.Builder createWebResource(String url, String token, String tenant) {
+        WebTarget webResource = getClient().target(url);
+        Invocation.Builder builder = webResource.request(getType()).accept(getType());
         builder.header("X-Auth-Token", token);
         builder.header("Tenant-Id", tenant);
 

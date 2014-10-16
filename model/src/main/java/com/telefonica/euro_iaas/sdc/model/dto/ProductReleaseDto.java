@@ -49,7 +49,7 @@ public class ProductReleaseDto {
     private String productDescription;
     private String version;
     private String releaseNotes;
-    //private List<Attribute> privateAttributes;
+    // private List<Attribute> privateAttributes;
     private List<Metadata> metadatas;
     private List<OS> supportedOS;
     private List<ProductRelease> transitableReleases;
@@ -66,17 +66,20 @@ public class ProductReleaseDto {
      * @param supportedOS
      * @param transitableReleases
      */
-    /*public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
-            List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
-            List<ProductRelease> transitableReleases) {*/
+    /*
+     * public ProductReleaseDto(String productName, String productDescription,
+     * String version, String releaseNotes, List<Attribute> privateAttributes,
+     * List<Metadata> metadatas, List<OS> supportedOS, List<ProductRelease>
+     * transitableReleases) {
+     */
     public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
-        List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
-        List<ProductRelease> transitableReleases) {
+            List<Attribute> privateAttributes, List<Metadata> metadatas, List<OS> supportedOS,
+            List<ProductRelease> transitableReleases) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.version = version;
         this.releaseNotes = releaseNotes;
-        //this.privateAttributes = privateAttributes;
+        // this.privateAttributes = privateAttributes;
         this.metadatas = metadatas;
         this.supportedOS = supportedOS;
         this.transitableReleases = transitableReleases;
@@ -114,13 +117,13 @@ public class ProductReleaseDto {
         this.releaseNotes = releaseNotes;
     }
 
-    /*public List<Attribute> getPrivateAttributes() {
-        return privateAttributes;
-    }
-
-    public void setPrivateAttributes(List<Attribute> privateAttributes) {
-        this.privateAttributes = privateAttributes;
-    }*/
+    /*
+     * public List<Attribute> getPrivateAttributes() { return privateAttributes;
+     * }
+     * 
+     * public void setPrivateAttributes(List<Attribute> privateAttributes) {
+     * this.privateAttributes = privateAttributes; }
+     */
 
     public List<Metadata> getMetadatas() {
         return metadatas;
@@ -144,6 +147,25 @@ public class ProductReleaseDto {
 
     public void setTransitableReleases(List<ProductRelease> transitableReleases) {
         this.transitableReleases = transitableReleases;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ProductReleaseDto]");
+        sb.append("[productName = ").append(this.productName).append("]");
+        sb.append("[productDescription = ").append(this.productDescription).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[releaseNotes = ").append(this.releaseNotes).append("]");
+        sb.append("[metadatas = ").append(this.metadatas).append("]");
+        sb.append("[supportedOS = ").append(this.supportedOS).append("]");
+        sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

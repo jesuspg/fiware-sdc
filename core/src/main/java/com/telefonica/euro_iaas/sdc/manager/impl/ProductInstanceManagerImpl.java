@@ -127,7 +127,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm, token);
-                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+//                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+                    puppetInstallator.callService(instance, vm, attributes, INSTALL, token);
                 } else {
                     chefInstallator.validateInstalatorData(vm, token);
                     //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
@@ -152,6 +153,10 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(e);
+        } catch (Exception e) {
+                // by default restore the previous state when a runtime is thrown
+            restoreInstance(previousStatus, instance);
+                throw new SdcRuntimeException(e);
         }
 
     }
@@ -337,6 +342,17 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         }
         return instance;
     }
+    
+
+    public ProductInstance load(VM vm, ProductRelease productRelease, String vdc ) throws EntityNotFoundException {
+        ProductInstance instance = productInstanceDao.load(vm.getFqn() + "_" + productRelease.getProduct().getName() + "_"
+                + productRelease.getVersion());
+        if (!instance.getVdc().equals(vdc)) {
+            throw new EntityNotFoundException(ProductInstance.class, "vdc", vdc);
+        }
+        return instance;
+    }
+
 
     /**
      * {@inheritDoc}

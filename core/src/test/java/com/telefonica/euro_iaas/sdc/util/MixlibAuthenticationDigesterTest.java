@@ -24,13 +24,10 @@
 
 package com.telefonica.euro_iaas.sdc.util;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -54,7 +51,6 @@ public class MixlibAuthenticationDigesterTest {
     public void setUp() {
         propertiesProvider = mock(SystemPropertiesProvider.class);
 
-
         signer = mock(Signer.class);
         when(signer.sign(anyString(), (File) anyObject())).thenReturn("blahblahblah");
     }
@@ -71,8 +67,7 @@ public class MixlibAuthenticationDigesterTest {
         Map<String, String> headers = digester.digest("GET", "/nodes", "", new Date(), "serch", this.getClass()
                 .getResource("/private.pem").getPath());
         // make assertions
-        assertEquals(5, headers.size());
-
+        assertEquals(7, headers.size());
 
     }
 

@@ -181,4 +181,24 @@ public class Metadata {
         return true;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Metadata]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[v = ").append(this.v).append("]");
+       sb.append("[key = ").append(this.key).append("]");
+       sb.append("[value = ").append(this.value).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

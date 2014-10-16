@@ -32,9 +32,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.manager.async.NodeAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -56,11 +53,8 @@ import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 @Scope("request")
 public class NodeResourceImpl implements NodeResource {
 
-    @InjectParam("nodeAsyncManager")
     private NodeAsyncManager nodeAsyncManager;
-    @InjectParam("taskManager")
     private TaskManager taskManager;
-    @InjectParam("nodeManager")
     private NodeManager nodeManager;
 
     public ChefClient findByHostname(String hostname) {

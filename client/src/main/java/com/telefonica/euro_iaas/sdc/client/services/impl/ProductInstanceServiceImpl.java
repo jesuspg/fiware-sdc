@@ -27,22 +27,21 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.api.client.filter.LoggingFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
+import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
@@ -54,13 +53,15 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
  */
 public class ProductInstanceServiceImpl extends AbstractInstallableService implements ProductInstanceService {
 
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceServiceImpl.class.getName());
+
     /**
-     * @param client
+     * @param clientConfig
      * @param baseHost
      * @param type
      */
-    public ProductInstanceServiceImpl(Client client, String baseHost, String type) {
-        setClient(client);
+    public ProductInstanceServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
+        setSdcClientConfig(clientConfig);
         setBaseHost(baseHost);
         setType(type);
         setUpgradePath(ClientConstants.UPGRADE_PRODUCT_INSTANCE_PATH);
@@ -73,11 +74,14 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      */
 
     public Task install(String vdc, ProductInstanceDto product, String callback, String token) {
+        log.info("Install " + vdc + " procut " + product);
         String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_PRODUCT_INSTANCE_PATH, vdc);
-        WebResource.Builder builder = createWebResource (url, token, vdc);
-        builder.entity(product);
+        log.info(url);
+
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
-        return builder.post(Task.class);
+        Response response = builder.post(Entity.entity(product, getType()));
+        return response.readEntity(Task.class);
 
     }
 
@@ -90,10 +94,9 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         String url = getBaseHost() + MessageFormat.format(
 
         ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
-        WebResource.Builder builder = createWebResource (url, token, vdc);
-        builder.entity(artifact);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
-        return builder.post(Task.class);
+        return builder.post(Entity.entity(artifact, getType())).readEntity(Task.class);
 
     }
 
@@ -101,7 +104,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         String url = getBaseHost() + MessageFormat.format(
 
         ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId, artefact.getName());
-        WebResource.Builder builder = createWebResource (url, token, vdc);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
         builder = addCallback(builder, callback);
         return builder.delete(Task.class);
 
@@ -112,24 +115,23 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      */
 
     public List<ProductInstance> findAll(String hostname, String domain, String ip, String fqn, Integer page,
-            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName, String token) {
+            Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName,
+            String token) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_PRODUCT_INSTANCE_PATH, vdc);
-        WebResource webResource = getClient().resource(url);
-    
-    	 
-        MultivaluedMap<String, String> searchParams = new MultivaluedMapImpl();
-        searchParams = addParam(searchParams, "hostname", hostname);
-        searchParams = addParam(searchParams, "domain", domain);
-        searchParams = addParam(searchParams, "ip", ip);
-        searchParams = addParam(searchParams, "fqn", fqn);
-        searchParams = addParam(searchParams, "page", page);
-        searchParams = addParam(searchParams, "pageSize", pageSize);
-        searchParams = addParam(searchParams, "orderBy", orderBy);
-        searchParams = addParam(searchParams, "orderType", orderType);
-        searchParams = addParam(searchParams, "status", status);
-        searchParams = addParam(searchParams, "product", productName);
+        WebTarget webResource = getClient().target(url);
 
-        return webResource.queryParams(searchParams).accept(getType()).get(ProductInstances.class );
+        webResource.queryParam("hostname", hostname);
+        webResource.queryParam("domain", domain);
+        webResource.queryParam("ip", ip);
+        webResource.queryParam("fqn", fqn);
+        webResource.queryParam("page", page);
+        webResource.queryParam("pageSize", pageSize);
+        webResource.queryParam("orderBy", orderBy);
+        webResource.queryParam("orderType", orderType);
+        webResource.queryParam("status", status);
+        webResource.queryParam("product", productName);
+
+        return webResource.request(getType()).accept(getType()).get(ProductInstances.class);
 
     }
 
@@ -148,7 +150,7 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
 
     public ProductInstance loadUrl(String url, String token, String tenant) throws ResourceNotFoundException {
         try {
-        	Builder builder  = createWebResource (url, token, tenant);
+            Invocation.Builder builder = createWebResource(url, token, tenant);
             return builder.get(ProductInstance.class);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ProductInstance.class, url);

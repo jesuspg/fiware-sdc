@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.sdc.client;
 
-import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
@@ -38,11 +37,12 @@ import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceServiceI
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductInstanceSyncServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductReleaseServiceImpl;
 import com.telefonica.euro_iaas.sdc.client.services.impl.ProductServiceImpl;
+import com.telefonica.euro_iaas.sdc.client.services.impl.SdcClientConfigImp;
 import com.telefonica.euro_iaas.sdc.client.services.impl.TaskServiceImpl;
 
 public class SDCClient {
 
-    private static Client client = new Client();
+    private static SdcClientConfigImp client = new SdcClientConfigImp();
 
     /**
      * Get the service to work with product instances.
@@ -134,7 +134,7 @@ public class SDCClient {
     public ProductService getProductService(String baseUrl, String mediaType) {
         return new ProductServiceImpl(client, baseUrl, mediaType);
     }
-    
+
     /**
      * Get the service to work with product releases in the catalog.
      * 

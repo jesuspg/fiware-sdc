@@ -141,4 +141,21 @@ public class PaasManagerUser extends User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[PaasManagerUser]");
+        sb.append("[tenantId = ").append(this.tenantId).append("]");
+        sb.append("[tenantName = ").append(this.tenantName).append("]");
+        sb.append("[token = ").append(this.token).append("]");
+        sb.append("[username = ").append(this.username).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

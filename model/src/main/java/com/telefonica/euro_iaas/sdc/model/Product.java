@@ -77,7 +77,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Metadata> metadatas;
-    
+
     /**
      * @return the attributes
      */
@@ -167,6 +167,8 @@ public class Product {
     public Product(String name, String description) {
         this.name = name;
         this.description = description;
+        attributes = new ArrayList<Attribute>();
+        metadatas = new ArrayList<Metadata>();
     }
 
     /**
@@ -237,6 +239,22 @@ public class Product {
         } else if (!name.equals(other.name))
             return false;
         return true;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes in name = value format.
+     * 
+     * @return a <code>String</code> representation of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[Product]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("[metadatas = ").append(this.metadatas).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
 }

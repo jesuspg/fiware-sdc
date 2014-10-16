@@ -163,7 +163,7 @@ public class BaseInstallableInstanceManagerChef {
             }
         } catch (EntityNotFoundException e) {
             String message = " Node with hostname " + vm.getHostname() + " is not registered in Chef Server";
-            log.info(message);
+            log.error(message);
             throw new InstallatorException(message, e);
         } catch (CanNotCallChefException e) {
             throw new InstallatorException(e);
@@ -171,6 +171,7 @@ public class BaseInstallableInstanceManagerChef {
         try {
             chefNodeDao.updateNode(node, token);
         } catch (CanNotCallChefException e) {
+        	log.error(e.getMessage());
             throw new InstallatorException(e);
         }
     }
@@ -180,10 +181,11 @@ public class BaseInstallableInstanceManagerChef {
      * Checks if the Node is already registered in ChefServer.
      * @param hostname
      */
-    public void isNodeRegistered(String hostname, String token) {
+    public void isNodeRegistered(String hostname, String token) throws SdcRuntimeException{
         try {
             chefNodeDao.isNodeRegistered(hostname, token);
         } catch (CanNotCallChefException e) {
+        	log.error(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }

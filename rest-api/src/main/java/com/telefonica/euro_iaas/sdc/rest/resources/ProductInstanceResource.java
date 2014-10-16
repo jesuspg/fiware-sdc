@@ -104,24 +104,4 @@ public interface ProductInstanceResource extends BaseInstallableInstanceResource
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductInstance load(@PathParam("vdc") String vdc, @PathParam("name") String name);
 
-    /**
-     * Deploy an artefact in the product instance
-     * 
-     * @param name
-     *            the installable instance name
-     * @param artefact
-     *            the artefact to be deployed
-     * @param callback
-     *            if not empty, contains the url where the result of the async operation will be sent
-     * @return the task.
-     */
-    /*
-     * @POST
-     * @Path("/{name}/ac")
-     * @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-     * @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) Task deployArtifact(@PathParam("vdc") String
-     * vdc, @PathParam("name") String name,
-     * @HeaderParam("callback") String callback, Artifact artifact);
-     */
-
 }
