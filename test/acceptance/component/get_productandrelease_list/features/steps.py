@@ -3,7 +3,7 @@ from lettuce import step, world
 from commons.product_steps import ProductSteps
 from commons.rest_utils import RestUtils
 from commons.constants import *
-from commons.utils import response_body_to_dict
+from commons.utils import response_body_to_dict, replace_none_value_metadata_to_empty_string
 
 from nose.tools import assert_equals, assert_true, assert_false, assert_in
 
@@ -29,6 +29,8 @@ def check_if_product_is_in_list(response, product_release):
             if product_release is None or product_and_release[VERSION] == product_release:
                 found = True
                 for metadata in DEFAULT_METADATA[METADATA]:
+                    # Workaround: xmldict manage Empty values as None value
+                    replace_none_value_metadata_to_empty_string(product_and_release[PRODUCT][PRODUCT_METADATAS])
                     assert_in(metadata, product_and_release[PRODUCT][PRODUCT_METADATAS],
                               "Metadata are not the expected!")
                 if world.attributes is not None:
