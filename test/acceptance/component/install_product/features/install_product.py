@@ -10,7 +10,7 @@ from commons.constants import *
 from commons.configuration import CONFIG_VM_HOSTNAME, CONFIG_VM_IP, CONFIG_VM_FQN, CONFIG_PRODUCT_NAME_CHEF, CONFIG_PRODUCT_NAME_PUPPET, \
     CONFIG_PRODUCT_VERSION_CHEF, CONFIG_PRODUCT_VERSION_PUPPET
 from nose.tools import assert_equals, assert_true, assert_false
-
+import time
 
 api_utils = RestUtils()
 product_steps = ProductSteps()
@@ -175,6 +175,9 @@ def task_is_not_created(step):
 
 @step(u'the product is instantiated')
 def the_product_is_instantiated(step):
+    # Wait for product instance (2s).
+    time.sleep(2)
+    
     provisioning_steps.the_product_is_instantiated(step)
 
 

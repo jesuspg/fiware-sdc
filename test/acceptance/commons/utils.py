@@ -50,7 +50,7 @@ def response_body_to_dict(http_response, accept_content_type, with_attributes=Fa
                 "xml_root_element_name is a mandatory param when body is in XML and attributes are not considered"
             response_body = xml_to_dict(http_response.content)[xml_root_element_name]
 
-            if is_list:
+            if is_list and response_body is not None:
                 response_body = response_body.popitem()[1]
 
             return response_body
@@ -111,6 +111,17 @@ def delete_keys_when_value_is_none(dict_del):
         if default_dict[v] is None:
             del dict_del[v]
     return dict_del
+
+
+def replace_none_value_metadata_to_empty_string(list_of_metadatas):
+    """
+    In a metadata list, replace None value by empty string
+    :param list_of_metadatas:
+    :return:
+    """
+    for metadata in list_of_metadatas:
+        if metadata['value'] is None:
+            metadata['value'] = ''
 
 
 def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_to_be_finished=None, headers=None):
