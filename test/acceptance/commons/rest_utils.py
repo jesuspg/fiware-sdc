@@ -18,6 +18,8 @@ INSTALL_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance'
 PRODUCT_INSTALLED_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance/{product_id}'
 TASK_PATTERN_ROOT = '{url_root}/sdc/rest/vdc/{vdc_id}/task'
 TASK_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/task/{task_id}"
+NODE_PATTERN_ROOT = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient"
+NODE_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient/{node_name}"
 
 
 class RestUtils(object):
@@ -45,9 +47,9 @@ class RestUtils(object):
 
         url = pattern.format(**kwargs)
 
-        print "==============="
-        print "### REQUEST ###"
-        print 'METHOD: {}\nURL: {} \nHEADERS: {} \nBODY: {}'.format(method, url, headers, self.encoder.encode(body))
+        #print "==============="
+        #print "### REQUEST ###"
+        #print 'METHOD: {}\nURL: {} \nHEADERS: {} \nBODY: {}'.format(method, url, headers, self.encoder.encode(body))
 
         try:
             if headers[CONTENT_TYPE] == CONTENT_TYPE_JSON:
@@ -60,9 +62,9 @@ class RestUtils(object):
             print "Request {} to {} crashed: {}".format(method, url, str(e))
             return None
 
-        print "### RESPONSE ###"
-        print "HTTP RESPONSE CODE:", r.status_code
-        print 'HEADERS: {} \nBODY: {}'.format(r.headers, r.content)
+        #print "### RESPONSE ###"
+        #print "HTTP RESPONSE CODE:", r.status_code
+        #print 'HEADERS: {} \nBODY: {}'.format(r.headers, r.content)
 
         return r
 
@@ -155,6 +157,13 @@ class RestUtils(object):
     def request_productandrelease(self, headers=None, method=None):
         return self._call_api(pattern=PRODUCTANDRELEASE_PATTERN_ROOT, method=method, headers=headers)
 
+    def retrieve_node_list(self, headers, vdc_id):
+        return self._call_api(pattern=NODE_PATTERN_ROOT, method='get', headers=headers, vdc_id=vdc_id)
+
+    def delete_node(self, headers, vdc_id, node_name):
+        return self._call_api(pattern=NODE_PATTERN, method='delete', headers=headers, vdc_id=vdc_id,
+                              node_name=node_name)
+
     @staticmethod
     def call_url_task(method=None, headers=None, url=None):
 
@@ -176,7 +185,7 @@ class RestUtils(object):
 
     def uninstall_all_products(self, headers=None):
         response = self.retrieve_product_instance_list(headers, headers[TENANT_ID_HEADER])
-        products_installed_body = response.json()[PRODUCT_INSTANCE_RES]
+        products_installed_body = response.json()
 
         if not isinstance(products_installed_body, list):
             self._uninstall_product_if_installed(products_installed_body, headers)
@@ -189,13 +198,14 @@ class RestUtils(object):
         response = self.retrieve_product_list(headers=headers)
         assert response.ok
         try:
-            product_list = response.json()[PRODUCT]
+            product_list = response.json()
         except:
             assert response.content == 'null'
             return
 
         if not isinstance(product_list, list):
-            if 'testing' in product_list[PRODUCT_NAME] and 'testing_prov_' not in product_list[PRODUCT_NAME]:
+            if 'testing' in product_list[PRODUCT_NAME] and 'testing_prov_' not in product_list[PRODUCT_NAME]\
+                    and 'qa-test-product-' not in product_list[PRODUCT_NAME]:
                 delete_response = self.delete_product(headers=headers, product_id=product_list[PRODUCT_NAME])
 
                 if not delete_response.ok:
@@ -204,14 +214,15 @@ class RestUtils(object):
                     release_list = release_list.json()
                     print "RELEASE LIST: {}".format(release_list)
                     delete_release = self.delete_product_release(headers=headers, product_id=product_list[PRODUCT_NAME],
-                                                                 version=release_list[PRODUCT_RELEASE][VERSION])
+                                                                 version=release_list[VERSION])
                     #assert delete_release.ok
                     delete_response = self.delete_product(headers=headers, product_id=product_list[PRODUCT_NAME])
                     #assert delete_response.ok
 
         else:
             for product in product_list:
-                if 'testing' in product[PRODUCT_NAME] and 'testing_prov_' not in product[PRODUCT_NAME]:
+                if 'testing' in product[PRODUCT_NAME] and 'testing_prov_' not in product[PRODUCT_NAME]\
+                        and 'qa-test-product-' not in product[PRODUCT_NAME]:
 
                     delete_response = self.delete_product(headers=headers, product_id=product[PRODUCT_NAME])
 
@@ -220,20 +231,19 @@ class RestUtils(object):
                         release_list = self.retrieve_product_release_list(headers=headers,
                                                                           product_id=product[PRODUCT_NAME])
                         release_list = release_list.json()
-                        print release_list
 
-                        if not isinstance(release_list[PRODUCT_RELEASE], list):
+                        if not isinstance(release_list, list):
 
                             delete_release = self.delete_product_release(headers=headers,
                                                                          product_id=product[PRODUCT_NAME],
-                                                                         version=release_list[PRODUCT_RELEASE][VERSION])
+                                                                         version=release_list[VERSION])
                             #assert delete_release.ok, delete_release.content
                             delete_response = self.delete_product(headers=headers, product_id=product[PRODUCT_NAME])
                             #assert delete_response.ok
 
                         else:
 
-                            for release in release_list[PRODUCT_RELEASE]:
+                            for release in release_list:
 
                                 delete_release = self.delete_product_release(headers=headers,
                                                                              product_id=product[PRODUCT_NAME],

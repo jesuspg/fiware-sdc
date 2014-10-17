@@ -77,10 +77,7 @@ def then_the_product_is_created_with_group1_response(step):
     assert_equals(response_body[PRODUCT_DESCRIPTION], world.product_description)
 
     if world.attributes is not None:
-        if len(world.attributes) == 1:
-            assert_equals(world.attributes[0], response_body[PRODUCT_ATTRIBUTES])
-        else:
-            assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
+        assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
         world.attributes = None
 
     if world.metadatas is not None:
@@ -100,6 +97,8 @@ def and_the_following_attributes(step):
         attribute[VALUE] = examples[VALUE]
         world.attributes.append(attribute)
 
+    if len(step.hashes) == 1:
+        world.attributes = world.attributes[0]
 
 @step(u'When I add the new product with attributes, with accept parameter "([^"]*)" response')
 def when_i_add_the_new_product_with_attributes_with_accept_parameter_group1_response(step, accept_content):
@@ -155,10 +154,10 @@ def the_product_visibility_is_group1(step, visibility):
     assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
 
     response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                          xml_root_element_name=PRODUCTS)
+                                          xml_root_element_name=PRODUCTS, is_list=True)
 
     exist = False
-    for product in response_body[PRODUCT]:
+    for product in response_body:
         if product[PRODUCT_NAME] == world.product_name:
             exist = True
 
@@ -175,7 +174,7 @@ def the_product_visibility_is_group1(step, visibility):
 @step(u'Then I obtain an "([^"]*)"')
 def then_i_obtain_an_group1(step, error_code):
 
-    print assert_equals(str(world.response.status_code), error_code)
+    print assert_equals(str(world.response.status_code), error_code, 'RESPONSE: {}'.format(world.response.content))
 
 
 @step(u'And incorrect "([^"]*)" header')
