@@ -21,22 +21,26 @@ product_steps = ProductSteps()
 
 @step(u'a configuration management with "(.*)"')
 def configuration_management_with_group1(step, cm_tool):
+    """ Set the 'installator' value to be used in the test execution: 'chef' or 'puppet' """
     world.cm_tool = cm_tool
 
 
 @step(u'a node name "(.*)"')
 def a_node_name_group1(step, node_name):
+    """ Set the 'installator' value to be used in the test execution: 'chef' or 'puppet' """
     world.node_name = CONFIG_VM_HOSTNAME if CONFIG_FILE in node_name else node_name
 
 
 @step(u'a node registered in Chef-Server and Puppet-Master')
 def a_node_registered_in_the_server(step):
+    """ Launch agents (chef and puppet) in the VM """
     a_node_registered_in_chef_server(step)
     a_node_registered_in_puppet_master(step)
 
 
 @step(u'a node registered in Chef-Server$')
 def a_node_registered_in_chef_server(step):
+    """ Launch Chef agent in the VM """
     execute_chef_client()
     world.agents_running.append('chef')
 
@@ -46,6 +50,7 @@ def a_node_registered_in_chef_server(step):
 
 @step(u'a node registered in Puppet-Master$')
 def a_node_registered_in_puppet_master(step):
+    """ Launch Puppet agent in the VM """
     execute_puppet_agent()
     world.agents_running.append('puppet')
 
@@ -55,17 +60,20 @@ def a_node_registered_in_puppet_master(step):
 
 @step(u'a virtual machine with these parameters:')
 def and_a_vm_with_this_parameters(step):
+    """ Set a VM configuration to be used in the test execution """
     provisioning_steps.and_a_vm_with_this_parameters(step)
 
 
 @step(u'accept header value "([^"]*)"')
 def accept_header_value_group1(step, accept_header):
+    """ Set Accept header value to be used in requests """
     world.headers[ACCEPT_HEADER] = accept_header
 
 
 @step(u'a created and installed product with name "([^"]*)" and release "([^"]*)"')
 def a_created_product_with_name_group1_and_release_group2(step, product_name, product_version):
-
+    """ Creates and installs a product. Get values from configuration file if 'CONFIG_FILE' wildcard
+    value is in dataset """
     world.product_name = product_name
     world.product_version = product_version
 
@@ -97,6 +105,8 @@ def a_created_product_with_name_group1_and_release_group2(step, product_name, pr
 
 @step(u'other created and installed product with name "([^"]*)" and release "([^"]*)"')
 def other_created_product_with_name_group1_and_release_group2(step, product_name, product_version):
+    """ Creates and installs other product. Get values from configuration file if 'CONFIG_FILE' wildcard
+    value is in dataset """
     if world.cm_tool == 'chef':
         product_name = CONFIG_PRODUCT_NAME_CHEF_2 if CONFIG_FILE in product_name else product_name
     else:
@@ -109,6 +119,7 @@ def other_created_product_with_name_group1_and_release_group2(step, product_name
 
 @step(u'I remove the node')
 def i_remove_the_node_group1(step):
+    """ Kill all agents in VM and remove node using SDC API """
     # Kill agents in VM before deleting
     execute_chef_client_stop()
     execute_puppet_agent_stop()
@@ -121,6 +132,7 @@ def i_remove_the_node_group1(step):
 
 @step(u'the task is created')
 def the_task_is_created(step):
+    """ Assertions to check if TASK is created with the expected data """
     assert_true(world.response.ok, 'RESPONSE BODY: {}'.format(world.response.content))
 
     response_headers = world.response.headers
@@ -139,6 +151,7 @@ def the_task_is_created(step):
 
 @step(u'the task is performed')
 def the_task_is_performed(step):
+    """ Assertions to check if TASK has finished with status SUCCESS """
     finished = wait_for_task_finished(vdc_id=world.tenant_id, task_id=world.task_id,
                                       status_to_be_finished=TASK_STATUS_VALUE_SUCCESS, headers=world.headers)
     assert_true(finished, 'Task is not in the correct status. EXPECTED STATUS: {}'.format(TASK_STATUS_VALUE_SUCCESS))
@@ -146,6 +159,7 @@ def the_task_is_performed(step):
 
 @step(u'the product is not instantiated')
 def the_product_is_not_instantiated(step):
+    """ Assertions to check if productInstance does not exist in SDC """
     world.instance_id = "{}_{}_{}".format(world.vm_fqn, world.product_name, world.product_version)
     response = api_utils.retrieve_product_instance(headers=world.headers, vdc_id=world.tenant_id,
                                                    product_instance_id=world.instance_id)
@@ -155,6 +169,7 @@ def the_product_is_not_instantiated(step):
 
 @step(u'all installed products are not instantiated')
 def all_installed_products_are_not_instantiated(step):
+    """ Assertions to check if all productInstances do not exist in SDC """
     for product in world.list_of_installed_products:
         world.product_name = product['product_name']
         world.product_version = product['product_version']
@@ -163,12 +178,14 @@ def all_installed_products_are_not_instantiated(step):
 
 @step(u'the node is not registered in Chef-Server')
 def the_node_is_not_registered_in_chef_server(step):
+    """ Assertions to check it the node is not registered in Chef-Server """
     response = get_chef_node_info_from_server(world.node_name)
     assert_equals(response, None, "Node has not been unregister from Chef-Server")
 
 
 @step(u'the node is not registered in Puppet-Master')
-def the_node_is_not_registered_in_chef_server(step):
+def the_node_is_not_registered_in_puppet_master(step):
+    """ Assertions to check it the node is not registered in Puppet Master (cert and puppetdb) """
     response = get_puppet_node_cert_from_server(world.node_name)
     assert_equals(response, None, "Certs have been found. Node has not been unregister from Puppet-Master")
 
@@ -179,4 +196,5 @@ def the_node_is_not_registered_in_chef_server(step):
 
 @step(u'I obtain a "([^"]*)" HTTP error')
 def i_obtain_a_group1_http_error(step, error_code):
+    """ Assertions to check if HTTP response status has got the expected error code """
     assert_equals(str(world.response.status_code), error_code, 'RESPONSE BODY: {}'.format(world.response.content))

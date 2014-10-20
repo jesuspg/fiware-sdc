@@ -169,6 +169,10 @@ class RestUtils(object):
                               node_name=node_name)
 
     def retrieve_puppetdb_node_list(self):
+        """
+        This method gets the list of registered nodes from PuppetDB
+        :return: REST API response (Requests lib)
+        """
         url = PUPPETDB_NODE_PATTERN_ROOT.format(url_root=PUPPETDB_ROOT_PATTERN)
         return requests.request(method='get', url=url, verify=False)
 

@@ -13,6 +13,10 @@ rest_utils = RestUtils()
 
 @before.each_feature
 def before_each_feature(feature):
+    """
+    Hook: Will be executed before each feature. Configures global vars and gets token from keystone.
+    Launch agents (puppet and chef) in the target VM
+    """
     setup_feature(feature)
     execute_chef_client()
     execute_puppet_agent()
@@ -20,16 +24,22 @@ def before_each_feature(feature):
 
 @before.each_scenario
 def before_each_scenario(scenario):
+    """ Hook: Will be executed before each Scenario. Setup Scenario and initialize World vars """
     setup_scenario(scenario)
 
 
 @before.outline
 def before_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
     setup_outline(param1, param2, param3, param4)
 
 
 @after.all
 def after_all(scenario):
+    """
+    Hook: Will be executed after all Scenarios and Features.
+    Removes Feature data and cleans the system. Kills all agents running in the VM.
+    """
     tear_down(scenario)
     rest_utils.delete_node(world.headers, world.tenant_id, CONFIG_VM_HOSTNAME)
     execute_chef_client_stop()
