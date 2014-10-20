@@ -1,7 +1,8 @@
 __author__ = 'arobres'
 
 from json import JSONEncoder
-from configuration import SDC_IP, SDC_PORT, SDC_PROTOCOL
+from configuration import SDC_IP, SDC_PORT, SDC_PROTOCOL, CONFIG_PUPPETDB_PROTOCOL, CONFIG_PUPPETDB_IP,\
+    CONFIG_PUPPETDB_PORT
 from constants import *
 
 import requests
@@ -21,6 +22,9 @@ TASK_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/task/{task_id}"
 NODE_PATTERN_ROOT = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient"
 NODE_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient/{node_name}"
 
+#PuppetDB
+PUPPETDB_ROOT_PATTERN = '{}://{}:{}'.format(CONFIG_PUPPETDB_PROTOCOL, CONFIG_PUPPETDB_IP, CONFIG_PUPPETDB_PORT)
+PUPPETDB_NODE_PATTERN_ROOT = '{url_root}/v3/nodes'
 
 class RestUtils(object):
 
@@ -163,6 +167,10 @@ class RestUtils(object):
     def delete_node(self, headers, vdc_id, node_name):
         return self._call_api(pattern=NODE_PATTERN, method='delete', headers=headers, vdc_id=vdc_id,
                               node_name=node_name)
+
+    def retrieve_puppetdb_node_list(self):
+        url = PUPPETDB_NODE_PATTERN_ROOT.format(url_root=PUPPETDB_ROOT_PATTERN)
+        return requests.request(method='get', url=url, verify=False)
 
     @staticmethod
     def call_url_task(method=None, headers=None, url=None):

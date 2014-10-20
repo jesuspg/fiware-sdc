@@ -134,7 +134,7 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
         response_body = response_body_to_dict(response, headers[ACCEPT_HEADER], with_attributes=True,
                                               xml_root_element_name=TASK)
         status = response_body[TASK_STATUS]
-        print 'Waiting for task status. TIME: {}\n STATUS: {}'.format(count, status)
+        print 'Waiting for task status. CHECK: {} - STATUS: {}'.format(count, status)
 
         if status == status_to_be_finished:
             correct_status = True
