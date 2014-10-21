@@ -19,6 +19,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
+__author__ = 'jfernandez'
+
 from lettuce import step, world
 from commons.fabric_utils import *
 from commons.rest_utils import RestUtils

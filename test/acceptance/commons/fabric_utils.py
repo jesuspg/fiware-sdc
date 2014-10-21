@@ -19,6 +19,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
+__author__ = 'arobres, jfernandez'
+
 from fabric.api import env, get, run
 from fabric.tasks import execute as fabric_execute
 from fabric.contrib import files

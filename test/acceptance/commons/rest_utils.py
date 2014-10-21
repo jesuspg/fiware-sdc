@@ -19,6 +19,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
+__author__ = 'arobres, jfernandez'
+
 from json import JSONEncoder
 from configuration import SDC_IP, SDC_PORT, SDC_PROTOCOL, CONFIG_PUPPETDB_PROTOCOL, CONFIG_PUPPETDB_IP,\
     CONFIG_PUPPETDB_PORT

@@ -19,6 +19,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
+__author__ = 'jfernandez'
+
 from lettuce import world, before, after
 from commons.terrain_steps import setup_feature, setup_scenario, setup_outline, tear_down
 from commons.provisioning_steps import ProvisioningSteps
