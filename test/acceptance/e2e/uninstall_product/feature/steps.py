@@ -84,5 +84,3 @@ def a_uninstalled_product_with_name_group1_and_release_group2(step, product_name
     i_uninstall_the_installed_product_group1_and_release_group2(step, world.product_name, world.product_version)
     task_is_created(step)
     the_task_has_finished_with_status_group1(step, TASK_STATUS_VALUE_SUCCESS)
-
-

@@ -19,7 +19,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
-from commons.terrain_steps import *
+from lettuce import world, before, after
+from commons.terrain_steps import setup_feature, setup_scenario, setup_outline, tear_down
 from commons.provisioning_steps import ProvisioningSteps
 from commons.rest_utils import RestUtils
 from commons.configuration import CONFIG_VM_HOSTNAME
