@@ -109,3 +109,4 @@ PRODUCTANDRELEASE = u'productAndReleaseDto'
 
 #ATTRIBUTE FROM CONFIG FILE (for loading values from config_file)
 CONFIG_FILE = u'${CONFIG_FILE}'
+
