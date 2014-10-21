@@ -44,7 +44,6 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 /**
@@ -56,6 +55,7 @@ public interface ProductResource {
 
     /**
      * Insert a product int SDC Database.
+     *
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
      * @param product
@@ -83,7 +83,6 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
                     @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
-    
     
     /**
      * Retrieve the selected Product.
@@ -127,9 +126,9 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Metadata> loadMetadatas(@PathParam("pName") String name) throws EntityNotFoundException;
 
-    
     /**
      * Delete the Product in SDC Database.
+     *
      * @param name
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException

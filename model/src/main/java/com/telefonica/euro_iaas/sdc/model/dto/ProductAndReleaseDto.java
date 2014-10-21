@@ -30,57 +30,58 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 
 /**
  * Represents a product and its version
+ * 
  * @author alberts
- *
  */
 @XmlRootElement
 public class ProductAndReleaseDto {
 
-    
     /**
      * product object
      */
     private Product product;
-    
+
     /**
-     * version of the product 
+     * version of the product
      */
     private String version;
-    
-    
+
     /**
      * @return the product
      */
     public Product getProduct() {
         return product;
     }
+
     /**
      * @param product
      */
     public void setProduct(Product product) {
         this.product = product;
     }
+
     /**
      * @return version
      */
     public String getVersion() {
         return version;
     }
+
     /**
      * @param version
      */
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+
     @Override
     public String toString() {
         return "ProductAndReleases [product=" + product + ", version=" + version + "]";
     }
-    
-    
 
 }
