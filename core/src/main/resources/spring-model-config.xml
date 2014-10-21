@@ -63,7 +63,6 @@
 
     <!-- CATALOG MANAGER -->
 
-
     <bean id="productReleaseManager" lazy-init="true"
           parent="baseInstallableManager"
           class="com.telefonica.euro_iaas.sdc.manager.impl.ProductReleaseManagerImpl">

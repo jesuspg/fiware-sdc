@@ -158,7 +158,6 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return productDao.load(name);
     }
 
-
     public boolean exist(String name) {
         try {
             load(name);
