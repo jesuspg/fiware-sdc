@@ -138,3 +138,4 @@ def the_product_is_not_in_the_list(step):
 @step(u'I obtain an http error code "([^"]*)"')
 def i_obtain_an_http_error_code_group1(step, error_code):
     assert_equals(str(world.response.status_code), error_code)
+

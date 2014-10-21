@@ -77,7 +77,7 @@ def then_the_product_is_created_with_group1_response(step):
     assert_equals(response_body[PRODUCT_DESCRIPTION], world.product_description)
 
     if world.attributes is not None:
-            assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
+        assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
         world.attributes = None
 
     if world.metadatas is not None:

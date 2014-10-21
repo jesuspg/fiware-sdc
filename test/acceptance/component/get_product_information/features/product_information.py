@@ -151,7 +151,7 @@ def then_the_attributes_product_are_empty(step):
 def then_the_attributes_product_are_retrieved(step):
 
     assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
-	
+
     response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
                                           xml_root_element_name=PRODUCT_ATTRIBUTES, is_list=True)
 
