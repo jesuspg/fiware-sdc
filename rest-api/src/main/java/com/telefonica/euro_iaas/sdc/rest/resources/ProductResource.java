@@ -55,7 +55,7 @@ public interface ProductResource {
 
     /**
      * Insert a product int SDC Database.
-     *
+     * 
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
      * @param product
@@ -64,7 +64,7 @@ public interface ProductResource {
     @POST
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Product insert(Product product)  throws APIException;
+    Product insert(Product product) throws APIException;
 
     /**
      * Retrieve all Products available created in the system.
@@ -82,8 +82,8 @@ public interface ProductResource {
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
-    
+            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+
     /**
      * Retrieve the selected Product.
      * 
@@ -128,7 +128,7 @@ public interface ProductResource {
 
     /**
      * Delete the Product in SDC Database.
-     *
+     * 
      * @param name
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException
@@ -137,5 +137,5 @@ public interface ProductResource {
     @Path("/{pName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
-        ProductReleaseStillInstalledException;
+            ProductReleaseStillInstalledException;
 }
