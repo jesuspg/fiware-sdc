@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -295,7 +296,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         } else {
             String str = "Missing tenantId header";
             log.info(str);
-            throw new UsernameNotFoundException(str);
+            throw new BadRequestException(str);
         }
 
         return user;
