@@ -3,8 +3,8 @@
 # Cookbook for testing purposes
 # Attribute definition
 
-default["custom_att_01"] = "att_01_default"
-default["custom_att_02"] = "att_02_default"
+default['qa-test-product-chef-att-01']['custom_att_01'] = "att_01_default"
+default['qa-test-product-chef-att-01']['custom_att_02'] = "att_02_default"
 
-default["product_name"] = "qa-test-product-chef-att-01"
-default["product_version"] = "1.2.3"
+default['qa-test-product-chef-att-01']['product_name'] = "qa-test-product-chef-att-01"
+default['qa-test-product-chef-att-01']['product_version'] = "1.2.3"
