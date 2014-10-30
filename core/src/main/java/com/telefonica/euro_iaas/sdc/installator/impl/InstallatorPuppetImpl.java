@@ -72,27 +72,29 @@ public class InstallatorPuppetImpl implements Installator {
 
     public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
             throws InstallatorException, NodeExecutionException {
-        try {
-            generateFilesinPuppetMaster(vm, vdc, product, action, token);
-        } catch (InstallatorException e) {
-            log.warn("It is not possible to generate the manifests in the puppet master " + e.getMessage());
-            throw new InstallatorException(e.getMessage());
-        }
-
-        try {
-            isRecipeExecuted(vm, product.getProduct().getName(), token);
-        } catch (NodeExecutionException e) {
-            // even if execution fails want to unassign the recipe
-            log.debug(e.getMessage());
-            throw new NodeExecutionException(e.getMessage());
-        }
-
-        try {
-            isRecipeExecuted(vm, product.getProduct().getName(), token);
-        } catch (NodeExecutionException e) {
-            log.warn("It is not possible execute the module " + product.getProduct().getName() + " in node "
-                    + vm.getHostname());
-        }
+        // try {
+        // generateFilesinPuppetMaster(vm, vdc, product, action, token);
+        // } catch (InstallatorException e) {
+        // log.warn("It is not possible to generate the manifests in the puppet master "
+        // + e.getMessage());
+        // throw new InstallatorException(e.getMessage());
+        // }
+        //
+        // try {
+        // isRecipeExecuted(vm, product.getProduct().getName(), token);
+        // } catch (NodeExecutionException e) {
+        // // even if execution fails want to unassign the recipe
+        // log.debug(e.getMessage());
+        // throw new NodeExecutionException(e.getMessage());
+        // }
+        //
+        // try {
+        // isRecipeExecuted(vm, product.getProduct().getName(), token);
+        // } catch (NodeExecutionException e) {
+        // log.warn("It is not possible execute the module " +
+        // product.getProduct().getName() + " in node "
+        // + vm.getHostname());
+        // }
 
     }
 
@@ -108,6 +110,15 @@ public class InstallatorPuppetImpl implements Installator {
             String token) throws InstallatorException, NodeExecutionException {
 
         callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token, attributes);
+        try {
+            isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
+        } catch (NodeExecutionException e) {
+            String str="It is not possible execute the module " + productInstance.getProductRelease().getProduct().getName() + " in node "
+                    + vm.getHostname();
+            log.warn(str);
+            throw e;
+        }
+
     }
 
     @Override
