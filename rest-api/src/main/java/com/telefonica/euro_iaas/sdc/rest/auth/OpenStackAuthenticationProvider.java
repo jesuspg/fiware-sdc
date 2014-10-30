@@ -296,7 +296,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         } else {
             String str = "Missing tenantId header";
             log.info(str);
-            throw new BadRequestException(str);
+            throw new BadCredentialsException(str);
         }
 
         return user;
