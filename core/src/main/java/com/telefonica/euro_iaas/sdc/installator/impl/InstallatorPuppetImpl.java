@@ -108,6 +108,15 @@ public class InstallatorPuppetImpl implements Installator {
             String token) throws InstallatorException, NodeExecutionException {
 
         callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token, attributes);
+        try {
+            isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
+        } catch (NodeExecutionException e) {
+            String str="It is not possible execute the module " + productInstance.getProductRelease().getProduct().getName() + " in node "
+                    + vm.getHostname();
+            log.warn(str);
+            throw e;
+        }
+
     }
 
     @Override
