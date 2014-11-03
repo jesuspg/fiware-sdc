@@ -48,7 +48,7 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-01 | 1.2.4           | puppet  |
 
 
-    @slow @CLAUDIA-4165 @CLAUDIA-4163
+    @skip @slow @CLAUDIA-4165 @CLAUDIA-4163
     Scenario Outline: Install a new product when cookbook does not exist
 
 	  Given a configuration management with "<cm_tool>"
