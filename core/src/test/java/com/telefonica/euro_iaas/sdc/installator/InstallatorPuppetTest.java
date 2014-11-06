@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.installator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -43,7 +43,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -93,7 +92,13 @@ public class InstallatorPuppetTest {
 	"\"catalog_timestamp\" : \"2014-08-27T10:34:02.892Z\","+
 	"\"facts_timestamp\" : \"2014-08-27T10:35:07.365Z\","+
 	"\"report_timestamp\" : null"+
-	"}]";
+	"}, {"+
+    "\"name\" : \"testName.novalocal\","+
+    "\"deactivated\" : null, "+
+    "\"catalog_timestamp\" : \"2014-08-27T10:34:02.892Z\","+
+    "\"facts_timestamp\" : \"2014-08-27T10:35:07.365Z\","+
+    "\"report_timestamp\" : null"+
+    "}]";
     
     
 
@@ -249,9 +254,11 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException {
+    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException, IOException {
 
         when(statusLine.getStatusCode()).thenReturn(200);
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
 
         puppetInstallator.callService(productInstance, host, attributeList,"install", "token");
     }
