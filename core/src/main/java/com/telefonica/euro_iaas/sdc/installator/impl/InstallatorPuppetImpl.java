@@ -135,6 +135,8 @@ public class InstallatorPuppetImpl implements Installator {
         HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
+        postInstall.setHeader("X-Auth-Token", token);
+        postInstall.setHeader("Tenant-Id",vdc);
 
         NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
         ObjectMapper mapper = new ObjectMapper();
@@ -186,6 +188,8 @@ public class InstallatorPuppetImpl implements Installator {
             HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
             getGenerate.addHeader("Content-Type", "application/json");
+            getGenerate.setHeader("X-Auth-Token", token);
+            getGenerate.setHeader("Tenant-Id",vdc);
 
             response = client.execute(getGenerate);
             statusCode = response.getStatusLine().getStatusCode();
