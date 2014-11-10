@@ -25,7 +25,7 @@ Feature: Install product with E2E validations
       | chef    |
       | puppet  |
 
-    @slow
+
     Scenario Outline: Install a new product with different releases
 
       Given a configuration management with "<cm_tool>"
@@ -58,7 +58,7 @@ Feature: Install product with E2E validations
 	  | ${CONFIG_FILE} | ${CONFIG_FILE}  | ${CONFIG_FILE}  |
       When I install the product in the VM
       Then the task is created
-      And the task has finished with status "ERROR"
+      And the task has finished with status "ERROR" after "805" checks
       And the task has the minor error code "NodeExecutionException"
       And the product installation status is "UNINSTALLED"
 
@@ -69,7 +69,7 @@ Feature: Install product with E2E validations
       | testing_prov_no_cookbook_puppet | 1.0.1 	| puppet  	|
 
 
-    @skip @slow @CLAUDIA-4137
+    @skip @CLAUDIA-4137
     Scenario Outline: Install a existing product when VM hostname is not registered
 
 	  Given a configuration management with "<cm_tool>"
@@ -90,7 +90,6 @@ Feature: Install product with E2E validations
       | puppet  | InvalidInstallProductRequestException |
 
 
-    @skip @slow @CLAUDIA-4152 @CLAUDIA-4171
     Scenario Outline: Install a new product with "installation attributes"
 
       Given a configuration management with "<cm_tool>"
@@ -114,14 +113,13 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	|
 
 
-    @skip @CLAUDIA-4114
-    Scenario Outline: Install a new product with "product attributes"
+    Scenario Outline: Install a new product with "product attributes" (catalog)
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
-      | key             | value             | description   |
-      | att_prod_key_1  | att_prod_value_1  | Prod att 1    |
-      | att_prod_key_2  | att_prod_value_2  | Prod att 2    |
+      | key            | value             | description   |
+      | custom_att_01  | att_prod_value_1  | Prod att 1    |
+      | other_att_01   | att_prod_value_2  | Prod att 2    |
       And a created product with name "<product_name>" and release "<release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -136,18 +134,18 @@ Feature: Install product with E2E validations
       Examples:
 
       | product_name                  | release	| cm_tool 	|
-      | qa-test-product-chef-att-02   | 1.2.3   | chef  	|
-      | qa-test-product-puppet-att-02 | 1.2.3   | puppet  |
+      | qa-test-product-chef-att-01   | 1.2.3   | chef  	|
+      | qa-test-product-puppet-att-01 | 1.2.3   | puppet  |
 
 
-    @skip @CLAUDIA-4114
     Scenario Outline: Install a new product release with product attributes (catalog) and instance attributes
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
       | key             | value             | description   |
-      | att_prod_key_1  | att_prod_value_1  | Prod att 1    |
-      | att_prod_key_2  | att_prod_value_2  | Prod att 2    |
+      | custom_att_01   | att_prod_def_1    | Prod att 1    |
+      | custom_att_02   | att_prod_def_2    | Prod att 2    |
+      | other_att_01    | att_prod_def_other| Prod att 2    |
       And a created product with name "<product_name>" and release "<product_release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -161,13 +159,13 @@ Feature: Install product with E2E validations
       And the task is performed
       And the product installation status is "INSTALLED"
       And the product has the correct attributes in the catalog
-      And the product instance has been installed using that attributes
+      And the product with attributes is installed
 
       Examples:
 
       | product_name                  | product_release | cm_tool |
-      | qa-test-product-chef-att-03   | 1.2.3 	        | chef    |
-      | qa-test-product-puppet-att-03 | 1.2.3 	        | puppet  |
+      | qa-test-product-chef-att-01   | 1.2.3 	        | chef    |
+      | qa-test-product-puppet-att-01 | 1.2.3 	        | puppet  |
 
 
     Scenario Outline: Install a product release installed

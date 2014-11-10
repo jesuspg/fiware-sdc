@@ -26,6 +26,7 @@ def configuration_management_with_group1(step, cm_tool):
 def a_created_product_with_name_group1(step, product_id, product_release):
 
     world.product_name = product_id
+    world.product_description = "QA Test"
     world.product_version = product_release
 
     if product_id == CONFIG_FILE:
@@ -149,7 +150,7 @@ def task_is_created(step):
     provisioning_steps.task_is_created(step)
 
 
-@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)"')
+@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)$"')
 def the_task_has_finished_with_status_group1(step, status):
     finished = wait_for_task_finished(vdc_id=world.tenant_id, task_id=world.task_id,
                                       status_to_be_finished=status, headers=world.headers)
@@ -165,7 +166,7 @@ def the_task_has_the_minor_error_code_group1(step, error_minor_code):
     world.task_response_body = response_body_to_dict(response, world.headers[ACCEPT_HEADER], with_attributes=True,
                                                      xml_root_element_name=TASK)
 
-    assert_equals(world.task_response_body[TASK_ERROR]["@"+TASK_ERROR_MINOR_CODE], error_minor_code)
+    assert_equals(world.task_response_body[TASK_ERROR][TASK_ERROR_MINOR_CODE], error_minor_code)
 
 
 @step(u'the task is not created')
