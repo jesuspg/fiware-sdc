@@ -97,10 +97,10 @@ public class Attribute {
      * @param value
      * @param type
      */
-    public Attribute(String key, String value, String type) {
+    public Attribute(String key, String value, String description) {
         this.key = key;
         this.value = value;
-        this.type=type;
+        this.description=description;
     }
 
     /**
