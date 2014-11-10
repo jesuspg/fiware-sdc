@@ -28,7 +28,7 @@ from commons.provisioning_steps import ProvisioningSteps
 from commons.rest_utils import RestUtils
 from commons.configuration import CONFIG_VM_HOSTNAME
 from commons.fabric_utils import execute_chef_client, execute_puppet_agent, remove_chef_client_cert_file, \
-    remove_puppet_agent_cert_file, execute_chef_client_stop, execute_puppet_agent_stop
+    remove_puppet_agent_cert_file, execute_chef_client_stop, execute_puppet_agent_stop, remove_all_generated_test_files
 
 provisioning_steps = ProvisioningSteps()
 rest_utils = RestUtils()
@@ -41,31 +41,44 @@ def before_each_feature(feature):
     Launch agents (puppet and chef) in the target VM
     """
     setup_feature(feature)
-    execute_chef_client()
-    execute_puppet_agent()
 
 
 @before.each_scenario
 def before_each_scenario(scenario):
-    """ Hook: Will be executed before each Scenario. Setup Scenario and initialize World vars """
+    """
+    Hook: Will be executed before each Scenario.
+    Setup Scenario: initialize World vars and launch agents (puppet and chef) in the target VM
+    """
     setup_scenario(scenario)
+    execute_chef_client()
+    execute_puppet_agent()
 
 
 @before.outline
 def before_outline(param1, param2, param3, param4):
     """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
     setup_outline(param1, param2, param3, param4)
+    remove_all_generated_test_files()
+
+
+@after.each_scenario
+def after_each_scenario(scenario):
+    """
+    Hook: Will be executed after all each scenario
+    Removes Feature data and cleans the system. Kills all agents running in the VM.
+    """
+    execute_chef_client_stop()
+    execute_puppet_agent_stop()
+    remove_chef_client_cert_file()
+    remove_puppet_agent_cert_file()
+    rest_utils.delete_node(world.headers, world.tenant_id, CONFIG_VM_HOSTNAME)
 
 
 @after.all
 def after_all(scenario):
     """
-    Hook: Will be executed after all Scenarios and Features.
+    Hook: Will be executed after all each scenario
     Removes Feature data and cleans the system. Kills all agents running in the VM.
     """
+    after_each_scenario(scenario)
     tear_down(scenario)
-    rest_utils.delete_node(world.headers, world.tenant_id, CONFIG_VM_HOSTNAME)
-    execute_chef_client_stop()
-    execute_puppet_agent_stop()
-    remove_chef_client_cert_file()
-    remove_puppet_agent_cert_file()

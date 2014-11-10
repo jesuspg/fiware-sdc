@@ -32,7 +32,6 @@ def given_a_created_product_with_name_group1(step, product_id):
     body = dict_to_xml(default_product(name=product_id))
     response = api_utils.add_new_product(headers=world.headers, body=body)
     assert_true(response.ok, response.content)
-    print response.content
     world.product_id = response.json()[PRODUCT_NAME]
 
 

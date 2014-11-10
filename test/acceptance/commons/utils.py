@@ -163,7 +163,7 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
             break
         elif status != TASK_STATUS_VALUE_RUNNING:
             break
-        time.sleep(1)
+        time.sleep(5)
 
     return correct_status
 

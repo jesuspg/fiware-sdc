@@ -50,7 +50,8 @@ DEFAULT_METADATA = {"metadata": [{"key": "image", "value": "df44f62d-9d66-4dc5-b
                                  {"key": "cookbook_url", "value": ''}, {"key": "cloud", "value": "yes"},
                                  {"key": "installator", "value": "chef"}, {"key": "open_ports", "value": "80 22"}]}
 
-DEFAULT_ATTRIBUTE = {"attribute": [{"key": "att1", "value": "att1_value"}, {"key": "att2", "value": "att2_value"}]}
+DEFAULT_ATTRIBUTE = {"attribute": [{"key": "custom_att_01", "value": "att_01_default"},
+                                   {"key": "custom_att_02", "value": "att_02_default"}]}
 
 PRODUCT_RELEASE_WITHOUT_RELEASES_RESPONSE = u'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' \
                                             u'<productReleases></productReleases>'

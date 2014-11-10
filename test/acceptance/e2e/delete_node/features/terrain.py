@@ -54,11 +54,11 @@ def after_each_scenario(scenario):
     Removes Test data and cleans the system. Kills all agents running in the VM
     """
     if world.node_name is not None:
-        rest_utils.delete_node(world.headers, world.tenant_id, world.node_name)
         execute_chef_client_stop()
         execute_puppet_agent_stop()
         remove_chef_client_cert_file()
         remove_puppet_agent_cert_file()
+        rest_utils.delete_node(world.headers, world.tenant_id, world.node_name)
 
 
 @before.outline
