@@ -40,18 +40,21 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 public class ProductResourceValidatorImpl extends MultipartValidator implements ProductResourceValidator {
 
     private GeneralResourceValidator generalValidator;
     private ProductManager productManager;
     private ProductReleaseManager productReleaseManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
     private static Logger log = Logger.getLogger("ProductResourceValidatorImpl");
 
@@ -127,16 +130,34 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
 
     }
 
-    public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException {
+    public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException {
 
         if (productManager.exist(product.getName())) {
             String mens = "Entity already exist : " + product.getName();
             log.warning(mens);
             throw new AlreadyExistsEntityException(Product.class, new Exception(mens));
         }
+        if (product.getAttributes()!=null){
+            validateAttributesType(product.getAttributes());
+        }
 
         commonValidation(product);
 
+    }
+
+    private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
+        String msg="Attribute type is incorrect";
+        for(Attribute att:attributes){
+            if("".equals(att.getType())){
+                throw new  InvalidProductException(msg);
+            }
+            
+            String availableTypes= systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+            if (!(att.getType().length()>=2) && !availableTypes.contains(att.getType())){
+                throw new  InvalidProductException(msg);
+            }
+        }
+        
     }
 
     private void commonValidation(Product product) throws InvalidEntityException {
@@ -239,6 +260,10 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
 
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
+    }
+
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
 }
