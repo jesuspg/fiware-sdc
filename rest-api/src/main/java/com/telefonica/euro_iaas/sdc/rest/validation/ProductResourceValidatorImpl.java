@@ -153,7 +153,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
             }
             
             String availableTypes= systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
-            if (!(att.getType().length()>=2) && !availableTypes.contains(att.getType())){
+            if (att.getType().length()<2 || !availableTypes.contains(att.getType())){
                 throw new  InvalidProductException(msg);
             }
         }

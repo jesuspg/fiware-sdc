@@ -91,16 +91,28 @@ public class Attribute {
         this.key = key;
         this.value = value;
     }
+    
+    /**
+     * @param key
+     * @param value
+     * @param type
+     */
+    public Attribute(String key, String value, String type) {
+        this.key = key;
+        this.value = value;
+        this.type=type;
+    }
 
     /**
      * @param key
      * @param value
      * @param description
      */
-    public Attribute(String key, String value, String description) {
+    public Attribute(String key, String value, String description, String type) {
         this.key = key;
         this.value = value;
         this.description = description;
+        this.type=type;
     }
 
     /**
