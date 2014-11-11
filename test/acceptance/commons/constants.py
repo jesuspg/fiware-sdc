@@ -24,6 +24,8 @@ ATTRIBUTE = u'attribute'
 KEY = u'key'
 VALUE = u'value'
 DESCRIPTION = u'description'
+ATTRIBUTE_TYPE = u'type'
+ATTRIBUTE_TYPE_PLAIN = u'Plain'
 
 
 #HEADERS

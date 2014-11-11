@@ -23,8 +23,8 @@ Feature: Add a new product in the catalogue
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
     When I add the new product with attributes, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -38,9 +38,9 @@ Feature: Add a new product in the catalogue
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
-    | password  | pwd       | password application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
+    | password  | pwd       | password application| Plain |
     When I add the new product with attributes, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -92,8 +92,8 @@ Feature: Add a new product in the catalogue
     | key         | value     | description         |
     | mobile      | iOS       | installation type   |
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
     When I add the new product with all the parameters, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -112,9 +112,9 @@ Feature: Add a new product in the catalogue
     | mobile      | iOS       | installation type   |
     | testing     | lettuce   | testing application |
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
-    | password  | pwd       | password application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
+    | password  | pwd       | password application| Plain |
     When I add the new product with all the parameters, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -204,6 +204,53 @@ Feature: Add a new product in the catalogue
     | testing_attributes_331 | product with testing purposes | application/json  | public        |                  | 400         |
     | testing_attributes_332 | product with testing purposes | application/xml   | public        | test             | 400         |
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
+
+
+  @skip @CLAUDIA-4321
+  Scenario Outline: Add new product with valid 'type' attribute
+
+    Given a product with name "<product_name>" with description "<description>"
+    And the following attributes
+    | key       | value     | description         | type    |
+    | username  | postgres  | Username application| <type>  |
+    When I add the new product with attributes, with accept parameter "<accept_parameter>" response
+    Then the product is created
+
+    Examples:
+
+    | product_name          | description                   | type            | accept_parameter  |
+    | testing_attributes_01 | product with testing purposes | Plain           | application/json  |
+    | testing_attributes_02 | product with testing purposes | Plain           | application/xml   |
+    | testing_attributes_03 | product with testing purposes | IP              | application/json  |
+    | testing_attributes_04 | product with testing purposes | IP              | application/xml   |
+    | testing_attributes_05 | product with testing purposes | IP(All)         | application/json  |
+    | testing_attributes_06 | product with testing purposes | IP(All)         | application/xml   |
+    | testing_attributes_07 | product with testing purposes | [MISSING_PARAM] | application/json  |
+    | testing_attributes_08 | product with testing purposes | [MISSING_PARAM] | application/xml   |
+
+
+  @skip @CLAUDIA-4332 @CLAUDIA-4331
+  Scenario Outline: Add new product with invalid value for 'type' attribute
+
+    Given a product with name "<product_name>" with description "<description>"
+    And the following attributes
+    | key       | value     | description         | type    |
+    | username  | postgres  | Username application| <type>  |
+    When I add the new product with attributes, with accept parameter "<accept_parameter>" response
+    Then I obtain an "400"
+
+    Examples:
+
+    | product_name          | description                   | type                    | accept_parameter  |
+    | testing_attributes_01 | product with testing purposes |                         | application/json  |
+    | testing_attributes_02 | product with testing purposes | Plaint                  | application/json  |
+    | testing_attributes_03 | product with testing purposes | Plai                    | application/json  |
+    | testing_attributes_04 | product with testing purposes | nt                      | application/json  |
+    | testing_attributes_05 | product with testing purposes | I                       | application/json  |
+    | testing_attributes_06 | product with testing purposes | I p                     | application/json  |
+    | testing_attributes_07 | product with testing purposes | P(All                   | application/json  |
+    | testing_attributes_08 | product with testing purposes | [STRING_WITH_LENGTH_4]  | application/json  |
+    | testing_attributes_09 | product with testing purposes | [STRING_WITH_LENGTH_257]| application/json  |
 
 
   Scenario Outline: Add a new product with incorrect parameters
