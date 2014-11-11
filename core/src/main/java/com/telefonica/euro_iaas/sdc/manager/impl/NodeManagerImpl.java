@@ -120,6 +120,8 @@ public class NodeManagerImpl implements NodeManager {
 
         if (delete != null) {
             delete.setHeader("Content-Type", "application/json");
+            delete.setHeader("X-Auth-Token", token);
+            delete.setHeader("Tenant-Id",vdc);
 
             HttpResponse response;
 
