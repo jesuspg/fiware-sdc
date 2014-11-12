@@ -130,14 +130,15 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
 
     }
 
-    public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException {
+    public void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
 
         if (productManager.exist(product.getName())) {
             String mens = "Entity already exist : " + product.getName();
             log.warning(mens);
             throw new AlreadyExistsEntityException(Product.class, new Exception(mens));
         }
-        if (product.getAttributes()!=null){
+        if (product.getAttributes() != null) {
             validateAttributesType(product.getAttributes());
         }
 
@@ -146,18 +147,19 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     }
 
     private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
-        String msg="Attribute type is incorrect";
-        for(Attribute att:attributes){
-            if("".equals(att.getType())){
-                throw new  InvalidProductException(msg);
+        String msg = "Attribute type is incorrect";
+        for (Attribute att : attributes) {
+            if ("".equals(att.getType())) {
+                log.warning(msg);
             }
-            
-            String availableTypes= systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
-            if (att.getType().length()<2 || !availableTypes.contains(att.getType())){
-                throw new  InvalidProductException(msg);
+
+            String availableTypes = systemPropertiesProvider
+                    .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+            if (att.getType().length() < 2 || !availableTypes.contains(att.getType())) {
+                throw new InvalidProductException(msg);
             }
         }
-        
+
     }
 
     private void commonValidation(Product product) throws InvalidEntityException {
