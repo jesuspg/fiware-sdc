@@ -94,10 +94,9 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         List<OS> supportedOS = Arrays.asList(so);
         productReleaseDto.setSupportedOS(supportedOS);
 
-        
-
         /*
-         * List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
+         * List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
+         * privateAttributeII);
          * productReleaseDto.setPrivateAttributes(privateAttributes);
          */
     }
@@ -120,8 +119,9 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
                 .bodyPart(new BodyPart(bytesRecipes, MediaType.APPLICATION_OCTET_STREAM_TYPE))
                 .bodyPart(new BodyPart(bytesInstallable, MediaType.APPLICATION_OCTET_STREAM_TYPE));
         /*
-         * try{ productResourceValidator. validateUpdate(releaseDto, multiPart); Assert.fail(); }catch
-         * (InvalidProductReleaseUpdateRequestException e){ //Expected Exception }
+         * try{ productResourceValidator. validateUpdate(releaseDto, multiPart);
+         * Assert.fail(); }catch (InvalidProductReleaseUpdateRequestException
+         * e){ //Expected Exception }
          */
     }
 
@@ -277,76 +277,84 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
                 new EntityNotFoundException(ProductRelease.class, "", productRelease));
         productResourceValidator.validateInsert("name", productRelease);
     }
-    
+
     @Test
-    public void testValidateAttributes() throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException{
-        SystemPropertiesProvider systemPropertiesProvider=mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn("Plain|IP|IP(All)");
-        
+    public void testValidateAttributes() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
         productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
-        
-        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port","Plain");
-        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "Plain");
+
         product.setName("1");
-        
+
         product.addAttribute(attribute);
-        
+
         productResourceValidator.validateInsert(product);
-        
-        verify(systemPropertiesProvider,times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
-    
-    @Test(expected=InvalidProductException.class)
-    public void testValidateAttributesBadType() throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException{
-        SystemPropertiesProvider systemPropertiesProvider=mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn("Plain|IP|IP(All)");
-        
+
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
         productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
-        
-        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port","XXXXX");
-        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "XXXXX");
+
         product.setName("1");
-        
+
         product.addAttribute(attribute);
-        
+
         productResourceValidator.validateInsert(product);
-        
-        verify(systemPropertiesProvider,times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
-    
-    @Test(expected=InvalidProductException.class)
-    public void testValidateAttributesBadType2() throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException{
-        SystemPropertiesProvider systemPropertiesProvider=mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn("Plain|IP|IP(All)");
-        
+
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType2() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
         productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
-        
-        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port","");
-        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "");
+
         product.setName("1");
-        
+
         product.addAttribute(attribute);
-        
+
         productResourceValidator.validateInsert(product);
-        
-        verify(systemPropertiesProvider,times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
-    
-    @Test(expected=InvalidProductException.class)
-    public void testValidateAttributesBadType3() throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException{
-        SystemPropertiesProvider systemPropertiesProvider=mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn("Plain|IP|IP(All)");
-        
+
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType3() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
         productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
-        
-        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port","|");
-        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "|");
+
         product.setName("1");
-        
+
         product.addAttribute(attribute);
-        
+
         productResourceValidator.validateInsert(product);
-        
-        verify(systemPropertiesProvider,times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
 }
