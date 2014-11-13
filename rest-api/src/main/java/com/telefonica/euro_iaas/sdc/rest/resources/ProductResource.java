@@ -30,6 +30,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -125,6 +126,39 @@ public interface ProductResource {
     @Path("/{pName}/metadatas/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Metadata> loadMetadatas(@PathParam("pName") String name) throws EntityNotFoundException;
+
+    /**
+     * Retrieve the metadata metadata-name for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @return the attributes.
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @PUT
+    @Path("/{pName}/metadatas/{metadataName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void updateMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName, Metadata metadata ) throws EntityNotFoundException;
+
+
+    /**
+     * Retrieve the metadata metadata-name for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @return the attributes.
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @GET
+    @Path("/{pName}/metadatas/{metadataName}")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    Metadata loadMetadata(@PathParam("pName") String name, @PathParam("metadataName") String metadataName ) throws EntityNotFoundException;
 
     /**
      * Delete the Product in SDC Database.

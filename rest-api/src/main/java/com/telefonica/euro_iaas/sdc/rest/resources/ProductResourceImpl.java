@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
@@ -210,6 +211,43 @@ public class ProductResourceImpl implements ProductResource {
         }
        
     }
+
+    @Override
+    public void updateMetadata(String name, String metadataName, Metadata metadata) throws EntityNotFoundException {
+        Product product = null;
+        try {
+            product = productManager.load(name);
+            if (product.getMetadata(metadataName) == null || ! metadata.getKey().equals(metadataName)) {
+                log.warning("Exception: metadata not found or wrong " + metadata);
+                throw new APIException(new Exception("Exception: metadata not found or wrong " + metadata));
+            }
+        } catch (Exception e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        product.updateMetadata(metadata);
+        productManager.update(product);
+
+    }
+
+    @Override
+    public Metadata loadMetadata(String name, String metadataName) throws EntityNotFoundException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+            if (product.getMetadata(metadataName) == null ) {
+                log.warning("Metadata not found : " + metadataName);
+                throw new APIException(new Exception("Metadata not found : " + metadataName));
+            }
+            else {
+                return product.getMetadata(metadataName);
+            }
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+    }
+
 
     /**
      * Delete the Product Resource.

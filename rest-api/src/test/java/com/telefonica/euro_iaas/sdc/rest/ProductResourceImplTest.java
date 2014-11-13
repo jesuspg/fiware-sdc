@@ -27,9 +27,7 @@ package com.telefonica.euro_iaas.sdc.rest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +59,7 @@ public class ProductResourceImplTest {
     private ProductResourceImpl productResource = null;
     private ProductResourceValidator productResourceValidator=null;
     private ProductManager productManager = null;
+    Product product = null;
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +72,7 @@ public class ProductResourceImplTest {
         productResource.setSystemPropertiesProvider(systemPropertiesProvider);
         doNothing().when(productResourceValidator).validateInsert(any(Product.class));
         productResource.setValidator(productResourceValidator);
-        Product product = new Product(PRODUCT_NAME, "description");
+        product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 
         ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes",
@@ -128,6 +127,23 @@ public class ProductResourceImplTest {
     public void testLoadMetada () throws Exception {
     	 List<Metadata> meta = productResource.loadMetadatas("name");
          assertNotNull (meta);
+    }
+
+    @Test
+    public void testLoadMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        Metadata meta = productResource.loadMetadata("productname", "metadata");
+        assertNotNull (meta);
+    }
+
+    @Test
+    public void testUpdateMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        when(productManager.update(any(Product.class))).thenReturn(product);
+        productResource.updateMetadata("productname", "metadata", new Metadata("metadata", "value"));
+
     }
     
     @Test

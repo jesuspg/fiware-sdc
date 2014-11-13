@@ -128,6 +128,23 @@ public class Product {
         metadatas.add(meta);
     }
 
+    public Metadata getMetadata(String metadataName) {
+        for (Metadata meta: this.metadatas) {
+            if (meta.getKey().equals(metadataName)) {
+                return meta;
+            }
+        }
+        return null;
+    }
+
+    public Metadata updateMetadata(Metadata metadata) {
+        this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
+        this.getMetadata(metadata.getKey()).setValue(metadata.getValue());
+        this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
+        return this.getMetadata(metadata.getKey());
+    }
+
+
     /**
      * @return the attributes as a Map
      */

@@ -172,6 +172,11 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         productDao.remove(product);
     }
 
+    @Override
+    public Product update(Product product) {
+        return productDao.update(product);
+    }
+
     /**
      * @param productDao
      *            the productDao to set

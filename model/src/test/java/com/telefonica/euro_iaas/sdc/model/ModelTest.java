@@ -167,4 +167,36 @@ public class ModelTest extends TestCase {
         assertEquals(metadatas.size(), 1);
 
     }
+
+    public void testGetMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key2", "value2", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+        product.addMetadata(metadata2);
+
+        Metadata output = product.getMetadata("key1");
+        assertNotNull(output);
+        assertEquals("value1", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
+
+    public void testUpdateMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key1", "value2", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+
+
+        Metadata output = product.updateMetadata(metadata2);
+        assertNotNull(output);
+        assertEquals("value2", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
 }
