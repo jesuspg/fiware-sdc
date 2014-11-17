@@ -117,9 +117,9 @@ Feature: Install product with E2E validations
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
-      | key            | value             | description   |
-      | custom_att_01  | att_prod_value_1  | Prod att 1    |
-      | other_att_01   | att_prod_value_2  | Prod att 2    |
+      | key            | value             | description   | type   |
+      | custom_att_01  | att_prod_value_1  | Prod att 1    | Plain  |
+      | other_att_01   | att_prod_value_2  | Prod att 2    | Plain  |
       And a created product with name "<product_name>" and release "<release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -142,10 +142,10 @@ Feature: Install product with E2E validations
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
-      | key             | value             | description   |
-      | custom_att_01   | att_prod_def_1    | Prod att 1    |
-      | custom_att_02   | att_prod_def_2    | Prod att 2    |
-      | other_att_01    | att_prod_def_other| Prod att 2    |
+      | key             | value             | description   | type   |
+      | custom_att_01   | att_prod_def_1    | Prod att 1    | Plain  |
+      | custom_att_02   | att_prod_def_2    | Prod att 2    | Plain  |
+      | other_att_01    | att_prod_def_other| Prod att 2    | Plain  |
       And a created product with name "<product_name>" and release "<product_release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |

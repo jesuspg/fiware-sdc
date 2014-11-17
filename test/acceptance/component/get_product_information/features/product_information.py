@@ -4,7 +4,7 @@ __author__ = 'arobres'
 from lettuce import step, world, before, after
 from commons.authentication import get_token
 from commons.rest_utils import RestUtils
-from commons.product_body import default_product, create_default_metadata_or_attributes_list
+from commons.product_body import default_product, create_default_metadata_list, create_default_attribute_list
 from commons.utils import dict_to_xml, set_default_headers, xml_to_dict, response_body_to_dict, \
     replace_none_value_metadata_to_empty_string
 from commons.constants import CONTENT_TYPE, CONTENT_TYPE_JSON, PRODUCT_NAME, ACCEPT_HEADER, AUTH_TOKEN_HEADER, PRODUCT, \
@@ -47,7 +47,7 @@ def given_a_created_product_with_name_group1(step, product_id):
 @step(u'Given a created product with attributes and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
-    world.attributes = create_default_metadata_or_attributes_list(2)
+    world.attributes = create_default_attribute_list(2)
     world.created_product_body = default_product(name=product_id, attributes=world.attributes)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
@@ -58,7 +58,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 @step(u'Given a created product with metadatas and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
-    world.metadatas = create_default_metadata_or_attributes_list(2)
+    world.metadatas = create_default_metadata_list(2)
     world.created_product_body = default_product(name=product_id, metadata=world.metadatas)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
@@ -69,8 +69,8 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 @step(u'Given a created product with all data and name "([^"]*)"')
 def given_a_created_product_with_all_data_and_name_group1(step, product_id):
 
-    world.metadatas = create_default_metadata_or_attributes_list(5)
-    world.attributes = create_default_metadata_or_attributes_list(5)
+    world.metadatas = create_default_metadata_list(5)
+    world.attributes = create_default_attribute_list(5)
     world.created_product_body = default_product(name=product_id, metadata=world.metadatas, attributes=world.attributes)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
