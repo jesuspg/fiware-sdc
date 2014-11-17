@@ -89,7 +89,7 @@ Feature: Install product with E2E validations
       | chef    | SdcRuntimeException                   |
       | puppet  | InvalidInstallProductRequestException |
 
-    @test
+
     Scenario Outline: Install a new product with "installation attributes"
 
       Given a configuration management with "<cm_tool>"
