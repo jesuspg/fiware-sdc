@@ -223,8 +223,8 @@ Feature: Add a new product in the catalogue
     | testing_attributes_02 | product with testing purposes | Plain           | application/xml   |
     | testing_attributes_03 | product with testing purposes | IP              | application/json  |
     | testing_attributes_04 | product with testing purposes | IP              | application/xml   |
-    | testing_attributes_05 | product with testing purposes | IP(All)         | application/json  |
-    | testing_attributes_06 | product with testing purposes | IP(All)         | application/xml   |
+    | testing_attributes_05 | product with testing purposes | IPALL           | application/json  |
+    | testing_attributes_06 | product with testing purposes | IPALL           | application/xml   |
     | testing_attributes_07 | product with testing purposes | [MISSING_PARAM] | application/json  |
     | testing_attributes_08 | product with testing purposes | [MISSING_PARAM] | application/xml   |
 
