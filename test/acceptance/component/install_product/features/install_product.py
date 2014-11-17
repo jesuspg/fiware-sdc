@@ -149,7 +149,7 @@ def task_is_created(step):
     provisioning_steps.task_is_created(step)
 
 
-@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)$"')
+@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)"$')
 def the_task_has_finished_with_status_group1(step, status):
     finished = wait_for_task_finished(vdc_id=world.tenant_id, task_id=world.task_id,
                                       status_to_be_finished=status, headers=world.headers)
