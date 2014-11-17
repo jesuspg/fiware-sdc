@@ -40,6 +40,9 @@ public enum ErrorCode {
             403),
     NAME_NO_VALID(41, "The entity is not valid", "(.*)InvalidEntityException:(.*)", 400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
+    
+    INVALID_PRODUCT(60, "Invalid product", "(.*)InvalidProduct(.*)", 500),
+    
     DEFAULT(500, "Internal SDC Server error", "(?s).*", 500);
 
     private final int code;

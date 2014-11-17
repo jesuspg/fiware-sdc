@@ -30,6 +30,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidMultiPartRequestException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseUpdateRequestException;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
@@ -67,8 +68,9 @@ public interface ProductResourceValidator {
      * @param product
      *            (name, version, type)
      * @throws AlreadyExistsEntityException
+     * @throws InvalidProductException 
      */
-    void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException;
+    void validateInsert(Product product) throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductException;
 
     /**
      * @param pName

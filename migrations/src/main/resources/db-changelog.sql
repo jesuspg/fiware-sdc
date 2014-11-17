@@ -133,3 +133,8 @@ DROP TABLE installablerelease_attribute;
 
 --changeset jesuspg:1-40
 ALTER TABLE product_attribute DROP COLUMN metadata_id;
+
+--changeset alberts:1-41
+ALTER TABLE attribute ADD COLUMN type VARCHAR(255) NULL;
+UPDATE attribute SET type='Plain' WHERE 1=1;
+ALTER TABLE attribute ALTER COLUMN type VARCHAR(255) NOT NULL;
