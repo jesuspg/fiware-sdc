@@ -96,11 +96,8 @@ def a_vm_with_hostname_group1_and_fqn_group2(step, vm_hostname, vm_fqn):
 def the_following_instance_attributes(step):
     world.instance_attributes = []
     for row in step.hashes:
-        attribute = dict()
-        attribute[KEY] = row[KEY]
-        attribute[PRODUCT_DESCRIPTION] = row[PRODUCT_DESCRIPTION]
-        attribute[VALUE] = row[VALUE]
-        world.instance_attributes.append(attribute)
+        row = dict(dataset_utils.prepare_data(row))
+        world.instance_attributes.append(row)
 
 
 @step(u'the following product attributes:')
