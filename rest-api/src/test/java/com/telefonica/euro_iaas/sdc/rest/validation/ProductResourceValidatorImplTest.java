@@ -357,4 +357,24 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
         verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
+    
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType4() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "Pl");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
 }

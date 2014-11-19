@@ -155,7 +155,16 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
 
             String availableTypes = systemPropertiesProvider
                     .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
-            if (att.getType().length() < 2 || !availableTypes.contains(att.getType())) {
+            
+            StringTokenizer st2 = new StringTokenizer(availableTypes, "|");
+            boolean error=true;
+            while (st2.hasMoreElements()) {
+                if(att.getType().equals(st2.nextElement())){
+                    error=false;
+                    break;
+                }
+            }
+            if (error) {
                 throw new InvalidProductException(msg);
             }
         }
