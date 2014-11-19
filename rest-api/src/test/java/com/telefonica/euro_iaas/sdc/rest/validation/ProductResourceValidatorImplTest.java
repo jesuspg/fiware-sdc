@@ -318,8 +318,8 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
 
-    @Test(expected = InvalidProductException.class)
-    public void testValidateAttributesBadType2() throws InvalidEntityException, AlreadyExistsEntityException,
+    @Test
+    public void testValidateAttributesSetDefaultValue() throws InvalidEntityException, AlreadyExistsEntityException,
             InvalidProductException {
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
