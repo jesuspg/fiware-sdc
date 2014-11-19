@@ -94,8 +94,8 @@ Feature: Install product with E2E validations
 
       Given a configuration management with "<cm_tool>"
       And the following instance attributes:
-      | key           | value         | description         |
-      | custom_att_01 | new_val_att_1 | Testing attributes  |
+      | key           | value         | description         | type   |
+      | custom_att_01 | new_val_att_1 | Testing attributes  | Plain  |
       And a created product with name "<product_name>" and release "<release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -117,9 +117,9 @@ Feature: Install product with E2E validations
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
-      | key            | value             | description   |
-      | custom_att_01  | att_prod_value_1  | Prod att 1    |
-      | other_att_01   | att_prod_value_2  | Prod att 2    |
+      | key            | value             | description   | type   |
+      | custom_att_01  | att_prod_value_1  | Prod att 1    | Plain  |
+      | other_att_01   | att_prod_value_2  | Prod att 2    | Plain  |
       And a created product with name "<product_name>" and release "<release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -135,25 +135,25 @@ Feature: Install product with E2E validations
 
       | product_name                  | release	| cm_tool 	|
       | qa-test-product-chef-att-01   | 1.2.3   | chef  	|
-      | qa-test-product-puppet-att-01 | 1.2.3   | puppet  |
+      | qa-test-product-puppet-att-01 | 1.2.3   | puppet    |
 
 
     Scenario Outline: Install a new product release with product attributes (catalog) and instance attributes
 
       Given a configuration management with "<cm_tool>"
       And the following product attributes:
-      | key             | value             | description   |
-      | custom_att_01   | att_prod_def_1    | Prod att 1    |
-      | custom_att_02   | att_prod_def_2    | Prod att 2    |
-      | other_att_01    | att_prod_def_other| Prod att 2    |
+      | key             | value             | description   | type   |
+      | custom_att_01   | att_prod_def_1    | Prod att 1    | Plain  |
+      | custom_att_02   | att_prod_def_2    | Prod att 2    | Plain  |
+      | other_att_01    | att_prod_def_other| Prod att 2    | Plain  |
       And a created product with name "<product_name>" and release "<product_release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
       | ${CONFIG_FILE} | ${CONFIG_FILE}  | ${CONFIG_FILE}  |
       And the following instance attributes:
-      | key           | value           | description |
-      | custom_att_01 | new_val_att_1   | Testing attributes  |
-      | custom_att_02 | new_val_att_2   | Testing attributes  |
+      | key           | value           | description         | type   |
+      | custom_att_01 | new_val_att_1   | Testing attributes  | Plain  |
+      | custom_att_02 | new_val_att_2   | Testing attributes  | Plain  |
       When I install the product in the VM
       Then the task is created
       And the task is performed
