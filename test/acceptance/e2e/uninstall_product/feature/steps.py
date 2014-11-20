@@ -1,3 +1,25 @@
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 __author__ = 'jfernandez'
 
 """
@@ -65,5 +87,3 @@ def a_uninstalled_product_with_name_group1_and_release_group2(step, product_name
     i_uninstall_the_installed_product_group1_and_release_group2(step, world.product_name, world.product_version)
     task_is_created(step)
     the_task_has_finished_with_status_group1(step, TASK_STATUS_VALUE_SUCCESS)
-
-

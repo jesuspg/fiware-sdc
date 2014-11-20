@@ -9,10 +9,13 @@ from commons.product_body import simple_product_body, product_with_attributes, p
 from commons.utils import dict_to_xml, xml_to_dict, set_default_headers, response_body_to_dict
 from commons.constants import CONTENT_TYPE, CONTENT_TYPE_JSON, PRODUCT_NAME, PRODUCT_DESCRIPTION, PRODUCT, \
     ACCEPT_HEADER, LONG_ID, AUTH_TOKEN_HEADER, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS, KEY, DESCRIPTION, VALUE, \
-    TENANT_ID_HEADER, METADATA_TENANT_ID, PRODUCTS
+    TENANT_ID_HEADER, METADATA_TENANT_ID, PRODUCTS, ATTRIBUTE_TYPE, ATTRIBUTE_TYPE_PLAIN
 from nose.tools import assert_equals, assert_true, assert_in, assert_false
+from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 
 api_utils = RestUtils()
+dataset_utils = DatasetUtils()
+
 
 @before.each_feature
 def setup_feature(feature):
@@ -77,10 +80,15 @@ def then_the_product_is_created_with_group1_response(step):
     assert_equals(response_body[PRODUCT_DESCRIPTION], world.product_description)
 
     if world.attributes is not None:
-        if len(world.attributes) == 1:
-            assert_equals(world.attributes[0], response_body[PRODUCT_ATTRIBUTES])
+        # Check if attribute contains TYPE. If it is missing, response should have default attribute type
+        if isinstance(world.attributes, dict):
+            if ATTRIBUTE_TYPE not in world.attributes:
+                world.attributes.update({ATTRIBUTE_TYPE: ATTRIBUTE_TYPE_PLAIN})
         else:
-            assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
+            for attribute in world.attributes:
+                if ATTRIBUTE_TYPE not in attribute:
+                    attribute.update({ATTRIBUTE_TYPE: ATTRIBUTE_TYPE_PLAIN})
+        assert_equals(world.attributes, response_body[PRODUCT_ATTRIBUTES])
         world.attributes = None
 
     if world.metadatas is not None:
@@ -88,17 +96,18 @@ def then_the_product_is_created_with_group1_response(step):
             assert_in(metadata, response_body[PRODUCT_METADATAS])
         world.metadatas = None
 
+
 @step(u'And the following attributes')
 def and_the_following_attributes(step):
 
     world.attributes = []
 
     for examples in step.hashes:
-        attribute = {}
-        attribute[KEY] = examples[KEY]
-        attribute[PRODUCT_DESCRIPTION] = examples[PRODUCT_DESCRIPTION]
-        attribute[VALUE] = examples[VALUE]
-        world.attributes.append(attribute)
+        examples = dict(dataset_utils.prepare_data(examples))
+        world.attributes.append(examples)
+
+    if len(step.hashes) == 1:
+        world.attributes = world.attributes[0]
 
 
 @step(u'When I add the new product with attributes, with accept parameter "([^"]*)" response')
@@ -155,10 +164,10 @@ def the_product_visibility_is_group1(step, visibility):
     assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
 
     response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                          xml_root_element_name=PRODUCTS)
+                                          xml_root_element_name=PRODUCTS, is_list=True)
 
     exist = False
-    for product in response_body[PRODUCT]:
+    for product in response_body:
         if product[PRODUCT_NAME] == world.product_name:
             exist = True
 
@@ -175,7 +184,7 @@ def the_product_visibility_is_group1(step, visibility):
 @step(u'Then I obtain an "([^"]*)"')
 def then_i_obtain_an_group1(step, error_code):
 
-    print assert_equals(str(world.response.status_code), error_code)
+    print assert_equals(str(world.response.status_code), error_code, 'RESPONSE: {}'.format(world.response.content))
 
 
 @step(u'And incorrect "([^"]*)" header')

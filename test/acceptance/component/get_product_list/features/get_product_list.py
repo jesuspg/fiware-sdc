@@ -4,8 +4,8 @@ __author__ = 'arobres'
 from lettuce import step, world, before, after
 from commons.authentication import get_token
 from commons.rest_utils import RestUtils
-from commons.product_body import default_product, create_default_metadata_or_attributes_list
-from commons.utils import dict_to_xml, xml_to_dict, set_default_headers
+from commons.product_body import default_product, create_default_metadata_list, create_default_attribute_list
+from commons.utils import dict_to_xml, response_body_to_dict, set_default_headers
 from commons.constants import CONTENT_TYPE, PRODUCTS, PRODUCT_NAME, PRODUCT, CONTENT_TYPE_JSON, \
     ACCEPT_HEADER, AUTH_TOKEN_HEADER, PRODUCT_DESCRIPTION, PRODUCT_ATTRIBUTES, PRODUCT_METADATAS
 from nose.tools import assert_equals, assert_true, assert_in
@@ -42,7 +42,7 @@ def given_a_created_product_with_name_group1(step, product_id):
 @step(u'Given a created product with attributes and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
-    world.attributes = create_default_metadata_or_attributes_list(2)
+    world.attributes = create_default_attribute_list(2)
     world.created_product_body = default_product(name=product_id, attributes=world.attributes)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
@@ -53,7 +53,7 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 @step(u'Given a created product with metadatas and name "([^"]*)"')
 def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 
-    world.metadatas = create_default_metadata_or_attributes_list(2)
+    world.metadatas = create_default_metadata_list(2)
     world.created_product_body = default_product(name=product_id, metadata=world.metadatas)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
@@ -64,8 +64,8 @@ def given_a_created_product_with_attributes_and_name_group1(step, product_id):
 @step(u'Given a created product with all data and name "([^"]*)"')
 def given_a_created_product_with_all_data_and_name_group1(step, product_id):
 
-    world.metadatas = create_default_metadata_or_attributes_list(5)
-    world.attributes = create_default_metadata_or_attributes_list(5)
+    world.metadatas = create_default_metadata_list(5)
+    world.attributes = create_default_attribute_list(5)
     world.created_product_body = default_product(name=product_id, metadata=world.metadatas, attributes=world.attributes)
     body = dict_to_xml(world.created_product_body)
     response = api_utils.add_new_product(headers=world.headers, body=body)
@@ -83,20 +83,12 @@ def when_i_retrieve_the_list_product_with_accept_parameter_group1_response(step,
 def then_the_product_is_returned_in_the_list(step):
 
     assert_true(world.response.ok, world.response.content)
-
     assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
-    response_headers = world.response.headers
 
-    if response_headers[CONTENT_TYPE] == CONTENT_TYPE_JSON:
-        try:
-            response_body = world.response.json()
-        except Exception, e:
-            print str(e)
+    response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
+                                          xml_root_element_name=PRODUCTS, is_list=True)
 
-    else:
-        response_body = xml_to_dict(world.response.content)[PRODUCTS]
-
-    for product in response_body[PRODUCT]:
+    for product in response_body:
 
         if product[PRODUCT_NAME] == world.created_product_body[PRODUCT][PRODUCT_NAME]:
             world.exist = True

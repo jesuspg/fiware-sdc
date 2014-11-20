@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -46,6 +47,7 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.util.Configuration;
@@ -113,8 +115,11 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #additionalAuthenticationChecks( org.springframework.security.core.userdetails.UserDetails, org.springframework
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider
+     * #additionalAuthenticationChecks(
+     * org.springframework.security.core.userdetails.UserDetails,
+     * org.springframework
      * .security.authentication.UsernamePasswordAuthenticationToken)
      */
     @Override
@@ -205,8 +210,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /**
-     * + * Connect to keystone and validate user token using admin token. + * + * @param token + * @param tenantId + * @param
-     * authenticateResponse + * @return +
+     * + * Connect to keystone and validate user token using admin token. + * +
+     * * @param token + * @param tenantId + * @param authenticateResponse + * @return
+     * +
      */
     private PaasManagerUser validateUserToken(String token, String tenantId, AuthenticateResponse authenticateResponse) {
         AuthenticateResponse responseAuth = authenticateResponse;
@@ -267,8 +273,10 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #retrieveUser(java.lang.String, org .springframework.security.authentication.UsernamePasswordAuthenticationToken
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider #retrieveUser(java.lang.String,
+     * org
+     * .springframework.security.authentication.UsernamePasswordAuthenticationToken
      * )
      */
     @Override
@@ -277,12 +285,18 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
 
         PaasManagerUser user = null;
-        String tenantId = authentication.getCredentials().toString();
+        if (null != authentication.getCredentials()) {
+            String tenantId = authentication.getCredentials().toString();
 
-        if (SYSTEM_FIWARE.equals(system)) {
-            user = authenticationFiware(username, tenantId);
-        } else if (SYSTEM_FASTTRACK.equals(system)) {
-            user = authenticationFastTrack(username, tenantId);
+            if (SYSTEM_FIWARE.equals(system)) {
+                user = authenticationFiware(username, tenantId);
+            } else if (SYSTEM_FASTTRACK.equals(system)) {
+                user = authenticationFastTrack(username, tenantId);
+            }
+        } else {
+            String str = "Missing tenantId header";
+            log.info(str);
+            throw new BadCredentialsException(str);
         }
 
         return user;

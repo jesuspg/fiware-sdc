@@ -3,7 +3,7 @@ from lettuce import step, world
 from commons.product_steps import ProductSteps
 from commons.rest_utils import RestUtils
 from commons.constants import *
-from commons.utils import response_body_to_dict
+from commons.utils import response_body_to_dict, replace_none_value_metadata_to_empty_string
 
 from nose.tools import assert_equals, assert_true, assert_false, assert_in
 
@@ -24,11 +24,13 @@ def check_if_product_is_in_list(response, product_release):
     """
 
     found = False
-    for product_and_release in response[PRODUCTANDRELEASE]:
+    for product_and_release in response:
         if product_and_release[PRODUCT][PRODUCT_NAME] == world.product_name:
             if product_release is None or product_and_release[VERSION] == product_release:
                 found = True
                 for metadata in DEFAULT_METADATA[METADATA]:
+                    # Workaround: xmldict manage Empty values as None value
+                    replace_none_value_metadata_to_empty_string(product_and_release[PRODUCT][PRODUCT_METADATAS])
                     assert_in(metadata, product_and_release[PRODUCT][PRODUCT_METADATAS],
                               "Metadata are not the expected!")
                 if world.attributes is not None:
@@ -104,7 +106,7 @@ def the_list_is_returned(step):
 @step(u'the product with its release is in the list')
 def the_product_with_its_release_is_in_the_list(step):
     response = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                     xml_root_element_name=PRODUCTANDRELEASE_LIST)
+                                     xml_root_element_name=PRODUCTANDRELEASE_LIST, is_list=True)
 
     assert_true(len(response) != 0)
     check_if_product_is_in_list(response, world.product_release)
@@ -113,7 +115,7 @@ def the_product_with_its_release_is_in_the_list(step):
 @step(u'the product with all its releases is in the list')
 def the_product_with_all_its_releases_is_in_the_list(step):
     response = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                     xml_root_element_name=PRODUCTANDRELEASE_LIST)
+                                     xml_root_element_name=PRODUCTANDRELEASE_LIST, is_list=True)
 
     for release in world.product_release:
         check_if_product_is_in_list(response, release)
@@ -122,11 +124,11 @@ def the_product_with_all_its_releases_is_in_the_list(step):
 @step(u'the product is not in the list')
 def the_product_is_not_in_the_list(step):
     response = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                     xml_root_element_name=PRODUCTANDRELEASE_LIST)
+                                     xml_root_element_name=PRODUCTANDRELEASE_LIST, is_list=True)
 
     found = False
     if len(response) != 0:
-        for product_and_release in response[PRODUCTANDRELEASE]:
+        for product_and_release in response:
             if product_and_release[PRODUCT][PRODUCT_NAME] == world.product_name:
                 found = True
                 break
@@ -136,3 +138,4 @@ def the_product_is_not_in_the_list(step):
 @step(u'I obtain an http error code "([^"]*)"')
 def i_obtain_an_http_error_code_group1(step, error_code):
     assert_equals(str(world.response.status_code), error_code)
+

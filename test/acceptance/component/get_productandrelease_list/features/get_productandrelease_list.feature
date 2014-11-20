@@ -98,7 +98,7 @@ Feature: Get all product and release information using the correct SDC resource 
       | 891855f21b2f1567afb966d3ceee1295 |
       |                                  |
 
-    @auth @skip @CLAUDIA-4118
+    @auth
     Scenario Outline: Get 'product and release' list with incorrect authentication: tenant-id
 
       Given a created product with name "testing_delete01" and release "1.2.3"

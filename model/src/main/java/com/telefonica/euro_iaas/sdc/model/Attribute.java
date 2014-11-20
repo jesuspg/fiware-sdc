@@ -68,6 +68,9 @@ public class Attribute {
     /* the description of that attribute* */
     @Column(nullable = true, length = 2048)
     private String description;
+    
+    @Column(nullable = true, length = 256)
+    private String type;
 
     /*
      * @JoinColumn(name = "artifact_id", referencedColumnName = "id")
@@ -88,16 +91,28 @@ public class Attribute {
         this.key = key;
         this.value = value;
     }
+    
+    /**
+     * @param key
+     * @param value
+     * @param type
+     */
+    public Attribute(String key, String value, String description) {
+        this.key = key;
+        this.value = value;
+        this.description=description;
+    }
 
     /**
      * @param key
      * @param value
      * @param description
      */
-    public Attribute(String key, String value, String description) {
+    public Attribute(String key, String value, String description, String type) {
         this.key = key;
         this.value = value;
         this.description = description;
+        this.type=type;
     }
 
     /**
@@ -155,6 +170,23 @@ public class Attribute {
     public Long getId() {
         return id;
     }
+    
+    /**
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * 
+     * @param type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+    
 
     /*
      * (non-Javadoc)
@@ -209,10 +241,12 @@ public class Attribute {
        sb.append("[key = ").append(this.key).append("]");
        sb.append("[value = ").append(this.value).append("]");
        sb.append("[description = ").append(this.description).append("]");
+       sb.append("[type = ").append(this.type).append("]");
        sb.append("]");
        return sb.toString();
     }
-    
+
+   
     
 
 }

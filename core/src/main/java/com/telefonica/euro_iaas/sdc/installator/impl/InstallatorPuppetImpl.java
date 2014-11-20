@@ -108,6 +108,15 @@ public class InstallatorPuppetImpl implements Installator {
             String token) throws InstallatorException, NodeExecutionException {
 
         callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token, attributes);
+        try {
+            isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
+        } catch (NodeExecutionException e) {
+            String str="It is not possible execute the module " + productInstance.getProductRelease().getProduct().getName() + " in node "
+                    + vm.getHostname();
+            log.warn(str);
+            throw e;
+        }
+
     }
 
     @Override
@@ -135,6 +144,8 @@ public class InstallatorPuppetImpl implements Installator {
         HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
+        postInstall.setHeader("X-Auth-Token", token);
+        postInstall.setHeader("Tenant-Id",vdc);
 
         NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
         ObjectMapper mapper = new ObjectMapper();
@@ -186,6 +197,8 @@ public class InstallatorPuppetImpl implements Installator {
             HttpGet getGenerate = new HttpGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
             getGenerate.addHeader("Content-Type", "application/json");
+            getGenerate.setHeader("X-Auth-Token", token);
+            getGenerate.setHeader("Tenant-Id",vdc);
 
             response = client.execute(getGenerate);
             statusCode = response.getStatusLine().getStatusCode();

@@ -137,7 +137,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
                 List<ProductRelease> productReleaseList = productReleaseManager.findReleasesByCriteria(prCriteria);
 
                 for (ProductRelease pr : productReleaseList) {
-                    
+
                     ProductAndReleaseDto productAndRelease = new ProductAndReleaseDto();
                     productAndRelease.setProduct(p);
                     productAndRelease.setVersion(pr.getVersion());
@@ -157,15 +157,14 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public Product load(String name) throws EntityNotFoundException {
         return productDao.load(name);
     }
-    
-   
+
     public boolean exist(String name) {
         try {
-			load(name);
-			return true;
-		} catch (EntityNotFoundException e) {
-			return false;
-		}
+            load(name);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 
     @Override

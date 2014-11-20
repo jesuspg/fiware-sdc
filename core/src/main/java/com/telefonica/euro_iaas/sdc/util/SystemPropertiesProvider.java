@@ -56,6 +56,8 @@ public interface SystemPropertiesProvider {
     public static final String SDCCLIENT_INSTALLED_IN_NODES = "sdcclient.installed.innodes";
 
 	public static final String CLOUD_SYSTEM = "openstack-tcloud.cloudSystem";
+	
+	public static final String AVAILABLE_ATTRIBUTE_TYPES = "available.attribute.types";
 
 
     
