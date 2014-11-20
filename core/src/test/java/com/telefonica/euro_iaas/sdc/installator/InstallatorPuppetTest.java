@@ -61,6 +61,7 @@ import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.AttributeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
@@ -254,7 +255,7 @@ public class InstallatorPuppetTest {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111,222.222.222.222", "description", "IPALL"));
-        List<Attribute> receivedList = puppetInstallator.formatAttributesForPuppet(li);
+        List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
         assertEquals("['111.111.111.111','222.222.222.222']",receivedList.get(0).getValue());
         
 

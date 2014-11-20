@@ -56,6 +56,7 @@ import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.AttributeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
@@ -146,7 +147,7 @@ public class InstallatorPuppetImpl implements Installator {
             throw new SdcRuntimeException(e);
         }
 
-        List<Attribute> newAttributes=null;
+        List<AttributeDto> newAttributes=null;
         if (attributes != null) {
             newAttributes = formatAttributesForPuppet(attributes);
         }
@@ -230,9 +231,13 @@ public class InstallatorPuppetImpl implements Installator {
         }
     }
 
-    public List<Attribute> formatAttributesForPuppet(List<Attribute> attributes) {
-        List<Attribute> newAtts = new ArrayList<Attribute>();
+    public List<AttributeDto> formatAttributesForPuppet(List<Attribute> attributes) {
+        List<AttributeDto> newAtts = new ArrayList<AttributeDto>();
+        
         for (Attribute att : attributes) {
+            AttributeDto attDto=new AttributeDto();
+            attDto.setKey(att.getKey());
+            attDto.setDescription(att.getDescription());
             if (att.getType().equals(IPALL)) {
                 String newValue = "[";
                 StringTokenizer st = new StringTokenizer(att.getValue(), ",");
@@ -241,9 +246,9 @@ public class InstallatorPuppetImpl implements Installator {
                 }
                 newValue = newValue.substring(0, newValue.length() - 1);
                 newValue = newValue + "]";
-                att.setValue(newValue);
+                attDto.setValue(newValue);
             }
-            newAtts.add(att);
+            newAtts.add(attDto);
         }
         return newAtts;
     }
