@@ -149,7 +149,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
     private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
         String msg = "Attribute type is incorrect.";
         for (Attribute att : attributes) {
-            if ("".equals(att.getType())) {
+            if (att.getType()==null) {
                 log.warning(msg+" Adding Plain as default value.");
                 att.setType("Plain");
             }
