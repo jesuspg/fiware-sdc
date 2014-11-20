@@ -109,7 +109,7 @@ public class InstallatorPuppetTest {
         productInstance = new ProductInstance(productRelease, Status.INSTALLING, host, "vdc");
 
         attributeList = new ArrayList<Attribute>();
-        attribute1 = new Attribute("user", "pepito");
+        attribute1 = new Attribute("user", "pepito","desc","Plain");
 
         attributeList.add(attribute1);
 
@@ -254,7 +254,6 @@ public class InstallatorPuppetTest {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111,222.222.222.222", "description", "IPALL"));
-
         List<Attribute> receivedList = puppetInstallator.formatAttributesForPuppet(li);
         assertEquals("['111.111.111.111','222.222.222.222']",receivedList.get(0).getValue());
         

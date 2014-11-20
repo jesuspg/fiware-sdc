@@ -115,8 +115,8 @@ public class InstallatorPuppetImpl implements Installator {
         try {
             isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
         } catch (NodeExecutionException e) {
-            String str="It is not possible execute the module " + productInstance.getProductRelease().getProduct().getName() + " in node "
-                    + vm.getHostname();
+            String str = "It is not possible execute the module "
+                    + productInstance.getProductRelease().getProduct().getName() + " in node " + vm.getHostname();
             log.warn(str);
             throw e;
         }
@@ -145,14 +145,17 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
-        
-        List<Attribute> newAttributes=formatAttributesForPuppet(attributes);
-        
+
+        List<Attribute> newAttributes=null;
+        if (attributes != null) {
+            newAttributes = formatAttributesForPuppet(attributes);
+        }
+
         HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
         postInstall.setHeader("X-Auth-Token", token);
-        postInstall.setHeader("Tenant-Id",vdc);
+        postInstall.setHeader("Tenant-Id", vdc);
 
         NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), newAttributes);
         ObjectMapper mapper = new ObjectMapper();
@@ -205,7 +208,7 @@ public class InstallatorPuppetImpl implements Installator {
 
             getGenerate.addHeader("Content-Type", "application/json");
             getGenerate.setHeader("X-Auth-Token", token);
-            getGenerate.setHeader("Tenant-Id",vdc);
+            getGenerate.setHeader("Tenant-Id", vdc);
 
             response = client.execute(getGenerate);
             statusCode = response.getStatusLine().getStatusCode();
@@ -228,15 +231,16 @@ public class InstallatorPuppetImpl implements Installator {
     }
 
     public List<Attribute> formatAttributesForPuppet(List<Attribute> attributes) {
-        List<Attribute>newAtts=new ArrayList<Attribute>();
-        for(Attribute att:attributes){
-            if(att.getType().equals(IPALL)){
-                String newValue="[";
-                StringTokenizer st = new StringTokenizer(att.getValue(),",");
-                while(st.hasMoreElements()){
-                    newValue="'"+newValue+"'";
+        List<Attribute> newAtts = new ArrayList<Attribute>();
+        for (Attribute att : attributes) {
+            if (att.getType().equals(IPALL)) {
+                String newValue = "[";
+                StringTokenizer st = new StringTokenizer(att.getValue(), ",");
+                while (st.hasMoreElements()) {
+                    newValue = newValue + "'" + st.nextElement() + "',";
                 }
-                newValue=newValue.substring(0,newValue.length()-1);
+                newValue = newValue.substring(0, newValue.length() - 1);
+                newValue = newValue + "]";
                 att.setValue(newValue);
             }
             newAtts.add(att);
