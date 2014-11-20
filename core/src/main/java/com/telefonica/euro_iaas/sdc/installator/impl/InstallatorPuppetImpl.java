@@ -28,7 +28,9 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -59,6 +61,8 @@ import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class InstallatorPuppetImpl implements Installator {
+
+    private static final Object IPALL = "IPALL";
 
     private static Logger log = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
 
@@ -141,13 +145,16 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
+        
+        List<Attribute> newAttributes=formatAttributesForPuppet(attributes);
+        
         HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
         postInstall.setHeader("X-Auth-Token", token);
         postInstall.setHeader("Tenant-Id",vdc);
 
-        NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
+        NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), newAttributes);
         ObjectMapper mapper = new ObjectMapper();
         StringEntity input;
         String payload = "";
@@ -218,6 +225,23 @@ public class InstallatorPuppetImpl implements Installator {
             log.error(e1.getMessage());
             throw new InstallatorException(e1);
         }
+    }
+
+    public List<Attribute> formatAttributesForPuppet(List<Attribute> attributes) {
+        List<Attribute>newAtts=new ArrayList<Attribute>();
+        for(Attribute att:attributes){
+            if(att.getType().equals(IPALL)){
+                String newValue="[";
+                StringTokenizer st = new StringTokenizer(att.getValue(),",");
+                while(st.hasMoreElements()){
+                    newValue="'"+newValue+"'";
+                }
+                newValue=newValue.substring(0,newValue.length()-1);
+                att.setValue(newValue);
+            }
+            newAtts.add(att);
+        }
+        return newAtts;
     }
 
     public void isRecipeExecuted(VM vm, String module, String token) throws NodeExecutionException,
