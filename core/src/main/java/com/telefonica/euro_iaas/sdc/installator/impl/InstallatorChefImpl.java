@@ -250,6 +250,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         try {
             Date ohai_time_date = df.parse(ohai_time_format);
+            log.info("ohai_time_date_parsed:[" + ohai_time_date.toString() + "]");
             last_recipeexecution_timestamp = ohai_time_date.getTime();
         } catch (ParseException ex) {
             String message = "Error parsing ohai_time date copming from node: " + ex.getMessage();
