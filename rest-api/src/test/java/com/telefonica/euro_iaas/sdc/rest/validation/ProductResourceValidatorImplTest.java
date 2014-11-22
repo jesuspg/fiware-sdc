@@ -48,7 +48,7 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
     private ProductReleaseDto productReleaseDto;
     private Product product;
     private GeneralResourceValidatorImpl generalValidator;
-    
+
     ReleaseDto releaseDto;
 
     @Before
@@ -57,9 +57,9 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         product = new Product();
         productResourceValidator = new ProductResourceValidatorImpl();
         generalValidator = new GeneralResourceValidatorImpl();
-        
+
         productResourceValidator.setGeneralValidator(generalValidator);
-        
+
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
         releaseDto.setVersion("0.1.1");
@@ -122,27 +122,27 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
         // productResourceValidator.validateUpdate(releaseDto,multiPart);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsNull() throws Exception {
-        String name=null;
+        String name = null;
         productResourceValidator.validateInsert(product);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsEmpty() throws Exception {
-        String name="";
+        String name = "";
         product.setName(name);
         productResourceValidator.validateInsert(product);
     }
-    
-    @Test(expected=InvalidEntityException.class)
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsLOngerThan256Characters() throws Exception {
-        String name=
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-             "12345678901234567";
+        String name =
+                "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+                        "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+                        "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
+                        "12345678901234567";
         product.setName(name);
         productResourceValidator.validateInsert(product);
     }

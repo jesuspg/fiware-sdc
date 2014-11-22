@@ -16,3 +16,10 @@ rest-api/jetty.base_IS_UNDEFINED/
 *.war
 *.ear
 
+#IDE
+.idea
+*/*.iml
+*.iml
+
+#jetty test
+jetty.base_IS_UNDEFINED

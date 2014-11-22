@@ -40,7 +40,6 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.manager.async.ArtifactAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -55,7 +54,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 
 /**
  * Default ProductInstanceResource implementation.
- * 
+ *
  * @author Henar Mu�oz
  */
 @Path("/vdc/{vdc}/productInstance/{productInstance}/ac")
@@ -69,11 +68,11 @@ public class ArtifactResourceImpl implements ArtifactResource {
     private ProductInstanceAsyncManager productInstanceAsyncManager;
     @InjectParam("taskManager")
     private TaskManager taskManager;
-    
+
     private static Logger log = LoggerFactory.getLogger(ArtifactResourceImpl.class);
 
     public Task install(String vdc, String productIntanceName, ArtifactDto artifactDto, String callback) {
-    	log.debug("Install artifact " + artifactDto.getName() + " in product " + productIntanceName+ " vdc " + vdc );
+        log.debug("Install artifact " + artifactDto.getName() + " in product " + productIntanceName + " vdc " + vdc);
         ProductInstance productInstance = getProductInstance(vdc, productIntanceName);
 
         Task task = createTask(MessageFormat.format("Deploy artifact in  product {0} in  VM {1}{2}", productInstance
@@ -81,9 +80,9 @@ public class ArtifactResourceImpl implements ArtifactResource {
                 .getVm().getDomain()), vdc);
         Artifact artifact = new Artifact(artifactDto.getName(), productInstance.getVdc(), productInstance,
                 artifactDto.getAttributes());
-        artifactAsyncManager.deployArtifact(productInstance, artifact, getToken (), task, callback);
-        log.debug("Task id " + task.getId() + " for Install artifact " + artifactDto.getName() + " in product " + 
-        		productIntanceName+ " vdc " + vdc );
+        artifactAsyncManager.deployArtifact(productInstance, artifact, getToken(), task, callback);
+        log.debug("Task id " + task.getId() + " for Install artifact " + artifactDto.getName() + " in product " +
+                productIntanceName + " vdc " + vdc);
         return task;
     }
 
@@ -92,13 +91,13 @@ public class ArtifactResourceImpl implements ArtifactResource {
      */
 
     public Task uninstall(String vdc, String productInstanceName, String artifactName, String callback) {
-    	log.debug("Uninstall artifact " + artifactName + " in product " + productInstanceName+ " vdc " + vdc );
+        log.debug("Uninstall artifact " + artifactName + " in product " + productInstanceName + " vdc " + vdc);
         ProductInstance productInstance = getProductInstance(vdc, productInstanceName);
         Task task = createTask(MessageFormat.format("Undeploying artifact in  product {0} in  VM {1}{2}",
                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                 productInstance.getVm().getDomain()), vdc);
-        artifactAsyncManager.undeployArtifact(productInstance, artifactName, getToken (), task, callback);
-        log.debug("Task id " + task.getId() + " for  Uninstall artifact " + artifactName + " in product " + productInstanceName+ " vdc " + vdc );
+        artifactAsyncManager.undeployArtifact(productInstance, artifactName, getToken(), task, callback);
+        log.debug("Task id " + task.getId() + " for  Uninstall artifact " + artifactName + " in product " + productInstanceName + " vdc " + vdc);
         return task;
     }
 
@@ -115,7 +114,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
      */
 
     public List<ArtifactDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
-            List<Status> status, String vdc, String productInstance) {
+                                     List<Status> status, String vdc, String productInstance) {
 
         ArtifactSearchCriteria criteria = new ArtifactSearchCriteria();
 
@@ -183,21 +182,23 @@ public class ArtifactResourceImpl implements ArtifactResource {
     public void setArtifactAsyncManager(ArtifactAsyncManager artifactAsyncManager) {
         this.artifactAsyncManager = artifactAsyncManager;
     }
-    public String getToken () {
-    	PaasManagerUser user = getCredentials();
-    	if (user == null) {
-    		return "";
-    	} else {
-    		return user.getToken();
-    	}
-    	
+
+    public String getToken() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getToken();
+        }
+
     }
+
     public PaasManagerUser getCredentials() {
-    	try {
+        try {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	} catch (Exception e) {
-    	    return null;
-    	}
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
