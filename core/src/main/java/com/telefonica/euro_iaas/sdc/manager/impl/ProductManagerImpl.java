@@ -29,13 +29,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.xmlsolutions.annotation.UseCase;
 
@@ -48,9 +54,10 @@ import com.xmlsolutions.annotation.UseCase;
 public class ProductManagerImpl extends BaseInstallableManager implements ProductManager {
 
     private ProductDao productDao;
+    private ProductReleaseManager productReleaseManager;
     private static Logger log = Logger.getLogger("ProductManagerImpl");
 
-    public Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException {
+    public Product insert(Product product, String tenantId) throws AlreadyExistsEntityException, InvalidEntityException {
 
         Product productOut;
         try {
@@ -64,6 +71,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             metadatas.add(new Metadata("cloud", "yes"));
             metadatas.add(new Metadata("installator", "chef"));
             metadatas.add(new Metadata("open_ports", "80 22"));
+            metadatas.add(new Metadata("tenant_id", tenantId));
 
             List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
             defaultmetadatas.add(new Metadata("image", "df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
@@ -71,6 +79,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             defaultmetadatas.add(new Metadata("cloud", "yes"));
             defaultmetadatas.add(new Metadata("installator", "chef"));
             defaultmetadatas.add(new Metadata("open_ports", "80 22"));
+            defaultmetadatas.add(new Metadata("tenant_id", tenantId));
 
             for (Metadata external_metadata : product.getMetadatas()) {
                 boolean defaultmetadata = false;
@@ -86,7 +95,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             }
             product.setMetadatas(metadatas);
             productOut = productDao.create(product);
-        } 
+        }
         return productOut;
     }
 
@@ -111,8 +120,51 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
      * {@inheritDoc}
      */
     @Override
+    public List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria) {
+        List<Product> productList = productDao.findByCriteria(criteria);
+
+        ProductReleaseSearchCriteria prCriteria = new ProductReleaseSearchCriteria();
+
+        prCriteria.setPage(criteria.getPage());
+        prCriteria.setPageSize(criteria.getPageSize());
+        prCriteria.setOrderBy(criteria.getOrderBy());
+        prCriteria.setOrderType(criteria.getOrderType());
+
+        List<ProductAndReleaseDto> result = new ArrayList<ProductAndReleaseDto>();
+        for (Product p : productList) {
+            if (!StringUtils.isEmpty(p.getName())) {
+                prCriteria.setProduct(p);
+                List<ProductRelease> productReleaseList = productReleaseManager.findReleasesByCriteria(prCriteria);
+
+                for (ProductRelease pr : productReleaseList) {
+
+                    ProductAndReleaseDto productAndRelease = new ProductAndReleaseDto();
+                    productAndRelease.setProduct(p);
+                    productAndRelease.setVersion(pr.getVersion());
+
+                    result.add(productAndRelease);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Product load(String name) throws EntityNotFoundException {
         return productDao.load(name);
+    }
+
+    public boolean exist(String name) {
+        try {
+            load(name);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 
     @Override
@@ -127,4 +179,9 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }
+
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
+    }
+
 }

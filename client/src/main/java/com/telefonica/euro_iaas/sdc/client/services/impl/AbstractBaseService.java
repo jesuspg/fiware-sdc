@@ -24,13 +24,12 @@
 
 package com.telefonica.euro_iaas.sdc.client.services.impl;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
-
 
 /**
  * Provides common functionallity and fields to every service.
@@ -39,7 +38,7 @@ import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
  */
 public class AbstractBaseService {
 
-	private SdcClientConfig clientConfig;
+    private SdcClientConfig clientConfig;
     private String baseHost;
     private String type;
 
@@ -47,14 +46,12 @@ public class AbstractBaseService {
      * @return the client
      */
     public Client getClient() {
-    	return clientConfig.getClient();
-    }
-    
-    public void setSdcClientConfig (SdcClientConfig clientConfig) {
-    	this.clientConfig = clientConfig;
+        return clientConfig.getClient();
     }
 
-
+    public void setSdcClientConfig(SdcClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
+    }
 
     /**
      * @return the baseHost
@@ -92,15 +89,14 @@ public class AbstractBaseService {
         }
         return queryparams;
     }
-    
-    protected Builder createWebResource (String url, String token, String tenant) {
-    	
-    	WebResource webResource = getClient().resource(url);
-    	Builder builder = webResource.accept(getType()).type(getType());
-    	builder.header("X-Auth-Token", token);
-    	builder.header("Tenant-Id", tenant);
+
+    protected Invocation.Builder createWebResource(String url, String token, String tenant) {
+
+        WebTarget webResource = getClient().target(url);
+        Invocation.Builder builder = webResource.request(getType()).accept(getType());
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", tenant);
         return builder;
     }
-
 
 }

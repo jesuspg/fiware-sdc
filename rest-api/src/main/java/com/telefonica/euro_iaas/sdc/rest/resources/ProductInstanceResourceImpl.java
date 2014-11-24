@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.rest.resources;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -36,11 +37,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
+import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
-import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -55,6 +58,9 @@ import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
+import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
+import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
 
 /**
@@ -67,26 +73,45 @@ import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValid
 @Scope("request")
 public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
-    @InjectParam("productInstanceAsyncManager")
     private ProductInstanceAsyncManager productInstanceAsyncManager;
-    @InjectParam("productReleaseManager")
     private ProductReleaseManager productReleaseManager;
-    @InjectParam("productManager")
     private ProductManager productManager;
-    @InjectParam("taskManager")
     private TaskManager taskManager;
 
     private ProductInstanceResourceValidator validator;
+    private static Logger log = Logger.getLogger("ProductInstanceResourceImpl");
 
     /**
      * {@inheritDoc}
      */
     public Task install(String vdc, ProductInstanceDto product, String callback) {
 
-        // validator.validateInsert(product);
-        try {
-            Product p = productManager.load(product.getProduct().getName());
-            ProductRelease loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
+			try {
+				validator.validateInsert(product);
+			} catch (UnauthorizedOperationException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (OpenStackException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (InvalidProductException e) {
+				log.warning ("The entity is not valid " + e.getMessage() );
+				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+			} catch (EntityNotFoundException e) {
+				log.warning ("The entity does not exist " + e.getMessage() );
+				throw new APIException(e);
+			}
+			
+			Product p=null;
+            ProductRelease loadedProduct = null;
+			try {
+				p = productManager.load(product.getProduct().getName());
+				loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
+			} catch (EntityNotFoundException e) {
+				throw new APIException(new EntityNotFoundException(null, e.getMessage(), e));
+	
+			}
+            
             List<Attribute> attributes = product.getAttributes();
             if (attributes == null) {
                 attributes = new ArrayList<Attribute>();
@@ -95,11 +120,10 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             Task task = createTask(MessageFormat.format("Install product {0} in  VM {1}{2}", product.getProduct()
                     .getName(), product.getVm().getHostname(), product.getVm().getDomain()), vdc);
 
-            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken (), task, callback);
+            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken(), task,
+                    callback);
             return task;
-        } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(e);
-        }
+  
     }
 
     /**
@@ -117,7 +141,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.uninstall(productInstance, getToken (), task, callback);
+        productInstanceAsyncManager.uninstall(productInstance, getToken(), task, callback);
         return task;
     }
 
@@ -137,13 +161,13 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             // work around to fix problem with lazy init when validator looks
             // for transitable releases.
             productInstance.getProductRelease().getTransitableReleases().size();
-            ProductRelease newRelease = productReleaseManager.load(
-                productInstance.getProductRelease().getProduct(), version);
+            ProductRelease newRelease = productReleaseManager.load(productInstance.getProductRelease().getProduct(),
+                    version);
             Task task = createTask(MessageFormat.format("Upgrade product {0} in  VM {1}{2} from version {3} to {4}",
                     productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                     productInstance.getVm().getDomain(), productInstance.getProductRelease().getVersion(), version),
                     vdc);
-            productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken (), task, callback);
+            productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken(), task, callback);
             return task;
         } catch (EntityNotFoundException e) {
             throw new SdcRuntimeException(e);
@@ -162,6 +186,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
     /**
      * Configure the productInstance with attributes.
+     * 
      * @param vdc
      * @param productInstance
      * @param arguments
@@ -173,7 +198,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         Task task = createTask(MessageFormat.format("Uninstall product {0} in  VM {1}{2}", productInstance
                 .getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(), productInstance
                 .getVm().getDomain()), vdc);
-        productInstanceAsyncManager.configure(productInstance, arguments, getToken (), task, callback);
+        productInstanceAsyncManager.configure(productInstance, arguments, getToken(), task, callback);
         return task;
     }
 
@@ -256,7 +281,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
     }
-   
+
     /**
      * @param productReleaseManager
      *            the productReleaseManager to set
@@ -264,7 +289,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setProductInstanceAsyncManager(ProductInstanceAsyncManager productInstanceAsyncManager) {
         this.productInstanceAsyncManager = productInstanceAsyncManager;
     }
-    
+
     /**
      * @param taskManager
      *            the taskManager to set
@@ -272,22 +297,24 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
-    
-    
-    public String getToken () {
-    	PaasManagerUser user = getCredentials();
-    	if (user == null) {
-    		return "";
-    	} else {
-    		return user.getToken();
-    	}
-    	
+
+    public String getToken() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getToken();
+        }
+
     }
+
     public PaasManagerUser getCredentials() {
-    	try {
+        try {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	} catch (Exception e) {
-    	    return null;
-    	}
+        } catch (Exception e) {
+            return null;
+        }
     }
+    
+ 
 }

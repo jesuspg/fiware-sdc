@@ -30,12 +30,8 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 
 import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.Invocation;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -50,29 +46,23 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 public class ChefClientServiceImpl extends AbstractBaseService implements ChefClientService {
 
     /**
-     * @param client
+     * @param clientConfig
      * @param baseHost
      * @param type
      */
     public ChefClientServiceImpl(SdcClientConfig clientConfig, String baseHost, String type) {
-    	setSdcClientConfig (clientConfig) ;
+        setSdcClientConfig(clientConfig);
         setBaseHost(baseHost);
         setType(type);
     }
 
     public Task delete(String vdc, String chefClientName, String token) throws InvalidExecutionException {
-        try {
 
-            String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
-            Builder builder = createWebResource (url, token, vdc);
-            // builder = addCallback(builder, callback);
-            return builder.delete(Task.class);
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
+        Invocation.Builder builder = createWebResource(url, token, vdc);
+        // builder = addCallback(builder, callback);
+        return builder.delete(Task.class);
 
-        } catch (UniformInterfaceException e) {
-            String errorMsg = " Error deleting a ChefClient  " + chefClientName + " in vdc " + vdc
-                    + " from the Chef Server. Description: " + e.getMessage();
-            throw new InvalidExecutionException(errorMsg, e);
-        }
     }
 
     public ChefClient load(String vdc, String chefClientName, String token) throws ResourceNotFoundException {
@@ -81,9 +71,9 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
 
-            Builder wr = createWebResource (url, token, vdc);
+            Invocation.Builder wr = createWebResource(url, token, vdc);
 
-            return wr.accept(getType()).get(ChefClient.class);
+            return wr.get(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);
@@ -98,7 +88,7 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENTHOSTNAME_PATH, vdc, hostname);
 
-            Builder wr = createWebResource (url, token, vdc);
+            Invocation.Builder wr = createWebResource(url, token, vdc);
 
             return wr.accept(getType()).get(ChefClient.class);
 

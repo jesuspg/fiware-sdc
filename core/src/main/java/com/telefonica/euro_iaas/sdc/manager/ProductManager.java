@@ -30,6 +30,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 
 /**
@@ -42,10 +43,11 @@ public interface ProductManager {
     /**
      * Insert the Product in SDC Database
      * @param product
+     * @param string 
      * @return
      * @throws AlreadyExistsEntityException
      */
-    Product insert(Product product) throws AlreadyExistsEntityException, InvalidEntityException;
+    Product insert(Product product, String string) throws AlreadyExistsEntityException, InvalidEntityException;
     
     /**
      * Find the ProductInstance using the given id.
@@ -57,6 +59,13 @@ public interface ProductManager {
      *             if the product instance does not exists
      */
     Product load(String name) throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    boolean exist(String name);
 
     /**
      * Retrieve all Product created in the system.
@@ -80,4 +89,13 @@ public interface ProductManager {
      * @param product
      */
     void delete(Product product);
+
+    /**
+     * Find the products and product release that match with the given criteria.
+     * 
+     * @param criteria
+     *            the search criteria
+     * @return the list of elements that match with the criteria.
+     */
+    List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria);
 }

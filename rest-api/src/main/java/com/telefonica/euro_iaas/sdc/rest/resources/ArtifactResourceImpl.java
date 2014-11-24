@@ -38,7 +38,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.manager.async.ArtifactAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
@@ -62,11 +61,8 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 @Scope("request")
 public class ArtifactResourceImpl implements ArtifactResource {
 
-    @InjectParam("artifactAsyncManager")
     private ArtifactAsyncManager artifactAsyncManager;
-    @InjectParam("productInstanceAsyncManager")
     private ProductInstanceAsyncManager productInstanceAsyncManager;
-    @InjectParam("taskManager")
     private TaskManager taskManager;
 
     private static Logger log = LoggerFactory.getLogger(ArtifactResourceImpl.class);
@@ -81,8 +77,10 @@ public class ArtifactResourceImpl implements ArtifactResource {
         Artifact artifact = new Artifact(artifactDto.getName(), productInstance.getVdc(), productInstance,
                 artifactDto.getAttributes());
         artifactAsyncManager.deployArtifact(productInstance, artifact, getToken(), task, callback);
-        log.debug("Task id " + task.getId() + " for Install artifact " + artifactDto.getName() + " in product " +
-                productIntanceName + " vdc " + vdc);
+
+        log.debug("Task id " + task.getId() + " for Install artifact " + artifactDto.getName() + " in product "
+                + productIntanceName + " vdc " + vdc);
+
         return task;
     }
 
@@ -97,7 +95,10 @@ public class ArtifactResourceImpl implements ArtifactResource {
                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                 productInstance.getVm().getDomain()), vdc);
         artifactAsyncManager.undeployArtifact(productInstance, artifactName, getToken(), task, callback);
-        log.debug("Task id " + task.getId() + " for  Uninstall artifact " + artifactName + " in product " + productInstanceName + " vdc " + vdc);
+
+        log.debug("Task id " + task.getId() + " for  Uninstall artifact " + artifactName + " in product "
+                + productInstanceName + " vdc " + vdc);
+
         return task;
     }
 

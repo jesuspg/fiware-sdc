@@ -34,6 +34,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
+import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+
 /**
  * @author jesus.movilla
  */
@@ -41,10 +47,14 @@ public class ProductInstanceResourceValidatorImplTest {
 
     private String serversResponse;
     private String serverResponse;
-
+    private  ProductInstanceResourceValidatorImpl validator ;
+    private GeneralResourceValidator generalValidator;
     @Before
     public void setup() {
 
+    	validator = new ProductInstanceResourceValidatorImpl();
+    	generalValidator = new GeneralResourceValidatorImpl();
+    	validator.setGeneralValidator(generalValidator);
         serversResponse = "{\"servers\": "
                 + "["
                 + "{"
@@ -78,7 +88,7 @@ public class ProductInstanceResourceValidatorImplTest {
 
     @Test
     public void testGetServerIds() throws Exception {
-        ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
+      
         List<String> serverids = validator.getServerIds(serversResponse);
         assertEquals(2, serverids.size());
         assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
@@ -87,9 +97,25 @@ public class ProductInstanceResourceValidatorImplTest {
 
     @Test
     public void testGetServerIP() throws Exception {
-        ProductInstanceResourceValidatorImpl validator = new ProductInstanceResourceValidatorImpl();
+     
         String ip = validator.getServerPublicIP(serverResponse);
         assertEquals("130.206.82.66", ip);
+    }
+    
+    @Test(expected=InvalidProductException.class)
+    public void testTestProductIsNull() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto ();
+        validator.validateInsert(product);
+      
+    }
+    
+    @Test(expected=InvalidProductException.class)
+    public void testTestProductNameisEmpty() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto ();
+        ReleaseDto p = new ReleaseDto ("", "de", "1.0");
+        product.setProduct(p);
+        validator.validateInsert(product);
+      
     }
 
 }

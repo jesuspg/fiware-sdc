@@ -24,29 +24,45 @@
 
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.MultiPart;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
+import com.telefonica.euro_iaas.sdc.manager.ProductManager;
+import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
     private ProductResourceValidatorImpl productResourceValidator;
     private ProductReleaseDto productReleaseDto;
     private Product product;
+    private ProductManager productManager;
+    private ProductReleaseManager productReleaseManager;
     private GeneralResourceValidatorImpl generalValidator;
 
     ReleaseDto releaseDto;
@@ -56,9 +72,14 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
 
         product = new Product();
         productResourceValidator = new ProductResourceValidatorImpl();
+        productManager = mock(ProductManager.class);
         generalValidator = new GeneralResourceValidatorImpl();
-
+        productReleaseManager = mock(ProductReleaseManager.class);
         productResourceValidator.setGeneralValidator(generalValidator);
+        productResourceValidator.setProductManager(productManager);
+        productResourceValidator.setProductReleaseManager(productReleaseManager);
+
+        when(productManager.exist(any(String.class))).thenReturn(false);
 
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
@@ -74,11 +95,11 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         List<OS> supportedOS = Arrays.asList(so);
         productReleaseDto.setSupportedOS(supportedOS);
 
-        Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
-        Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
-
-        /*List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-        productReleaseDto.setPrivateAttributes(privateAttributes);*/
+        /*
+         * List<Attribute> privateAttributes = Arrays.asList(privateAttribute,
+         * privateAttributeII);
+         * productReleaseDto.setPrivateAttributes(privateAttributes);
+         */
     }
 
     @Test
@@ -99,8 +120,9 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
                 .bodyPart(new BodyPart(bytesRecipes, MediaType.APPLICATION_OCTET_STREAM_TYPE))
                 .bodyPart(new BodyPart(bytesInstallable, MediaType.APPLICATION_OCTET_STREAM_TYPE));
         /*
-         * try{ productResourceValidator. validateUpdate(releaseDto, multiPart); Assert.fail(); }catch
-         * (InvalidProductReleaseUpdateRequestException e){ //Expected Exception }
+         * try{ productResourceValidator. validateUpdate(releaseDto, multiPart);
+         * Assert.fail(); }catch (InvalidProductReleaseUpdateRequestException
+         * e){ //Expected Exception }
          */
     }
 
@@ -137,13 +159,223 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
     }
 
     @Test(expected = InvalidEntityException.class)
+    public void testValidateMetadataOPenPortError() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports", "22 80 ee");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidateMetadataOPenPortOK() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports", "22 80 111");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidateMetadataInstallatorOK() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("installator", "chef");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidateMetadataInstallatorPuppetOK() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("installator", "puppet");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test(expected = InvalidEntityException.class)
+    public void testValidateMetadataInstallatorError() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("installator", "pep");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test(expected = InvalidEntityException.class)
+    public void testValidateMetadataDependenceError() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("dependencies", "noexistproduct");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidatePublic() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("public", "yes");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test(expected = InvalidEntityException.class)
+    public void testValidatePublicError() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("public", "novalid");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test(expected = InvalidEntityException.class)
     public void testValidateNameWhenIsLOngerThan256Characters() throws Exception {
-        String name =
-                "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-                        "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-                        "12345678901234567890123456789012345678901234567890123456789012345678901234567890" +
-                        "12345678901234567";
+        String name = "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567";
         product.setName(name);
         productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidateProductReleasenOK() throws Exception {
+        ProductRelease productRelease = new ProductRelease();
+        product.setName("1");
+        productRelease.setProduct(product);
+        productRelease.setVersion("1.0");
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test(expected = InvalidEntityException.class)
+    public void testValidateVesrion128Characters() throws Exception {
+        String version = "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                + "12345678901234567";
+        ProductReleaseDto productRelease = new ProductReleaseDto();
+        productRelease.setProductName("1");
+        productRelease.setVersion(version);
+        when(productReleaseManager.load(any(Product.class), any(String.class))).thenThrow(
+                new EntityNotFoundException(ProductRelease.class, "", productRelease));
+        when(productManager.exist(any(String.class))).thenReturn(true);
+        productResourceValidator.validateInsert("name", productRelease);
+    }
+
+    @Test
+    public void testValidateProductRelase() throws Exception {
+
+        product.setName("1");
+        ProductReleaseDto productRelease = new ProductReleaseDto();
+
+        productRelease.setProductName(product.getName());
+        productRelease.setVersion("1.0");
+
+        when(productManager.exist(any(String.class))).thenReturn(true);
+        when(productReleaseManager.load(any(Product.class), any(String.class))).thenThrow(
+                new EntityNotFoundException(ProductRelease.class, "", productRelease));
+        productResourceValidator.validateInsert("name", productRelease);
+    }
+
+    @Test
+    public void testValidateAttributes() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "Plain");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "XXXXX");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+
+    @Test
+    public void testValidateAttributesSetDefaultValue() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType3() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "|");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+    
+    @Test(expected = InvalidProductException.class)
+    public void testValidateAttributesBadType4() throws InvalidEntityException, AlreadyExistsEntityException,
+            InvalidProductException {
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES)).thenReturn(
+                "Plain|IP|IP(All)");
+
+        productResourceValidator.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "Pl");
+
+        product.setName("1");
+
+        product.addAttribute(attribute);
+
+        productResourceValidator.validateInsert(product);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
 }

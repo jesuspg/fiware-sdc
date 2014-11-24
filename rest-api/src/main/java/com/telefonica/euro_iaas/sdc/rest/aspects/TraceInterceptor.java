@@ -26,7 +26,6 @@ package com.telefonica.euro_iaas.sdc.rest.aspects;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
-import org.jboss.logging.Logger;
 import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
 
 @SuppressWarnings("serial")

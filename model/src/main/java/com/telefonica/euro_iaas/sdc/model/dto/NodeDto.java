@@ -24,21 +24,27 @@
 
 package com.telefonica.euro_iaas.sdc.model.dto;
 
+import java.util.List;
+
+import com.telefonica.euro_iaas.sdc.model.Attribute;
+
 public class NodeDto {
 
     private String group;
     private String softwareName;
     private String version;
+    private List<Attribute> attributes;
 
     public NodeDto() {
 
     }
 
-    public NodeDto(String group, String softwareName, String version) {
+    public NodeDto(String group, String softwareName, String version,List<Attribute> attributes) {
         super();
         this.group = group;
         this.softwareName = softwareName;
         this.version = version;
+        this.attributes=attributes;
     }
 
     public String getGroup() {
@@ -65,19 +71,20 @@ public class NodeDto {
         this.version = version;
     }
 
-    /**
-     * Constructs a <code>String</code> with all attributes in name = value
-     * format.
-     * 
-     * @return a <code>String</code> representation of this object.
-     */
-    public String toString() {
-        StringBuilder sb = new StringBuilder("[[NodeDto]");
-        sb.append("[group = ").append(this.group).append("]");
-        sb.append("[softwareName = ").append(this.softwareName).append("]");
-        sb.append("[version = ").append(this.version).append("]");
-        sb.append("]");
-        return sb.toString();
+    public List<Attribute> getAttributes() {
+        return attributes;
     }
+
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public String toString() {
+        return "NodeDto [group=" + group + ", softwareName=" + softwareName + ", version=" + version + ", attributes="
+                + attributes + "]";
+    }
+    
+    
 
 }

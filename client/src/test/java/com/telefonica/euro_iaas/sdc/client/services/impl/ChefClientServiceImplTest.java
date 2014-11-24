@@ -30,11 +30,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
@@ -48,14 +50,14 @@ public class ChefClientServiceImplTest {
     String type = "application/json";
     String baseHost = "baseHost";
     String token = "token";
- 
-    SdcClientConfig client = mock (SdcClientConfig.class);
+
+    SdcClientConfig client = mock(SdcClientConfig.class);
 
     @Before
     public void setUp() {
 
         chefClientService = new ChefClientServiceImpl(client, baseHost, type);
-        Client c = mock (Client.class);
+        Client c = mock(Client.class);
         when(client.getClient()).thenReturn(c);
     }
 
@@ -68,13 +70,12 @@ public class ChefClientServiceImplTest {
 
         ChefClient expectedChefClient = new ChefClient();
         String url = baseHost + "/vdc/" + vdc + "/chefClient/" + chefClientName;
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        WebTarget webResource = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
 
         // when
-        when(client.getClient().resource(url)).thenReturn(webResource);
-        when(webResource.accept(type)).thenReturn(builder);
-        when(builder.type(type)).thenReturn(builder);
+        when(client.getClient().target(url)).thenReturn(webResource);
+        when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
@@ -82,8 +83,9 @@ public class ChefClientServiceImplTest {
 
         // then
         assertNotNull(resultChefClient);
-        verify(client.getClient()).resource(url);
-        verify(webResource).accept(type);
+        verify(client.getClient()).target(url);
+        verify(webResource).request(type);
+        verify(builder).accept(type);
         verify(builder).get(ChefClient.class);
     }
 
@@ -96,24 +98,24 @@ public class ChefClientServiceImplTest {
 
         ChefClient expectedChefClient = new ChefClient();
         ChefClient resultChefClient;
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        WebTarget webResource = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
 
         String url = baseHost + "/vdc/" + vdc + "/chefClient?hostname=" + chefClientName;
         // when
 
-        when(client.getClient().resource(url)).thenReturn(webResource);
-        when(webResource.accept(type)).thenReturn(builder);
-        when(builder.type(type)).thenReturn(builder);
+        when(client.getClient().target(url)).thenReturn(webResource);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
         when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
 
-        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName,token);
+        resultChefClient = chefClientService.loadByHostname(vdc, chefClientName, token);
 
         // then
         assertNotNull(resultChefClient);
-        verify(client.getClient()).resource(url);
-        verify(webResource).accept(type);
+        verify(client.getClient()).target(url);
+        verify(webResource).request(type);
         verify(builder).get(ChefClient.class);
     }
 
@@ -123,27 +125,27 @@ public class ChefClientServiceImplTest {
         String chefClientName = "clientName";
         String vdc = "virtualDataCenter";
         String url = baseHost + "/vdc/" + vdc + "/chefClient/" + chefClientName;
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
+        WebTarget webResource = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
         Task expectedTask = new Task();
 
         // when
-        when(client.getClient().resource(url)).thenReturn(webResource);
-        when(webResource.accept(type)).thenReturn(builder);
-        when(builder.type(type)).thenReturn(builder);
+        when(client.getClient().target(url)).thenReturn(webResource);
+        when(webResource.request(type)).thenReturn(builder);
+        when(builder.accept(type)).thenReturn(builder);
         when(builder.delete(Task.class)).thenReturn(expectedTask);
 
         Task task = null;
         try {
-            task = chefClientService.delete(vdc, chefClientName,token);
+            task = chefClientService.delete(vdc, chefClientName, token);
         } catch (InvalidExecutionException e) {
             fail();
         }
 
         // then
         assertNotNull(task);
-        verify(client.getClient()).resource(url);
-        verify(webResource).accept(type);
+        verify(client.getClient()).target(url);
+        verify(webResource).request(type);
         verify(builder).delete(Task.class);
     }
 

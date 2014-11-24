@@ -24,13 +24,19 @@
 
 package com.telefonica.euro_iaas.sdc.client.services;
 
+import javax.ws.rs.client.Client;
 
+/**
+ * Encapsulates method to get a secure rest client.
+ */
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.ClientConfig;
+public interface SdcClientConfig {
 
-public interface SdcClientConfig extends ClientConfig {
-
-	Client getClient ();
+    /**
+     * Return a client.
+     * 
+     * @return
+     */
+    Client getClient();
 
 }

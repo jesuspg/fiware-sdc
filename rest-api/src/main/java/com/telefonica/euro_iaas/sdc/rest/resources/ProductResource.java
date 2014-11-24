@@ -44,7 +44,7 @@ import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledExcept
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
-
+import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 
 /**
  * Provides a rest api to works with Product.
@@ -55,6 +55,7 @@ public interface ProductResource {
 
     /**
      * Insert a product int SDC Database.
+     * 
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
      * @param product
@@ -63,7 +64,7 @@ public interface ProductResource {
     @POST
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Product insert(Product product)  throws AlreadyExistsEntityException, InvalidEntityException;
+    Product insert(Product product) throws APIException;
 
     /**
      * Retrieve all Products available created in the system.
@@ -81,7 +82,7 @@ public interface ProductResource {
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Product> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-                    @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
+            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType);
 
     /**
      * Retrieve the selected Product.
@@ -125,9 +126,9 @@ public interface ProductResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<Metadata> loadMetadatas(@PathParam("pName") String name) throws EntityNotFoundException;
 
-    
     /**
      * Delete the Product in SDC Database.
+     * 
      * @param name
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException
@@ -136,5 +137,5 @@ public interface ProductResource {
     @Path("/{pName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("pName") String name) throws ProductReleaseNotFoundException,
-        ProductReleaseStillInstalledException;
+            ProductReleaseStillInstalledException;
 }

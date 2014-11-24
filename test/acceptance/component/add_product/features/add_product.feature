@@ -23,8 +23,8 @@ Feature: Add a new product in the catalogue
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
     When I add the new product with attributes, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -38,9 +38,9 @@ Feature: Add a new product in the catalogue
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
-    | password  | pwd       | password application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
+    | password  | pwd       | password application| Plain |
     When I add the new product with attributes, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -92,8 +92,8 @@ Feature: Add a new product in the catalogue
     | key         | value     | description         |
     | mobile      | iOS       | installation type   |
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
     When I add the new product with all the parameters, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -112,9 +112,9 @@ Feature: Add a new product in the catalogue
     | mobile      | iOS       | installation type   |
     | testing     | lettuce   | testing application |
     And the following attributes
-    | key       | value     | description         |
-    | username  | postgres  | Username application|
-    | password  | pwd       | password application|
+    | key       | value     | description         | type  |
+    | username  | postgres  | Username application| Plain |
+    | password  | pwd       | password application| Plain |
     When I add the new product with all the parameters, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -123,6 +123,7 @@ Feature: Add a new product in the catalogue
     | product_name          | description                   | accept_parameter  |
     | testing_attributes_63 | product with testing purposes | application/json  |
     | testing_attributes_64 | product with testing purposes | application/xml   |
+
 
   Scenario Outline: Add new product changing the default metadatas
 
@@ -135,21 +136,52 @@ Feature: Add a new product in the catalogue
 
     Examples:
 
-    | product_name           | description                   | accept_parameter  | key           | value                 |
-    | testing_attributes_223 | product with testing purposes | application/json  | image         | vm_1                  |
-    | testing_attributes_224 | product with testing purposes | application/xml   | cookbook_url  | http://www.test.org   |
-    | testing_attributes_225 | product with testing purposes | application/json  | cloud         | yes                   |
-    | testing_attributes_226 | product with testing purposes | application/json  | cloud         | no                    |
-    | testing_attributes_227 | product with testing purposes | application/xml   | installator   | puppet                |
-    | testing_attributes_228 | product with testing purposes | application/xml   | installator   | chef                  |
-    | testing_attributes_229 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091       |
-    | testing_attributes_230 | product with testing purposes | application/xml   | open_ports    | 80                    |
-    | testing_attributes_231 | product with testing purposes | application/json  | public        | yes                   |
-    | testing_attributes_232 | product with testing purposes | application/xml   | public        | no                    |
-    | testing_attributes_233 | product with testing purposes | application/json  | dependencies  | tomcat                |
-    | testing_attributes_234 | product with testing purposes | application/xml   | dependencies  | tomcat mysql nodejs   |
+    | product_name           | description                   | accept_parameter  | key           | value                                        |
+    | testing_attributes_223 | product with testing purposes | application/json  | image         | vm_1                                         |
+    | testing_attributes_224 | product with testing purposes | application/json  | image         |                                              |
+    | testing_attributes_225 | product with testing purposes | application/xml   | cookbook_url  | http://www.test.org                          |
+    | testing_attributes_226 | product with testing purposes | application/json  | cookbook_url  |                                              |
+    | testing_attributes_227 | product with testing purposes | application/json  | cloud         | yes                                          |
+    | testing_attributes_228 | product with testing purposes | application/json  | cloud         | no                                           |
+    | testing_attributes_229 | product with testing purposes | application/xml   | installator   | puppet                                       |
+    | testing_attributes_230 | product with testing purposes | application/xml   | installator   | chef                                         |
+    | testing_attributes_231 | product with testing purposes | application/json  | open_ports    | 80 22 8080 8091                              |
+    | testing_attributes_232 | product with testing purposes | application/xml   | open_ports    | 80                                           |
+    | testing_attributes_233 | product with testing purposes | application/json  | open_ports    |                                              |
+    | testing_attributes_234 | product with testing purposes | application/json  | public        | yes                                          |
+    | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
+    | testing_attributes_236 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
+    | testing_attributes_237 | product with testing purposes | application/xml   | dependencies  | testing_attributes_224 testing_attributes_225|
+    | testing_attributes_238 | product with testing purposes | application/json  | dependencies  |                                              |
+    | testing_attributes_239 | product with testing purposes | application/json  | tenant_id     | 00000000000000000000000000055                |
+    | testing_attributes_240 | product with testing purposes | application/json  | tenant_id     | 00000000000000000000000000055 0000005548     |
+    | testing_attributes_241 | product with testing purposes | application/json  | tenant_id     |                                              |
 
-  @CLAUDIA-3747 @CLAUDIA-3746
+
+  Scenario Outline: Add new product changing the default metadatas: public and tenant_id
+
+    Given a product with name "<product_name>" with description "<description>"
+    And the following metadatas
+    | key         | value             | description         |
+    | <key>       | <value>           | None                |
+    | tenant_id   | <value_tenant_id> | None                |
+    When I add the new product with metadatas, with accept parameter "<accept_parameter>" response
+    Then the product is created
+    And the product visibility is "<visibility>"
+
+    Examples:
+
+    | product_name           | description                   | accept_parameter  | key           | value | value_tenant_id              | visibility  |
+    | testing_attributes_242 | product with testing purposes | application/xml   | public        | yes   | CURRENT                      | visible     |
+    | testing_attributes_243 | product with testing purposes | application/xml   | public        | yes   | 000000000000000022           | visible     |
+    | testing_attributes_244 | product with testing purposes | application/xml   | public        | yes   | 000000000000000022 CURRENT   | visible     |
+    | testing_attributes_245 | product with testing purposes | application/json  | public        | yes   |                              | visible     |
+    | testing_attributes_246 | product with testing purposes | application/xml   | public        | no    | CURRENT                      | visible     |
+    | testing_attributes_247 | product with testing purposes | application/xml   | public        | no    | 000000000000000022           | hidden      |
+#    | testing_attributes_248 | product with testing purposes | application/xml   | public        | no    | 000000000000000022 CURRENT   | visible     | # @CLAUDIA-4130
+    | testing_attributes_249 | product with testing purposes | application/json  | public        | no    |                              | hidden      |
+
+
   Scenario Outline: Add new product using incorrect metadatas
 
     Given a product with name "<product_name>" with description "<description>"
@@ -162,18 +194,65 @@ Feature: Add a new product in the catalogue
     Examples:
 
     | product_name           | description                   | accept_parameter  | key           | value            | Error_code  |
-    | testing_attributes_324 | product with testing purposes | application/xml   | cookbook_url  | hehehehe         | 400         |
     | testing_attributes_325 | product with testing purposes | application/json  | cloud         |                  | 400         |
     | testing_attributes_326 | product with testing purposes | application/json  | cloud         | test             | 400         |
     | testing_attributes_327 | product with testing purposes | application/xml   | installator   | test             | 400         |
+    | testing_attributes_336 | product with testing purposes | application/json  | installator   |                  | 400         |
     | testing_attributes_329 | product with testing purposes | application/json  | open_ports    | 111111111111111  | 400         |
+    | testing_attributes_335 | product with testing purposes | application/json  | open_ports    | 80 test          | 400         |
     | testing_attributes_330 | product with testing purposes | application/xml   | open_ports    | test             | 400         |
     | testing_attributes_331 | product with testing purposes | application/json  | public        |                  | 400         |
     | testing_attributes_332 | product with testing purposes | application/xml   | public        | test             | 400         |
-    | testing_attributes_333 | product with testing purposes | application/json  | dependencies  |                  | 400         |
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
-  @CLAUDIA-3742 @CLAUDIA-3741 @CLAUDIA-3740
+
+  @skip @CLAUDIA-4321
+  Scenario Outline: Add new product with valid 'type' attribute
+
+    Given a product with name "<product_name>" with description "<description>"
+    And the following attributes
+    | key       | value     | description         | type    |
+    | username  | postgres  | Username application| <type>  |
+    When I add the new product with attributes, with accept parameter "<accept_parameter>" response
+    Then the product is created
+
+    Examples:
+
+    | product_name          | description                   | type            | accept_parameter  |
+    | testing_attributes_01 | product with testing purposes | Plain           | application/json  |
+    | testing_attributes_02 | product with testing purposes | Plain           | application/xml   |
+    | testing_attributes_03 | product with testing purposes | IP              | application/json  |
+    | testing_attributes_04 | product with testing purposes | IP              | application/xml   |
+    | testing_attributes_05 | product with testing purposes | IPALL           | application/json  |
+    | testing_attributes_06 | product with testing purposes | IPALL           | application/xml   |
+    | testing_attributes_07 | product with testing purposes | [MISSING_PARAM] | application/json  |
+    | testing_attributes_08 | product with testing purposes | [MISSING_PARAM] | application/xml   |
+
+
+  @skip @CLAUDIA-4332 @CLAUDIA-4331
+  Scenario Outline: Add new product with invalid value for 'type' attribute
+
+    Given a product with name "<product_name>" with description "<description>"
+    And the following attributes
+    | key       | value     | description         | type    |
+    | username  | postgres  | Username application| <type>  |
+    When I add the new product with attributes, with accept parameter "<accept_parameter>" response
+    Then I obtain an "400"
+
+    Examples:
+
+    | product_name          | description                   | type                    | accept_parameter  |
+    | testing_attributes_01 | product with testing purposes |                         | application/json  |
+    | testing_attributes_02 | product with testing purposes | Plaint                  | application/json  |
+    | testing_attributes_03 | product with testing purposes | Plai                    | application/json  |
+    | testing_attributes_04 | product with testing purposes | nt                      | application/json  |
+    | testing_attributes_05 | product with testing purposes | I                       | application/json  |
+    | testing_attributes_06 | product with testing purposes | I p                     | application/json  |
+    | testing_attributes_07 | product with testing purposes | P(All                   | application/json  |
+    | testing_attributes_08 | product with testing purposes | [STRING_WITH_LENGTH_4]  | application/json  |
+    | testing_attributes_09 | product with testing purposes | [STRING_WITH_LENGTH_257]| application/json  |
+
+
   Scenario Outline: Add a new product with incorrect parameters
 
     Given a product with name "<product_name>" with description "<description>"
@@ -185,6 +264,21 @@ Feature: Add a new product in the catalogue
     | product_name      | description                   | accept_parameter  | Error_code  |
     |                   | product with testing purposes | application/json  | 400         |
     | LONG_ID           | product with testing purposes | application/xml   | 400         |
+
+
+  Scenario Outline: Add new product with name already registered
+
+    Given a created product with name "<product_name>" with description "<description>"
+    And another product with name "<another_product_name>" with description "<description>"
+    When I add the new product with accept parameter "<accept_parameter>" response
+    Then I obtain an "<error_code>"
+
+    Examples:
+
+    | product_name          | another_product_name  | description                   | accept_parameter  | error_code  |
+    | testing_attributes_01 | testing_attributes_01 | product with testing purposes | application/json  | 409         |
+    | testing_attributes_02 | testing_attributes_02 | product with testing purposes | application/xml   | 409         |
+
 
   Scenario Outline: Cause a Not acceptable error when I add a product into the catalogue with Accept header invalid
 
@@ -213,7 +307,7 @@ Feature: Add a new product in the catalogue
     | testing_product01 | product with testing purposes | application/json  | 415         | application/json1   |
     | testing_product02 | product with testing purposes | application/json  | 415         | application/testing |
 
-
+  @auth
   Scenario Outline: Add a new product with incorrect token
 
     Given a product with name "<product_name>" with description "<description>"

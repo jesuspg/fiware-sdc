@@ -127,7 +127,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm, token);
-                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+//                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+                    puppetInstallator.callService(instance, vm, attributes, INSTALL, token);
                 } else {
                     chefInstallator.validateInstalatorData(vm, token);
                     //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
@@ -387,7 +388,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         } catch (EntityNotFoundException e) {
             product = new Product(productRelease.getProduct().getName(), productRelease.getProduct().getDescription());
         }
-        product.setAttributes(attributes);
+        instance.setAttributes(attributes);
 
         productRelease.setProduct(product);
 
