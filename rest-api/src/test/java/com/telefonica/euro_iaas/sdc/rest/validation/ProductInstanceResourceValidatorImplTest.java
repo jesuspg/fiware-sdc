@@ -23,7 +23,7 @@
  */
 
 /**
- * 
+ *
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
