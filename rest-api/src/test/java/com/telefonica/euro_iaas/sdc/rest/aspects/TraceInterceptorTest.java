@@ -84,6 +84,10 @@ public class TraceInterceptorTest {
         verify(log).error("");
     }
 
+    /**
+     * Check that the interceptor is enabled.
+     * @throws Exception
+     */
     @org.junit.Test
     public void testIsInterceptorEnabled() throws Exception {
         TraceInterceptor ti = new TraceInterceptor();
