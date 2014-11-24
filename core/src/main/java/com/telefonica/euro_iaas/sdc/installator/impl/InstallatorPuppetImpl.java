@@ -147,7 +147,7 @@ public class InstallatorPuppetImpl implements Installator {
             throw new SdcRuntimeException(e);
         }
 
-        List<AttributeDto> newAttributes=null;
+        List<AttributeDto> newAttributes = null;
         if (attributes != null) {
             newAttributes = formatAttributesForPuppet(attributes);
         }
@@ -233,9 +233,9 @@ public class InstallatorPuppetImpl implements Installator {
 
     public List<AttributeDto> formatAttributesForPuppet(List<Attribute> attributes) {
         List<AttributeDto> newAtts = new ArrayList<AttributeDto>();
-        
+
         for (Attribute att : attributes) {
-            AttributeDto attDto=new AttributeDto();
+            AttributeDto attDto = new AttributeDto();
             attDto.setKey(att.getKey());
             attDto.setDescription(att.getDescription());
             if (att.getType().equals(IPALL)) {
