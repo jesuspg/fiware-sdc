@@ -80,6 +80,7 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         productResourceValidator.setProductReleaseManager(productReleaseManager);
 
         when(productManager.exist(any(String.class))).thenReturn(false);
+
         releaseDto = new ReleaseDto();
         releaseDto.setName("abcd");
         releaseDto.setVersion("0.1.1");
