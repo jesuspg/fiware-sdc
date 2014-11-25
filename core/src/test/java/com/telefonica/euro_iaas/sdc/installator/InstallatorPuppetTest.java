@@ -260,4 +260,36 @@ public class InstallatorPuppetTest {
         
 
     }
+    
+    @Test
+    public void testformatAttributes2() throws InstallatorException, NodeExecutionException, IOException {
+
+        List<Attribute> li = new ArrayList<Attribute>();
+        li.add(new Attribute("key", "111.111.111.111", "description", "IP"));
+        List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
+        assertEquals("111.111.111.111",receivedList.get(0).getValue());
+        
+
+    }
+    @Test
+    public void testformatAttributes3() throws InstallatorException, NodeExecutionException, IOException {
+
+        List<Attribute> li = new ArrayList<Attribute>();
+        li.add(new Attribute("key", "111.111.111.111", "description", "Plain"));
+        List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
+        assertEquals("111.111.111.111",receivedList.get(0).getValue());
+        
+
+    }
+    
+    @Test
+    public void testformatAttributes4() throws InstallatorException, NodeExecutionException, IOException {
+
+        List<Attribute> li = new ArrayList<Attribute>();
+        li.add(new Attribute("key", "111.111.111.111", "description", "IPALL"));
+        List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
+        assertEquals("['111.111.111.111']",receivedList.get(0).getValue());
+        
+
+    }
 }

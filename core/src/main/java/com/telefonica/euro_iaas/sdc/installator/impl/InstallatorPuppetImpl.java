@@ -71,8 +71,6 @@ public class InstallatorPuppetImpl implements Installator {
 
     private OpenStackRegion openStackRegion;
 
-    private String NODE_NOT_FOUND_PATTERN = "404";
-    private String NODES_PATH = "/nodes";
     public static int MAX_TIME = 360000;
 
     public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
