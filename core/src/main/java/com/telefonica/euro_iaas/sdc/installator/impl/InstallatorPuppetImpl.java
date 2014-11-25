@@ -247,6 +247,8 @@ public class InstallatorPuppetImpl implements Installator {
                 newValue = newValue.substring(0, newValue.length() - 1);
                 newValue = newValue + "]";
                 attDto.setValue(newValue);
+            }else{
+                attDto.setValue(att.getValue());
             }
             newAtts.add(attDto);
         }
