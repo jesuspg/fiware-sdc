@@ -112,13 +112,10 @@ public class OpenStackAuthenticationTokenTest {
         when(httpEntity.getContent()).thenReturn(is);
         when(httpClient.execute(any(HttpPost.class))).thenReturn(response);
         when(response.getHeaders(anyString())).thenReturn(headers);
-//        when(response.get(1)).ther
-        
-//        2015-07-09T15:16:07Z
 
         openStackAuthenticationToken.getCredentials();
-        
-        verify(httpClient,times(1)).execute(any(HttpPost.class));
+
+        verify(httpClient, times(1)).execute(any(HttpPost.class));
 
     }
 }

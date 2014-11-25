@@ -88,8 +88,7 @@ public class OpenStackAuthenticationFilterTest {
         FilterChain filterChain = mock(FilterChain.class);
         HttpSession httpSession = mock(HttpSession.class);
         Authentication authResult = mock(Authentication.class);
-        PaasManagerUser paasUser=mock(PaasManagerUser.class);
-        
+        PaasManagerUser paasUser = mock(PaasManagerUser.class);
 
         when(servletRequest.getHeader(anyString())).thenReturn("3df25213cac246f8bccad5c70cb3582e")
                 .thenReturn("00000000000000000000000000000194").thenReturn("1234");
@@ -97,7 +96,7 @@ public class OpenStackAuthenticationFilterTest {
         when(servletRequest.getSession()).thenReturn(httpSession);
         when(httpSession.getId()).thenReturn("1234");
         when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(authResult);
-        
+
         when(authResult.getPrincipal()).thenReturn(paasUser);
 
         openStackAuthenticationFilter.doFilter(servletRequest, servletResponse, filterChain);
