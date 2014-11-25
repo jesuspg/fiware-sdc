@@ -97,7 +97,7 @@
 		<!-- sonar -->
 		<!-- exclusions must be synchronized with cobertura-maven-plugin exclusions -->
 		<sonar.exclusions>com/telefonica/**/model/**/*, org/w3/**/*,
-			org/openstack/**/*,com/telefonica/**/aspects/**/*</sonar.exclusions>
+			org/openstack/**/*</sonar.exclusions>
 		<sonar.dynamic>reuseReports</sonar.dynamic>
 
 	</properties>
