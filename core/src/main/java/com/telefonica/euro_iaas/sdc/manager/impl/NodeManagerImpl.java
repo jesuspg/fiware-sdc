@@ -108,8 +108,8 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     private void puppetDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
-        
-        puppetLog.info("deleting node "+nodeName+" from puppet master");
+
+        puppetLog.info("deleting node " + nodeName + " from puppet master");
 
         HttpDelete delete = null;
         try {
@@ -121,7 +121,7 @@ public class NodeManagerImpl implements NodeManager {
         if (delete != null) {
             delete.setHeader("Content-Type", "application/json");
             delete.setHeader("X-Auth-Token", token);
-            delete.setHeader("Tenant-Id",vdc);
+            delete.setHeader("Tenant-Id", vdc);
 
             HttpResponse response;
 
@@ -131,7 +131,9 @@ public class NodeManagerImpl implements NodeManager {
                 HttpEntity entity = response.getEntity();
                 EntityUtils.consume(entity);
 
-                if (statusCode != 200) {
+                if (statusCode == 200 || statusCode == 404) { // 404 means node didn't exist in puppet
+                    log.info("Node deleted");
+                }else{
                     String msg = format("[puppet delete node] response code was: {0}", statusCode);
                     puppetLog.info(msg);
                     throw new NodeExecutionException(msg);
@@ -149,8 +151,9 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     private void chefClientDelete(String vdc, String chefClientName, String token) throws ChefClientExecutionException {
-        chefLog.info("deleting node "+chefClientName+" from chef server");;
-        
+        chefLog.info("deleting node " + chefClientName + " from chef server");
+        ;
+
         ChefNode node;
         List<ProductInstance> productInstances = null;
         String hostname = null;
