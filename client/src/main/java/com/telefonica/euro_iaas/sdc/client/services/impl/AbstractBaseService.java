@@ -94,13 +94,13 @@ public class AbstractBaseService {
 
     protected Invocation.Builder createWebResource(String url, String token, String tenant) {
 
-        WebTarget webResource = getClient().target(url);
-        Invocation.Builder builder = webResource.request(getType()).accept(getType());
+        WebTarget webTarget = getClient().target(url);
+        Invocation.Builder builder = webTarget.request(getType()).accept(getType());
         builder.header("X-Auth-Token", token);
         builder.header("Tenant-Id", tenant);
         String txId = MDC.get("txId");
         if (txId != null) {
-            builder.header("txId", tenant);
+            builder.header("txId", txId);
         }
         return builder;
     }
