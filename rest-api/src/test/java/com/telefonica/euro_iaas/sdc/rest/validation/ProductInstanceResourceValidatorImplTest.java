@@ -160,7 +160,7 @@ public class ProductInstanceResourceValidatorImplTest {
 
     }
     
-    @Test
+    @Test(expected=InvalidProductException.class)
     public void testTestProductAttributeNoType() throws Exception {
         ProductInstanceDto product = new ProductInstanceDto();
         ReleaseDto p = new ReleaseDto("test", "de", "1.0");
