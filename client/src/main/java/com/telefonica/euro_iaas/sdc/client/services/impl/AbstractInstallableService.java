@@ -29,10 +29,8 @@ import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.MDC;
 
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
@@ -140,17 +138,4 @@ public abstract class AbstractInstallableService extends AbstractBaseService {
         this.uninstallPath = uninstallPath;
     }
 
-    protected Invocation.Builder createWebResource(String url, String token, String tenant) {
-        WebTarget webResource = getClient().target(url);
-        Invocation.Builder builder = webResource.request(getType()).accept(getType());
-        builder.header("X-Auth-Token", token);
-        builder.header("Tenant-Id", tenant);
-
-        String txId = MDC.get("txId");
-        if (txId != null) {
-            builder.header("txId", tenant);
-        }
-        return builder;
-
-    }
 }
