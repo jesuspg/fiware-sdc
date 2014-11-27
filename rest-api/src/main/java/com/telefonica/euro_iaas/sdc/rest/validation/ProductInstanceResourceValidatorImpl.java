@@ -127,18 +127,18 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
         String msg = "Attribute type is incorrect.";
         for (Attribute att : attributes) {
-            if ("".equals(att.getType())) {
+            if (att.getType() == null) {
                 att.setType("Plain");
             }
 
             String availableTypes = systemPropertiesProvider
                     .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
-            
+
             StringTokenizer st2 = new StringTokenizer(availableTypes, "|");
-            boolean error=true;
+            boolean error = true;
             while (st2.hasMoreElements()) {
-                if(att.getType().equals(st2.nextElement())){
-                    error=false;
+                if (att.getType().equals(st2.nextElement())) {
+                    error = false;
                     break;
                 }
             }
@@ -146,7 +146,6 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
                 throw new InvalidProductException(msg);
             }
         }
-
     }
 
     public String getToken() {
