@@ -29,6 +29,7 @@ package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -46,6 +47,7 @@ import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
@@ -116,6 +118,35 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
         } catch (InvalidNameException e) {
             throw new InvalidProductException("The fqn is null " + e.getMessage());
         }
+        
+        if (product.getAttributes() != null) {
+            validateAttributesType(product.getAttributes());
+        }
+    }
+    
+    private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
+        String msg = "Attribute type is incorrect.";
+        for (Attribute att : attributes) {
+            if ("".equals(att.getType())) {
+                att.setType("Plain");
+            }
+
+            String availableTypes = systemPropertiesProvider
+                    .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+            
+            StringTokenizer st2 = new StringTokenizer(availableTypes, "|");
+            boolean error=true;
+            while (st2.hasMoreElements()) {
+                if(att.getType().equals(st2.nextElement())){
+                    error=false;
+                    break;
+                }
+            }
+            if (error) {
+                throw new InvalidProductException(msg);
+            }
+        }
+
     }
 
     public String getToken() {
