@@ -107,6 +107,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         } catch (EntityNotFoundException e1) {
             log.warning("EntityNotFoundException: " + e1.getMessage());
         }
+        
     }
 
     public void validateLoad(ReleaseDto releaseDto) throws EntityNotFoundException {
