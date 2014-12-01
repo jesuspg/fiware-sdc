@@ -240,9 +240,9 @@ public class InstallatorPuppetImpl implements Installator {
                 String newValue = "[";
                 StringTokenizer st = new StringTokenizer(att.getValue(), ",");
                 while (st.hasMoreElements()) {
-                    newValue = newValue + "'" + st.nextElement() + "',";
+                    newValue = newValue + "'" + st.nextElement() + "', ";
                 }
-                newValue = newValue.substring(0, newValue.length() - 1);
+                newValue = newValue.substring(0, newValue.length() - 2);
                 newValue = newValue + "]";
                 attDto.setValue(newValue);
             }else{
