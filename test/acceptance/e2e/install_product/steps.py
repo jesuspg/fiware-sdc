@@ -49,6 +49,7 @@ def installed_product(step, product_name, product_version):
 
     a_created_product_with_name_group1(step, product_name, product_version)
     i_install_the_product_in_the_vm(step)
+    task_is_created(step)
     the_task_is_performed(step)
 
 

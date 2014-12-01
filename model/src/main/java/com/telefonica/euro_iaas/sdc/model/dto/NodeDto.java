@@ -33,13 +33,13 @@ public class NodeDto {
     private String group;
     private String softwareName;
     private String version;
-    private List<Attribute> attributes;
+    private List<AttributeDto> attributes;
 
     public NodeDto() {
 
     }
 
-    public NodeDto(String group, String softwareName, String version,List<Attribute> attributes) {
+    public NodeDto(String group, String softwareName, String version,List<AttributeDto> attributes) {
         super();
         this.group = group;
         this.softwareName = softwareName;
@@ -71,11 +71,11 @@ public class NodeDto {
         this.version = version;
     }
 
-    public List<Attribute> getAttributes() {
+    public List<AttributeDto> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<Attribute> attributes) {
+    public void setAttributes(List<AttributeDto> attributes) {
         this.attributes = attributes;
     }
 

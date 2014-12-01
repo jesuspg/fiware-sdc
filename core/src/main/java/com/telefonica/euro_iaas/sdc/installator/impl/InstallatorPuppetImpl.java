@@ -28,7 +28,9 @@ import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -54,11 +56,14 @@ import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
+import com.telefonica.euro_iaas.sdc.model.dto.AttributeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class InstallatorPuppetImpl implements Installator {
+
+    private static final Object IPALL = "IPALL";
 
     private static Logger log = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
 
@@ -66,8 +71,6 @@ public class InstallatorPuppetImpl implements Installator {
 
     private OpenStackRegion openStackRegion;
 
-    private String NODE_NOT_FOUND_PATTERN = "404";
-    private String NODES_PATH = "/nodes";
     public static int MAX_TIME = 360000;
 
     public void callService(VM vm, String vdc, ProductRelease product, String action, String token)
@@ -111,8 +114,8 @@ public class InstallatorPuppetImpl implements Installator {
         try {
             isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
         } catch (NodeExecutionException e) {
-            String str="It is not possible execute the module " + productInstance.getProductRelease().getProduct().getName() + " in node "
-                    + vm.getHostname();
+            String str = "It is not possible execute the module "
+                    + productInstance.getProductRelease().getProduct().getName() + " in node " + vm.getHostname();
             log.warn(str);
             throw e;
         }
@@ -141,13 +144,19 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
+
+        List<AttributeDto> newAttributes = null;
+        if (attributes != null) {
+            newAttributes = formatAttributesForPuppet(attributes);
+        }
+
         HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
 
         postInstall.addHeader("Content-Type", "application/json");
         postInstall.setHeader("X-Auth-Token", token);
-        postInstall.setHeader("Tenant-Id",vdc);
+        postInstall.setHeader("Tenant-Id", vdc);
 
-        NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), attributes);
+        NodeDto nodeDto = new NodeDto(vdc, product.getProduct().getName(), product.getVersion(), newAttributes);
         ObjectMapper mapper = new ObjectMapper();
         StringEntity input;
         String payload = "";
@@ -198,7 +207,7 @@ public class InstallatorPuppetImpl implements Installator {
 
             getGenerate.addHeader("Content-Type", "application/json");
             getGenerate.setHeader("X-Auth-Token", token);
-            getGenerate.setHeader("Tenant-Id",vdc);
+            getGenerate.setHeader("Tenant-Id", vdc);
 
             response = client.execute(getGenerate);
             statusCode = response.getStatusLine().getStatusCode();
@@ -218,6 +227,30 @@ public class InstallatorPuppetImpl implements Installator {
             log.error(e1.getMessage());
             throw new InstallatorException(e1);
         }
+    }
+
+    public List<AttributeDto> formatAttributesForPuppet(List<Attribute> attributes) {
+        List<AttributeDto> newAtts = new ArrayList<AttributeDto>();
+
+        for (Attribute att : attributes) {
+            AttributeDto attDto = new AttributeDto();
+            attDto.setKey(att.getKey());
+            attDto.setDescription(att.getDescription());
+            if (att.getType().equals(IPALL)) {
+                String newValue = "[";
+                StringTokenizer st = new StringTokenizer(att.getValue(), ",");
+                while (st.hasMoreElements()) {
+                    newValue = newValue + "'" + st.nextElement() + "',";
+                }
+                newValue = newValue.substring(0, newValue.length() - 1);
+                newValue = newValue + "]";
+                attDto.setValue(newValue);
+            }else{
+                attDto.setValue(att.getValue());
+            }
+            newAtts.add(attDto);
+        }
+        return newAtts;
     }
 
     public void isRecipeExecuted(VM vm, String module, String token) throws NodeExecutionException,

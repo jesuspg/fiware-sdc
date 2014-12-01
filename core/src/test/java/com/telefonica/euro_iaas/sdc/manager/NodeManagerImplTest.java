@@ -111,6 +111,30 @@ public class NodeManagerImplTest {
         verify(httpResponse,times(2)).getStatusLine();
         verify(client, times(1)).execute((HttpUriRequest) anyObject());
     }
+    
+    @Test
+    public void deleteNodeTestOK_nodeNotFountInPuppet() throws NodeExecutionException, CanNotCallChefException, EntityNotFoundException, ClientProtocolException, IOException {
+
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
+       
+        HttpResponse httpResponse= mock(HttpResponse.class);
+        StatusLine statusLine= mock(StatusLine.class);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(httpResponse.getStatusLine().getStatusCode()).thenReturn(404);
+        when(client.execute((HttpUriRequest) anyObject())).thenReturn(httpResponse);
+        
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.nodeDelete("test", "testOk", "token");
+        
+        verify(httpResponse,times(2)).getStatusLine();
+        verify(client, times(1)).execute((HttpUriRequest) anyObject());
+    }
 
     @Test
     public void deleteNodeTestEntityNotFound_chef() throws EntityNotFoundException, ClientProtocolException, IOException, NodeExecutionException {

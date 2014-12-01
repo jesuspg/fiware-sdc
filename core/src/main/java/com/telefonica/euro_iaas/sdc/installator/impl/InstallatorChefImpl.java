@@ -242,7 +242,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         String platform_version = node.getAutomaticAttributes().get("platform_version").toString();
         log.info("platform:" + platform + " platform_version:" + platform_version);
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US);
         long last_recipeexecution_timestamp = 0;
 
         String ohai_time_format = node.getAutomaticAttributes().get("ohai_time").toString();
@@ -250,6 +250,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         try {
             Date ohai_time_date = df.parse(ohai_time_format);
+            log.info("ohai_time_date_parsed:[" + ohai_time_date.toString() + "]");
             last_recipeexecution_timestamp = ohai_time_date.getTime();
         } catch (ParseException ex) {
             String message = "Error parsing ohai_time date copming from node: " + ex.getMessage();

@@ -54,9 +54,10 @@ Feature: Install product
 	  |fqn                | hostname    | ip              | ostype    |
 	  |qa-test-vm.testing | qa-test-vm  | 111.111.111.111 | 95        |
       And the following instance attributes:
-      | key       | value       | description |
-      | att_key_1 | att_value_1 | Att 1       |
-      | att_key_2 | att_value_2 | Att 2       |
+      | key       | value       | description | type    |
+      | att_key_1 | att_value_1 | Att 1       | Plain   |
+      | att_key_2 | att_value_2 | Att 2       | IP      |
+      | att_key_3 | att_value_3 | Att 3       | IPALL   |
       When I install the product in the VM
       Then the task is created
       And the product is instantiated
@@ -66,6 +67,23 @@ Feature: Install product
       | product_name      | product_release | cm_tool |
       | testing_prov_30	  | 0.0.1 	        | chef    |
       | testing_prov_31	  | 0.0.1 	        | puppet  |
+
+
+    @skip @CLAUDIA-4321 @CLAUDIA-4331
+    Scenario: Install a new product release with invalid instance attributes
+
+      Given a configuration management with "chef"
+      And a created product with name "testing_prov_30b" and release "0.0.2"
+      And a virtual machine with these parameters:
+	  |fqn                | hostname    | ip              | ostype    |
+	  |qa-test-vm.testing | qa-test-vm  | 111.111.111.111 | 95        |
+      And the following instance attributes:
+      | key       | value       | description | type    |
+      | att_key_1 | att_value_1 | Att 1       | lalala  |
+      | att_key_2 | att_value_2 | Att 2       | 123     |
+      | att_key_3 | att_value_3 | Att 3       | Pla     |
+      When I install the product in the VM
+      Then I obtain an "400"
 
 
     Scenario Outline: Install the same product in different VM

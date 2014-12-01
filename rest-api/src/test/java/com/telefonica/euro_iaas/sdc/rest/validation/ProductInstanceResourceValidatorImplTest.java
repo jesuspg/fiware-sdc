@@ -23,12 +23,19 @@
  */
 
 /**
- * 
+ *
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -36,9 +43,12 @@ import org.junit.Test;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
+import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -47,14 +57,15 @@ public class ProductInstanceResourceValidatorImplTest {
 
     private String serversResponse;
     private String serverResponse;
-    private  ProductInstanceResourceValidatorImpl validator ;
+    private ProductInstanceResourceValidatorImpl validator;
     private GeneralResourceValidator generalValidator;
+
     @Before
     public void setup() {
 
-    	validator = new ProductInstanceResourceValidatorImpl();
-    	generalValidator = new GeneralResourceValidatorImpl();
-    	validator.setGeneralValidator(generalValidator);
+        validator = new ProductInstanceResourceValidatorImpl();
+        generalValidator = new GeneralResourceValidatorImpl();
+        validator.setGeneralValidator(generalValidator);
         serversResponse = "{\"servers\": "
                 + "["
                 + "{"
@@ -88,7 +99,7 @@ public class ProductInstanceResourceValidatorImplTest {
 
     @Test
     public void testGetServerIds() throws Exception {
-      
+
         List<String> serverids = validator.getServerIds(serversResponse);
         assertEquals(2, serverids.size());
         assertEquals("2e855d51-4593-41de-8239-48200859d30b", serverids.get(0));
@@ -97,25 +108,75 @@ public class ProductInstanceResourceValidatorImplTest {
 
     @Test
     public void testGetServerIP() throws Exception {
-     
+
         String ip = validator.getServerPublicIP(serverResponse);
         assertEquals("130.206.82.66", ip);
     }
-    
-    @Test(expected=InvalidProductException.class)
+
+    @Test(expected = InvalidProductException.class)
     public void testTestProductIsNull() throws Exception {
-        ProductInstanceDto product = new ProductInstanceDto ();
+        ProductInstanceDto product = new ProductInstanceDto();
         validator.validateInsert(product);
-      
+
+    }
+
+    @Test(expected = InvalidProductException.class)
+    public void testTestProductNameisEmpty() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto();
+        ReleaseDto p = new ReleaseDto("", "de", "1.0");
+        product.setProduct(p);
+        validator.validateInsert(product);
+
+    }
+
+    @Test(expected = InvalidProductException.class)
+    public void testTestProductAttributeBadType() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto();
+        ReleaseDto p = new ReleaseDto("test", "de", "1.0");
+        product.setProduct(p);
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute("key", "value", "description", "type"));
+        product.setAttributes(attributes);
+        validator.validateInsert(product);
+
+    }
+
+    @Test
+    public void testTestProductAttributeOK() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto();
+        ReleaseDto p = new ReleaseDto("test", "de", "1.0");
+        product.setProduct(p);
+        VM vm = new VM("fqn","1.1.1.1","hostname","domain","osType");
+        product.setVm(vm);
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute("key", "value", "description", "IP"));
+        product.setAttributes(attributes);
+        SystemPropertiesProvider systemPropertiesProvider= mock(SystemPropertiesProvider.class);
+        validator.setSystemPropertiesProvider(systemPropertiesProvider);
+        when(systemPropertiesProvider.getProperty(anyString())).thenReturn("Plain|IP|IPALL");
+        ProductResourceValidator productResourceValidator=mock(ProductResourceValidator.class);
+        validator.setProductResourceValidator(productResourceValidator);
+        validator.validateInsert(product);
+
     }
     
     @Test(expected=InvalidProductException.class)
-    public void testTestProductNameisEmpty() throws Exception {
-        ProductInstanceDto product = new ProductInstanceDto ();
-        ReleaseDto p = new ReleaseDto ("", "de", "1.0");
+    public void testTestProductAttributeNoType() throws Exception {
+        ProductInstanceDto product = new ProductInstanceDto();
+        ReleaseDto p = new ReleaseDto("test", "de", "1.0");
         product.setProduct(p);
+        VM vm = new VM("fqn","1.1.1.1","hostname","domain","osType");
+        product.setVm(vm);
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute("key", "value", "description", ""));
+        product.setAttributes(attributes);
+        SystemPropertiesProvider systemPropertiesProvider= mock(SystemPropertiesProvider.class);
+        validator.setSystemPropertiesProvider(systemPropertiesProvider);
+        when(systemPropertiesProvider.getProperty(anyString())).thenReturn("Plain|IP|IPALL");
+        ProductResourceValidator productResourceValidator=mock(ProductResourceValidator.class);
+        validator.setProductResourceValidator(productResourceValidator);
         validator.validateInsert(product);
-      
+
     }
 
 }

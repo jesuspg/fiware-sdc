@@ -98,6 +98,7 @@
         <property name="generalValidator" ref="generalResourceValidator"/>
         <property name="productManager" ref="productManager"/>
         <property name="productReleaseManager" ref="productReleaseManager"/>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     <bean id="productInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidatorImpl">
