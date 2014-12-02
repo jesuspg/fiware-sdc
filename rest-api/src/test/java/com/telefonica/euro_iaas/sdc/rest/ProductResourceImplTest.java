@@ -141,11 +141,19 @@ public class ProductResourceImplTest {
     public void testUpdateMetadata () throws Exception {
         product.addMetadata(new Metadata ("metadata", "value"));
         when(productManager.load(any(String.class))).thenReturn(product);
-        when(productManager.update(any(Product.class))).thenReturn(product);
+        doNothing().when(productManager).update(any(Product.class));
         productResource.updateMetadata("productname", "metadata", new Metadata("metadata", "value"));
 
     }
-    
+
+    @Test
+    public void testDeleteMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        doNothing().when(productManager).update(any(Product.class));
+        productResource.deleteMetadata("productname", "metadata", new Metadata("metadata", "value"));
+
+    }
     @Test
     public void testFindAllFilterProduct () {
     	Product product = new Product ("name", "description");

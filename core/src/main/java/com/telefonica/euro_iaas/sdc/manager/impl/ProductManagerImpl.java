@@ -173,8 +173,8 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
     }
 
     @Override
-    public Product update(Product product) {
-        return productDao.update(product);
+    public void update(Product product) {
+        productDao.update(product);
     }
 
     /**

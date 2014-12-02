@@ -137,10 +137,20 @@ public class Product {
         return null;
     }
 
+    public void deleteMetadata(String metadataName) {
+        Metadata aux= null;
+        for (int i=0; i < metadatas.size(); i++) {
+            if (metadatas.get(i).getKey().equals(metadataName)) {
+                aux = metadatas.get(i);
+
+            }
+        }
+        metadatas.remove(aux);
+    }
+
     public Metadata updateMetadata(Metadata metadata) {
         this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
         this.getMetadata(metadata.getKey()).setValue(metadata.getValue());
-        this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
         return this.getMetadata(metadata.getKey());
     }
 

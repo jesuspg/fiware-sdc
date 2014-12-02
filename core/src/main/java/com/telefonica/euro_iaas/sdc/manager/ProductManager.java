@@ -95,7 +95,7 @@ public interface ProductManager {
      *
      * @param update
      */
-    Product update(Product product);
+    void update(Product product);
 
     /**
      * Find the products and product release that match with the given criteria.

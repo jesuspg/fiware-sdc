@@ -128,6 +128,22 @@ public interface ProductResource {
     List<Metadata> loadMetadatas(@PathParam("pName") String name) throws EntityNotFoundException;
 
     /**
+     * Add the metadata metadata-name for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @return the attributes.
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @POST
+    @Path("/{pName}/metadatas/")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void insertMetadata (@PathParam("pName") String name, Metadata metadata ) throws EntityNotFoundException;
+
+    /**
      * Retrieve the metadata metadata-name for the selected product.
      *
      * @param name
@@ -142,6 +158,22 @@ public interface ProductResource {
     @Path("/{pName}/metadatas/{metadataName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void updateMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName, Metadata metadata ) throws EntityNotFoundException;
+
+    /**
+            * Delete the metadata metadata-name for the selected product.
+    *
+            * @param name
+    *            the product name
+    * @param metadataName
+    *            the product metadata name
+    * @return the attributes.
+            * @throws EntityNotFoundException
+    *             if the product does not exists
+    */
+    @DELETE
+    @Path("/{pName}/metadatas/{metadataName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void deleteMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName, Metadata metadata ) throws EntityNotFoundException;
 
 
     /**

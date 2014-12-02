@@ -199,4 +199,20 @@ public class ModelTest extends TestCase {
         assertEquals("key1", output.getKey());
 
     }
+
+    public void testDeleteMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key2", "value2", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+        product.addMetadata(metadata2);
+        assertEquals(product.getMetadatas().size(),2);
+
+        product.deleteMetadata(metadata.getKey());
+
+        assertEquals(product.getMetadatas().size(),1);
+
+    }
 }
