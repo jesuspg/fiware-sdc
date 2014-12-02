@@ -3,26 +3,33 @@ import sys
 import http
 import requests
 import json
+import os
 
 
 
 
 
 def get_images_filter ():
-    token = get_token ('cloud.lab.fi-ware.org:4731',
-                      '00000000000000000000000000000081',
-                      'henar@tid.es',
-                      'vallelado')
-    endpoints = get_endpoints ('cloud.lab.fi-ware.org:4731',
-                      '00000000000000000000000000000081',
-                      'henar@tid.es',
-                      'vallelado')
 
-    products = get_product_with_image_filtered (endpoints['sdc']['Spain'], token, '00000000000000000000000000000081')
+    KEYSTONE = os.environ.get('OS_KEYSTONE')
+    TENANT_ID = os.environ.get('OS_TENANT_NAME')
+    USERNAME =os.environ.get('OS_USERNAME')
+    PASSWORD = os.environ.get('OS_PASSWORD')
+
+    token = get_token (KEYSTONE,
+                      TENANT_ID,
+                      USERNAME,
+                      PASSWORD )
+    endpoints = get_endpoints (KEYSTONE,
+                      TENANT_ID,
+                      USERNAME,
+                      PASSWORD )
+
+    products = get_product_with_image_filtered (endpoints['sdc']['Spain'], token, TENANT_ID)
 
 
     for product in products:
-        print product
+       # print product
         image_list = product [1].split(' ')
         image_ids = ''
         for image in image_list:
@@ -33,10 +40,10 @@ def get_images_filter ():
                 except:
                     image_name = check_image_in_spain (endpoints['image']['Spain'], image, token)
                     if image_name == None:
-                        print 'image no valid in Spain region ' + image
+                      #  print 'image no valid in Spain region ' + image
                         continue
                     image_ids = image_ids + ' ' + image
-                    print 'product ' + product [0] +  image_ids
+                    #print 'product ' + product [0] +  image_ids
                     for endpoint_glace in endpoints['image']:
                         if endpoint_glace == 'Spain':
                             continue
@@ -44,9 +51,10 @@ def get_images_filter ():
                         if image_id == None:
                             continue
                         image_ids = image_ids + ' ' + image_id
-                        print    'product ' + product [0] + ' ' + endpoint_glace + ' ' +  image_id
+                     #   print    'product ' + product [0] + ' ' + endpoint_glace + ' ' +  image_id
 
                     print 'product ' + product [0] +  image_ids
+                    update_metadata_image (endpoints['sdc']['Spain'], token, TENANT_ID, product, image_ids)
             except Exception, e:
                 print 'error with image ' + image
         print image_ids
@@ -130,8 +138,8 @@ def get_product_with_image_filtered (sdc_url, token, vdc):
            return None
         products = []
         for product in data:
-            if product['name'] == 'orion':
-                print 'orion'
+          #  if product['name'] == 'orion':
+           #     print 'orion'
             try :
                 for metadata in product ['metadatas']:
                     if metadata == 'value':
@@ -179,6 +187,24 @@ def get_image_id_anotherregion (glance_url, image_name, token):
         return None
     except Exception as e:
         return None
+
+def update_metadata_image (sdc_url, token, vdc, product, metadata_image):
+    url = "%s/%s" % (sdc_url, "catalog/product/"+product)
+    headers = {'X-Auth-Token': token, 'Tenant-Id': vdc,
+                   'Accept': "application/json", 'Content-Type': 'application/json'}
+
+    response = http.get(url, headers)
+
+    ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
+    if response.status != 200:
+        print 'error to get the product ' + str(response.status)
+        return
+    else:
+        payload = '{"metadata":{"key":"image","value"' + metadata_image + '"}}'
+        response =http.put(url+"/metadatas/image", headers, data=payload)
+        if response.status != 200:
+            print 'error to update the product ' + product + ' ' + str(response.status)
+
 
 
 
