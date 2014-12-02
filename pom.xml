@@ -234,7 +234,30 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>${cobertura-maven-plugin.version}</version>
+				<configuration>
+					<format>xml</format>
+					<maxmem>256m</maxmem>
+					<!-- aggregated reports for multi-module projects -->
+					<aggregate>true</aggregate>
+					<instrumentation>
+						<ignores>
+							<ignore>org.openstack.docs.common.api.v1.*</ignore>
+						</ignores>
+						<excludes>
+							<exclude>com/telefonica/**/exception/**/*</exclude>
+							<exclude>com/telefonica/**/bootstrap/*</exclude>
+							<exclude>com/telefonica/**/model/**/*</exclude>
+							<exclude>com/telefonica/**/aspects/**/*</exclude>
+							<exclude>org/w3/**/*</exclude>
+							<exclude>org/openstack/**/*</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
