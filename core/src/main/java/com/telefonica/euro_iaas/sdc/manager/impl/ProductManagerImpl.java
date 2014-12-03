@@ -167,11 +167,19 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         }
     }
 
+    /**
+     * It deletes the product in DB.
+     * @param product
+     */
     @Override
     public void delete(Product product) {
         productDao.remove(product);
     }
 
+    /**
+     * It updates the product in DB.
+     * @param product
+     */
     @Override
     public void update(Product product) {
         productDao.update(product);

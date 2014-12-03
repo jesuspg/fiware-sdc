@@ -114,11 +114,75 @@ public interface ProductResource {
     List<Attribute> loadAttributes(@PathParam("pName") String name) throws EntityNotFoundException;
 
     /**
+     * Add an attribute for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param attribute
+     *            the the attribute to be added
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @POST
+    @Path("/{pName}/attributes/")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void insertAttribute (@PathParam("pName") String name, Attribute attribute ) throws EntityNotFoundException;
+
+    /**
+     * Retrieve the attribute attribute-name for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param attributeName
+     *            the product attribute name
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @PUT
+    @Path("/{pName}/attributes/{attributeName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void updateAttribute (@PathParam("pName") String name, @PathParam("attributeName") String attributeName, Attribute attribute )
+        throws EntityNotFoundException;
+
+    /**
+     * Delete the attribute attribute-name for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param attributeName
+     *            the product attribute name
+     * @return the attributes.
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @DELETE
+    @Path("/{pName}/attributes/{attributeName}")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    void deleteAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName) throws EntityNotFoundException;
+
+
+    /**
+     * Retrieve the attribute attributeName for the selected product.
+     *
+     * @param name
+     *            the product name
+     * @param attributeName
+     *            the product attribute name
+     * @return the attributes.
+     * @throws EntityNotFoundException
+     *             if the product does not exists
+     */
+    @GET
+    @Path("/{pName}/attributes/{attributeName}")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    Attribute loadAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName ) throws EntityNotFoundException;
+
+    /**
      * Retrieve the metadatas for the selected product.
      * 
      * @param name
      *            the product name
-     * @return the attributes.
+     * @return the metadatas.
      * @throws EntityNotFoundException
      *             if the product does not exists
      */
@@ -132,9 +196,8 @@ public interface ProductResource {
      *
      * @param name
      *            the product name
-     * @param metadataName
-     *            the product metadata name
-     * @return the attributes.
+     * @param metadata
+     *            the metadata to be added
      * @throws EntityNotFoundException
      *             if the product does not exists
      */
@@ -144,13 +207,12 @@ public interface ProductResource {
     void insertMetadata (@PathParam("pName") String name, Metadata metadata ) throws EntityNotFoundException;
 
     /**
-     * Retrieve the metadata metadata-name for the selected product.
+     * Update the metadata metadata-name for the selected product.
      *
      * @param name
      *            the product name
      * @param metadataName
      *            the product metadata name
-     * @return the attributes.
      * @throws EntityNotFoundException
      *             if the product does not exists
      */
@@ -166,14 +228,13 @@ public interface ProductResource {
     *            the product name
     * @param metadataName
     *            the product metadata name
-    * @return the attributes.
             * @throws EntityNotFoundException
     *             if the product does not exists
     */
     @DELETE
     @Path("/{pName}/metadatas/{metadataName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void deleteMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName, Metadata metadata ) throws EntityNotFoundException;
+    void deleteMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName ) throws EntityNotFoundException;
 
 
     /**

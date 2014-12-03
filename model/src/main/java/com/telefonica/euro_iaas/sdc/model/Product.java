@@ -121,6 +121,11 @@ public class Product {
         attributes.add(attribute);
     }
 
+    /**
+     * Add a new metadata
+     * @param meta
+     *           the metadata
+     */
     public void addMetadata(Metadata meta) {
         if (metadatas == null) {
             metadatas = new ArrayList<Metadata>();
@@ -128,30 +133,83 @@ public class Product {
         metadatas.add(meta);
     }
 
+    /**
+     * It gets teh metadata selected
+     * @param metadataName
+     * @return
+     */
     public Metadata getMetadata(String metadataName) {
+        Metadata metadataReturn = null;
         for (Metadata meta: this.metadatas) {
             if (meta.getKey().equals(metadataName)) {
-                return meta;
+                metadataReturn = meta;
             }
         }
-        return null;
+        return metadataReturn;
     }
 
+    /**
+     * It get the attribute selected
+     * @param attributeName
+     * @return the attribute
+     */
+    public Attribute getAttribute(String attributeName) {
+        Attribute attReturn = null;
+        for (Attribute att: this.attributes) {
+            if (att.getKey().equals(attributeName)) {
+                attReturn = att;
+            }
+        }
+        return attReturn ;
+    }
+
+    /**
+     * It deletes the metadataName in the product
+     * @param metadataName: the metadata to be deleted
+     */
     public void deleteMetadata(String metadataName) {
-        Metadata aux= null;
-        for (int i=0; i < metadatas.size(); i++) {
-            if (metadatas.get(i).getKey().equals(metadataName)) {
-                aux = metadatas.get(i);
-
-            }
-        }
-        metadatas.remove(aux);
+        metadatas.remove(getMetadata(metadataName));
     }
 
-    public Metadata updateMetadata(Metadata metadata) {
-        this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
+    /**
+     * It deletes the attributeName in the product
+     * @param attributeName: the attribute to be deleted
+     */
+    public void deleteAttribute(String attributeName) {
+        attributes.remove(getAttribute(attributeName));
+    }
+
+    /**
+     * It update a metadata value in a metadata
+     * @param metadata
+     * @return
+     */
+    public void updateMetadata(Metadata metadata) {
+        if (this.getMetadata(metadata.getKey()) == null) {
+            return;
+        }
+        if (metadata.getDescription() != null) {
+            this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
+        }
         this.getMetadata(metadata.getKey()).setValue(metadata.getValue());
-        return this.getMetadata(metadata.getKey());
+    }
+
+    /**
+     * It update a attribute value in a metadata
+     * @param attribute
+     * @return
+     */
+    public void updateAttribute(Attribute attribute) {
+        if (this.getAttribute(attribute.getKey()) == null) {
+            return;
+        }
+        if (attribute.getDescription() != null){
+            this.getAttribute(attribute.getKey()).setDescription(attribute.getDescription());
+        }
+        if (attribute.getType() != null) {
+            this.getAttribute(attribute.getKey()).setValue(attribute.getValue());
+        }
+        this.getAttribute(attribute.getKey()).setValue(attribute.getValue());
     }
 
 

@@ -108,7 +108,16 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It finds all product.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return
      */
     @Override
     public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
@@ -175,7 +184,11 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It loads the product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws APIException
      */
     @Override
     public Product load(String name) throws APIException {
@@ -188,7 +201,11 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It obtains all attributes from the product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws EntityNotFoundException
      */
     @Override
     public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
@@ -201,7 +218,117 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It updates an attriute from the product
+     * @param name
+     *            the product name
+     * @param attributeName
+     *            the product attribute name
+     * @param attribute
+     * @throws EntityNotFoundException
+     */
+    @Override
+    public void updateAttribute(String name, String attributeName, Attribute attribute) throws EntityNotFoundException {
+        Product product = null;
+        Attribute updatedAttribute = null;
+        try {
+            product = productManager.load(name);
+            updatedAttribute = product.getAttribute(attributeName);
+            if (updatedAttribute == null || !updatedAttribute.getKey().equals(attributeName)) {
+                log.warning("Exception: metadata not found or wrong " + attribute.getKey());
+                throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : " + attributeName, attribute));
+            }
+        } catch (Exception e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        product.updateAttribute(updatedAttribute);
+        try {
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Exception but it works "+ e.getMessage());
+        }
+    }
+
+    /**
+     * It inserts new attribute in the product.
+     * @param name
+     *            the product name
+     * @param attribute
+     *            the the attribute to be added
+     * @throws EntityNotFoundException
+     */
+    @Override
+    public void insertAttribute(String name, Attribute attribute) throws EntityNotFoundException {
+        Product product = null;
+        try {
+            product = productManager.load(name);
+        } catch (Exception e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        product.addAttribute(attribute);
+        productManager.update(product);
+    }
+
+    /**
+     * It loads an attribute.
+     * @param name
+     *            the product name
+     * @param attName
+     *            the product metadata name
+     * @return attribute
+     * @throws EntityNotFoundException
+     */
+    @Override
+    public Attribute loadAttribute(String name, String attName) throws EntityNotFoundException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+            if (product.getAttribute(attName) == null ) {
+                log.warning("Attribute not found : " + attName);
+                throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
+            }
+            else {
+                return product.getAttribute(attName);
+            }
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+    }
+
+    /**
+     * It deletes the product attribute.
+     * @param name
+     *            the product name
+     * @param attName
+     * @throws EntityNotFoundException
+     */
+    @Override
+    public void deleteAttribute(String name, String attName) throws EntityNotFoundException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+            if (product.getAttribute(attName) == null ) {
+                log.warning("Attribute not found : " + attName);
+                throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
+            }
+            else {
+                product.deleteMetadata(attName);
+                productManager.update(product);
+            }
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+    }
+
+    /**
+     * It loads all metadatas from a product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws EntityNotFoundException
      */
     @Override
     public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
@@ -240,7 +367,14 @@ public class ProductResourceImpl implements ProductResource {
         }
     }
 
-    @Override
+    /**
+     * It inser
+     * @param name
+     *            the product name
+     * @param metadata
+     *            the metadata to be added
+     * @throws EntityNotFoundException
+     */
     public void insertMetadata(String name, Metadata metadata) throws EntityNotFoundException {
         Product product = null;
         try {
@@ -253,7 +387,16 @@ public class ProductResourceImpl implements ProductResource {
         productManager.update(product);
     }
 
-    @Override
+
+    /**
+     * It loads the metadata.
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Metadata loadMetadata(String name, String metadataName) throws EntityNotFoundException {
         Product product = null;
         try {
@@ -271,8 +414,16 @@ public class ProductResourceImpl implements ProductResource {
         }
     }
 
+    /**
+     * It deletes the metadata from the product.
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @throws EntityNotFoundException
+     */
     @Override
-    public void deleteMetadata(String name, String metadataName, Metadata metadata) throws EntityNotFoundException {
+    public void deleteMetadata(String name, String metadataName) throws EntityNotFoundException {
         Product product = null;
         try {
             product =  productManager.load(name);

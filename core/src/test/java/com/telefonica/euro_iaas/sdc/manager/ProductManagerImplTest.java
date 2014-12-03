@@ -26,8 +26,8 @@ package com.telefonica.euro_iaas.sdc.manager;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,7 +125,76 @@ public class ProductManagerImplTest extends TestCase {
         Product createdProduct = productManager.insert(product, "");
         assertEquals(createdProduct.getMetadatas().size(), 6); 
     }
-    
+
+    /**
+     * Test load Product.
+     * @throws Exception
+     */
+    @Test
+    public void testLoadProduct() throws Exception {
+        productManager.setProductDao(productDao);
+
+        when(productDao.load(any(String.class))).thenReturn(product);
+        productManager.load("product");
+        verify(productDao).load(anyString());
+    }
+
+    /**
+     * Test update Product.
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateProduct() throws Exception {
+        productManager.setProductDao(productDao);
+
+        when(productDao.update(any(Product.class))).thenReturn (product);
+        productManager.update(product);
+        verify(productDao).update(any(Product.class));
+    }
+
+    /**
+     * Test update Product.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteProduct() throws Exception {
+        productManager.setProductDao(productDao);
+
+        doNothing().when(productDao).remove(any(Product.class));
+        productManager.delete(product);
+        verify(productDao).remove(any(Product.class));
+    }
+
+    /**
+     * Test exist product
+     * @throws Exception
+     */
+    @Test
+    public void testExistProduct() throws Exception {
+        productManager.setProductDao(productDao);
+
+        when(productDao.load(any(String.class))).thenReturn(product);
+        boolean result = productManager.exist("product");
+        assertTrue(result);
+    }
+
+
+    /**
+     * Test exist product
+     * @throws Exception
+     */
+    @Test
+    public void testNoExistProduct() throws Exception {
+        productManager.setProductDao(productDao);
+
+        when(productDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Product.class, "name", product.getName()));
+        boolean result = productManager.exist("product");
+        assertFalse(result);
+    }
+
+
+
+
     /**
      * Test Reinsert old Product.
      * @throws Exception

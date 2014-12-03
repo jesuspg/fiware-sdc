@@ -93,7 +93,7 @@ public interface ProductManager {
     /**
      * Update a certain product from SDC Database.
      *
-     * @param update
+     * @param product
      */
     void update(Product product);
 
