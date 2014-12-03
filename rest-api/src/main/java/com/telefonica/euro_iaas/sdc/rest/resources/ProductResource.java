@@ -126,7 +126,8 @@ public interface ProductResource {
     @POST
     @Path("/{pName}/attributes/")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void insertAttribute (@PathParam("pName") String name, Attribute attribute ) throws EntityNotFoundException;
+    void insertAttribute (@PathParam("pName") String name, Attribute attribute )
+        throws EntityNotFoundException;
 
     /**
      * Retrieve the attribute attribute-name for the selected product.
@@ -158,7 +159,8 @@ public interface ProductResource {
     @DELETE
     @Path("/{pName}/attributes/{attributeName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void deleteAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName) throws EntityNotFoundException;
+    void deleteAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName)
+        throws EntityNotFoundException;
 
 
     /**
@@ -175,7 +177,8 @@ public interface ProductResource {
     @GET
     @Path("/{pName}/attributes/{attributeName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Attribute loadAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName ) throws EntityNotFoundException;
+    Attribute loadAttribute(@PathParam("pName") String name, @PathParam("attributeName") String attributeName )
+        throws EntityNotFoundException;
 
     /**
      * Retrieve the metadatas for the selected product.
@@ -219,7 +222,8 @@ public interface ProductResource {
     @PUT
     @Path("/{pName}/metadatas/{metadataName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void updateMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName, Metadata metadata ) throws EntityNotFoundException;
+    void updateMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName,
+        Metadata metadata) throws EntityNotFoundException;
 
     /**
             * Delete the metadata metadata-name for the selected product.
@@ -234,7 +238,8 @@ public interface ProductResource {
     @DELETE
     @Path("/{pName}/metadatas/{metadataName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void deleteMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName ) throws EntityNotFoundException;
+    void deleteMetadata (@PathParam("pName") String name, @PathParam("metadataName") String metadataName)
+        throws EntityNotFoundException;
 
 
     /**
@@ -251,7 +256,8 @@ public interface ProductResource {
     @GET
     @Path("/{pName}/metadatas/{metadataName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Metadata loadMetadata(@PathParam("pName") String name, @PathParam("metadataName") String metadataName ) throws EntityNotFoundException;
+    Metadata loadMetadata(@PathParam("pName") String name, @PathParam("metadataName") String metadataName)
+        throws EntityNotFoundException;
 
     /**
      * Delete the Product in SDC Database.

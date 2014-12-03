@@ -28,16 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -138,14 +129,14 @@ public class Product {
      * @param metadataName
      * @return
      */
-    public Metadata getMetadata(String metadataName) {
-        Metadata metadataReturn = null;
+    public Metadata getMetadata(String metadataName) throws EntityNotFoundException {
+        Metadata aux=null;
         for (Metadata meta: this.metadatas) {
             if (meta.getKey().equals(metadataName)) {
-                metadataReturn = meta;
+                aux = meta;
             }
         }
-        return metadataReturn;
+        return aux;
     }
 
     /**
@@ -154,13 +145,13 @@ public class Product {
      * @return the attribute
      */
     public Attribute getAttribute(String attributeName) {
-        Attribute attReturn = null;
-        for (Attribute att: this.attributes) {
+        Attribute aux=null;
+         for (Attribute att: this.attributes) {
             if (att.getKey().equals(attributeName)) {
-                attReturn = att;
+                aux = att;
             }
         }
-        return attReturn ;
+        return aux;
     }
 
     /**
