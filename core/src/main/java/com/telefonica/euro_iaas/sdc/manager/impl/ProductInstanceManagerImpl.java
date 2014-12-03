@@ -388,7 +388,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         } catch (EntityNotFoundException e) {
             product = new Product(productRelease.getProduct().getName(), productRelease.getProduct().getDescription());
         }
-        product.setAttributes(attributes);
+        instance.setAttributes(attributes);
 
         productRelease.setProduct(product);
 

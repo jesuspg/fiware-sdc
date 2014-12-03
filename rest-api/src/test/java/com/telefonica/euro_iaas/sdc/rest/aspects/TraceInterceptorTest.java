@@ -21,37 +21,80 @@
  * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
  * </p>
  */
+
 package com.telefonica.euro_iaas.sdc.rest.aspects;
 
-import static org.junit.Assert.*;
-
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import static org.junit.Assert.assertTrue;
+
+/**
+ * Created by fla on 21/11/14.
+ */
 public class TraceInterceptorTest {
-	
-	private TraceInterceptor traceInterceptor;
-	
-	
-	
-	@Before 
-	public void setUp () {
-		traceInterceptor = new TraceInterceptor();
-	}
 
-	@Test
-	public void testWriteToLogLogStringThrowable() {
-		Log log = LogFactory.getLog (TraceInterceptorTest.class);
-		traceInterceptor.writeToLog(log, "message", new Exception ());
-	}
+    /**
+     * Check the aspect when a exception type info is launched.
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void writeToLogwithENTERMessage() throws Exception {
+        TraceInterceptor ti = new TraceInterceptor();
+        Log log = mock(Log.class);
+        log.info(anyString());
 
-	@Test
-	public void testIsInterceptorEnabledMethodInvocationLog() {
-		boolean result = traceInterceptor.isInterceptorEnabled(null, null);
-		assertTrue (result);
-	}
+        ti.writeToLog(log, "is ENTER msg", null);
+
+        verify(log).info("is ENTER msg");
+    }
+
+    /**
+     * Check the aspect when a exception type debug is launched.
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void writeToLogwithEXITMessage() throws Exception {
+        TraceInterceptor ti = new TraceInterceptor();
+        Log log = mock(Log.class);
+        log.debug(anyString());
+
+        ti.writeToLog(log, "is EXIT msg", null);
+
+        verify(log).debug("is EXIT msg");
+    }
+
+    /**
+     * Check the aspect when a exception type error is launched.
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void writeToLogwithNullException() throws Exception {
+        TraceInterceptor ti = new TraceInterceptor();
+        Log log = mock(Log.class);
+        log.error(anyString());
+        Throwable ex = mock(Throwable.class);
+
+        ti.writeToLog(log, "is any msg", ex);
+
+        verify(log).error("");
+    }
+
+    /**
+     * Check that the interceptor is enabled.
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testIsInterceptorEnabled() throws Exception {
+        TraceInterceptor ti = new TraceInterceptor();
+        Log log = mock(Log.class);
+        MethodInvocation in = mock(MethodInvocation.class);
+
+        assertTrue(ti.isInterceptorEnabled(in, log));
+    }
 
 }

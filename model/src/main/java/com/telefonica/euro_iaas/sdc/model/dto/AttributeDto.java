@@ -22,7 +22,7 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.sdc.model;
+package com.telefonica.euro_iaas.sdc.model.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,56 +38,26 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Defines an attribute which can be configured
  * 
- * @author Sergio Arroyo
+ * @author alberts
  */
-@Entity
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Attribute {
+public class AttributeDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @XmlTransient
     private Long id;
-
-    @SuppressWarnings("unused")
-    @Version
-    @XmlTransient
     private Long v;
-    /*
-     * @JoinColumn(name = "artifact_id", referencedColumnName = "id")
-     * @ManyToOne(optional = false, fetch = FetchType.LAZY) private Artifact artifact ;
-     */
-
-    /** the attribute key */
-    @Column(nullable = false, length = 256)
     private String key;
-    /** the attribute value */
-    @Column(nullable = false, length = 2048)
     private String value;
-    /* the description of that attribute* */
-    @Column(nullable = true, length = 2048)
     private String description;
     
-    @Column(nullable = true, length = 256)
-    private String type;
-
-    /*
-     * @JoinColumn(name = "artifact_id", referencedColumnName = "id")
-     * @ManyToOne(targetEntity=Artifact.class, optional = false, fetch = FetchType.LAZY)
-     * @XmlTransient private Artifact artifact;
-     */
-
     /**
      */
-    public Attribute() {
+    public AttributeDto() {
     }
 
     /**
      * @param key
      * @param value
      */
-    public Attribute(String key, String value) {
+    public AttributeDto(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -97,23 +67,12 @@ public class Attribute {
      * @param value
      * @param type
      */
-    public Attribute(String key, String value, String description) {
+    public AttributeDto(String key, String value, String description) {
         this.key = key;
         this.value = value;
         this.description=description;
     }
 
-    /**
-     * @param key
-     * @param value
-     * @param description
-     */
-    public Attribute(String key, String value, String description, String type) {
-        this.key = key;
-        this.value = value;
-        this.description = description;
-        this.type=type;
-    }
 
     /**
      * @return the key
@@ -171,21 +130,6 @@ public class Attribute {
         return id;
     }
     
-    /**
-     * 
-     * @return the type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * 
-     * @param type
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
     
 
     /*
@@ -213,7 +157,7 @@ public class Attribute {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Attribute other = (Attribute) obj;
+        AttributeDto other = (AttributeDto) obj;
         if (key == null) {
             if (other.key != null)
                 return false;
@@ -241,7 +185,6 @@ public class Attribute {
        sb.append("[key = ").append(this.key).append("]");
        sb.append("[value = ").append(this.value).append("]");
        sb.append("[description = ").append(this.description).append("]");
-       sb.append("[type = ").append(this.type).append("]");
        sb.append("]");
        return sb.toString();
     }

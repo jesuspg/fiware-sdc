@@ -10,11 +10,13 @@ from commons.constants import *
 from commons.configuration import CONFIG_VM_HOSTNAME, CONFIG_VM_IP, CONFIG_VM_FQN, CONFIG_PRODUCT_NAME_CHEF, CONFIG_PRODUCT_NAME_PUPPET, \
     CONFIG_PRODUCT_VERSION_CHEF, CONFIG_PRODUCT_VERSION_PUPPET
 from nose.tools import assert_equals, assert_true, assert_false
+from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 import time
 
 api_utils = RestUtils()
 product_steps = ProductSteps()
 provisioning_steps = ProvisioningSteps()
+dataset_utils = DatasetUtils()
 
 
 @step(u'a configuration management with "(.*)"')
@@ -26,6 +28,7 @@ def configuration_management_with_group1(step, cm_tool):
 def a_created_product_with_name_group1(step, product_id, product_release):
 
     world.product_name = product_id
+    world.product_description = "QA Test"
     world.product_version = product_release
 
     if product_id == CONFIG_FILE:
@@ -93,22 +96,16 @@ def a_vm_with_hostname_group1_and_fqn_group2(step, vm_hostname, vm_fqn):
 def the_following_instance_attributes(step):
     world.instance_attributes = []
     for row in step.hashes:
-        attribute = dict()
-        attribute[KEY] = row[KEY]
-        attribute[PRODUCT_DESCRIPTION] = row[PRODUCT_DESCRIPTION]
-        attribute[VALUE] = row[VALUE]
-        world.instance_attributes.append(attribute)
+        row = dict(dataset_utils.prepare_data(row))
+        world.instance_attributes.append(row)
 
 
 @step(u'the following product attributes:')
 def the_following_product_attributes(step):
     world.attributes = []
     for row in step.hashes:
-        attribute = dict()
-        attribute[KEY] = row[KEY]
-        attribute[PRODUCT_DESCRIPTION] = row[PRODUCT_DESCRIPTION]
-        attribute[VALUE] = row[VALUE]
-        world.attributes.append(attribute)
+        row = dict(dataset_utils.prepare_data(row))
+        world.attributes.append(row)
 
 
 @step(u'content type header values:')
@@ -149,7 +146,7 @@ def task_is_created(step):
     provisioning_steps.task_is_created(step)
 
 
-@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)"')
+@step(u'the task has finished with status "(RUNNING|SUCCESS|ERROR)"$')
 def the_task_has_finished_with_status_group1(step, status):
     finished = wait_for_task_finished(vdc_id=world.tenant_id, task_id=world.task_id,
                                       status_to_be_finished=status, headers=world.headers)
@@ -165,7 +162,7 @@ def the_task_has_the_minor_error_code_group1(step, error_minor_code):
     world.task_response_body = response_body_to_dict(response, world.headers[ACCEPT_HEADER], with_attributes=True,
                                                      xml_root_element_name=TASK)
 
-    assert_equals(world.task_response_body[TASK_ERROR]["@"+TASK_ERROR_MINOR_CODE], error_minor_code)
+    assert_equals(world.task_response_body[TASK_ERROR][TASK_ERROR_MINOR_CODE], error_minor_code)
 
 
 @step(u'the task is not created')

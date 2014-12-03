@@ -53,7 +53,7 @@ import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 
 /**
  * Default ProductInstanceResource implementation.
- * 
+ *
  * @author Henar Mu�oz
  */
 @Path("/vdc/{vdc}/productInstance/{productInstance}/ac")
@@ -77,8 +77,10 @@ public class ArtifactResourceImpl implements ArtifactResource {
         Artifact artifact = new Artifact(artifactDto.getName(), productInstance.getVdc(), productInstance,
                 artifactDto.getAttributes());
         artifactAsyncManager.deployArtifact(productInstance, artifact, getToken(), task, callback);
+
         log.debug("Task id " + task.getId() + " for Install artifact " + artifactDto.getName() + " in product "
                 + productIntanceName + " vdc " + vdc);
+
         return task;
     }
 
@@ -93,8 +95,10 @@ public class ArtifactResourceImpl implements ArtifactResource {
                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVm().getHostname(),
                 productInstance.getVm().getDomain()), vdc);
         artifactAsyncManager.undeployArtifact(productInstance, artifactName, getToken(), task, callback);
+
         log.debug("Task id " + task.getId() + " for  Uninstall artifact " + artifactName + " in product "
                 + productInstanceName + " vdc " + vdc);
+
         return task;
     }
 
@@ -111,7 +115,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
      */
 
     public List<ArtifactDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
-            List<Status> status, String vdc, String productInstance) {
+                                     List<Status> status, String vdc, String productInstance) {
 
         ArtifactSearchCriteria criteria = new ArtifactSearchCriteria();
 

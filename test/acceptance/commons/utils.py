@@ -1,4 +1,26 @@
-__author__ = 'arobres'
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
+__author__ = 'arobres, jfernandez'
 
 import xmldict
 import xmltodict
@@ -134,14 +156,14 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
         response_body = response_body_to_dict(response, headers[ACCEPT_HEADER], with_attributes=True,
                                               xml_root_element_name=TASK)
         status = response_body[TASK_STATUS]
-        print 'Waiting for task status. TIME: {}\n STATUS: {}'.format(count, status)
+        print 'Waiting for task status. CHECK: {} - STATUS: {}'.format(count, status)
 
         if status == status_to_be_finished:
             correct_status = True
             break
         elif status != TASK_STATUS_VALUE_RUNNING:
             break
-        time.sleep(1)
+        time.sleep(5)
 
     return correct_status
 
