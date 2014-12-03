@@ -109,8 +109,6 @@ def and_the_following_attributes(step):
     if len(step.hashes) == 1:
         world.attributes = world.attributes[0]
 
-    if len(step.hashes) == 1:
-        world.attributes = world.attributes[0]
 
 @step(u'When I add the new product with attributes, with accept parameter "([^"]*)" response')
 def when_i_add_the_new_product_with_attributes_with_accept_parameter_group1_response(step, accept_content):
