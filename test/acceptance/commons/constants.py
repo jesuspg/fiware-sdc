@@ -26,6 +26,7 @@ VALUE = u'value'
 DESCRIPTION = u'description'
 ATTRIBUTE_TYPE = u'type'
 ATTRIBUTE_TYPE_PLAIN = u'Plain'
+ATTRIBUTE_TYPE_IPALL = u'IPALL'
 
 
 #HEADERS

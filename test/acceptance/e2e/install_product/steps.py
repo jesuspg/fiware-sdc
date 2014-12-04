@@ -32,7 +32,7 @@ from commons.fabric_utils import execute_content_in_file
 
 def _check_product_attributes_installed_helper(attributes):
     """
-    For each attribute, this method will be validate if that attribute is in the file created by the recipe/manifest in
+    For each attribute, this method will validate if that attribute is in the file created by the recipe/manifest in
     the remote VM.
     :param attributes: Product instance attributes
     """
@@ -40,7 +40,8 @@ def _check_product_attributes_installed_helper(attributes):
         assert_true(execute_content_in_file(world.file_name,
                                             generate_content_installed_by_product(world.product_name,
                                                                                   world.product_version,
-                                                                                  attributes)),
+                                                                                  attributes,
+                                                                                  installator=world.cm_tool)),
                     "Attribute value not found in product installed [{}]".format(attribute[VALUE]))
 
 
