@@ -43,6 +43,7 @@ COMMAND_KNIFE_NODE_SHOW = "knife node show {}"
 COMMAND_PUPPET_GET_CERT = "puppet cert list --all | grep {}"
 COMMAND_RM_PUPPET_CERTS = "rm -r -f /var/lib/puppet/ssl/*"
 COMMAND_RM_ALL_TESTFILES = "rm -rf /tmp/qa-test-product-*"
+COMMAND_RM_PUPPET_CLIENT_CATALOG = "rm -f /var/lib/puppet/client_data/catalog/*"
 
 
 def _init_vm_connection():
@@ -246,3 +247,11 @@ def remove_all_generated_test_files():
     _init_vm_connection()
     return _execute_command(COMMAND_RM_ALL_TESTFILES)
 
+
+def remove_puppet_agent_catalog():
+    """
+    Init environment to connect to VM and remove the client catalog (agent) after manifest execution
+    :return: Result of the remote execution
+    """
+    _init_vm_connection()
+    return _execute_command(COMMAND_RM_PUPPET_CLIENT_CATALOG)

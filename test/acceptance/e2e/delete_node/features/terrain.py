@@ -27,7 +27,8 @@ from commons.terrain_steps import setup_feature, setup_scenario, setup_outline, 
 from commons.provisioning_steps import ProvisioningSteps
 from commons.rest_utils import RestUtils
 from commons.fabric_utils import execute_chef_client_stop, execute_puppet_agent_stop, \
-    remove_chef_client_cert_file, remove_puppet_agent_cert_file
+    remove_chef_client_cert_file, remove_puppet_agent_cert_file, remove_all_generated_test_files, \
+    remove_puppet_agent_catalog
 
 provisioning_steps = ProvisioningSteps()
 rest_utils = RestUtils()
@@ -58,6 +59,8 @@ def after_each_scenario(scenario):
         execute_puppet_agent_stop()
         remove_chef_client_cert_file()
         remove_puppet_agent_cert_file()
+        remove_all_generated_test_files()
+        remove_puppet_agent_catalog()
         rest_utils.delete_node(world.headers, world.tenant_id, world.node_name)
 
 

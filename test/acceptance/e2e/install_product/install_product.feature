@@ -90,12 +90,13 @@ Feature: Install product with E2E validations
       | puppet  | InvalidInstallProductRequestException |
 
 
-    Scenario Outline: Install a new product with "installation attributes"
+    Scenario Outline: Install a new product with "installation attributes" (Plain and IP types)
 
       Given a configuration management with "<cm_tool>"
       And the following instance attributes:
-      | key           | value         | description         | type   |
-      | custom_att_01 | new_val_att_1 | Testing attributes  | Plain  |
+      | key           | value           | description         | type   |
+      | custom_att_01 | new_val_att_1   | Testing attributes  | Plain  |
+      | custom_att_02 | 192.168.1.1     | Testing attributes  | IP     |
       And a created product with name "<product_name>" and release "<release>"
       And a virtual machine with these parameters:
       | fqn            | hostname        | ip              |
@@ -111,6 +112,52 @@ Feature: Install product with E2E validations
       | product_name                  | release	| cm_tool 	|
       | qa-test-product-chef-att-01   | 1.2.3 	| chef  	|
       | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	|
+
+
+    Scenario Outline: Install a new product with "installation attributes" (IPALL type, single IP)
+
+      Given a configuration management with "<cm_tool>"
+      And the following instance attributes:
+      | key           | value     | description         | type   |
+      | custom_att_01 | <ip_all>  | Testing attributes  | IPALL  |
+      And a created product with name "<product_name>" and release "<release>"
+      And a virtual machine with these parameters:
+      | fqn            | hostname        | ip              |
+      | ${CONFIG_FILE} | ${CONFIG_FILE}  | ${CONFIG_FILE}  |
+      When I install the product in the VM
+      Then the task is created
+      And the task is performed
+      And the product installation status is "INSTALLED"
+      And the product with attributes is installed
+
+      Examples:
+
+      | product_name                  | release	| cm_tool 	| ip_all                  |
+      | qa-test-product-chef-att-01   | 1.2.3 	| chef  	| 10.20.125.1,10.20.125.2 |
+      | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	| 10.20.125.3,10.20.125.4 |
+
+
+    Scenario Outline: Install a new product with "installation attributes" (IPALL type, IP list)
+
+      Given a configuration management with "<cm_tool>"
+      And the following instance attributes:
+      | key           | value     | description         | type   |
+      | custom_att_01 | <ip_all>  | Testing attributes  | IPALL  |
+      And a created product with name "<product_name>" and release "<release>"
+      And a virtual machine with these parameters:
+      | fqn            | hostname        | ip              |
+      | ${CONFIG_FILE} | ${CONFIG_FILE}  | ${CONFIG_FILE}  |
+      When I install the product in the VM
+      Then the task is created
+      And the task is performed
+      And the product installation status is "INSTALLED"
+      And the product with attributes is installed
+
+      Examples:
+
+      | product_name                  | release	| cm_tool 	| ip_all                  |
+      | qa-test-product-chef-att-01   | 1.2.3 	| chef  	| 10.20.125.1,10.20.125.2 |
+      | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	| 10.20.125.3,10.20.125.4 |
 
 
     Scenario Outline: Install a new product with "product attributes" (catalog)
