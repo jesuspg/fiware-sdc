@@ -198,6 +198,7 @@ Feature: Install product
       And the product is not instantiated
 
 
+    @release_4_1
     Scenario Outline: Install a new product with instance attributes (with valid type)
 
       Given a configuration management with "<cm_tool>"
@@ -221,6 +222,7 @@ Feature: Install product
       | testing_prov_72 | 1.2.3 	| puppet  	|
 
 
+    @release_4_1
     Scenario Outline: Install a new product with invalid type for instance attributes
 
       Given a configuration management with "<cm_tool>"
@@ -245,6 +247,7 @@ Feature: Install product
       | testing_prov_83 | 1.2.3 	| puppet  	| IPAL           |
 
 
+    @release_4_1
     Scenario Outline: Install a new product with instance attributes: missing type
 
       Given a configuration management with "<cm_tool>"
