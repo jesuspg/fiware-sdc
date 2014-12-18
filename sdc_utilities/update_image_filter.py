@@ -35,10 +35,10 @@ def get_images_filter():
        images in all regions.
     """
 
-    KEYSTONE = os.environ.get('OS_KEYSTONE')
-    TENANT_ID = os.environ.get('OS_TENANT_NAME')
-    USERNAME = os.environ.get('OS_USERNAME')
-    PASSWORD = os.environ.get('OS_PASSWORD')
+   KEYSTONE = os.environ.get('OS_KEYSTONE')
+   TENANT_ID = os.environ.get('OS_TENANT_NAME')
+   USERNAME = os.environ.get('OS_USERNAME')
+   PASSWORD = os.environ.get('OS_PASSWORD')
 
     token = get_token(KEYSTONE,
                       TENANT_ID,
@@ -53,6 +53,7 @@ def get_images_filter():
                                                token, TENANT_ID)
 
     for product in products:
+        print product
         image_list = product[1].split(' ')
         image_ids = ''
         for image in image_list:
@@ -65,6 +66,7 @@ def get_images_filter():
                         endpoints['image']['Spain'], image, token)
                     if image_name is None:
                         continue
+                    print image
                     image_ids = image_ids + ' ' + image
                     for endpoint_glace in endpoints['image']:
                         if endpoint_glace == 'Spain':
@@ -163,8 +165,7 @@ def get_product_with_image_filtered(sdc_url, token, vdc):
 
     url = "%s/%s" % (sdc_url, "catalog/product")
     headers = {'X-Auth-Token': token, 'Tenant-Id': vdc,
-               'Accept': "application/json",
-               'Content-Type': 'application/json'}
+               'Accept': "application/json"}
 
     response = http.get(url, headers)
 
@@ -199,14 +200,14 @@ def get_product_with_image_filtered(sdc_url, token, vdc):
 
 
 def check_image_in_spain(glance_url, id, token):
-    url = glance_url + '/images?limit=100'
+    url = glance_url + '/images?property-sdc_aware=true'
     headers = {'Accept': 'application/json', 'X-Auth-Token': token}
 
     try:
         response = requests.get(url, headers=headers)
         response_json = response.json()
         for image in response_json['images']:
-            if image['id'] is id:
+            if image['id'] == id:
                 return image['name']
         return None
     except Exception as e:

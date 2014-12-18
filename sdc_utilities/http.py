@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -20,7 +21,6 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
-__author__ = 'henar'
 
 import httplib
 from xml.dom.minidom import parse, parseString
@@ -30,6 +30,7 @@ import json
 
 import httplib
 import mimetypes
+
 
 def post_multipart(host, port, selector, fields, files):
     content_type, body = encode_multipart_formdata(fields, files)
@@ -56,7 +57,8 @@ def encode_multipart_formdata(fields, files):
     print files
     for (filename, value) in files:
         L.append('--' + LIMIT)
-        L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (filename, filename))
+        L.append('Content-Disposition: form-data; name="%s"; '
+                 'filename="%s"' % (filename, filename))
         L.append('Content-Type: %s' % get_content_type(filename))
         L.append('')
         L.append(value)
@@ -79,27 +81,23 @@ def __do_http_req(method, url, headers, payload):
     con.request(method, parsed_url.path, payload, headers)
     return con.getresponse()
 
-def __do_http_req_https(method, url, headers, payload):
 
+def __do_http_req_https(method, url, headers, payload):
     parsed_url = urlparse(url)
     con = httplib.HTTPSConnection(parsed_url.netloc)
     con.request(method, parsed_url.path, payload, headers)
     return con.getresponse()
 
-    ##
-    ## Metod que hace el HTTP-GET
-    ##
-
 
 def get(url, headers):
-    if url.startswith ('https'):
+    if url.startswith('https'):
         return __do_http_req_https("GET", url, headers, None)
     else:
         return __do_http_req("GET", url, headers, None)
 
 
 def delete(url, headers):
-    if url.startswith ('https'):
+    if url.startswith('https'):
         return __do_http_req_https("DELETE", url, headers, None)
     else:
         return __do_http_req("DELETE", url, headers, None)
@@ -129,18 +127,18 @@ def post(url, headers, payload):
         return __do_http_req("POST", url, headers, payload)
 
 
-
 def get_token(keystone_url, tenant, user, password):
 
 # url="%s/%s" %(keystone_url,"v2.0/tokens")
     headers = {'Content-Type': 'application/json',
                'Accept': "application/xml"}
-    payload = '{"auth":{"tenantName":"' + tenant + '","passwordCredentials":{"username":"' + user + '","password":"' + password + '"}}}'
+    payload = '{"auth":{"tenantName":"' + tenant +\
+              '","passwordCredentials":{"username":"'\
+              + user + '","password":"' + password + '"}}}'
 
     response = post(keystone_url, headers, payload)
     data = response.read()
 
-    ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
     if response.status != 200:
         print 'error to obtain the token ' + str(response.status)
         sys.exit(1)
@@ -161,9 +159,9 @@ def processTask(headers, taskdom):
         href = taskdom["@href"]
         status = taskdom["@status"]
         while status == 'RUNNING':
-           data1 = get_task(href, headers)
-           data = json.loads(data1)
-           status = data["@status"]
+            data1 = get_task(href, headers)
+            data = json.loads(data1)
+            status = data["@status"]
 
         if status == 'ERROR':
             error = data["error"]
