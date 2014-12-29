@@ -56,6 +56,9 @@ Catalogue Management API
 ------------------------
 Next we detail some operations that can be done in the catalogue management api
 
+Product API
+-----------
+
 **Get the Product List from the catalogue**
 
 .. code::
@@ -146,126 +149,181 @@ with the following payload
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}"
 
+Product Release API
+-------------------
 
-
-
-
-The network and region information are including also in the payload of the enviornment. The following lines show a example. 
-
-.. code::
-
-    <tier>
-        <name>{tier-id}</name> 
-        <region>Spain</region>
-        <network>Internet</network>
-        <network>private_network</network>     
-        <productReleases>                  
-           ...
-        </productReleases>              
-    </tier>  
-
-**Modify details of a certain blueprint template**
+**Get the Releases List of a particular Product**
 
 .. code::
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
-    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X PUT "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/environment/{environment-id}"
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
-The payload of this request cias as follows
+This operation lists the product releases of {product-name} stored in the catalogue. The following example shows an XML response for the list of ProductRelease API operation.
 	
+.. code::	
+
+	<productReleases>
+ 		<productRelease>
+			<releaseNotes>{product-name} 0.6.15</releaseNotes>
+			<version>0.6.15</version>
+ 			<product>
+				<name>{product-name}</name>
+				<description>desc</description>
+ 			</product>
+ 			<supportedOOSS>
+				<id>1</id>
+				<v>0</v>
+				<osType>94</osType>
+				<name>Ubuntu</name>
+				<description>Ubuntu 10.04</description>
+				<version>10.04</version>
+ 			</supportedOOSS>
+ 		</productRelease>
+ 		<productRelease>
+			<version>0.9.0</version>
+ 			<product>
+				<name>{product-name}</name>
+				<description>{product-name} 0.6.15</description>
+ 			</product>
+ 			<supportedOOSS>
+				<id>1</id>
+				<v>0</v>
+				<osType>94</osType>
+				<name>Ubuntu</name>
+				<description>Ubuntu 10.04</description>
+				<version>10.04</version>
+ 			</supportedOOSS>
+ 		</productRelease>
+ 	</productReleases>
+
+
+**Get the Details of a Particular Product Release**
+
 .. code::
 
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <environment>
-        <name>{emvironment-name}</name>
-        <tiers>
-            <tier>
-                <initial_number_instances>1</initial_number_instances>
-                <maximum_number_instances>1</maximum_number_instances>
-                <minimum_number_instances>1</minimum_number_instances>
-                <name>{tier-id}</name>               
-                <productReleases>                  
-                    <product>postgresql</product>
-                    <version>0.0.3</version>
-                    <withArtifact>true</withArtifact> 
-                    <productType> 
-                        <id>5</id>
-                        <name>Database</name>  
-                    </productType> 
-                </productReleases>                    
-            </tier>   
-            <tier>
-                <initial_number_instances>1</initial_number_instances>
-                <maximum_number_instances>5</maximum_number_instances>
-                <minimum_number_instances>1</minimum_number_instances>
-                <name>{tier-id}</name>               
-                <productReleases>                  
-                    <product>tomcat</product>
-                    <version>7</version>
-                    <withArtifact>true</withArtifact> 
-                    <productType> 
-                        <id>6</id>
-                       <name>webserver</name>  
-                    </productType> 
-                </productReleases>   
-            </tier>   
-        </tiers>
-    </environment>
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release/{version}"
 
-**Delete a blueprint template from the catalogue**
+This operation lists the details of a Product Release.
+	
+.. code::	
+
+	<productReleases>
+ 		<productRelease>
+			<releaseNotes>{product-name} 0.6.15</releaseNotes>
+			<version>0.6.15</version>
+ 			<product>
+				<name>{product-name}</name>
+				<description>desc</description>
+ 			</product>
+ 			<supportedOOSS>
+				<id>1</id>
+				<v>0</v>
+				<osType>94</osType>
+				<name>Ubuntu</name>
+				<description>Ubuntu 10.04</description>
+				<version>10.04</version>
+ 			</supportedOOSS>
+ 		</productRelease>
+ 	</productReleases>	
+ 	
+ 
+**Add a New Release to a Product into the catalogue**
 
 .. code::
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X DELETE "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/environment/{environment-id}"
+	-X POST "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
-BluePrint Instance Provisioning API
------------------------------------
+with the following payload
 
-**Deploy a Blueprint Instance**
+.. code::
+
+	<productReleaseDto>
+		<productName>{product-name}</productName>
+		<version>{version}</version>
+		<productDescription>description of {product-name}-{version}/productDescription>
+	</productReleaseDto>
+
+**Delete a Release of a Product **
 
 .. code::
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X POST "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/vdc/your-tenant-id/environmentInstance"
+	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
-where {vdc-id} is the tenant-id ("your-tenant-id" in this guide). The payload of this request can be as follows:
+
+**Get All Product and Releases of the catalogue**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/productandrelease"
+
+This operation lists all product releases stored in the Catalogue and available for users.
+
+.. code::
+
+	<productAndReleaseDtoes>
+ 		<productAndReleaseDto>
+ 			<product>
+				<name>tomcat</name>
+				<description>tomcat J2EE container</description>
+ 			</product>
+			<version>6</version>
+	 	</productAndReleaseDto>
+ 		...
+ 		<productAndReleaseDto>
+ 			<product>
+				<name>nodejs</name>
+				<description>nodejs</description>
+ 			</product>
+			<version>0.6.15</version>
+ 		</productAndReleaseDto>
+	</productAndReleaseDtoes>
+
+
+Product Instance Provisioning API
+---------------------------------
+
+**Install a Product in a Virtual Machine**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X POST "http://saggita.lab.fi-ware.org:8080/sdc/rest/vdc/{your-tenant-id}/productInstance"
+
+where {your-tenant-id} is the tenant-id in this guide. The payload of this request can be as follows:
 
 .. code::
 	
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <environment>
-        <name>{emvironment-name}</name>
-        <tiers>
-            <tier>
-                <initial_number_instances>1</initial_number_instances>
-                <maximum_number_instances>1</maximum_number_instances>
-                <minimum_number_instances>1</minimum_number_instances>
-                <name>{tier-id}</name>               
-                <productReleases>                  
-                    <product>postgresql</product>
-                    <version>0.0.3</version>
-                    <withArtifact>true</withArtifact> 
-                    <productType> 
-                       <id>5</id>
-                        <name>Database</name>  
-                    </productType> 
-                </productReleases>
-                ...
-            </tier>   
-        </tiers>
-    </environment>
+	<productInstanceDto>
+  		<vm>
+    		<ip>{ip}</ip>
+    		<fqn>{fqn}</fqn>
+    		<hostname>{hostname}</hostname>
+  		</vm>
+  		<product>
+    		<productDescription/>
+    		<name>{product-name}</name>
+    		<version>{product-version}</version>
+ 		</product>
+	</productInstanceDto>
 
 The response obatined should be:
 
 .. code::
 
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <task href="http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/org/FIWARE/vdc/your-tenant-id/task/{task-id}" startTime="2012-11-08T09:13:18.311+01:00" status="RUNNING">
-        <description>Deploy environment {emvironment-name}</description>
+        <task href="https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/task/{task-id}" startTime="2012-11-08T09:13:18.311+01:00" status="RUNNING">
+        <description>Install product {product-name} in  VM {vm}</description>
         <vdc>your-tenant-id</vdc>
     </task>
 
@@ -275,157 +333,107 @@ the task status should be SUCCESS.
 .. code::
 
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <task href="http:/130.206.80.112:8080/paasmanager/rest/org/{org-id}/vdc/your-tenant-id/task/{task-id}" startTime="2012-11-08T09:13:19.567+01:00" status="SUCCESS">
-        <description>Deploy environment {emvironment-name}</description>
+        <task href="https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/task/{task-id}" startTime="2012-11-08T09:13:28.311+01:00" status="SUCCESS">
+        <description>Install product {product-name} in  VM {vm}</description>
         <vdc>your-tenant-id</vdc>
     </task>
 
 
-**Get information about Blueprint Instances deployed**	
+**Get the list of Product Instances deployed**	
 
 .. code::
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X GET "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/vdc/your-tenant-id/environmentInstance"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance"
 
 The Response obtained includes all the blueprint instances deployed
 
 .. code::
 
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <environmentInstanceDtoes>
-        <environmentInstance>
-            <environmentInstanceName>{environmentInstance-id</environmentInstanceName>
-            <vdc>your-tenant-id</vdc>
-            <environment>
-                <name>{environment-name}</name>
-                <tiers>
-                    <tier>
-                    <initial_number_instances>1</initial_number_instances>
-                    <maximum_number_instances>1</maximum_number_instances>
-                    <minimum_number_instances>1</minimum_number_instances>
-                    <name>{tier-id}</name>               
-                    <productReleases>                  
-                        <product>postgresql</product>
-                        <version>0.0.3</version>
-                        <withArtifact>true</withArtifact> 
-                        <productType> 
-                            <id>5</id>
-                            <name>Database</name>  
-                        </productType> 
-                    </productReleases>                     ...
-                    </tier>   
-                </tiers>
-            </environment>        
-            <tierInstances>
-                <id>35</id>
-                <date>2012-10-31T09:24:45.298Z</date>  
-                <name>tomcat-</name>       
-                <status>INSTALLED</status>       
-                <vdc>your-tenant-id</vdc>       
-                <tier>
-                    <name>{tier-id}</name>               
-                </tier>   
-                <productInstances>
-                    <id>33</id>   
-                    <date>2012-10-31T09:14:33.192Z</date>  
-                    <name>postgresql</name>         
-                    <status>INSTALLED</status>    
-                    <vdc>your-tenant-id</vdc>  
-                    <productRelease>  
-                        <product>postgresql</product>  
-                        <version>0.0.3</version> 
-                    </productRelase>
-                    <vm>
-                        <fqn>vmfqn</fqn> 
-                        <hostname>rehos456544</hostname> 
-                        <ip>109.231.70.77</ip> 
-                   </vm>
-           </tierInstances>
-       </environmentInstance>
-   </environmentInstanceDtoes>
+	<productInstances>
+ 		<productInstance>
+			<id>8790</id>
+			<date>2014-10-30T12:49:35.528+01:00</date>
+			<name>{productInstance-name}</name>
+			<status>INSTALLED</status>
+ 			<vm>
+    			<ip>{ip}</ip>
+    			<fqn>{fqn}</fqn>
+    			<hostname>{hostname}</hostname>
+  			</vm>
+			<vdc>{your-tenant-id}</vdc>
+ 			<productRelease>
+				<version>{product-version}</version>
+ 				<product>
+					<name>{product-name}</name>
+ 					<metadatas>
+						<key>key1</key>
+						<value>value1</value>
+						<description>desc</description>
+ 					</metadatas>
+ 				</product>
+ 			</productRelease>
+ 		</productInstance>
+ 		...
+</productInstances>
 
-**Get details of a certain Blueprint Instance**	
+**Get details of a certain productInstance Instance**	
 
 .. code::
 
+
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X GET "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/vdc/your-tenant-id/environmentInstance/{BlueprintInstance-id}"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance/{productInstance-name}"
 	
 This operation does not require any payload in the request and provides a BlueprintInstance XML response. 
 
 .. code::
 
-    <environmentInstance>
-        <environmentInstanceName>{environmentInstance-id</environmentInstanceName>
-        <vdc>your-tenant-id</vdc>
-        <environment>
-            <name>{emvironment-name}</name>
-            <tiers>
-                <tier>
-                    <initial_number_instances>1</initial_number_instances>
-                    <maximum_number_instances>1</maximum_number_instances>
-                    <minimum_number_instances>1</minimum_number_instances>
-                    <name>{tier-id}</name>               
-                    <productReleases>                  
-                        <product>postgresql</product>
-                        <version>0.0.3</version>
-                        <withArtifact>true</withArtifact> 
-                        <productType> 
-                            <id>5</id>
-                            <name>Database</name>  
-                        </productType> 
-                    </productReleases>                    
-                    ...
-                </tier>   
-            </tiers>
-        </environment>        
-        <tierInstances>
-            <id>35</id>
-            <date>2012-10-31T09:24:45.298Z</date>  
-            <name>tomcat-</name>       
-            <status>INSTALLED</status>       
-            <vdc>your-tenant-id</vdc>       
-            <tier>
-                <name>{tier-id}</name>               
-            </tier>   
-            <productInstances>
-                <id>33</id>   
-                <date>2012-10-31T09:14:33.192Z</date>  
-                <name>postgresql</name>         
-                <status>INSTALLED</status>    
-                <vdc>your-tenant-id</vdc>  
-                <productRelease>  
-                    <product>postgresql</product>  
-                    <version>0.0.3</version> 
-                </productRelase>
-                <vm>
-                    <fqn>vmfqn</fqn> 
-                    <hostname>rehos456544</hostname> 
-                    <ip>109.231.70.77</ip> 
-                </vm>
-            </productInstance>
-        </tierInstances>
-    </environmentInstance>
+	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+ 	<productInstance>
+		<id>8790</id>
+		<date>2014-10-30T12:49:35.528+01:00</date>
+		<name>mykurentoinstance-kurento-1-003237_kurento_5.0.3</name>
+		<status>INSTALLED</status>
+ 		<vm>
+			<ip>130.206.126.23</ip>
+			<hostname>mykurentoinstance-kurento-1-003237</hostname>
+			<domain />
+			<fqn>mykurentoinstance-kurento-1-003237</fqn>
+			<osType />
+ 		</vm>
+		<vdc>{your-tenant-id}</vdc>
+ 		<productRelease>
+			<version>{product-version}</version>
+ 			<product>
+				<name>{product-name}</name>
+ 				<metadatas>
+					<key>key1</key>
+					<value>value1</value>
+					<description>desc</description>
+ 				</metadatas>
+ 			</product>
+ 		</productRelease>
+ 	</productInstance>
 
 
-**Undeploy a Blueprint Instance**	
+**Uninstall a Product Instance**	
 
 .. code::
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X DELETE "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/catalog/org/FIWARE/vdc/your-tenant-id/environmentInstance/{BlueprintInstance-id}"
+	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance/{productInstance-name}"
 
 This operation does not require a request body and returns the details of a generated task. 
 
 .. code::	
 	
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <task href="http:/130.206.80.112:8080/paasmanager/rest/org/{org-id}/vdcyour-tenant-id/task/{task-id}" startTime="2012-11-08T09:45:44.020+01:00" status="RUNNING">
-        <description>Uninstall environment</description>
+    <task href="https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/task/{task-id}" startTime="2012-11-08T09:45:44.020+01:00" status="RUNNING">
+        <description>Uninstall Product</description>
         <vdc>your-tenant-id</vdc>
     </task>
 
@@ -434,8 +442,8 @@ With the URL obtained in the href in the Task, it is possible to monitor the ope
 .. code::
 	
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <task href="http:/130.206.80.112:8080/paasmanager/rest/org/{org-id}/vdc/your-tenant-id/task/{task-id}" startTime="2012-11-08T09:13:19.567+01:00" status="SUCCESS">
-        <description>Undeploy environment {emvironment-name}</description>
+    <task href="https://saggita.lab.fi-ware.org:8443/sdc/rest//vdc/{your-tenant-id}/task/{task-id}" startTime="2012-11-08T09:13:19.567+01:00" status="SUCCESS">
+        <description>Unistall product {product-name}</description>
         <vdc>your-tenant-id</vdc>
     </task>
 
@@ -448,15 +456,15 @@ Task Management
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X DELETE "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest/vdc/your-tenant-id/task/{task-id}"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/your-tenant-id/task/{task-id}"
 	
 This operation recovers the status of a task created previously. It does not need any request body and the response body in XML would be the following. 
 
 .. code::
 
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <task href="http:/130.206.80.112:8080/sdc/rest/vdc/your-tenant-id/task/{task-id}" startTime="2012-11-08T09:13:18.311+01:00" status="SUCCESS">
-        <description>Install product tomcat in  VM rhel-5200ee66c6</description>
+        <task href="https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/your-tenant-id/task/{task-id}" startTime="2012-11-08T09:13:18.311+01:00" status="SUCCESS">
+        <description>Install product {product-name} in  VM {vm}</description>
         <vdc>your-tenant-id</vdc>
     </task>
 
