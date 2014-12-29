@@ -67,7 +67,7 @@ Product API
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product"
 
-This operation lists the environments stored in the catalogue. The following example shows an XML response for the list Environment API operation. It is possible to see it contains a list of tiers including products to be installed.
+This operation lists all the products stored in the catalogue. The following example shows an XML response for the Product List API operation.
 	
 .. code::	
 
@@ -92,7 +92,7 @@ This operation lists the environments stored in the catalogue. The following exa
 				<description>mysql installator</description>
  			</metadatas>
  		</product>
-<products>
+	<products>
 
 **Get the Details of a particular Product List**
 
@@ -249,7 +249,7 @@ with the following payload
 		<productDescription>description of {product-name}-{version}/productDescription>
 	</productReleaseDto>
 
-**Delete a Release of a Product **
+**Delete the Release of a Product**
 
 .. code::
 
@@ -376,9 +376,12 @@ The Response obtained includes all the blueprint instances deployed
  			</productRelease>
  		</productInstance>
  		...
-</productInstances>
+ 		<productInstance>
+ 			...
+ 		</productInstance>
+	</productInstances>
 
-**Get details of a certain productInstance Instance**	
+**Get details of a certain Product Instance**	
 
 .. code::
 
