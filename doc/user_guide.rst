@@ -131,13 +131,23 @@ This operation lists the environments stored in the catalogue. The following exa
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X POST "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}"
 
-with the following payload
+with the following payload (with metadatas and attributes)
 
 .. code::
 
 	<product>
  		<name>{product-name}</name>
  		<description>Description</description>
+ 		<attributes>
+ 			<key>key1</key>
+			<value>value1<value/>
+			<description>description1</description>
+ 		</attributes>
+ 		<metadatas>
+			<key>installator</key>
+			<value>chef</value>
+			<description>mysql installator</description>
+ 		</metadatas>
 	</product>
 
 
