@@ -63,7 +63,7 @@ Product API
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product"
 
@@ -98,7 +98,7 @@ This operation lists all the products stored in the catalogue. The following exa
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}"
 
@@ -127,7 +127,7 @@ This operation lists the environments stored in the catalogue. The following exa
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X POST "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}"
 
@@ -145,7 +145,7 @@ with the following payload
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}"
 
@@ -156,7 +156,7 @@ Product Release API
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
@@ -203,7 +203,7 @@ This operation lists the product releases of {product-name} stored in the catalo
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release/{version}"
 
@@ -235,7 +235,7 @@ This operation lists the details of a Product Release.
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X POST "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
@@ -253,7 +253,7 @@ with the following payload
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/product/{product-name}/release"
 
@@ -262,7 +262,7 @@ with the following payload
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/catalog/productandrelease"
 
@@ -296,7 +296,7 @@ Product Instance Provisioning API
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X POST "http://saggita.lab.fi-ware.org:8080/sdc/rest/vdc/{your-tenant-id}/productInstance"
 
@@ -343,7 +343,7 @@ the task status should be SUCCESS.
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance"
 
@@ -386,7 +386,7 @@ The Response obtained includes all the blueprint instances deployed
 .. code::
 
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance/{productInstance-name}"
 	
@@ -426,7 +426,7 @@ This operation does not require any payload in the request and provides a Bluepr
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/productInstance/{productInstance-name}"
 
@@ -457,7 +457,7 @@ Task Management
 
 .. code::
 
-    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/your-tenant-id/task/{task-id}"
 	
