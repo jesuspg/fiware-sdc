@@ -450,6 +450,29 @@ With the URL obtained in the href in the Task, it is possible to monitor the ope
         <vdc>your-tenant-id</vdc>
     </task>
 
+Node Manegement API
+-------------------
+
+**Load a particular node**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/chefClient/{node-name}"
+
+This operation lists information of a specific node.
+ 		
+**Delete a particular node**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X DELETE "https://saggita.lab.fi-ware.org:8443/sdc/rest/vdc/{your-tenant-id}/chefClient/{node-name}"
+
+	
+	
 Task Management
 --------------- 
 
