@@ -12,6 +12,12 @@ one including the core functionality of the enabler itself and the other
 one which allocated the chef server.
 
 
+Documentation
+=============
+
+-   `User and Programmers Guide <doc/user_guide.rst>`_
+-   `Installation and Administration Guide <doc/admin_guide.rst>`_
+
 .. IMAGES
 
 .. |Build Status| image:: https://travis-ci.org/telefonicaid/fiware-sdc.svg
