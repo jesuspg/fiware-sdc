@@ -25,10 +25,13 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -206,6 +209,7 @@ public class ProductManagerImplTest {
         Product product1 = productManager.load("myProduct");
 
         // then
+        verify(productDao).load("myProduct");
         assertNotNull(product1);
         assertEquals("myProduct", product1.getName());
         assertEquals("productDescription", product1.getDescription());
@@ -224,5 +228,47 @@ public class ProductManagerImplTest {
 
         // then
 
+    }
+
+    @Test
+    public void shouldRemoveProduct() {
+        // given
+        Product product1 = new Product("myProduct", "descriptionProduct");
+        productManager.setProductDao(productDao);
+
+        // when
+        productManager.delete(product1);
+
+        // then
+        verify(productDao).remove(product1);
+    }
+
+    @Test
+    public void shouldReturnTrueWithExistingProduct() throws EntityNotFoundException {
+        // given
+        Product product1 = new Product("product_80", "description");
+        productManager.setProductDao(productDao);
+
+        when(productDao.load("product_80")).thenReturn(product1);
+
+        // when
+        boolean result = productManager.exist("product_80");
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public void shouldReturnFalseWithNonExistProduct() throws EntityNotFoundException {
+        // given
+
+        productManager.setProductDao(productDao);
+        when(productDao.load("product_87")).thenThrow(new EntityNotFoundException(Product.class, "name", "product_87"));
+
+        // when
+        boolean result = productManager.exist("product_87");
+
+        // then
+        assertFalse(result);
     }
 }
