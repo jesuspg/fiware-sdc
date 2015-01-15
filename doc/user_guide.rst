@@ -325,6 +325,11 @@ where {your-tenant-id} is the tenant-id in this guide. The payload of this reque
     		<name>{product-name}</name>
     		<version>{product-version}</version>
  		</product>
+ 		<attributes>
+			<key>custom_att_02</key>
+			<value>default_value_plain</value>
+			<type>Plain</type>
+		</attributes>
 	</productInstanceDto>
 
 The response obatined should be:
