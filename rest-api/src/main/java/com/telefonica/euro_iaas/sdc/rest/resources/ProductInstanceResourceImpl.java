@@ -41,7 +41,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
-import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
@@ -60,7 +59,6 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
-import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
 
 /**
@@ -86,44 +84,44 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
      */
     public Task install(String vdc, ProductInstanceDto product, String callback) {
 
-			try {
-				validator.validateInsert(product);
-			} catch (UnauthorizedOperationException e) {
-				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
-			} catch (OpenStackException e) {
-				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
-			} catch (InvalidProductException e) {
-				log.warning ("The entity is not valid " + e.getMessage() );
-				throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
-			} catch (EntityNotFoundException e) {
-				log.warning ("The entity does not exist " + e.getMessage() );
-				throw new APIException(e);
-			}
-			
-			Product p=null;
-            ProductRelease loadedProduct = null;
-			try {
-				p = productManager.load(product.getProduct().getName());
-				loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
-			} catch (EntityNotFoundException e) {
-				throw new APIException(new EntityNotFoundException(null, e.getMessage(), e));
-	
-			}
-            
-            List<Attribute> attributes = product.getAttributes();
-            if (attributes == null) {
-                attributes = new ArrayList<Attribute>();
-            }
+        try {
+            validator.validateInsert(product);
+        } catch (UnauthorizedOperationException e) {
+            log.warning("The entity is not valid " + e.getMessage());
+            throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+        } catch (OpenStackException e) {
+            log.warning("The entity is not valid " + e.getMessage());
+            throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+        } catch (InvalidProductException e) {
+            log.warning("The entity is not valid " + e.getMessage());
+            throw new APIException(new InvalidEntityException(ProductInstanceDto.class, e));
+        } catch (EntityNotFoundException e) {
+            log.warning("The entity does not exist " + e.getMessage());
+            throw new APIException(e);
+        }
 
-            Task task = createTask(MessageFormat.format("Install product {0} in  VM {1}{2}", product.getProduct()
-                    .getName(), product.getVm().getHostname(), product.getVm().getDomain()), vdc);
+        Product p = null;
+        ProductRelease loadedProduct = null;
+        try {
+            p = productManager.load(product.getProduct().getName());
+            loadedProduct = productReleaseManager.load(p, product.getProduct().getVersion());
+        } catch (EntityNotFoundException e) {
+            throw new APIException(new EntityNotFoundException(null, e.getMessage(), e));
 
-            productInstanceAsyncManager.install(product.getVm(), vdc, loadedProduct, attributes, getToken(), task,
-                    callback);
-            return task;
-  
+        }
+
+        List<Attribute> attributes = product.getAttributes();
+        if (attributes == null) {
+            attributes = new ArrayList<Attribute>();
+        }
+
+        Task task = createTask(MessageFormat.format("Install product {0} in  VM {1}{2}",
+                product.getProduct().getName(), product.getVm().getHostname(), product.getVm().getDomain()), vdc);
+
+        productInstanceAsyncManager
+                .install(product.getVm(), vdc, loadedProduct, attributes, getToken(), task, callback);
+        return task;
+
     }
 
     /**
@@ -170,7 +168,8 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             productInstanceAsyncManager.upgrade(productInstance, newRelease, getToken(), task, callback);
             return task;
         } catch (EntityNotFoundException e) {
-            throw new SdcRuntimeException(e);
+            log.warning("The entity is not valid " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(null, e.getMessage(), e));
         }
     }
 
@@ -315,6 +314,5 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             return null;
         }
     }
-    
- 
+
 }
