@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
@@ -191,5 +192,37 @@ public class ProductManagerImplTest {
         List<ProductAndReleaseDto> result = productManager.findProductAndReleaseByCriteria(criteria);
 
         assertEquals(3, result.size());
+    }
+
+    @Test
+    public void shouldLoadProduct() throws EntityNotFoundException {
+        // given
+        Product myProduct = new Product("myProduct", "productDescription");
+        productManager.setProductDao(productDao);
+
+        when(productDao.load("myProduct")).thenReturn(myProduct);
+
+        // when
+        Product product1 = productManager.load("myProduct");
+
+        // then
+        assertNotNull(product1);
+        assertEquals("myProduct", product1.getName());
+        assertEquals("productDescription", product1.getDescription());
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowExceptionInCallToLoadWithNonExistProduct() throws EntityNotFoundException {
+        // given
+        productManager.setProductDao(productDao);
+
+        when(productDao.load("myProduct_1234")).thenThrow(
+                new EntityNotFoundException(Product.class, "name", "myProduct_1234"));
+
+        // when
+        productManager.load("myProduct_1234");
+
+        // then
+
     }
 }
