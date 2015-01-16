@@ -67,6 +67,12 @@ public class NodeResourceImpl implements NodeResource {
 
     }
 
+    /**
+     * It obtains the information about the chef client.
+     * @param chefClientName
+     *            the ChefClientName
+     * @return
+     */
     public ChefClient load(String chefClientName) {
         try {
             return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
