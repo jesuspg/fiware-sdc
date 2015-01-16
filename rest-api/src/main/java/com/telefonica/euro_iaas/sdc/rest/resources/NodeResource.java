@@ -50,12 +50,12 @@ public interface NodeResource {
     
     /**
      * Retrieve all ChefClients available in ChefServer.
-     * 
+     *
      * @return the chefclients.
      */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ChefClient findByHostname(@QueryParam("hostname") String hostname) throws EntityNotFoundException,
+    ChefClient findAll() throws EntityNotFoundException,
             ChefClientExecutionException;
 
     /**
@@ -76,9 +76,9 @@ public interface NodeResource {
     /**
      * Delete a Node from Chef/Puppet only if the client has some productInstances installed
      * 
-     * @param nodename
+     * @param nodeName
      *            the name of the node (without domain) to be deleted from Chef/Puppet
-     * @throws NodeExecutionException
+     * @throws ChefClientExecutionException
      */
     @DELETE
     @Path("/{nodeName}")

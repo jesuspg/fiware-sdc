@@ -152,7 +152,6 @@ public class NodeManagerImpl implements NodeManager {
 
     private void chefClientDelete(String vdc, String chefClientName, String token) throws ChefClientExecutionException {
         chefLog.info("deleting node " + chefClientName + " from chef server");
-        ;
 
         ChefNode node;
         List<ProductInstance> productInstances = null;
@@ -166,7 +165,7 @@ public class NodeManagerImpl implements NodeManager {
             // eliminacion del chefClient
             chefClientDao.deleteChefClient(chefClientName, token);
 
-        } catch (CanNotCallChefException e) {
+        }  catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
             chefLog.warn(errorMsg);
@@ -215,11 +214,9 @@ public class NodeManagerImpl implements NodeManager {
         try {
             chefClient = chefClientDao.getChefClient(chefClientName, token);
         } catch (EntityNotFoundException e) {
-            // String message =
-            // " An error ocurred invoing the Chef server to load ChefClient named "
-            // + chefClientName;
-            // log.info(message);
-            throw e;
+            String men = "The node is not in the chef-server: " + chefClientName + " : " + e.getMessage();
+            log.warn ("The node is not in the chef-server.");
+            throw new EntityNotFoundException(ChefClient.class, men, chefClientName);
         } catch (Exception e) {
             String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
             log.info(message);

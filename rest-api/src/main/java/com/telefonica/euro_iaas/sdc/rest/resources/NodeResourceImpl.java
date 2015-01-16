@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 
 import javax.ws.rs.Path;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -57,17 +58,20 @@ public class NodeResourceImpl implements NodeResource {
     private TaskManager taskManager;
     private NodeManager nodeManager;
 
-    public ChefClient findByHostname(String hostname) {
-        try {
-            return nodeManager.chefClientfindByHostname(hostname, getCredentials().getToken());
-        } catch (Exception e) {
-            throw new APIException(e);
-        }
+    /**
+     * It obtains all the nodes for the user
+     * @return
+     */
+    public ChefClient findAll() {
+        throw new APIException(new Exception("Operation not implemented"));
+
     }
 
     public ChefClient load(String chefClientName) {
         try {
             return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
         } catch (Exception e) {
             throw new APIException(e);
         }

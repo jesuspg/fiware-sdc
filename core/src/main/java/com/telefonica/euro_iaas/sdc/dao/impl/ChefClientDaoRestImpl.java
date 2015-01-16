@@ -140,9 +140,9 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
+    /**
+     *
+     *
      */
     public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException,
             EntityNotFoundException {
@@ -181,6 +181,8 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             return chefClient;
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
+        } catch (Exception e) {
+            throw new EntityNotFoundException(ChefClient.class, chefClientName, chefClientName);
         }
     }
 
