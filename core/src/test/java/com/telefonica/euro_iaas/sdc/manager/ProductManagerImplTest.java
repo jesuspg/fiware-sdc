@@ -30,14 +30,14 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-<<<<<<< HEAD
+
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-=======
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
->>>>>>> f21e5f2682ab0b3583dc88af351a1d027bfc3d76
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +152,6 @@ public class ProductManagerImplTest {
         assertEquals(7, createdProduct.getMetadatas().size());
     }
 
-<<<<<<< HEAD
     /**
      * Test load Product.
      * @throws Exception
@@ -220,9 +219,6 @@ public class ProductManagerImplTest {
     }
 
 
-
-
-=======
     @Test
     public void testInsertNewProductWithDefaultMetadata() throws Exception {
 
@@ -244,7 +240,6 @@ public class ProductManagerImplTest {
         assertEquals("myimage", createdProduct.getMetadatas().get(0).getValue());
     }
 
->>>>>>> f21e5f2682ab0b3583dc88af351a1d027bfc3d76
     /**
      * Test Reinsert old Product.
      * 
