@@ -25,7 +25,9 @@
 package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,35 +67,29 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             log.log(Level.INFO, "Product " + productOut.getName() + " LOADED");
         } catch (EntityNotFoundException e) {
 
-            List<Metadata> metadatas = new ArrayList<Metadata>();
-            metadatas.add(new Metadata("image", "df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4")); // centos6.3_sdc
-            metadatas.add(new Metadata("cookbook_url", ""));
-            metadatas.add(new Metadata("cloud", "yes"));
-            metadatas.add(new Metadata("installator", "chef"));
-            metadatas.add(new Metadata("open_ports", "80 22"));
-            metadatas.add(new Metadata("tenant_id", tenantId));
+            Map<String, Metadata> productMetadataMap = new HashMap();
 
-            List<Metadata> defaultmetadatas = new ArrayList<Metadata>();
-            defaultmetadatas.add(new Metadata("image", "df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"));
-            defaultmetadatas.add(new Metadata("cookbook_url", ""));
-            defaultmetadatas.add(new Metadata("cloud", "yes"));
-            defaultmetadatas.add(new Metadata("installator", "chef"));
-            defaultmetadatas.add(new Metadata("open_ports", "80 22"));
-            defaultmetadatas.add(new Metadata("tenant_id", tenantId));
+            List<Metadata> productMetadatas = product.getMetadatas();
 
-            for (Metadata external_metadata : product.getMetadatas()) {
-                boolean defaultmetadata = false;
-                for (Metadata default_metadata : defaultmetadatas) {
-                    if (external_metadata.getKey().equals(default_metadata.getKey())) {
-                        metadatas.get(metadatas.indexOf(default_metadata)).setValue(external_metadata.getValue());
-                        defaultmetadata = true;
-                    }
-                }
-                if (!defaultmetadata) {
-                    metadatas.add(external_metadata);
+            for (Metadata metadata : productMetadatas) {
+                productMetadataMap.put(metadata.getKey(), metadata);
+            }
+
+            List<Metadata> defaultMetadatas = new ArrayList<Metadata>();
+            defaultMetadatas.add(new Metadata("image", ""));
+            defaultMetadatas.add(new Metadata("cookbook_url", ""));
+            defaultMetadatas.add(new Metadata("cloud", "yes"));
+            defaultMetadatas.add(new Metadata("installator", "chef"));
+            defaultMetadatas.add(new Metadata("open_ports", "80 22"));
+            defaultMetadatas.add(new Metadata("tenant_id", tenantId));
+
+            for (Metadata metadata : defaultMetadatas) {
+
+                if (!productMetadataMap.containsKey(metadata.getKey())) {
+                    productMetadatas.add(metadata);
                 }
             }
-            product.setMetadatas(metadatas);
+
             productOut = productDao.create(product);
         }
         return productOut;

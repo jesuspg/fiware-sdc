@@ -256,7 +256,7 @@ public class InstallatorPuppetTest {
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111,222.222.222.222", "description", "IPALL"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("['111.111.111.111','222.222.222.222']",receivedList.get(0).getValue());
+        assertEquals("['111.111.111.111', '222.222.222.222']",receivedList.get(0).getValue());
         
 
     }

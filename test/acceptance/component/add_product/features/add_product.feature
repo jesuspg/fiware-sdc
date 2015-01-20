@@ -206,7 +206,6 @@ Feature: Add a new product in the catalogue
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
 
-  @skip @CLAUDIA-4321
   Scenario Outline: Add new product with valid 'type' attribute
 
     Given a product with name "<product_name>" with description "<description>"
@@ -229,7 +228,6 @@ Feature: Add a new product in the catalogue
     | testing_attributes_08 | product with testing purposes | [MISSING_PARAM] | application/xml   |
 
 
-  @skip @CLAUDIA-4332 @CLAUDIA-4331
   Scenario Outline: Add new product with invalid value for 'type' attribute
 
     Given a product with name "<product_name>" with description "<description>"
@@ -248,9 +246,10 @@ Feature: Add a new product in the catalogue
     | testing_attributes_04 | product with testing purposes | nt                      | application/json  |
     | testing_attributes_05 | product with testing purposes | I                       | application/json  |
     | testing_attributes_06 | product with testing purposes | I p                     | application/json  |
-    | testing_attributes_07 | product with testing purposes | P(All                   | application/json  |
-    | testing_attributes_08 | product with testing purposes | [STRING_WITH_LENGTH_4]  | application/json  |
-    | testing_attributes_09 | product with testing purposes | [STRING_WITH_LENGTH_257]| application/json  |
+    | testing_attributes_07 | product with testing purposes | PAll                    | application/json  |
+    | testing_attributes_08 | product with testing purposes | IPAL                    | application/json  |
+    | testing_attributes_09 | product with testing purposes | [STRING_WITH_LENGTH_4]  | application/json  |
+    | testing_attributes_10 | product with testing purposes | [STRING_WITH_LENGTH_257]| application/json  |
 
 
   Scenario Outline: Add a new product with incorrect parameters
