@@ -35,10 +35,10 @@ def get_images_filter():
        images in all regions.
     """
 
-   KEYSTONE = os.environ.get('OS_KEYSTONE')
-   TENANT_ID = os.environ.get('OS_TENANT_NAME')
-   USERNAME = os.environ.get('OS_USERNAME')
-   PASSWORD = os.environ.get('OS_PASSWORD')
+    KEYSTONE = os.environ.get('OS_KEYSTONE')
+    TENANT_ID = os.environ.get('OS_TENANT_NAME')
+    USERNAME = os.environ.get('OS_USERNAME')
+    PASSWORD = os.environ.get('OS_PASSWORD')
 
     token = get_token(KEYSTONE,
                       TENANT_ID,
@@ -108,14 +108,34 @@ def get_token(url_base, tenant_id, user, password):
 
 
 def get_sdc_url(url_base, tenant_id, user, password):
+    """It get the SDC url
+    :param url_base: keystone url
+    :param tenand_id: the id of the tenant
+    :param user: the user
+    :param paassword: the password
+    """
     get_url(url_base, tenant_id, user, password, 'sdc', 'Spain')
 
 
 def get_glance_url(url_base, tenant_id, user, password, region):
+    """It get the glance url
+    :param url_base: keystone url
+    :param tenand_id: the id of the tenant
+    :param user: the user
+    :param paassword: the password
+    """
     get_url(url_base, tenant_id, user, password, 'image', region)
 
 
 def get_url(url_base, tenant_id, user, password, type, region):
+    """It get the url for a concrete service
+    :param url_base: keystone url
+    :param tenand_id: the id of the tenant
+    :param user: the user
+    :param paassword: the password
+    :param type: the type of service
+    :param region: the region
+    """
     url = 'http://' + url_base + '/v2.0/tokens'
     headers = {'Accept': 'application/json'}
     payload = {'auth': {'tenantName': '' + tenant_id + '',
@@ -137,6 +157,12 @@ def get_url(url_base, tenant_id, user, password, type, region):
 
 
 def get_endpoints(url_base, tenant_id, user, password):
+    """It get the endpoints
+    :param url_base: keystone url
+    :param tenand_id: the id of the tenant
+    :param user: the user
+    :param paassword: the password
+    """
     url = 'http://' + url_base + '/v2.0/tokens'
     headers = {'Accept': 'application/json'}
     payload = {'auth': {'tenantName': '' + tenant_id + '',
@@ -162,7 +188,11 @@ def get_endpoints(url_base, tenant_id, user, password):
 
 
 def get_product_with_image_filtered(sdc_url, token, vdc):
-
+    """It get the product for an concrete image
+    :param sdc_url: the sdc url
+    :param token: the valid token
+    :param vdc: the user
+    """
     url = "%s/%s" % (sdc_url, "catalog/product")
     headers = {'X-Auth-Token': token, 'Tenant-Id': vdc,
                'Accept': "application/json"}
@@ -200,6 +230,11 @@ def get_product_with_image_filtered(sdc_url, token, vdc):
 
 
 def check_image_in_spain(glance_url, id, token):
+    """It obtain if the image is in Spain
+    :param glance_url: the sdc url
+    :param token: the valid token
+    :param id: image id
+    """
     url = glance_url + '/images?property-sdc_aware=true'
     headers = {'Accept': 'application/json', 'X-Auth-Token': token}
 
@@ -215,6 +250,11 @@ def check_image_in_spain(glance_url, id, token):
 
 
 def get_image_id_another_region(glance_url, image_name, token):
+    """It obtains the image in another regions
+    :param glance_url: the sdc url
+    :param token: the valid token
+    :param image_name: image name
+    """
     url = glance_url + '/images'
     headers = {'Accept': 'application/json', 'X-Auth-Token': token}
 
@@ -230,6 +270,13 @@ def get_image_id_another_region(glance_url, image_name, token):
 
 
 def update_metadata_image(sdc_url, token, vdc, product, metadata_image):
+    """It updates the product metadada for image filtered
+    :param glance_url: the sdc url
+    :param token: the valid token
+    :param metadata_image: image name
+    :param product: image name
+
+    """
     url = "%s/%s" % (sdc_url, "catalog/product/"+product)
     headers = {'X-Auth-Token': token, 'Tenant-Id': vdc,
                'Accept': "application/json",

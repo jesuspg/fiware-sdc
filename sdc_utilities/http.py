@@ -21,53 +21,13 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
-
-import httplib
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 from urlparse import urlparse
 import sys
 import json
 
 import httplib
 import mimetypes
-
-
-def post_multipart(host, port, selector, fields, files):
-    content_type, body = encode_multipart_formdata(fields, files)
-    h = httplib.HTTP(host, port)
-    h.putrequest('POST', selector)
-    h.putheader('content-type', content_type)
-    h.putheader('content-length', str(len(body)))
-    h.endheaders()
-    h.send(body)
-    errcode, errmsg, headers = h.getreply()
-    print errcode
-    return h.file.read()
-
-
-def encode_multipart_formdata(fields, files):
-    LIMIT = '100'
-    dd = '\r\n'
-    L = []
-    for (key, value) in fields:
-        L.append('--' + LIMIT)
-        L.append('Content-Disposition: form-data; name="%s"' % key)
-        L.append('')
-        L.append(value)
-    print files
-    for (filename, value) in files:
-        L.append('--' + LIMIT)
-        L.append('Content-Disposition: form-data; name="%s"; '
-                 'filename="%s"' % (filename, filename))
-        L.append('Content-Type: %s' % get_content_type(filename))
-        L.append('')
-        L.append(value)
-    L.append('--' + LIMIT + '--')
-    L.append('')
-    print L
-    body = dd.join(L)
-    content_type = 'multipart/form-data; boundary=%s' % LIMIT
-    return content_type, body
 
 
 def get_content_type(filename):
@@ -109,7 +69,7 @@ def delete(url, headers):
 
 
 def __put(url, headers):
-    if url.startswith ('https'):
+    if url.startswith('https'):
         return __do_http_req_https("PUT", url, headers, None)
     else:
         return __do_http_req("PUT", url, headers, None)
@@ -121,7 +81,7 @@ def __put(url, headers):
 
 
 def post(url, headers, payload):
-    if url.startswith ('https'):
+    if url.startswith('https'):
         return __do_http_req_https("POST", url, headers, payload)
     else:
         return __do_http_req("POST", url, headers, payload)
@@ -154,7 +114,7 @@ def get_token(keystone_url, tenant, user, password):
             sys.exit(1)
 
 
-def processTask(headers, taskdom):
+def process_task(headers, taskdom):
     try:
         href = taskdom["@href"]
         status = taskdom["@status"]
@@ -166,7 +126,8 @@ def processTask(headers, taskdom):
         if status == 'ERROR':
             error = data["error"]
             message = error["@message"]
-            raise Exception('Error deploying the environt instnace' + str(message))
+            raise Exception('Error deploying the environment instance' +
+                            str(message))
         return status
     except Exception as e:
         raise Exception('Unexpected error in parsing ' + e.message)
@@ -174,10 +135,8 @@ def processTask(headers, taskdom):
 
 def get_task(url, headers):
 
-# url="%s/%s" %(keystone_url,"v2.0/tokens")
     response = get(url, headers)
 
-    ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
     if response.status != 200:
         print 'error to obtain the token ' + str(response.status)
         sys.exit(1)

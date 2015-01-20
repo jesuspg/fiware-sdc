@@ -136,6 +136,9 @@ public class Product {
                 aux = meta;
             }
         }
+        if (aux == null) {
+            throw new EntityNotFoundException("Not metadata found: " + metadataName);
+        }
         return aux;
     }
 
@@ -144,12 +147,15 @@ public class Product {
      * @param attributeName
      * @return the attribute
      */
-    public Attribute getAttribute(String attributeName) {
+    public Attribute getAttribute(String attributeName) throws EntityNotFoundException {
         Attribute aux=null;
          for (Attribute att: this.attributes) {
             if (att.getKey().equals(attributeName)) {
                 aux = att;
             }
+        }
+        if (aux == null) {
+            throw new EntityNotFoundException("Not attribute found: " + attributeName);
         }
         return aux;
     }
@@ -158,7 +164,7 @@ public class Product {
      * It deletes the metadataName in the product
      * @param metadataName: the metadata to be deleted
      */
-    public void deleteMetadata(String metadataName) {
+    public void deleteMetadata(String metadataName) throws EntityNotFoundException {
         metadatas.remove(getMetadata(metadataName));
     }
 
@@ -166,7 +172,7 @@ public class Product {
      * It deletes the attributeName in the product
      * @param attributeName: the attribute to be deleted
      */
-    public void deleteAttribute(String attributeName) {
+    public void deleteAttribute(String attributeName) throws EntityNotFoundException  {
         attributes.remove(getAttribute(attributeName));
     }
 
@@ -175,14 +181,13 @@ public class Product {
      * @param metadata
      * @return
      */
-    public void updateMetadata(Metadata metadata) {
-        if (this.getMetadata(metadata.getKey()) == null) {
-            return;
-        }
+    public void updateMetadata(Metadata metadata) throws EntityNotFoundException {
+
         if (metadata.getDescription() != null) {
             this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
         }
         this.getMetadata(metadata.getKey()).setValue(metadata.getValue());
+
     }
 
     /**

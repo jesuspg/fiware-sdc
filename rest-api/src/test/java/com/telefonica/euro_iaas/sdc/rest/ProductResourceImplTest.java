@@ -249,10 +249,10 @@ public class ProductResourceImplTest {
      */
     @Test
     public void testDeleteAttribute () throws Exception {
-        product.addAttribute(new Attribute ("metadata", "value"));
+        product.addAttribute(new Attribute ("att", "value"));
         when(productManager.load(any(String.class))).thenReturn(product);
         doNothing().when(productManager).update(any(Product.class));
-        productResource.deleteAttribute("metadata", "metadata");
+        productResource.deleteAttribute(product.getName(), "att");
 
     }
 

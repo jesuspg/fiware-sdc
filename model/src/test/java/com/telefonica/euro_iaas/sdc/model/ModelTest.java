@@ -29,6 +29,11 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import junit.framework.TestCase;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+
+
+import javax.persistence.EntityNotFoundException;
 
 public class ModelTest extends TestCase {
 
@@ -196,8 +201,13 @@ public class ModelTest extends TestCase {
         Product product = new Product ("name", "description");
         product.addMetadata(metadata);
 
-        Metadata output = product.getMetadata("key2");
-        assertNull(output);
+        try {
+            product.getMetadata("key2");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
 
     }
 
@@ -301,7 +311,13 @@ public class ModelTest extends TestCase {
      */
     public void testDeleteMetadataNotExists() {
         Product product = new Product ("name", "description");
-        product.deleteMetadata("NOEXIST");
+        try {
+            product.deleteMetadata("NOEXIST");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
     }
 
     /**
@@ -310,7 +326,13 @@ public class ModelTest extends TestCase {
     public void testUpdateAttributeNotExists() {
         Product product = new Product ("name", "description");
         Attribute attribute = new Attribute("key2", "value2", "description2");
-        product.updateAttribute(attribute);
+
+        try {
+            product.updateAttribute(attribute);
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
     }
 
     /**
@@ -319,7 +341,13 @@ public class ModelTest extends TestCase {
     public void testUpdateMetadataNotExists() {
         Product product = new Product ("name", "description");
         Metadata metadata = new Metadata("key2", "value2", "description1");
-        product.updateMetadata(metadata);
+        try {
+            product.updateMetadata(metadata);
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
     }
 
 
@@ -328,7 +356,13 @@ public class ModelTest extends TestCase {
      */
     public void testDeleteAttributeNotExists() {
         Product product = new Product ("name", "description");
-        product.deleteAttribute("NOEXIST");
+        try {
+            product.deleteAttribute("NOEXIST");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
     }
 
  }

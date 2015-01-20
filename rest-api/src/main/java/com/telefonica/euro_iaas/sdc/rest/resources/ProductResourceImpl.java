@@ -229,24 +229,23 @@ public class ProductResourceImpl implements ProductResource {
     @Override
     public void updateAttribute(String name, String attributeName, Attribute attribute) throws EntityNotFoundException {
         Product product = null;
-        Attribute updatedAttribute = null;
         try {
-            product = productManager.load(name);
-            updatedAttribute = product.getAttribute(attributeName);
-            if (updatedAttribute == null || !updatedAttribute.getKey().equals(attributeName)) {
-                log.warning("Exception: metadata not found or wrong " + attribute.getKey());
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
-                    + attributeName, attribute));
+            product =  productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            product.updateAttribute(attribute);
+            try {
+                productManager.update(product);
+            } catch (Exception e) {
+                log.warning("Exception but it works "+ e.getMessage());
             }
         } catch (Exception e) {
-            log.warning("EntityNotFoundException: the product " + name + " does not exist");
-            throw new APIException(new EntityNotFoundException(Product.class, name, e));
-        }
-        product.updateAttribute(updatedAttribute);
-        try {
-            productManager.update(product);
-        } catch (Exception e) {
-            log.warning("Exception but it works "+ e.getMessage());
+            log.warning("Attribute not found : " + attributeName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " +
+                attributeName, attributeName));
         }
     }
 
@@ -285,16 +284,15 @@ public class ProductResourceImpl implements ProductResource {
         Product product = null;
         try {
             product =  productManager.load(name);
-            if (product.getAttribute(attName) == null ) {
-                log.warning("Attribute not found : " + attName);
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
-            }
-            else {
-                return product.getAttribute(attName);
-            }
         } catch (EntityNotFoundException e) {
             log.warning("The product: " + name + " is not in the database");
             throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            return product.getAttribute(attName);
+        } catch (Exception e) {
+            log.warning("Attribute not found : " + attName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
         }
     }
 
@@ -310,17 +308,16 @@ public class ProductResourceImpl implements ProductResource {
         Product product = null;
         try {
             product =  productManager.load(name);
-            if (product.getAttribute(attName) == null ) {
-                log.warning("Attribute not found : " + attName);
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
-            }
-            else {
-                product.deleteMetadata(attName);
-                productManager.update(product);
-            }
         } catch (EntityNotFoundException e) {
             log.warning("The product: " + name + " is not in the database");
             throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            product.deleteAttribute(attName);
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Attribute not found : " + attName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
         }
     }
 
@@ -358,15 +355,16 @@ public class ProductResourceImpl implements ProductResource {
         Metadata updatedMetadata = null;
         try {
             product = productManager.load(name);
-            updatedMetadata = product.getMetadata(metadataName);
-            if (updatedMetadata == null || !updatedMetadata.getKey().equals(metadataName)) {
-                log.warning("Exception: metadata not found or wrong " + metadata.getKey());
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
-                    + metadataName, metadata));
-            }
         } catch (Exception e) {
             log.warning("The product: " + name + " does not exist " + e.getMessage());
             throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        try {
+            updatedMetadata = product.getMetadata(metadataName);
+        } catch (Exception e) {
+            log.warning("Exception: metadata not found or wrong " + metadata.getKey());
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadata));
         }
         if (metadata.getDescription()!= null) {
             updatedMetadata.setDescription(metadata.getDescription());
@@ -413,17 +411,17 @@ public class ProductResourceImpl implements ProductResource {
         Product product = null;
         try {
             product =  productManager.load(name);
-            if (product.getMetadata(metadataName) == null ) {
-                log.warning("Metadata not found : " + metadataName);
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
-                    + metadataName, metadataName));
-            }
-            else {
-                return product.getMetadata(metadataName);
-            }
         } catch (EntityNotFoundException e) {
             log.warning("EntityNotFoundException: " + e.getMessage());
             throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+
+        try {
+            return product.getMetadata(metadataName);
+        } catch (Exception e) {
+            log.warning("Metadata not found : " + metadataName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadataName));
         }
     }
 
@@ -440,18 +438,18 @@ public class ProductResourceImpl implements ProductResource {
         Product product = null;
         try {
             product =  productManager.load(name);
-            if (product.getMetadata(metadataName) == null ) {
-                log.warning("Metadata not found : " + metadataName);
-                throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
-                    + metadataName, metadataName));
-            }
-            else {
-                product.deleteMetadata(metadataName);
-                productManager.update(product);
-            }
         } catch (EntityNotFoundException e) {
             log.warning("EntityNotFoundException: " + e.getMessage());
             throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+
+        try {
+            product.deleteMetadata(metadataName);
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Metadata not found : " + metadataName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadataName));
         }
     }
 
