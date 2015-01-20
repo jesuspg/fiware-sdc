@@ -215,7 +215,7 @@ public class NodeManagerImpl implements NodeManager {
             chefClient = chefClientDao.getChefClient(chefClientName, token);
         } catch (EntityNotFoundException e) {
             String men = "The node is not in the chef-server: " + chefClientName + " : " + e.getMessage();
-            log.warn ("The node is not in the chef-server.");
+            log.warn (men);
             throw new EntityNotFoundException(ChefClient.class, men, chefClientName);
         } catch (Exception e) {
             String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
