@@ -30,11 +30,9 @@ import os
 
 
 def get_images_filter():
-
     """It prints all products with metatada image, and obtain all the
        images in all regions.
     """
-
     KEYSTONE = os.environ.get('OS_KEYSTONE')
     TENANT_ID = os.environ.get('OS_TENANT_NAME')
     USERNAME = os.environ.get('OS_USERNAME')
@@ -86,7 +84,6 @@ def get_images_filter():
 
 
 def get_token(url_base, tenant_id, user, password):
-
     """It obtains a valid token.
     :param url_base: keystone url
     :param tenand_id: the id of the tenant
