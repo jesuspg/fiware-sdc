@@ -161,10 +161,7 @@ public class NodeManagerImpl implements NodeManager {
             node = chefNodeDao.loadNode(chefClientName, token);
             chefNodeDao.deleteNode(node, token);
             chefLog.info("Node " + chefClientName + " deleted from Chef Server");
-
-            // eliminacion del chefClient
             chefClientDao.deleteChefClient(chefClientName, token);
-
         }  catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
