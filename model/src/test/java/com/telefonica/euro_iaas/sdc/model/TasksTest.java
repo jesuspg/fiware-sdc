@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 
 public class TasksTest extends TestCase {
     private static long ID = 1234;
-    private  static String MESSAGE = "Error message";
+    private static String MESSAGE = "Error message";
     private static String HREF = "href";
 
     /**
@@ -36,6 +36,7 @@ public class TasksTest extends TestCase {
      */
 
     public void testTask() {
+
         Task task = new Task();
         task.setDescription("description");
         task.setHref(HREF);

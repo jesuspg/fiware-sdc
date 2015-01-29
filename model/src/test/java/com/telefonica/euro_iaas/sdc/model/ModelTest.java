@@ -35,6 +35,10 @@ import static org.mockito.Mockito.verify;
 
 import javax.persistence.EntityNotFoundException;
 
+/**
+ * This test class contains different methods to test
+ * the sdc model
+ */
 public class ModelTest extends TestCase {
 
     public static String KEY1 = "key1";
@@ -102,7 +106,6 @@ public class ModelTest extends TestCase {
      * @return
      */
     public void testArtifact() {
-
         Metadata metadata = new Metadata("metadata1", "value1");
         Metadata metadata2 = new Metadata();
         metadata2.setKey("metadata2");
@@ -149,7 +152,6 @@ public class ModelTest extends TestCase {
      * @return
      */
     public void testAttributes() {
-
         Attribute att = new Attribute("key1", "value1", "description1");
 
         Attributes atts = new Attributes();
@@ -196,7 +198,6 @@ public class ModelTest extends TestCase {
      * Test Get metadata not exists
      */
     public void testGetMetadataNoExists() {
-
         Metadata metadata = new Metadata("key1", "value1", "description1");
         Product product = new Product ("name", "description");
         product.addMetadata(metadata);
@@ -299,10 +300,10 @@ public class ModelTest extends TestCase {
         Product product = new Product ("name", "description");
         product.addMetadata(metadata);
         product.addMetadata(metadata2);
-        assertEquals(product.getMetadatas().size(),2);
+        assertEquals(product.getMetadatas().size(), 2);
 
         product.deleteMetadata(metadata.getKey());
-        assertEquals(product.getMetadatas().size(),1);
+        assertEquals(product.getMetadatas().size(), 1);
 
     }
 
