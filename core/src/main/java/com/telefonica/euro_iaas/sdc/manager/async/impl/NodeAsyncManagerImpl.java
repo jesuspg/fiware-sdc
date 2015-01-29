@@ -60,6 +60,16 @@ public class NodeAsyncManagerImpl implements NodeAsyncManager {
     private TaskNotificator taskNotificator;
     private NodeManager nodeManager;
 
+    /**
+     * It deletes the node.
+     * @param vdc
+     * @param nodeName
+     *            the name of the node to be deleted from chef server / puppet master
+     * @param token
+     * @param task
+     *            the task which contains the information about the async execution
+     * @param callback
+     */
     public void nodeDelete(String vdc, String nodeName, String token, Task task, String callback) {
         try {
             nodeManager.nodeDelete(vdc, nodeName, token);
