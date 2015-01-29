@@ -29,11 +29,6 @@ import json
 import httplib
 import mimetypes
 
-
-def get_content_type(filename):
-    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-
-
 def __do_http_req(method, url, headers, payload):
 
     parsed_url = urlparse(url)

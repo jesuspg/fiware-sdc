@@ -240,7 +240,7 @@ public class ProductResourceImpl implements ProductResource {
             try {
                 productManager.update(product);
             } catch (Exception e) {
-                log.warning("Exception but it works "+ e.getMessage());
+                log.warning("Exception but it works " + e.getMessage());
             }
         } catch (Exception e) {
             log.warning("Attribute not found : " + attributeName);
@@ -292,7 +292,8 @@ public class ProductResourceImpl implements ProductResource {
             return product.getAttribute(attName);
         } catch (Exception e) {
             log.warning("Attribute not found : " + attName);
-            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
+            throw new APIException(new EntityNotFoundException(Metadata.class,
+                "Attribute not found : " + attName, attName));
         }
     }
 
@@ -357,13 +358,13 @@ public class ProductResourceImpl implements ProductResource {
         try {
             product = productManager.load(name);
         } catch (Exception e) {
-            log.warning("The product: " + name + " does not exist " + e.getMessage());
+            log.warning("The product: " + name + " does not exist" + e.getMessage());
             throw new APIException(new EntityNotFoundException(Product.class, name, e));
         }
         try {
             updatedMetadata = product.getMetadata(metadataName);
         } catch (Exception e) {
-            log.warning("Exception: metadata not found or wrong " + metadata.getKey());
+            log.warning("Exception: metadata not found or wrong" + metadata.getKey());
             throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
                     + metadataName, metadata));
         }
@@ -374,7 +375,7 @@ public class ProductResourceImpl implements ProductResource {
         try {
             productManager.update(product);
         } catch (Exception e) {
-            log.warning("Exception but it works "+ e.getMessage());
+            log.warning("Exception but it works " + e.getMessage());
         }
     }
 
