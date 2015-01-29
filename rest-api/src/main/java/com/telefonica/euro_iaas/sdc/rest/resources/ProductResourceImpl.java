@@ -317,7 +317,8 @@ public class ProductResourceImpl implements ProductResource {
             productManager.update(product);
         } catch (Exception e) {
             log.warning("Attribute not found : " + attName);
-            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " + attName, attName));
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " +
+                attName, attName));
         }
     }
 

@@ -24,9 +24,16 @@
 
 package com.telefonica.euro_iaas.sdc.rest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.junit.Assert.fail;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,8 +51,6 @@ import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl;
@@ -58,7 +63,7 @@ public class ProductResourceImplTest {
     private ProductResourceImpl productResource = null;
     private ProductResourceValidator productResourceValidator=null;
     private ProductManager productManager = null;
-    Product product = null;
+    private Product product = null;
 
     @Before
     public void setUp() throws Exception {
@@ -108,7 +113,8 @@ public class ProductResourceImplTest {
         Product product = new Product();
         product.setName(PRODUCT_NAME);
         product.setDescription("description");
-        Mockito.doThrow(new InvalidEntityException(product, null)).when(productResourceValidator).validateInsert(any(Product.class));
+        Mockito.doThrow(new InvalidEntityException(product, null)).when(productResourceValidator).
+            validateInsert(any(Product.class));
         productResource.insert(product);
     }
 
@@ -263,7 +269,9 @@ public class ProductResourceImplTest {
     @Test
     public void testDeleteAttributeNoExistProduct () throws Exception {
         product.addAttribute(new Attribute ("att", "value"));
-        when(productManager.load(any(String.class))).thenThrow(new EntityNotFoundException(Product.class, "name", product.getName()));
+        when(productManager.load(any(String.class))).thenThrow(
+            new EntityNotFoundException(Product.class, "name", product.getName()));
+
         try {
             productResource.deleteAttribute("productname", "att");
             fail("An exception should have been lanched");
