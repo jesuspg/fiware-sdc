@@ -30,7 +30,11 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 import static java.text.MessageFormat.format;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,6 +59,7 @@ import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 
 /**
  * @author alberts
@@ -65,6 +70,7 @@ public class NodeManagerImpl implements NodeManager {
     private ChefClientDao chefClientDao;
     private ChefNodeDao chefNodeDao;
     private HttpClient client;
+    private HttpsClient httpsClient;
     private OpenStackRegion openStackRegion;
 
     private static Logger log = LoggerFactory.getLogger(NodeManagerImpl.class);
@@ -111,29 +117,26 @@ public class NodeManagerImpl implements NodeManager {
 
         puppetLog.info("deleting node " + nodeName + " from puppet master");
 
-        HttpDelete delete = null;
+        String deleteUrl = null;
         try {
-            delete = new HttpDelete(openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName);
+            deleteUrl = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
             puppetLog.warn(e2.getMessage());
         }
 
-        if (delete != null) {
-            delete.setHeader("Content-Type", "application/json");
-            delete.setHeader("X-Auth-Token", token);
-            delete.setHeader("Tenant-Id", vdc);
+        if (deleteUrl != null) {
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put(HttpsClient.HEADER_AUTH, token);
+            headers.put(HttpsClient.HEADER_TENNANT, vdc);
 
-            HttpResponse response;
 
             try {
-                response = client.execute(delete);
-                int statusCode = response.getStatusLine().getStatusCode();
-                HttpEntity entity = response.getEntity();
-                EntityUtils.consume(entity);
+                int statusCode;
+                statusCode = httpsClient.doHttpsDelete(deleteUrl, "", headers);
 
                 if (statusCode == 200 || statusCode == 404) { // 404 means node didn't exist in puppet
                     log.info("Node deleted");
-                }else{
+                } else {
                     String msg = format("[puppet delete node] response code was: {0}", statusCode);
                     puppetLog.info(msg);
                     throw new NodeExecutionException(msg);
@@ -145,6 +148,9 @@ public class NodeManagerImpl implements NodeManager {
             } catch (IllegalStateException e1) {
                 puppetLog.info(e1.getMessage());
                 throw new NodeExecutionException(e1);
+            } catch (KeyManagementException | NoSuchAlgorithmException e2) {
+                puppetLog.info(e2.getMessage());
+                throw new NodeExecutionException(e2);
             }
         }
 
@@ -262,6 +268,10 @@ public class NodeManagerImpl implements NodeManager {
 
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {
         this.openStackRegion = openStackRegion;
+    }
+    
+    public void setHttpsClient(HttpsClient httpsClient) {
+        this.httpsClient = httpsClient;
     }
 
 }
