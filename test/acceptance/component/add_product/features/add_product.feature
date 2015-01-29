@@ -51,6 +51,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_12 | product with testing purposes | application/xml   |
 
 
+  @release_4_1
   Scenario Outline: Add new product with one metadata
 
     Given a product with name "<product_name>" with description "<description>"
@@ -67,14 +68,15 @@ Feature: Add a new product in the catalogue
     | testing_attributes_24 | product with testing purposes | application/xml   |
 
 
-
+  @release_4_1
   Scenario Outline: Add new product with several metadatas
 
     Given a product with name "<product_name>" with description "<description>"
     And the following metadatas
-    | key         | value     | description         |
-    | mobile      | iOS       | installation type   |
-    | testing     | lettuce   | testing application |
+    | key         | value     | description             |
+    | mobile      | iOS       | installation type       |
+    | testing     | lettuce   | testing application     |
+    | nid         | 12345     | NID - GE identification |
     When I add the new product with metadatas, with accept parameter "<accept_parameter>" response
     Then the product is created
 
@@ -206,7 +208,8 @@ Feature: Add a new product in the catalogue
     | testing_attributes_334 | product with testing purposes | application/xml   | dependencies  | df               | 400         |
 
 
-  Scenario Outline: Add new product with valid 'type' attribute
+  @release_4_1
+  Scenario Outline: Add new product with valid attribute 'type'
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes
@@ -228,7 +231,8 @@ Feature: Add a new product in the catalogue
     | testing_attributes_08 | product with testing purposes | [MISSING_PARAM] | application/xml   |
 
 
-  Scenario Outline: Add new product with invalid value for 'type' attribute
+  @release_4_1
+  Scenario Outline: Add new product with invalid value for attribute 'type'
 
     Given a product with name "<product_name>" with description "<description>"
     And the following attributes

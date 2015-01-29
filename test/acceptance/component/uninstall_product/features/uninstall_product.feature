@@ -4,7 +4,7 @@ Feature: Uninstall product
     I want to be able to uninstall a product release in a Virtual Machine
     so that I can delete it
 
-
+    @happy_path
     Scenario Outline: Uninstall a installed product release
 
       Given a virtual machine with these parameters:

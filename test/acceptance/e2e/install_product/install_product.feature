@@ -90,6 +90,7 @@ Feature: Install product with E2E validations
       | puppet  | InvalidInstallProductRequestException |
 
 
+    @release_4_1
     Scenario Outline: Install a new product with "installation attributes" (Plain and IP types)
 
       Given a configuration management with "<cm_tool>"
@@ -114,6 +115,7 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	|
 
 
+    @release_4_1
     Scenario Outline: Install a new product with "installation attributes" (IPALL type, single IP)
 
       Given a configuration management with "<cm_tool>"
@@ -137,6 +139,7 @@ Feature: Install product with E2E validations
       | qa-test-product-puppet-att-01 | 1.2.3 	| puppet  	| 10.20.125.3,10.20.125.4 |
 
 
+    @release_4_1
     Scenario Outline: Install a new product with "installation attributes" (IPALL type, IP list)
 
       Given a configuration management with "<cm_tool>"
