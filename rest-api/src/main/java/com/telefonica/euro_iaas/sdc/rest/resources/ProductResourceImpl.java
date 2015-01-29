@@ -193,8 +193,8 @@ public class ProductResourceImpl implements ProductResource {
     @Override
     public Product load(String name) throws APIException {
         try {
-			return productManager.load(name);
-		} catch (EntityNotFoundException e) {
+            return productManager.load(name);
+        } catch (EntityNotFoundException e) {
             log.warning("EntityNotFoundException: the product " + name + " does not exist");
 			throw new APIException(new EntityNotFoundException(Product.class,name, e));
 		}
