@@ -309,13 +309,16 @@ public class InstallatorPuppetTest {
 
     }
 
-    // @Test
-    // public void testHttpsClient() throws InstallatorException,
-    // OpenStackException{
-    // when(openStackRegion.getPuppetWrapperEndPoint((String)Mockito.anyString())).thenReturn("https://130.206.81.91:8443/puppetwrapper/");
-    // puppetInstallator.setHttpsClient(new HttpsClient());
-    // puppetInstallator.generateFilesinPuppetMaster(host,
-    // "00000000000000000000000000000194", productRelease, "install",
-    // "68d45953257669429b760d7af88cbefc");
-    // }
+    @Test(expected=InstallatorException.class)
+    public void testgetPuppetDBEndpointException() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
+
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenThrow(OpenStackException.class);
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        PuppetNode node = puppetInstallator.loadNode("aaaa-dddfafff-1-000081", "token");
+
+    } 
+    
 }
