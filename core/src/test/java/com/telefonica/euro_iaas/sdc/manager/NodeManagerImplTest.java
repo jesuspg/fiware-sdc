@@ -107,14 +107,14 @@ public class NodeManagerImplTest {
         when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
 
         when(
-                httpsClient.doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testOk", "token");
 
-        verify(httpsClient, times(1)).doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+        verify(httpsClient, times(1)).doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                 (Map<String, String>) Mockito.anyObject());
         // verify(client, times(1)).execute((HttpUriRequest) anyObject());
     }
@@ -132,14 +132,14 @@ public class NodeManagerImplTest {
         when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
 
         when(
-                httpsClient.doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(404);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testOk", "token");
 
-        verify(httpsClient, times(1)).doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+        verify(httpsClient, times(1)).doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                 (Map<String, String>) Mockito.anyObject());
     }
 
@@ -148,7 +148,7 @@ public class NodeManagerImplTest {
             IOException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
 
         when(
-                httpsClient.doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
@@ -160,7 +160,7 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpsClient, times(1)).doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+        verify(httpsClient, times(1)).doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                 (Map<String, String>) Mockito.anyObject());
 
     }
@@ -179,14 +179,14 @@ public class NodeManagerImplTest {
         when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
 
         when(
-                httpsClient.doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpsClient, times(1)).doHttpsDelete(Mockito.anyString(), Mockito.anyString(),
+        verify(httpsClient, times(1)).doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                 (Map<String, String>) Mockito.anyObject());
 
     }

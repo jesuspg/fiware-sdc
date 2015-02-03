@@ -39,6 +39,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.ws.rs.HttpMethod;
 
 import org.hibernate.context.TenantIdentifierMismatchException;
 
@@ -82,18 +83,19 @@ public class HttpsClient {
         return con;
 
     }
-    
-    public int doHttps(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
-    NoSuchAlgorithmException, IOException {
-        
-    }
 
-    public int doHttpsPost(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
-            NoSuchAlgorithmException, IOException {
-
+    public int doHttps(String method, String _url, String payload, Map<String, String> headers)
+            throws KeyManagementException, NoSuchAlgorithmException, IOException {
         URL url = new URL(_url);
         HttpsURLConnection con = connectionSetup(url);
-        con.setRequestMethod("POST");
+
+        if (HttpMethod.POST.equals(method)) {
+            con.setRequestMethod("POST");
+        } else if (HttpMethod.GET.equals(method)) {
+            con.setRequestMethod("GET");
+        } else if (HttpMethod.DELETE.equals(method)) {
+            con.setRequestMethod("DELETE");
+        }
 
         con.setRequestProperty(HEADER_TENNANT, headers.get(HEADER_TENNANT));
         con.setRequestProperty(HEADER_AUTH, headers.get(HEADER_AUTH));
@@ -118,63 +120,7 @@ public class HttpsClient {
         int responseStatus = con.getResponseCode();
         con.disconnect();
         return responseStatus;
+
     }
 
-    public int doHttpsGet(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
-            NoSuchAlgorithmException, IOException {
-
-        URL url = new URL(_url);
-        HttpsURLConnection con = connectionSetup(url);
-        con.setRequestMethod("GET");
-
-        con.setRequestProperty(HEADER_TENNANT, headers.get(HEADER_TENNANT));
-        con.setRequestProperty(HEADER_AUTH, headers.get(HEADER_AUTH));
-        con.setRequestProperty("Content-Type", "application/json");
-
-        con.setDoOutput(true);
-        con.connect();
-        StringBuilder sb = new StringBuilder();
-        if (con.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-                sb.append(line);
-            }
-            br.close();
-        }
-        int responseStatus = con.getResponseCode();
-        con.disconnect();
-        return responseStatus;
-    }
-
-    public int doHttpsDelete(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
-            NoSuchAlgorithmException, IOException {
-
-        URL url = new URL(_url);
-        HttpsURLConnection con = connectionSetup(url);
-        con.setRequestMethod("DELETE");
-
-        con.setRequestProperty(HEADER_TENNANT, headers.get(HEADER_TENNANT));
-        con.setRequestProperty(HEADER_AUTH, headers.get(HEADER_AUTH));
-        con.setRequestProperty("Content-Type", "application/json");
-
-        con.setDoOutput(true);
-        con.connect();
-        StringBuilder sb = new StringBuilder();
-        if (con.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-                sb.append(line);
-            }
-            br.close();
-        }
-        int responseStatus = con.getResponseCode();
-        con.disconnect();
-        return responseStatus;
-    }
 }

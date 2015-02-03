@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.ws.rs.HttpMethod;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -202,13 +204,11 @@ public class InstallatorPuppetImpl implements Installator {
         HttpResponse response;
 
         log.info("Calling puppetWrapper " + action);
-        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + 
-                vm.getHostname() + "/" + action);
+        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
         log.info("payload: " + payload);
         try {
-            int statusCode = httpsClient.doHttpsPost(puppetUrl + "v2/node/" + 
-                    vm.getHostname() + "/" + action, payload,
-                    headers);
+            int statusCode = httpsClient.doHttps(HttpMethod.POST, puppetUrl + "v2/node/" + vm.getHostname() + "/"
+                    + action, payload, headers);
 
             if (statusCode != 200) {
                 String msg = format("[puppet " + action + "] response code was: {0}", statusCode);
@@ -220,7 +220,8 @@ public class InstallatorPuppetImpl implements Installator {
             log.info("Calling puppetWrapper generate");
             log.info(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
-            statusCode = httpsClient.doHttpsGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate", "", headers);
+            statusCode = httpsClient.doHttps(HttpMethod.GET, puppetUrl + "v2/node/" + vm.getHostname() + "/generate",
+                    "", headers);
 
             if (statusCode != 200) {
                 String msg = format("generate files response code was: {0}", statusCode);

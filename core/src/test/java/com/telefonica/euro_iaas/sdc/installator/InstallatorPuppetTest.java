@@ -152,10 +152,7 @@ public class InstallatorPuppetTest {
 
         when(statusLine.getStatusCode()).thenReturn(200);
         when(
-                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
-        when(
-                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
     }
@@ -171,7 +168,7 @@ public class InstallatorPuppetTest {
     public void testCallService_FAIL() throws Exception {
 
         when(
-                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
         puppetInstallator.callService(host, "test", productRelease, "install", "token");
@@ -182,11 +179,8 @@ public class InstallatorPuppetTest {
             KeyManagementException, NoSuchAlgorithmException, IOException {
 
         when(
-                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
-        when(
-                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(500);
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
 
     }
@@ -267,10 +261,7 @@ public class InstallatorPuppetTest {
 
         // when(statusLine.getStatusCode()).thenReturn(200);
         when(
-                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
-        when(
-                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
+                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
                         (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);

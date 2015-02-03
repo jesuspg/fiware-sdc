@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.HttpMethod;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -131,7 +133,7 @@ public class NodeManagerImpl implements NodeManager {
 
             try {
                 int statusCode;
-                statusCode = httpsClient.doHttpsDelete(deleteUrl, "", headers);
+                statusCode = httpsClient.doHttps(HttpMethod.DELETE, deleteUrl, "", headers);
 
                 if (statusCode == 200 || statusCode == 404) { // 404 means node
                                                               // didn't exist in
