@@ -42,6 +42,11 @@ import javax.net.ssl.X509TrustManager;
 
 import org.hibernate.context.TenantIdentifierMismatchException;
 
+/**
+ * Handles HTTPS communtications
+ * 
+ *
+ */
 public class HttpsClient {
 
     public static final String HEADER_AUTH = "X-Auth-Token";
@@ -76,6 +81,11 @@ public class HttpsClient {
 
         return con;
 
+    }
+    
+    public int doHttps(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
+    NoSuchAlgorithmException, IOException {
+        
     }
 
     public int doHttpsPost(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
