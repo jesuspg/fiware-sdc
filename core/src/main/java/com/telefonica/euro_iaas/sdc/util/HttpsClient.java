@@ -52,42 +52,14 @@ public class HttpsClient {
 
     public static final String HEADER_AUTH = "X-Auth-Token";
     public static final String HEADER_TENNANT = "Tenant-Id";
-
-    private HttpsURLConnection connectionSetup(URL url) throws NoSuchAlgorithmException, KeyManagementException,
-            IOException {
-        // Install the all-trusting trust manager
-        SSLContext sslctx = SSLContext.getInstance("SSL");
-        javax.net.ssl.TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        } };
-        sslctx.init(null, trustAllCerts, null);
-
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslctx.getSocketFactory());
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
-        // Install the all-trusting host verifier
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-
-        return con;
-
-    }
+    
+    private ConnectionSetup connectionSetup;
+    
 
     public int doHttps(String method, String _url, String payload, Map<String, String> headers)
             throws KeyManagementException, NoSuchAlgorithmException, IOException {
         URL url = new URL(_url);
-        HttpsURLConnection con = connectionSetup(url);
+        HttpsURLConnection con = connectionSetup.createConnection(url);
 
         if (HttpMethod.POST.equals(method)) {
             con.setRequestMethod("POST");
@@ -107,7 +79,8 @@ public class HttpsClient {
         ps.close();
         con.connect();
         StringBuilder sb = new StringBuilder();
-        if (con.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+        int responseStatus = con.getResponseCode();
+        if (responseStatus == HttpsURLConnection.HTTP_OK) {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line;
 
@@ -117,10 +90,14 @@ public class HttpsClient {
             }
             br.close();
         }
-        int responseStatus = con.getResponseCode();
         con.disconnect();
         return responseStatus;
 
+    }
+
+
+    public void setConnectionSetup(ConnectionSetup connectionSetup) {
+        this.connectionSetup = connectionSetup;
     }
 
 }

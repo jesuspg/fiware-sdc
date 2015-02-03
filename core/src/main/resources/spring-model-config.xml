@@ -54,7 +54,12 @@
 		class="org.apache.http.impl.client.DefaultHttpClient" />
 
 	<bean id="httpsClient" lazy-init="true"
-		class="com.telefonica.euro_iaas.sdc.util.HttpsClient" />
+		class="com.telefonica.euro_iaas.sdc.util.HttpsClient">
+		<property name="connectionSetup" ref="connectionSetup"/>
+	</bean>
+
+	<bean id="connectionSetup" lazy-init="true"
+		class="com.telefonica.euro_iaas.sdc.util.ConnectionSetup" />
 
 	<bean id="artifactManager" lazy-init="true"
 		parent="baseInstallableInstanceManager"
