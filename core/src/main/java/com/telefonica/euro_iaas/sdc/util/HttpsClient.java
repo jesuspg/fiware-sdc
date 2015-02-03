@@ -46,9 +46,10 @@ public class HttpsClient {
 
     public static final String HEADER_AUTH = "X-Auth-Token";
     public static final String HEADER_TENNANT = "Tenant-Id";
-    
-    private HttpsURLConnection connectionSetup(URL url) throws NoSuchAlgorithmException, KeyManagementException, IOException{
-     // Install the all-trusting trust manager
+
+    private HttpsURLConnection connectionSetup(URL url) throws NoSuchAlgorithmException, KeyManagementException,
+            IOException {
+        // Install the all-trusting trust manager
         SSLContext sslctx = SSLContext.getInstance("SSL");
         javax.net.ssl.TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
             public X509Certificate[] getAcceptedIssuers() {
@@ -72,12 +73,13 @@ public class HttpsClient {
         // Install the all-trusting host verifier
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-       
+
         return con;
-        
+
     }
 
-    public int doHttpsPost(String _url, String payload, Map<String, String> headers) throws KeyManagementException, NoSuchAlgorithmException, IOException {
+    public int doHttpsPost(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
+            NoSuchAlgorithmException, IOException {
 
         URL url = new URL(_url);
         HttpsURLConnection con = connectionSetup(url);
@@ -108,8 +110,8 @@ public class HttpsClient {
         return responseStatus;
     }
 
-    
-    public int doHttpsGet(String _url, String payload, Map<String, String> headers) throws KeyManagementException, NoSuchAlgorithmException, IOException {
+    public int doHttpsGet(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
+            NoSuchAlgorithmException, IOException {
 
         URL url = new URL(_url);
         HttpsURLConnection con = connectionSetup(url);
@@ -136,8 +138,9 @@ public class HttpsClient {
         con.disconnect();
         return responseStatus;
     }
-    
-    public int doHttpsDelete(String _url, String payload, Map<String, String> headers) throws KeyManagementException, NoSuchAlgorithmException, IOException {
+
+    public int doHttpsDelete(String _url, String payload, Map<String, String> headers) throws KeyManagementException,
+            NoSuchAlgorithmException, IOException {
 
         URL url = new URL(_url);
         HttpsURLConnection con = connectionSetup(url);

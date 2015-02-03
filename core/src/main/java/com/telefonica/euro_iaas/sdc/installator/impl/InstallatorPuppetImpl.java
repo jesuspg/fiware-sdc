@@ -84,7 +84,7 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (InstallatorException e) {
             log.warn("It is not possible to generate the manifests in the puppet master " + e.getMessage());
             throw new InstallatorException(e.getMessage());
-        } 
+        }
 
         try {
             isRecipeExecuted(vm, product.getProduct().getName(), token);
@@ -119,7 +119,8 @@ public class InstallatorPuppetImpl implements Installator {
             String token) throws InstallatorException, NodeExecutionException {
 
         try {
-            callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token, attributes);
+            callPuppetMaster(vm, productInstance.getVdc(), productInstance.getProductRelease(), action, token,
+                    attributes);
         } catch (KeyManagementException | NoSuchAlgorithmException e1) {
             throw new InstallatorException(e1.getMessage());
         }
@@ -162,13 +163,14 @@ public class InstallatorPuppetImpl implements Installator {
             newAttributes = formatAttributesForPuppet(attributes);
         }
 
-//        HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
-//
-//        postInstall.addHeader("Content-Type", "application/json");
-//        postInstall.setHeader("X-Auth-Token", token);
-//        postInstall.setHeader("Tenant-Id", vdc);
-        
-        Map<String,String> headers = new HashMap<String, String>();
+        // HttpPost postInstall = new HttpPost(puppetUrl + "v2/node/" +
+        // vm.getHostname() + "/" + action);
+        //
+        // postInstall.addHeader("Content-Type", "application/json");
+        // postInstall.setHeader("X-Auth-Token", token);
+        // postInstall.setHeader("Tenant-Id", vdc);
+
+        Map<String, String> headers = new HashMap<String, String>();
         headers.put(HttpsClient.HEADER_AUTH, token);
         headers.put(HttpsClient.HEADER_TENNANT, vdc);
 
@@ -191,7 +193,7 @@ public class InstallatorPuppetImpl implements Installator {
         }
 
         input.setContentType("application/json");
-//        postInstall.setEntity(input);
+        // postInstall.setEntity(input);
 
         // System.out.println("puppetURL: " + puppetUrl + "v2/node/"+
         // vm.getHostname() + "/"
@@ -203,7 +205,8 @@ public class InstallatorPuppetImpl implements Installator {
         log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
         log.info("payload: " + payload);
         try {
-            int statusCode = httpsClient.doHttpsPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action, payload,headers);
+            int statusCode = httpsClient.doHttpsPost(puppetUrl + "v2/node/" + vm.getHostname() + "/" + action, payload,
+                    headers);
 
             if (statusCode != 200) {
                 String msg = format("[puppet " + action + "] response code was: {0}", statusCode);
@@ -215,8 +218,7 @@ public class InstallatorPuppetImpl implements Installator {
             log.info("Calling puppetWrapper generate");
             log.info(puppetUrl + "v2/node/" + vm.getHostname() + "/generate");
 
-
-            statusCode = httpsClient.doHttpsGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate", "",headers);
+            statusCode = httpsClient.doHttpsGet(puppetUrl + "v2/node/" + vm.getHostname() + "/generate", "", headers);
 
             if (statusCode != 200) {
                 String msg = format("generate files response code was: {0}", statusCode);
@@ -230,7 +232,7 @@ public class InstallatorPuppetImpl implements Installator {
         } catch (IllegalStateException e1) {
             log.error(e1.getMessage());
             throw new InstallatorException(e1);
-        } 
+        }
     }
 
     public List<AttributeDto> formatAttributesForPuppet(List<Attribute> attributes) {

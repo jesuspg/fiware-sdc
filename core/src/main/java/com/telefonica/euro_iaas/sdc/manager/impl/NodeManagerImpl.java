@@ -129,12 +129,13 @@ public class NodeManagerImpl implements NodeManager {
             headers.put(HttpsClient.HEADER_AUTH, token);
             headers.put(HttpsClient.HEADER_TENNANT, vdc);
 
-
             try {
                 int statusCode;
                 statusCode = httpsClient.doHttpsDelete(deleteUrl, "", headers);
 
-                if (statusCode == 200 || statusCode == 404) { // 404 means node didn't exist in puppet
+                if (statusCode == 200 || statusCode == 404) { // 404 means node
+                                                              // didn't exist in
+                                                              // puppet
                     log.info("Node deleted");
                 } else {
                     String msg = format("[puppet delete node] response code was: {0}", statusCode);
@@ -269,7 +270,7 @@ public class NodeManagerImpl implements NodeManager {
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {
         this.openStackRegion = openStackRegion;
     }
-    
+
     public void setHttpsClient(HttpsClient httpsClient) {
         this.httpsClient = httpsClient;
     }

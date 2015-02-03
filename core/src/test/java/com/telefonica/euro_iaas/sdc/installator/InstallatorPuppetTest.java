@@ -114,12 +114,12 @@ public class InstallatorPuppetTest {
         productInstance = new ProductInstance(productRelease, Status.INSTALLING, host, "vdc");
 
         attributeList = new ArrayList<Attribute>();
-        attribute1 = new Attribute("user", "pepito","desc","Plain");
+        attribute1 = new Attribute("user", "pepito", "desc", "Plain");
 
         attributeList.add(attribute1);
 
         client = mock(HttpClient.class);
-        httpsClient= mock(HttpsClient.class);
+        httpsClient = mock(HttpsClient.class);
 
         response = mock(HttpResponse.class);
         entity = mock(HttpEntity.class);
@@ -127,7 +127,7 @@ public class InstallatorPuppetTest {
         openStackRegion = mock(OpenStackRegion.class);
 
         when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(response);
-        
+
         when(response.getEntity()).thenReturn(entity);
         String source = "";
         InputStream in = IOUtils.toInputStream(source, "UTF-8");
@@ -147,15 +147,21 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testGenerateFilesinPuppetMaster() throws InstallatorException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException, IOException {
+    public void testGenerateFilesinPuppetMaster() throws InstallatorException, NodeExecutionException,
+            KeyManagementException, NoSuchAlgorithmException, IOException {
 
         when(statusLine.getStatusCode()).thenReturn(200);
-        when(httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(200);
-        when(httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(200);
+        when(
+                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(
+                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
     }
 
-    public void testCallService_all_OK() throws InstallatorException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
+    public void testCallService_all_OK() throws InstallatorException, NodeExecutionException, KeyManagementException,
+            NoSuchAlgorithmException {
 
         when(statusLine.getStatusCode()).thenReturn(200);
         puppetInstallator.callService(host, "test", productRelease, "install", "token");
@@ -164,16 +170,23 @@ public class InstallatorPuppetTest {
     @Test(expected = InstallatorException.class)
     public void testCallService_FAIL() throws Exception {
 
-        when(httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(500);
+        when(
+                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
         puppetInstallator.callService(host, "test", productRelease, "install", "token");
     }
 
     @Test(expected = InstallatorException.class)
-    public void testCallService_1_OK_1_FAIL() throws InstallatorException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException, IOException {
+    public void testCallService_1_OK_1_FAIL() throws InstallatorException, NodeExecutionException,
+            KeyManagementException, NoSuchAlgorithmException, IOException {
 
-        when(httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(200);
-        when(httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(500);
+        when(
+                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(
+                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
 
     }
@@ -249,11 +262,16 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException, IOException, KeyManagementException, NoSuchAlgorithmException {
+    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException, IOException,
+            KeyManagementException, NoSuchAlgorithmException {
 
-//        when(statusLine.getStatusCode()).thenReturn(200);
-        when(httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(200);
-        when(httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),(Map<String,String>)Mockito.anyObject())).thenReturn(200);
+        // when(statusLine.getStatusCode()).thenReturn(200);
+        when(
+                httpsClient.doHttpsPost(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(
+                httpsClient.doHttpsGet(Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
 
@@ -266,47 +284,47 @@ public class InstallatorPuppetTest {
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111,222.222.222.222", "description", "IPALL"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("['111.111.111.111', '222.222.222.222']",receivedList.get(0).getValue());
-        
+        assertEquals("['111.111.111.111', '222.222.222.222']", receivedList.get(0).getValue());
 
     }
-    
+
     @Test
     public void testformatAttributes2() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "IP"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("111.111.111.111",receivedList.get(0).getValue());
-        
+        assertEquals("111.111.111.111", receivedList.get(0).getValue());
 
     }
+
     @Test
     public void testformatAttributes3() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "Plain"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("111.111.111.111",receivedList.get(0).getValue());
-        
+        assertEquals("111.111.111.111", receivedList.get(0).getValue());
 
     }
-    
+
     @Test
     public void testformatAttributes4() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "IPALL"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("['111.111.111.111']",receivedList.get(0).getValue());
-        
+        assertEquals("['111.111.111.111']", receivedList.get(0).getValue());
 
     }
-    
-//    @Test 
-//    public void testHttpsClient() throws InstallatorException, OpenStackException{
-//        when(openStackRegion.getPuppetWrapperEndPoint((String)Mockito.anyString())).thenReturn("https://130.206.81.91:8443/puppetwrapper/");
-//        puppetInstallator.setHttpsClient(new HttpsClient());
-//        puppetInstallator.generateFilesinPuppetMaster(host, "00000000000000000000000000000194", productRelease, "install", "68d45953257669429b760d7af88cbefc");
-//    }
+
+    // @Test
+    // public void testHttpsClient() throws InstallatorException,
+    // OpenStackException{
+    // when(openStackRegion.getPuppetWrapperEndPoint((String)Mockito.anyString())).thenReturn("https://130.206.81.91:8443/puppetwrapper/");
+    // puppetInstallator.setHttpsClient(new HttpsClient());
+    // puppetInstallator.generateFilesinPuppetMaster(host,
+    // "00000000000000000000000000000194", productRelease, "install",
+    // "68d45953257669429b760d7af88cbefc");
+    // }
 }
