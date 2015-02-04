@@ -25,7 +25,9 @@
 package com.telefonica.euro_iaas.sdc.util;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -39,7 +41,7 @@ import javax.net.ssl.X509TrustManager;
 
 public class ConnectionSetup {
 
-    public HttpsURLConnection createConnection(URL url) throws NoSuchAlgorithmException, KeyManagementException,
+    public HttpURLConnection createConnection(URL url) throws NoSuchAlgorithmException, KeyManagementException,
             IOException {
         // Install the all-trusting trust manager
         SSLContext sslctx = SSLContext.getInstance("SSL");
@@ -64,7 +66,7 @@ public class ConnectionSetup {
         };
         // Install the all-trusting host verifier
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        HttpURLConnection con =   (HttpURLConnection) url.openConnection();
 
         return con;
 

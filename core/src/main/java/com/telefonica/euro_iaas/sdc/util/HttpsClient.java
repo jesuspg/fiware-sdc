@@ -27,21 +27,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.HttpMethod;
-
-import org.hibernate.context.TenantIdentifierMismatchException;
 
 /**
  * Handles HTTPS communtications
@@ -59,24 +52,26 @@ public class HttpsClient {
     public int doHttps(String method, String _url, String payload, Map<String, String> headers)
             throws KeyManagementException, NoSuchAlgorithmException, IOException {
         URL url = new URL(_url);
-        HttpsURLConnection con = connectionSetup.createConnection(url);
+        HttpURLConnection con = connectionSetup.createConnection(url);
+        
+        con.setRequestProperty(HEADER_TENNANT, headers.get(HEADER_TENNANT));
+        con.setRequestProperty(HEADER_AUTH, headers.get(HEADER_AUTH));
+        con.setRequestProperty("Content-Type", "application/json");
 
         if (HttpMethod.POST.equals(method)) {
             con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            PrintStream ps = new PrintStream(con.getOutputStream());
+            ps.println(payload);
+            ps.close();
         } else if (HttpMethod.GET.equals(method)) {
             con.setRequestMethod("GET");
         } else if (HttpMethod.DELETE.equals(method)) {
             con.setRequestMethod("DELETE");
         }
 
-        con.setRequestProperty(HEADER_TENNANT, headers.get(HEADER_TENNANT));
-        con.setRequestProperty(HEADER_AUTH, headers.get(HEADER_AUTH));
-        con.setRequestProperty("Content-Type", "application/json");
-
-        con.setDoOutput(true);
-        PrintStream ps = new PrintStream(con.getOutputStream());
-        ps.println(payload);
-        ps.close();
+        
+        
         con.connect();
         StringBuilder sb = new StringBuilder();
         int responseStatus = con.getResponseCode();
