@@ -39,6 +39,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+/**
+ * 
+ * Helper to ease httpsclient testing
+ *
+ */
 public class ConnectionSetup {
 
     public HttpURLConnection createConnection(URL url) throws NoSuchAlgorithmException, KeyManagementException,

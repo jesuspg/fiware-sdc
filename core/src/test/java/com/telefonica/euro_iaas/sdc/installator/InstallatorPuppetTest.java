@@ -71,6 +71,11 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
+/**
+ * 
+ * Test Installator class
+ *
+ */
 public class InstallatorPuppetTest {
 
     private HttpClient client;

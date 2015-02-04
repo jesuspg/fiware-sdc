@@ -66,6 +66,11 @@ import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 
+/**
+ * 
+ * Class to dela with installs through puppetwrapper
+ *
+ */
 public class InstallatorPuppetImpl implements Installator {
 
     private static final Object IPALL = "IPALL";
