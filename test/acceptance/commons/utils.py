@@ -156,7 +156,7 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
         response_body = response_body_to_dict(response, headers[ACCEPT_HEADER], with_attributes=True,
                                               xml_root_element_name=TASK)
         status = response_body[TASK_STATUS]
-        print 'Waiting for task status. CHECK: {} - STATUS: {}'.format(count, status)
+        print '[TASK] Waiting for task status. CHECK: {} - STATUS: {}'.format(count, status)
 
         if status == status_to_be_finished:
             correct_status = True
@@ -164,6 +164,9 @@ def wait_for_task_finished(vdc_id, task_id, seconds=WAIT_FOR_OPERATION, status_t
         elif status != TASK_STATUS_VALUE_RUNNING:
             break
         time.sleep(5)
+
+    if correct_status is False:
+        print "[TASK] Response body:", response_body
 
     return correct_status
 
@@ -233,17 +236,30 @@ def generate_product_instance_id(vm_fqn, product_name, product_version):
     return "{}_{}_{}".format(vm_fqn, product_name, product_version)
 
 
-def generate_content_installed_by_product(product_name, product_version, instance_attributes):
+def _replace_ipall_att_value(attribute, installator):
+    """
+    If installator is Puppet, list of values (IPALL type) is installed by our testing manifest without ",".
+    This method return the list without that character to validate a successful installation
+    :param attribute: Instance attribute to be processed
+    :return: If installator is Puppet, list of values when attribute type is IPALL will be processed
+    to delete the "," character
+    """
+    if installator == 'puppet' and ATTRIBUTE_TYPE in attribute and attribute[ATTRIBUTE_TYPE] == ATTRIBUTE_TYPE_IPALL:
+        return attribute[VALUE].replace(",", "")
+    else:
+        return attribute[VALUE]
+
+
+def generate_content_installed_by_product(product_name, product_version, instance_attributes, installator='chef'):
 
     att_01 = PRODUCT_INSTALLATION_ATT1_DEFAULT
     att_02 = PRODUCT_INSTALLATION_ATT2_DEFAULT
 
     if instance_attributes is not None or len(instance_attributes) != 0:
         if len(instance_attributes) >= 1:
-            att_01 = instance_attributes[0][VALUE]
+            att_01 = _replace_ipall_att_value(instance_attributes[0], installator)
 
         if len(instance_attributes) >= 2:
-            att_02 = instance_attributes[1][VALUE]
-
+            att_02 = _replace_ipall_att_value(instance_attributes[1], installator)
     return PRODUCT_INSTALLATION_FILE_CONTENT.format(product_name=product_name, product_version=product_version,
                                                     att_01=att_01, att_02=att_02)

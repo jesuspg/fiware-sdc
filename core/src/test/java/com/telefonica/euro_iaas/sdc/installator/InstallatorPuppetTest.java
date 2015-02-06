@@ -32,9 +32,12 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -50,6 +53,7 @@ import org.mockito.Mockito;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallPuppetException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
+import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
@@ -64,11 +68,18 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.AttributeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
+/**
+ * 
+ * Test Installator class
+ *
+ */
 public class InstallatorPuppetTest {
 
     private HttpClient client;
+    private HttpsClient httpsClient;
     private InstallatorPuppetImpl puppetInstallator;
     private SystemPropertiesProvider propertiesProvider;
     private Product product;
@@ -94,7 +105,7 @@ public class InstallatorPuppetTest {
     private Attribute attribute1;
 
     @Before
-    public void setup() throws ClientProtocolException, IOException, OpenStackException {
+    public void setup() throws Exception {
         Product product = new Product("testProduct", "description");
         Metadata metadata = new Metadata("installator", "puppet");
         List<Metadata> metadatas = new ArrayList<Metadata>();
@@ -110,13 +121,12 @@ public class InstallatorPuppetTest {
         productInstance = new ProductInstance(productRelease, Status.INSTALLING, host, "vdc");
 
         attributeList = new ArrayList<Attribute>();
-        attribute1 = new Attribute("user", "pepito","desc","Plain");
+        attribute1 = new Attribute("user", "pepito", "desc", "Plain");
 
         attributeList.add(attribute1);
 
-        // client = (HttpClient) new HTTPClientMock();
-
         client = mock(HttpClient.class);
+        httpsClient = mock(HttpsClient.class);
 
         response = mock(HttpResponse.class);
         entity = mock(HttpEntity.class);
@@ -124,6 +134,7 @@ public class InstallatorPuppetTest {
         openStackRegion = mock(OpenStackRegion.class);
 
         when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(response);
+
         when(response.getEntity()).thenReturn(entity);
         String source = "";
         InputStream in = IOUtils.toInputStream(source, "UTF-8");
@@ -137,35 +148,46 @@ public class InstallatorPuppetTest {
         puppetInstallator = new InstallatorPuppetImpl();
         puppetInstallator.setClient(client);
         puppetInstallator.setOpenStackRegion(openStackRegion);
+        puppetInstallator.setHttpsClient(httpsClient);
         when(openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
 
     }
 
     @Test
-    public void testGenerateFilesinPuppetMaster() throws InstallatorException, NodeExecutionException {
+    public void testGenerateFilesinPuppetMaster() throws InstallatorException, NodeExecutionException,
+            KeyManagementException, NoSuchAlgorithmException, IOException {
 
         when(statusLine.getStatusCode()).thenReturn(200);
+        when(
+                httpsClient.doHttps(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
     }
 
-    public void testCallService_all_OK() throws InstallatorException, NodeExecutionException {
+    public void testCallService_all_OK() throws InstallatorException, NodeExecutionException, KeyManagementException,
+            NoSuchAlgorithmException {
 
         when(statusLine.getStatusCode()).thenReturn(200);
         puppetInstallator.callService(host, "test", productRelease, "install", "token");
     }
 
     @Test(expected = InstallatorException.class)
-    public void testCallService_FAIL() throws InstallatorException, NodeExecutionException, OpenStackException {
+    public void testCallService_FAIL() throws Exception {
 
-        when(statusLine.getStatusCode()).thenReturn(500);
+        when(
+                httpsClient.doHttps(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
         puppetInstallator.callService(host, "test", productRelease, "install", "token");
     }
 
     @Test(expected = InstallatorException.class)
-    public void testCallService_1_OK_1_FAIL() throws InstallatorException, NodeExecutionException {
+    public void testCallService_1_OK_1_FAIL() throws InstallatorException, NodeExecutionException,
+            KeyManagementException, NoSuchAlgorithmException, IOException {
 
-        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(
+                httpsClient.doHttps(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200).thenReturn(500);
         puppetInstallator.generateFilesinPuppetMaster(host, "test", productRelease, "install", "token");
 
     }
@@ -183,7 +205,8 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
+    public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, 
+    InstallatorException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -228,7 +251,7 @@ public class InstallatorPuppetTest {
 
     @Test(expected = InstallatorException.class)
     public void testLoadNodeNoExists() throws OpenStackException, CanNotCallPuppetException, IOException,
-            InstallatorException, NodeExecutionException {
+            InstallatorException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -241,9 +264,13 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException, IOException {
+    public void testCallService_attributes_all_OK() throws InstallatorException, NodeExecutionException, IOException,
+            KeyManagementException, NoSuchAlgorithmException {
 
-        when(statusLine.getStatusCode()).thenReturn(200);
+        // when(statusLine.getStatusCode()).thenReturn(200);
+        when(
+                httpsClient.doHttps(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
 
@@ -256,40 +283,99 @@ public class InstallatorPuppetTest {
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111,222.222.222.222", "description", "IPALL"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("['111.111.111.111', '222.222.222.222']",receivedList.get(0).getValue());
-        
+        assertEquals("['111.111.111.111', '222.222.222.222']", receivedList.get(0).getValue());
 
     }
-    
+
     @Test
     public void testformatAttributes2() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "IP"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("111.111.111.111",receivedList.get(0).getValue());
-        
+        assertEquals("111.111.111.111", receivedList.get(0).getValue());
 
     }
+
     @Test
     public void testformatAttributes3() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "Plain"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("111.111.111.111",receivedList.get(0).getValue());
-        
+        assertEquals("111.111.111.111", receivedList.get(0).getValue());
 
     }
-    
+
     @Test
     public void testformatAttributes4() throws InstallatorException, NodeExecutionException, IOException {
 
         List<Attribute> li = new ArrayList<Attribute>();
         li.add(new Attribute("key", "111.111.111.111", "description", "IPALL"));
         List<AttributeDto> receivedList = puppetInstallator.formatAttributesForPuppet(li);
-        assertEquals("['111.111.111.111']",receivedList.get(0).getValue());
-        
+        assertEquals("['111.111.111.111']", receivedList.get(0).getValue());
 
     }
+
+    @Test(expected = InstallatorException.class)
+    public void testgetPuppetDBEndpointException() throws OpenStackException, CanNotCallPuppetException, IOException,
+            InstallatorException {
+
+        when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
+        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenThrow(OpenStackException.class);
+
+        InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
+        when(entity.getContent()).thenReturn(in);
+        PuppetNode node = puppetInstallator.loadNode("aaaa-dddfafff-1-000081", "token");
+
+    }
+    
+    @Test
+    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+        
+        VM host=mock(VM.class);
+        
+        when(host.canWorkWithInstallatorServer()).thenReturn(true);
+        when(host.getHostname()).thenReturn("aaa");
+        
+        HttpResponse resp = mock(HttpResponse.class);
+        HttpEntity httpEntity = mock(HttpEntity.class);
+        InputStream in = IOUtils.toInputStream("aaa", "UTF-8");
+        when(httpEntity.getContent()).thenReturn(in);
+        when(resp.getEntity()).thenReturn(httpEntity);
+        
+        when(client.execute((HttpUriRequest)Mockito.anyObject())).thenReturn(resp);
+        
+        puppetInstallator.validateInstalatorData(host, "token");
+    }
+    
+    @Test(expected=InvalidInstallProductRequestException.class)
+    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+        
+        VM host=mock(VM.class);
+        
+        when(host.canWorkWithInstallatorServer()).thenReturn(false);
+        
+        puppetInstallator.validateInstalatorData(host, "token");
+    }
+    
+    @Test(expected=InvalidInstallProductRequestException.class)
+    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+        
+        VM host=mock(VM.class);
+        
+        when(host.canWorkWithInstallatorServer()).thenReturn(true);
+        when(host.getHostname()).thenReturn("aaa");
+        
+        HttpResponse resp = mock(HttpResponse.class);
+        HttpEntity httpEntity = mock(HttpEntity.class);
+        InputStream in = IOUtils.toInputStream("RESPONSE", "UTF-8");
+        when(httpEntity.getContent()).thenReturn(in);
+        when(resp.getEntity()).thenReturn(httpEntity);
+        
+        when(client.execute((HttpUriRequest)Mockito.anyObject())).thenReturn(resp);
+        
+        puppetInstallator.validateInstalatorData(host, "token");
+    }
+
 }

@@ -1,1 +1,0 @@
-Folder for automated functional tests of the SDC API

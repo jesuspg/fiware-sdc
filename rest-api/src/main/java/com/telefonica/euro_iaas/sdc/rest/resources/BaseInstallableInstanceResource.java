@@ -59,7 +59,7 @@ public interface BaseInstallableInstanceResource {
      */
 
     @PUT
-    @Path("/{name}/release/{release-id}")
+    @Path("/{name}/release/{newVersion}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task upgrade(@PathParam("vdc") String vdc, @PathParam("name") String name, @PathParam("newVersion") String version,

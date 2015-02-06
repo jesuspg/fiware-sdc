@@ -28,7 +28,8 @@ from commons.provisioning_steps import ProvisioningSteps
 from commons.rest_utils import RestUtils
 from commons.configuration import CONFIG_VM_HOSTNAME
 from commons.fabric_utils import execute_chef_client, execute_puppet_agent, remove_chef_client_cert_file, \
-    remove_puppet_agent_cert_file, execute_chef_client_stop, execute_puppet_agent_stop, remove_all_generated_test_files
+    remove_puppet_agent_cert_file, execute_chef_client_stop, execute_puppet_agent_stop, \
+    remove_all_generated_test_files, remove_puppet_agent_catalog
 
 provisioning_steps = ProvisioningSteps()
 rest_utils = RestUtils()
@@ -59,6 +60,7 @@ def before_outline(param1, param2, param3, param4):
     """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
     setup_outline(param1, param2, param3, param4)
     remove_all_generated_test_files()
+    remove_puppet_agent_catalog()
 
 
 @after.each_scenario
@@ -71,6 +73,8 @@ def after_each_scenario(scenario):
     execute_puppet_agent_stop()
     remove_chef_client_cert_file()
     remove_puppet_agent_cert_file()
+    remove_all_generated_test_files()
+    remove_puppet_agent_catalog()
     rest_utils.delete_node(world.headers, world.tenant_id, CONFIG_VM_HOSTNAME)
 
 
