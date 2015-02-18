@@ -72,7 +72,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
 
     private String NODE_NOT_FOUND_PATTERN = "404";
     private String NODES_PATH = "/nodes";
-    private static final int MAX_TIME = 640000;
+    private static final int MAX_TIME = 900000;
 
     public ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException,
             CanNotCallChefException {
