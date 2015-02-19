@@ -48,6 +48,9 @@ NODE_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient/{node_name}"
 PUPPETDB_ROOT_PATTERN = '{}://{}:{}'.format(CONFIG_PUPPETDB_PROTOCOL, CONFIG_PUPPETDB_IP, CONFIG_PUPPETDB_PORT)
 PUPPETDB_NODE_PATTERN_ROOT = '{url_root}/v3/nodes'
 
+requests.packages.urllib3.disable_warnings()
+
+
 class RestUtils(object):
 
     def __init__(self):
