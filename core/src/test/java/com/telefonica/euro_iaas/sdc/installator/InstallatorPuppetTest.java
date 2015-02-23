@@ -56,6 +56,7 @@ import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -359,9 +360,9 @@ public class InstallatorPuppetTest {
         puppetInstallator.validateInstalatorData(host, "token");
     }
     
-    @Test(expected=InvalidInstallProductRequestException.class)
+    @Test(expected=SdcRuntimeException.class)
     public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
-        
+    //public void testValidatorException2() throws SdcRuntimeException, ClientProtocolException, IOException{    
         VM host=mock(VM.class);
         
         when(host.canWorkWithInstallatorServer()).thenReturn(true);
