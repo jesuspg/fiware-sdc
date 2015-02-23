@@ -1,0 +1,4 @@
+export OS_KEYSTONE="cloud.lab.fi-ware.org:4731"
+export OS_PASSWORD=****
+export OS_USERNAME=****
+export OS_TENANT_NAME=****

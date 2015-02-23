@@ -29,7 +29,16 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.sdc.model.dto.Attributes;
 import junit.framework.TestCase;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 
+
+import javax.persistence.EntityNotFoundException;
+
+/**
+ * This test class contains different methods to test
+ * the sdc model
+ */
 public class ModelTest extends TestCase {
 
     public static String KEY1 = "key1";
@@ -97,7 +106,6 @@ public class ModelTest extends TestCase {
      * @return
      */
     public void testArtifact() {
-
         Metadata metadata = new Metadata("metadata1", "value1");
         Metadata metadata2 = new Metadata();
         metadata2.setKey("metadata2");
@@ -144,7 +152,6 @@ public class ModelTest extends TestCase {
      * @return
      */
     public void testAttributes() {
-
         Attribute att = new Attribute("key1", "value1", "description1");
 
         Attributes atts = new Attributes();
@@ -167,4 +174,196 @@ public class ModelTest extends TestCase {
         assertEquals(metadatas.size(), 1);
 
     }
-}
+
+    /**
+     * Test Get metadata from a product
+     */
+    public void testGetMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key2", "value2", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+        product.addMetadata(metadata2);
+
+        Metadata output = product.getMetadata("key1");
+        assertNotNull(output);
+        assertEquals("value1", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
+
+    /**
+     * Test Get metadata not exists
+     */
+    public void testGetMetadataNoExists() {
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+
+        try {
+            product.getMetadata("key2");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
+
+    }
+
+    /**
+     * Test Get attribute from a product
+     */
+    public void testGetAttribute() {
+
+        Attribute attribute = new Attribute("key1", "value1", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addAttribute(attribute);
+
+        Attribute output = product.getAttribute("key1");
+        assertNotNull(output);
+        assertEquals("value1", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
+
+    /**
+     * Test update an attribute,
+     */
+    public void testUpdateAttribute() {
+
+        Attribute attribute = new Attribute("key1", "value1");
+        attribute.setType("plain");
+        Attribute attribute2 = new Attribute("key1", "value2", "description2", "type");
+
+
+        Product product = new Product ("name", "description");
+        product.addAttribute(attribute);
+
+        product.updateAttribute(attribute2);
+        Attribute output = product.getAttribute(attribute.getKey());
+        assertNotNull(output);
+        assertEquals("value2", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
+
+    /**
+     * Test update an attribute,
+     */
+    public void testUpdateMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key1", "value2", "description2");
+
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+
+        product.updateMetadata(metadata2);
+        Metadata output = product.getMetadata(metadata.getKey());
+        assertNotNull(output);
+        assertEquals("value2", output.getValue());
+        assertEquals("key1", output.getKey());
+
+    }
+
+    /**
+     * Test delete the metadata.
+     */
+    public void testDeleteAttribute() {
+
+        Attribute attribute = new Attribute("key1", "value1", "description1");
+        Attribute attribute2 = new Attribute("key2", "value2", "description2");
+
+        Product product = new Product ("name", "description");
+        product.addAttribute(attribute);
+        product.addAttribute(attribute2);
+
+        assertEquals(product.getAttributes().size(),2);
+
+        product.deleteAttribute(attribute.getKey());
+        assertEquals(product.getAttributes().size(),1);
+
+    }
+
+    /**
+     * Test delete the metadata
+     */
+    public void testDeleteMetadata() {
+
+        Metadata metadata = new Metadata("key1", "value1", "description1");
+        Metadata metadata2 = new Metadata("key2", "value2", "description1");
+
+        Product product = new Product ("name", "description");
+        product.addMetadata(metadata);
+        product.addMetadata(metadata2);
+        assertEquals(product.getMetadatas().size(), 2);
+
+        product.deleteMetadata(metadata.getKey());
+        assertEquals(product.getMetadatas().size(), 1);
+
+    }
+
+    /**
+     * Test delete the metadata which does not exists
+     */
+    public void testDeleteMetadataNotExists() {
+        Product product = new Product ("name", "description");
+        try {
+            product.deleteMetadata("NOEXIST");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
+    }
+
+    /**
+     * Test update the attribute which does not exists
+     */
+    public void testUpdateAttributeNotExists() {
+        Product product = new Product ("name", "description");
+        Attribute attribute = new Attribute("key2", "value2", "description2");
+
+        try {
+            product.updateAttribute(attribute);
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+    }
+
+    /**
+     * Test update the attribute which does not exists
+     */
+    public void testUpdateMetadataNotExists() {
+        Product product = new Product ("name", "description");
+        Metadata metadata = new Metadata("key2", "value2", "description1");
+        try {
+            product.updateMetadata(metadata);
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
+    }
+
+
+    /**
+     * Test delete the attribute which does not exists
+     */
+    public void testDeleteAttributeNotExists() {
+        Product product = new Product ("name", "description");
+        try {
+            product.deleteAttribute("NOEXIST");
+            fail("An exception should be lanched");
+        } catch (EntityNotFoundException e) {
+
+        }
+
+    }
+
+ }

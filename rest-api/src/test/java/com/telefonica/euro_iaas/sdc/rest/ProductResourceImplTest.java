@@ -27,9 +27,13 @@ package com.telefonica.euro_iaas.sdc.rest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.junit.Assert.fail;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,8 +51,6 @@ import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
-import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.resources.ProductResourceImpl;
@@ -61,6 +63,7 @@ public class ProductResourceImplTest {
     private ProductResourceImpl productResource = null;
     private ProductResourceValidator productResourceValidator=null;
     private ProductManager productManager = null;
+    private Product product = null;
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +76,7 @@ public class ProductResourceImplTest {
         productResource.setSystemPropertiesProvider(systemPropertiesProvider);
         doNothing().when(productResourceValidator).validateInsert(any(Product.class));
         productResource.setValidator(productResourceValidator);
-        Product product = new Product(PRODUCT_NAME, "description");
+        product = new Product(PRODUCT_NAME, "description");
         OS os = new OS("os1", "1", "os1 description", "v1");
 
         ProductRelease productRelease = new ProductRelease(PRODUCT_VERSION, "releaseNotes",
@@ -87,6 +90,10 @@ public class ProductResourceImplTest {
 
     }
 
+    /**
+     * It tests the insertion of the product.
+     * @throws Exception
+     */
     @Test
     public void testInsert() throws Exception {
         Product product = new Product();
@@ -96,40 +103,250 @@ public class ProductResourceImplTest {
         Product createdProduct = productResource.insert(product);
         assertEquals(createdProduct.getName(), PRODUCT_NAME);
     }
-    
+
+    /**
+     * It validates the insertion of the product.
+     * @throws Exception
+     */
     @Test(expected=APIException.class)
     public void testInsertErroProductVAlidation() throws Exception {
         Product product = new Product();
         product.setName(PRODUCT_NAME);
         product.setDescription("description");
-        Mockito.doThrow(new InvalidEntityException(product, null)).when(productResourceValidator).validateInsert(any(Product.class));
+        Mockito.doThrow(new InvalidEntityException(product, null)).when(productResourceValidator).
+            validateInsert(any(Product.class));
         productResource.insert(product);
     }
-    
+
+    /**
+     * It finds all product.
+     * @throws Exception
+     */
     @Test
     public void testFindAll() throws Exception {
         List<Product> product = productResource.findAll(new Integer(1), new Integer(1), null, null);
         assertNotNull (product);
     }
-    
+
+    /**
+     * It tests the load of product.
+     * @throws Exception
+     */
     @Test
     public void testLoad() throws Exception {
         Product product = productResource.load("name");
         assertNotNull (product);
     }
-    
+
+    /**
+     * It tests loading all attributes in the product.
+     * @throws Exception
+     */
     @Test
     public void testLoadAttributes () throws Exception {
         List<Attribute> att = productResource.loadAttributes("name");
         assertNotNull (att);
     }
-    
+
+    /**
+     * It loads the all attributes metadata.
+     * @throws Exception
+     */
     @Test
-    public void testLoadMetada () throws Exception {
+    public void testLoadMetadas () throws Exception {
     	 List<Metadata> meta = productResource.loadMetadatas("name");
          assertNotNull (meta);
     }
-    
+
+    /**
+     * It tests the insertion of a metadata.
+     * @throws Exception
+     */
+    @Test
+    public void testInsertMetadata () throws Exception {
+        Metadata meta = new Metadata ("metaInsert", "value");
+        when(productManager.load(any(String.class))).thenReturn(product);
+        productResource.insertMetadata(product.getName(), meta);
+        verify(productManager).update(any(Product.class));
+    }
+
+    /**
+     * It tests the insertion of an attribute.
+     * @throws Exception
+     */
+    @Test
+    public void testInsertAttribute () throws Exception {
+        Attribute att = new Attribute ("metaInsert", "value");
+        when(productManager.load(any(String.class))).thenReturn(product);
+        productResource.insertAttribute(product.getName(), att);
+        verify(productManager).update(any(Product.class));
+    }
+
+    /**
+     * It tests loading a metadata.
+     * @throws Exception
+     */
+    @Test
+    public void testLoadMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        Metadata meta = productResource.loadMetadata("productname", "metadata");
+        assertNotNull (meta);
+    }
+
+    /**
+     * It tests loading a metadata with errors..
+     * @throws Exception
+     */
+    @Test
+    public void testLoadMetadataError () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenThrow(
+            new EntityNotFoundException(Product.class, "name", product.getName()));
+        try {
+            productResource.loadMetadata("productname", "metadata");
+            fail("An exception should have been lanched");
+        } catch  (Exception e) {
+            verify(productManager).load(anyString());
+        }
+    }
+
+    /**
+     * It tests loading an attribute.
+     * @throws Exception
+     */
+    @Test
+    public void testLoadAttribute() throws Exception {
+        product.addAttribute(new Attribute ("att", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        Attribute meta = productResource.loadAttribute(product.getName(), "att");
+        assertNotNull (meta);
+    }
+
+    /**
+     * It updates a metadata of a product.
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        doNothing().when(productManager).update(any(Product.class));
+        productResource.updateMetadata("productname", "metadata", new Metadata("metadata", "value"));
+
+    }
+
+    /**
+     * It updates a attribute of a product.
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateAttribute () throws Exception {
+        product.addAttribute(new Attribute ("att", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        doNothing().when(productManager).update(any(Product.class));
+        productResource.updateAttribute("productname", "att", new Attribute("att", "value2"));
+
+    }
+
+    /**
+     * It deletes an attribute in a product.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteAttribute () throws Exception {
+        product.addAttribute(new Attribute ("att", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        doNothing().when(productManager).update(any(Product.class));
+        productResource.deleteAttribute(product.getName(), "att");
+
+    }
+
+    /**
+     * It tests the deletion of a product with error.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteAttributeNoExistProduct () throws Exception {
+        product.addAttribute(new Attribute ("att", "value"));
+        when(productManager.load(any(String.class))).thenThrow(
+            new EntityNotFoundException(Product.class, "name", product.getName()));
+
+        try {
+            productResource.deleteAttribute("productname", "att");
+            fail("An exception should have been lanched");
+        } catch  (Exception e) {
+           verify(productManager).load(anyString());
+        }
+
+    }
+
+    /**
+     * It tests the deletion of a product with error.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteAttributeNoExistMetadata () throws Exception {
+        product.addAttribute(new Attribute ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        try {
+            productResource.deleteAttribute(product.getName(), "NOEXIST");
+            fail("An exception should have been lanched");
+        } catch  (Exception e) {
+            verify(productManager).load(anyString());
+        }
+
+    }
+
+    /**
+     * It test the deletion of a metadata.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        doNothing().when(productManager).delete(any(Product.class));
+        productResource.deleteMetadata("productname", "metadata");
+
+    }
+
+    /**
+     * It test the deletion of a metadata with errors.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteMetadataNoExistProduct () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenThrow(new EntityNotFoundException(Product.class, "name", product.getName()));
+        try {
+            productResource.deleteMetadata("productname", "metadata");
+            fail("An exception should have been lanched");
+        } catch  (Exception e) {
+            verify(productManager).load(anyString());
+        }
+
+    }
+
+    /**
+     * It test the deletion of a metadata with errors.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteMetadataNoExistMetadata () throws Exception {
+        product.addMetadata(new Metadata ("metadata", "value"));
+        when(productManager.load(any(String.class))).thenReturn(product);
+        try {
+            productResource.deleteMetadata(product.getName(), "NOEXIST");
+            fail("An exception should have been lanched");
+        } catch  (Exception e) {
+            verify(productManager).load(anyString());
+        }
+    }
+
+    /**
+     * It find all product with some restrictions.
+     */
     @Test
     public void testFindAllFilterProduct () {
     	Product product = new Product ("name", "description");
@@ -144,6 +361,10 @@ public class ProductResourceImplTest {
     	assertEquals (productReturn.size() , 1);
     }
 
+    /**
+     * It tests the deletion of a product.
+     * @throws Exception
+     */
     @Test
     public void testDelete() throws Exception {
         productResource.delete(PRODUCT_NAME);

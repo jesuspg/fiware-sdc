@@ -91,6 +91,13 @@ public interface ProductManager {
     void delete(Product product);
 
     /**
+     * Update a certain product from SDC Database.
+     *
+     * @param product
+     */
+    void update(Product product);
+
+    /**
      * Find the products and product release that match with the given criteria.
      * 
      * @param criteria

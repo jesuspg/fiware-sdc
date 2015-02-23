@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,6 +78,7 @@ public class ProductResourceImpl implements ProductResource {
      * @param product
      * @return product
      */
+
     public Product insert(Product product) throws APIException {
     	 
     	Product productReturn = null;
@@ -107,8 +107,18 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It finds all product.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return
      */
+
     @Override
     public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType) {
         ProductSearchCriteria criteria = new ProductSearchCriteria();
@@ -174,44 +184,278 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     /**
-     * {@inheritDoc}
+     * It loads the product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws APIException
      */
     @Override
     public Product load(String name) throws APIException {
         try {
-			return productManager.load(name);
-		} catch (EntityNotFoundException e) {
-			log.warning("EntityNotFoundException: " + e.getMessage());
+            return productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: the product " + name + " does not exist");
 			throw new APIException(new EntityNotFoundException(Product.class,name, e));
 		}
     }
 
     /**
-     * {@inheritDoc}
+     * It obtains all attributes from the product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws APIException
      */
     @Override
-    public List<Attribute> loadAttributes(String name) throws EntityNotFoundException {
+    public List<Attribute> loadAttributes(String name) throws APIException {
         try {
         	return productManager.load(name).getAttributes();
         } catch (EntityNotFoundException e) {
-        	log.warning("EntityNotFoundException: " + e.getMessage());
+            log.warning("EntityNotFoundException: the product " + name + " does not exist");
         	throw new APIException(new EntityNotFoundException(Product.class,name, e));
         }
     }
 
     /**
-     * {@inheritDoc}
+     * It updates an attribute from the product
+     * @param name
+     *            the product name
+     * @param attributeName
+     *            the product attribute name
+     * @param attribute
+     * @throws APIException
      */
     @Override
-    public List<Metadata> loadMetadatas(String name) throws EntityNotFoundException {
+    public void updateAttribute(String name, String attributeName, Attribute attribute) throws APIException {
+        Product product = null;
+        try {
+            product = productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            product.updateAttribute(attribute);
+            try {
+                productManager.update(product);
+            } catch (Exception e) {
+                log.warning("Exception but it works " + e.getMessage());
+            }
+        } catch (Exception e) {
+            log.warning("Attribute not found : " + attributeName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " +
+                attributeName, attributeName));
+        }
+    }
+
+    /**
+     * It inserts new attribute in the product.
+     * @param name
+     *            the product name
+     * @param attribute
+     *            the the attribute to be added
+     * @throws APIException
+     */
+    @Override
+    public void insertAttribute(String name, Attribute attribute) throws APIException {
+        Product product = null;
+        try {
+            product = productManager.load(name);
+        } catch (Exception e) {
+            log.warning("EntityNotFoundException: the product " + name + " does not exist");
+            throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        product.addAttribute(attribute);
+        productManager.update(product);
+    }
+
+    /**
+     * It loads an attribute.
+     * @param name
+     *            the product name
+     * @param attName
+     *            the product metadata name
+     * @return attribute
+     * @throws APIException
+     */
+    @Override
+    public Attribute loadAttribute(String name, String attName) throws APIException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            return product.getAttribute(attName);
+        } catch (Exception e) {
+            log.warning("Attribute not found : " + attName);
+            throw new APIException(new EntityNotFoundException(Metadata.class,
+                "Attribute not found : " + attName, attName));
+        }
+    }
+
+    /**
+     * It deletes the product attribute.
+     * @param name
+     *            the product name
+     * @param attName
+     * @throws APIException
+     */
+    @Override
+    public void deleteAttribute(String name, String attName) throws APIException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("The product: " + name + " is not in the database");
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            product.deleteAttribute(attName);
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Attribute not found : " + attName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Attribute not found : " +
+                attName, attName));
+        }
+    }
+
+    /**
+     * It loads all metadatas from a product.
+     * @param name
+     *            the product name
+     * @return
+     * @throws APIException
+     */
+    @Override
+    public List<Metadata> loadMetadatas(String name) throws APIException {
         try {
         	return productManager.load(name).getMetadatas();
         } catch (EntityNotFoundException e) {
-        	log.warning("EntityNotFoundException: " + e.getMessage());
-        	throw new APIException(new EntityNotFoundException(Product.class,name, e));
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
         }
        
     }
+
+    /**
+     * It updates the metadata of a product.
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @param metadata
+     * @throws APIException
+     */
+    @Override
+    public void updateMetadata(String name, String metadataName, Metadata metadata)
+        throws APIException {
+        Product product = null;
+        Metadata updatedMetadata = null;
+        try {
+            product = productManager.load(name);
+        } catch (Exception e) {
+            log.warning("The product: " + name + " does not exist" + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        try {
+            updatedMetadata = product.getMetadata(metadataName);
+        } catch (Exception e) {
+            log.warning("Exception: metadata not found or wrong" + metadata.getKey());
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadata));
+        }
+        if (metadata.getDescription()!= null) {
+            updatedMetadata.setDescription(metadata.getDescription());
+        }
+        updatedMetadata.setValue(metadata.getValue());
+        try {
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Exception but it works " + e.getMessage());
+        }
+    }
+
+    /**
+     * It inserts a metadata into the product.
+     * @param name
+     *            the product name
+     * @param metadata
+     *            the metadata to be added
+     * @throws APIException
+     */
+    public void insertMetadata(String name, Metadata metadata) throws APIException {
+        Product product = null;
+        try {
+            product = productManager.load(name);
+        } catch (Exception e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class, name, e));
+        }
+        product.addMetadata(metadata);
+        productManager.update(product);
+    }
+
+
+    /**
+     * It loads the metadata.
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @return
+     * @throws APIException
+     */
+    public Metadata loadMetadata(String name, String metadataName) throws APIException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+        } catch (EntityNotFoundException e) {
+            log.warning("EntityNotFoundException: " + e.getMessage());
+
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+        try {
+            return product.getMetadata(metadataName);
+        } catch (Exception e) {
+            log.warning("Metadata not found : " + metadataName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadataName));
+        }
+    }
+
+    /**
+     * It deletes the metadata from the product.
+     * @param name
+     *            the product name
+     * @param metadataName
+     *            the product metadata name
+     * @throws APIException
+     */
+    @Override
+    public void deleteMetadata(String name, String metadataName) throws APIException {
+        Product product = null;
+        try {
+            product =  productManager.load(name);
+        } catch (EntityNotFoundException e) {
+
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
+        }
+
+        try {
+            product.deleteMetadata(metadataName);
+            productManager.update(product);
+        } catch (Exception e) {
+            log.warning("Metadata not found : " + metadataName);
+            throw new APIException(new EntityNotFoundException(Metadata.class, "Metadata not found : "
+                    + metadataName, metadataName));
+        }
+    }
+
 
     /**
      * Delete the Product Resource.
@@ -220,13 +464,13 @@ public class ProductResourceImpl implements ProductResource {
      * @throws ProductReleaseNotFoundException
      * @throws ProductReleaseStillInstalledException
      */
-    public void delete(String name)  throws APIException {
+    public void delete(String name) throws APIException {
         Product product;
         try {
             product = productManager.load(name);
         } catch (EntityNotFoundException e) {
-        	log.warning("EntityNotFoundException: " + e.getMessage());
-        	throw new APIException(new EntityNotFoundException(Product.class,name, e));
+            log.warning("EntityNotFoundException: " + e.getMessage());
+            throw new APIException(new EntityNotFoundException(Product.class,name, e));
         }
         productManager.delete(product);
     }
