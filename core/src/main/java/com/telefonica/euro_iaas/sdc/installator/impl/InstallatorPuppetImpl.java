@@ -390,7 +390,7 @@ public class InstallatorPuppetImpl implements Installator {
             String errorMesg = "Node  " + vm.getHostname() + " is not registered in the puppet master "
                     + e.getMessage();
             log.info(errorMesg);
-            throw new InvalidInstallProductRequestException(errorMesg);
+            throw new SdcRuntimeException(errorMesg);
         }
     }
 
