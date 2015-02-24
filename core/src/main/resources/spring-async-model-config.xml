@@ -22,9 +22,10 @@
 
    <bean id="artifactAsyncManager" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.manager.async.impl.ArtifactAsyncManagerImpl">
-        <property name="artifactManager" ref="artifactManager"/>
-        <property name="taskManager" ref="taskManager"/>
-        <property name="taskNotificator" ref="taskNotificator"/>
+       <property name="artifactManager" ref="artifactManager"/>
+       <property name="taskManager" ref="taskManager"/>
+       <property name="taskNotificator" ref="taskNotificator"/>
+       <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     
     <bean id="nodeAsyncManager" lazy-init="true"
@@ -32,5 +33,6 @@
         <property name="nodeManager" ref="nodeManager"/>
         <property name="taskManager" ref="taskManager"/>
         <property name="taskNotificator" ref="taskNotificator"/>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
 </beans>

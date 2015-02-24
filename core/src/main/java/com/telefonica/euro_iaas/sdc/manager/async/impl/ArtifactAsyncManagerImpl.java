@@ -49,6 +49,8 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
+import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+
 
 /**
  * Default implementation for ProductInstanceAsyncManager.
@@ -60,13 +62,16 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
     private ArtifactManager artifactManager;
     private TaskManager taskManager;
     private TaskNotificator taskNotificator;
+    private SystemPropertiesProvider systemPropertiesProvider;
+
 
     /**
      * {@inheritDoc}
      */
     @Async
     @Override
-    public void deployArtifact(ProductInstance productInstance, Artifact artifact,  String token, Task task, String callback) {
+    public void deployArtifact(ProductInstance productInstance, Artifact artifact,  String token,
+                               Task task, String callback) {
         try {
             artifactManager.deployArtifact(productInstance, artifact, token);
             updateSuccessTask(task, productInstance);
@@ -90,7 +95,8 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
     }
 
     @Override
-    public void undeployArtifact(ProductInstance productInstance, String artifactName, String token, Task task, String callback) {
+    public void undeployArtifact(ProductInstance productInstance, String artifactName, String token,
+                                 Task task, String callback) {
         try {
             artifactManager.undeployArtifact(productInstance, artifactName, token);
             updateSuccessTask(task, productInstance);
@@ -130,7 +136,8 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
+        String piResource = MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)
+                + PRODUCT_INSTANCE_BASE_PATH,
                 productInstance.getName(), // the name
                 productInstance.getVm().getHostname(), // the hostname
                 productInstance.getVm().getDomain(), // the domain
@@ -145,7 +152,8 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
      * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(SDC_MANAGER_URL+PRODUCT_INSTANCE_BASE_PATH,
+        String piResource = MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)
+                + PRODUCT_INSTANCE_BASE_PATH,
         // productInstance.getId(), // the id
                 productInstance.getName(), // the id
                 productInstance.getVm().getHostname(), // the hostname
@@ -188,5 +196,13 @@ public class ArtifactAsyncManagerImpl implements ArtifactAsyncManager {
 
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
+    }
+
+    /**
+     * It sets the system properties provider.
+     * @param systemPropertiesProvider
+     */
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 }
