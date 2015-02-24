@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.dao.MetadataDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
@@ -49,13 +50,12 @@ import com.xmlsolutions.annotation.UseCase;
 
 /**
  * Default ProductManager implementation.
- * 
- * @author Sergio Arroyo, Jesus M. Movilla
  */
 @UseCase(traceTo = "UC_101", status = "partially implemented")
 public class ProductManagerImpl extends BaseInstallableManager implements ProductManager {
 
     private ProductDao productDao;
+    private MetadataDao metadataDao;
     private ProductReleaseManager productReleaseManager;
     private static Logger log = Logger.getLogger("ProductManagerImpl");
 
@@ -146,6 +146,34 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return result;
     }
 
+    @Override
+    public Metadata loadMetadata(String productName, String metadataName) throws EntityNotFoundException {
+
+        Product product;
+        Metadata metadata;
+        try {
+            product = this.load(productName);
+        } catch (Exception e) {
+            log.warning("The product: " + productName + " does not exist" + e.getMessage());
+            throw new EntityNotFoundException(Product.class, productName, null);
+        }
+        try {
+
+            metadata = product.getMetadata(metadataName);
+            metadata = metadataDao.loadById(metadata.getId());
+        } catch (Exception e) {
+            log.warning("Exception: metadata not found or wrong" + metadataName);
+            throw new EntityNotFoundException(Metadata.class, "Metadata not found : " + metadataName, null);
+        }
+        return metadata;
+    }
+
+    @Override
+    public void updateMetadata(Metadata updatedMetadata) {
+        metadataDao.merge(updatedMetadata);
+
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -165,6 +193,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
 
     /**
      * It deletes the product in DB.
+     * 
      * @param product
      */
     @Override
@@ -174,6 +203,7 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
 
     /**
      * It updates the product in DB.
+     * 
      * @param product
      */
     @Override
@@ -193,4 +223,11 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         this.productReleaseManager = productReleaseManager;
     }
 
+    public MetadataDao getMetadataDao() {
+        return metadataDao;
+    }
+
+    public void setMetadataDao(MetadataDao metadataDao) {
+        this.metadataDao = metadataDao;
+    }
 }
