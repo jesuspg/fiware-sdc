@@ -46,11 +46,20 @@
     <bean id="puppetInstallator" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl">
         <property name="client" ref="httpClient"/>
+        <property name="httpsClient" ref="httpsClient"/>
         <property name="openStackRegion" ref="openStackRegion"/>
     </bean>
 
     <bean id="httpClient" lazy-init="true"
           class="org.apache.http.impl.client.DefaultHttpClient"/>
+
+    <bean id="httpsClient" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.util.HttpsClient">
+        <property name="connectionSetup" ref="connectionSetup"/>
+    </bean>
+
+    <bean id="connectionSetup" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.util.ConnectionSetup"/>
 
     <bean id="artifactManager" lazy-init="true"
           parent="baseInstallableInstanceManager"
@@ -91,6 +100,7 @@
         <property name="productInstanceDao" ref="productInstanceDao"/>
         <property name="chefNodeDao" ref="chefNodeDao"/>
         <property name="client" ref="httpClient"/>
+        <property name="httpsClient" ref="httpsClient"/>
         <property name="openStackRegion" ref="openStackRegion"/>
 
     </bean>

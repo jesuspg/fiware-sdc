@@ -69,9 +69,13 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     private static Logger log = LoggerFactory.getLogger(ChefClientDaoRestImpl.class);
     private OpenStackRegion openStackRegion;
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#findAllChefClient()
+    /**
+     * It gets the chefclient by the hostname
+     * @param hostname
+     * @param token
+     * @return
+     * @throws EntityNotFoundException
+     * @throws CanNotCallChefException
      */
     public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
             CanNotCallChefException {
@@ -109,9 +113,12 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#deleteChefClient(java.lang.String)
+    /**
+     * It deletes the chefclient by the name
+     * @param chefClientName
+     *            the chefClientName to be deleted
+     * @param token
+     * @throws CanNotCallChefException
      */
     public void deleteChefClient(String chefClientName, String token) throws CanNotCallChefException {
         String chefServerUrl = null;
@@ -140,9 +147,13 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
+    /**
+     * It get the chef-client
+     * @param chefClientName
+     * @param token
+     * @return
+     * @throws CanNotCallChefException
+     * @throws EntityNotFoundException
      */
     public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException,
             EntityNotFoundException {
@@ -181,6 +192,8 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             return chefClient;
         } catch (IOException e) {
             throw new SdcRuntimeException(e);
+        } catch (Exception e) {
+            throw new EntityNotFoundException(ChefClient.class, chefClientName, chefClientName);
         }
     }
 

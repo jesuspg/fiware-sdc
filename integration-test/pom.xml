@@ -5,11 +5,11 @@
 
     <artifactId>sdc-server-it</artifactId>
     <packaging>jar</packaging>
-    <name>sdc-server-integration-test</name>
+    <name>Sagitta - SDC Server Integration Tests</name>
 
 
     <parent>
-        <groupId>com.telefonica.euro_iaas</groupId>
+        <groupId>com.telefonica.iot</groupId>
         <artifactId>sdc-server</artifactId>
         <version>2.1.0-SNAPSHOT</version>
     </parent>
@@ -17,12 +17,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.telefonica.euro_iaas</groupId>
+            <groupId>com.telefonica.iot</groupId>
             <artifactId>sdc-client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.telefonica.euro_iaas</groupId>
+            <groupId>com.telefonica.iot</groupId>
             <artifactId>sdc-server-model</artifactId>
             <version>${project.version}</version>
         </dependency>

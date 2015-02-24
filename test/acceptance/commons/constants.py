@@ -49,7 +49,7 @@ LONG_ID = 'long' * 64 + 'a' #STRING WITH 257 characters
 
 #DEFAULT_METADATA
 NUMBER_OF_DEFAULT_SDC_METADATA = 6
-DEFAULT_METADATA = {"metadata": [{"key": "image", "value": "df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4"},
+DEFAULT_METADATA = {"metadata": [{"key": "image", "value": ""},
                                  {"key": "cookbook_url", "value": ''}, {"key": "cloud", "value": "yes"},
                                  {"key": "installator", "value": "chef"}, {"key": "open_ports", "value": "80 22"}]}
 
