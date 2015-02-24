@@ -11,7 +11,7 @@
     <bean id="productInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.ProductInstanceDaoJpaImpl"/>
     <bean id="artifactDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.sdc.dao.impl.ArtifactDaoJpaImpl"/>  
+          class="com.telefonica.euro_iaas.sdc.dao.impl.ArtifactDaoJpaImpl"/>
     <bean id="osDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.OSDaoJpaImpl"/>
     <bean id="productReleaseDao" lazy-init="true"
@@ -20,5 +20,7 @@
           class="com.telefonica.euro_iaas.sdc.dao.impl.TaskDaoJpaImpl"/>
     <bean id="nodeCommandDao" lazy-init="true"
           class="com.telefonica.euro_iaas.sdc.dao.impl.NodeCommandDaoJpaImpl"/>
+    <bean id="metadataDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.sdc.dao.impl.MetadataDaoJpaImpl"/>
 
 </beans>

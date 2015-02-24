@@ -29,6 +29,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
@@ -42,13 +43,14 @@ public interface ProductManager {
 
     /**
      * Insert the Product in SDC Database
+     * 
      * @param product
-     * @param string 
+     * @param string
      * @return
      * @throws AlreadyExistsEntityException
      */
     Product insert(Product product, String string) throws AlreadyExistsEntityException, InvalidEntityException;
-    
+
     /**
      * Find the ProductInstance using the given id.
      * 
@@ -59,9 +61,8 @@ public interface ProductManager {
      *             if the product instance does not exists
      */
     Product load(String name) throws EntityNotFoundException;
-    
+
     /**
-     * 
      * @param name
      * @return
      */
@@ -92,7 +93,7 @@ public interface ProductManager {
 
     /**
      * Update a certain product from SDC Database.
-     *
+     * 
      * @param product
      */
     void update(Product product);
@@ -105,4 +106,20 @@ public interface ProductManager {
      * @return the list of elements that match with the criteria.
      */
     List<ProductAndReleaseDto> findProductAndReleaseByCriteria(ProductSearchCriteria criteria);
+
+    /**
+     * Load metadata from product by productName and metadataName.
+     * 
+     * @param productName
+     * @param metadataName
+     * @return
+     */
+    Metadata loadMetadata(String productName, String metadataName) throws EntityNotFoundException;
+
+    /**
+     * Update metadata.
+     * 
+     * @param updatedMetadata
+     */
+    void updateMetadata(Metadata updatedMetadata);
 }
