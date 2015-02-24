@@ -48,6 +48,7 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * @author alberts
@@ -70,6 +71,8 @@ public class NodeAsyncManagerImpl implements NodeAsyncManager {
      *            the task which contains the information about the async execution
      * @param callback
      */
+    @Async
+    @Override
     public void nodeDelete(String vdc, String nodeName, String token, Task task, String callback) {
         try {
             nodeManager.nodeDelete(vdc, nodeName, token);
