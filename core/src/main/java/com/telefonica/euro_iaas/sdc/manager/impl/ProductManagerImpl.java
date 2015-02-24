@@ -146,6 +146,14 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return result;
     }
 
+    /**
+     * Load metadata by productName and metadataName.
+     * 
+     * @param productName
+     * @param metadataName
+     * @return
+     * @throws EntityNotFoundException
+     */
     @Override
     public Metadata loadMetadata(String productName, String metadataName) throws EntityNotFoundException {
 
@@ -157,8 +165,8 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
             log.warning("The product: " + productName + " does not exist" + e.getMessage());
             throw new EntityNotFoundException(Product.class, productName, null);
         }
-        try {
 
+        try {
             metadata = product.getMetadata(metadataName);
             metadata = metadataDao.loadById(metadata.getId());
         } catch (Exception e) {
@@ -168,6 +176,11 @@ public class ProductManagerImpl extends BaseInstallableManager implements Produc
         return metadata;
     }
 
+    /**
+     * Update metadata.
+     * 
+     * @param updatedMetadata
+     */
     @Override
     public void updateMetadata(Metadata updatedMetadata) {
         metadataDao.merge(updatedMetadata);

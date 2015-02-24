@@ -38,7 +38,7 @@ import com.telefonica.euro_iaas.sdc.dao.MetadataDao;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 
 /**
- * 
+ * Units test, based on hSQL, for Metadata DAO.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
@@ -47,6 +47,12 @@ public class MetadataDaoJpaImplTest {
     @Autowired
     private MetadataDao metadataDao;
 
+    /**
+     * Test method loadById return a metadata search by Id.
+     * 
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
+     */
     @Test
     public void shouldFindById() throws AlreadyExistsEntityException, EntityNotFoundException {
         // given
@@ -66,6 +72,12 @@ public class MetadataDaoJpaImplTest {
         assertEquals("description", responseMetadata.getDescription());
     }
 
+    /**
+     * Test update a metadata object in database.
+     * 
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
+     */
     @Test
     public void shouldUpdateMetadata() throws AlreadyExistsEntityException, EntityNotFoundException {
         // given
@@ -87,6 +99,11 @@ public class MetadataDaoJpaImplTest {
         assertEquals("description", responseMetadata.getDescription());
     }
 
+    /**
+     * test method not implemented.
+     * 
+     * @throws EntityNotFoundException
+     */
     @Test(expected = UnsupportedOperationException.class)
     public void shouldReturnExceptionWithLoadByString() throws EntityNotFoundException {
         // given
@@ -97,10 +114,20 @@ public class MetadataDaoJpaImplTest {
         // then
     }
 
+    /**
+     * get metadataDao.
+     * 
+     * @return
+     */
     public MetadataDao getMetadataDao() {
         return metadataDao;
     }
 
+    /**
+     * set metadataDao
+     * 
+     * @param metadataDao
+     */
     public void setMetadataDao(MetadataDao metadataDao) {
         this.metadataDao = metadataDao;
     }
