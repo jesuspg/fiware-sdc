@@ -84,11 +84,16 @@ public class NodeResourceImpl implements NodeResource {
     }
 
     public Task delete(String vdc, String nodeName, String callback) {
+        try {
+            nodeManager.chefClientload(nodeName, getCredentials().getToken());
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
 
         try {
-
             Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
-
             nodeAsyncManager.nodeDelete(vdc, nodeName, getCredentials().getToken(), task, callback);
             return task;
         } catch (Exception e) {

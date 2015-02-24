@@ -90,12 +90,14 @@ public class NodeManagerImpl implements NodeManager {
 
         log.info("deleting node");
         try {
-
             puppetDelete(vdc, nodeName, token);
             chefClientDelete(vdc, nodeName, token);
-
-        } catch (ChefClientExecutionException e) {
-            throw new NodeExecutionException(e);
+        } catch (Exception e) {
+            try {
+                chefClientDelete(vdc, nodeName, token);
+            } catch (Exception e2) {
+                throw new NodeExecutionException(e2);
+            }
         }
 
         List<ProductInstance> productInstances = null;
