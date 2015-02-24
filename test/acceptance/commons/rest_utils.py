@@ -35,7 +35,8 @@ PRODUCT_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}'
 PRODUCT_RELEASE_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/release'
 VERSION_RELEASE_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/release/{version}'
 PRODUCT_ATTRIBUTES_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/attributes'
-PRODUCT_METADATA_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/metadatas'
+PRODUCT_METADATA_LIST_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/metadatas'
+PRODUCT_METADATA_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}/metadatas/{metadata_key}'
 PRODUCTANDRELEASE_PATTERN_ROOT = '{url_root}/sdc/rest/catalog/productandrelease/'
 INSTALL_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance'
 PRODUCT_INSTALLED_PATTERN = '{url_root}/sdc/rest/vdc/{vdc_id}/productInstance/{product_id}'
@@ -43,6 +44,7 @@ TASK_PATTERN_ROOT = '{url_root}/sdc/rest/vdc/{vdc_id}/task'
 TASK_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/task/{task_id}"
 NODE_PATTERN_ROOT = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient"
 NODE_PATTERN = "{url_root}/sdc/rest/vdc/{vdc_id}/chefClient/{node_name}"
+METADATA_PATTERN = '{url_root}/sdc/rest/catalog/product/{product_id}'
 
 #PuppetDB
 PUPPETDB_ROOT_PATTERN = '{}://{}:{}'.format(CONFIG_PUPPETDB_PROTOCOL, CONFIG_PUPPETDB_IP, CONFIG_PUPPETDB_PORT)
@@ -111,7 +113,17 @@ class RestUtils(object):
 
     def retrieve_product_metadatas(self, headers=None, product_id=None):
 
-        return self._call_api(pattern=PRODUCT_METADATA_PATTERN, method='get', headers=headers, product_id=product_id)
+        return self._call_api(pattern=PRODUCT_METADATA_LIST_PATTERN, method='get', headers=headers, product_id=product_id)
+
+    def retrieve_product_metadata(self, product_id, metadata_key, headers=None, method='get'):
+
+        return self._call_api(pattern=PRODUCT_METADATA_PATTERN, method=method, headers=headers, product_id=product_id,
+                              metadata_key=metadata_key)
+
+    def delete_product_metadata(self, product_id, metadata_key, headers=None):
+
+        return self._call_api(pattern=PRODUCT_METADATA_PATTERN, method='delete', headers=headers, product_id=product_id,
+                              metadata_key=metadata_key)
 
     def delete_product(self, headers=None, product_id=None):
 
