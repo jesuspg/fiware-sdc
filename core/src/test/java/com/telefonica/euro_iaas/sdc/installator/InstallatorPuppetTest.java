@@ -27,7 +27,10 @@ package com.telefonica.euro_iaas.sdc.installator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -73,9 +76,7 @@ import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
- * 
  * Test Installator class
- *
  */
 public class InstallatorPuppetTest {
 
@@ -146,10 +147,12 @@ public class InstallatorPuppetTest {
         when(propertiesProvider.getProperty("PUPPET_MASTER_URL")).thenReturn(
                 "http://130.206.82.190:8080/puppetwrapper/");
 
-        puppetInstallator = new InstallatorPuppetImpl();
+        puppetInstallator = spy(new InstallatorPuppetImpl());
         puppetInstallator.setClient(client);
         puppetInstallator.setOpenStackRegion(openStackRegion);
         puppetInstallator.setHttpsClient(httpsClient);
+        doNothing().when(puppetInstallator).sleep(10000);
+
         when(openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
 
     }
@@ -206,8 +209,7 @@ public class InstallatorPuppetTest {
     }
 
     @Test
-    public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, 
-    InstallatorException {
+    public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
         when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
@@ -330,55 +332,54 @@ public class InstallatorPuppetTest {
         PuppetNode node = puppetInstallator.loadNode("aaaa-dddfafff-1-000081", "token");
 
     }
-    
+
     @Test
-    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, 
-           IOException{
-        
-        VM host=mock(VM.class);
-        
+    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, IOException {
+
+        VM host = mock(VM.class);
+
         when(host.canWorkWithInstallatorServer()).thenReturn(true);
         when(host.getHostname()).thenReturn("aaa");
-        
+
         HttpResponse resp = mock(HttpResponse.class);
         HttpEntity httpEntity = mock(HttpEntity.class);
         InputStream in = IOUtils.toInputStream("aaa", "UTF-8");
         when(httpEntity.getContent()).thenReturn(in);
         when(resp.getEntity()).thenReturn(httpEntity);
-        
-        when(client.execute((HttpUriRequest)Mockito.anyObject())).thenReturn(resp);
-        
+
+        when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(resp);
+
         puppetInstallator.validateInstalatorData(host, "token");
     }
-    
-    @Test(expected=InvalidInstallProductRequestException.class)
-    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, 
-            IOException{
-        
-        VM host=mock(VM.class);
-        
+
+    @Test(expected = InvalidInstallProductRequestException.class)
+    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException,
+            IOException {
+
+        VM host = mock(VM.class);
+
         when(host.canWorkWithInstallatorServer()).thenReturn(false);
-        
+
         puppetInstallator.validateInstalatorData(host, "token");
     }
-    
-    @Test(expected=SdcRuntimeException.class)
-    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, 
-           IOException{
-        VM host=mock(VM.class);
-        
+
+    @Test(expected = SdcRuntimeException.class)
+    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException,
+            IOException, InterruptedException {
+        VM host = mock(VM.class);
+
         when(host.canWorkWithInstallatorServer()).thenReturn(true);
         when(host.getHostname()).thenReturn("aaa");
-        
+
         HttpResponse resp = mock(HttpResponse.class);
         HttpEntity httpEntity = mock(HttpEntity.class);
         InputStream in = IOUtils.toInputStream("RESPONSE", "UTF-8");
         when(httpEntity.getContent()).thenReturn(in);
         when(resp.getEntity()).thenReturn(httpEntity);
-        
-        when(client.execute((HttpUriRequest)Mockito.anyObject())).thenReturn(resp);
-        
-        puppetInstallator.validateInstalatorData(host, "token");
-    }
 
+        when(client.execute((HttpUriRequest) Mockito.anyObject())).thenReturn(resp);
+
+        puppetInstallator.validateInstalatorData(host, "token");
+        verify(client).execute(any(HttpUriRequest.class));
+    }
 }
