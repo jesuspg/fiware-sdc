@@ -27,12 +27,9 @@ package com.telefonica.euro_iaas.sdc.installator.impl;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +53,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     private IpToVM ip2vm;
     private static Logger log = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
-    
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String, com.telefonica.euro_iaas.sdc.model.ProductRelease, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.dto.VM,
+     * java.lang.String, com.telefonica.euro_iaas.sdc.model.ProductRelease, java.lang.String, java.lang.String)
      */
     @Override
     public void callService(VM vm, String vdc, ProductRelease productRelease, String action, String token)
@@ -69,7 +67,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance, com.telefonica.euro_iaas.sdc.model.dto.VM, java.util.List, java.lang.String, java.lang.String)
+     * @see
+     * com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance
+     * , com.telefonica.euro_iaas.sdc.model.dto.VM, java.util.List, java.lang.String, java.lang.String)
      */
     public void callService(ProductInstance productInstance, VM vm, List<Attribute> attributes, String action,
             String token) throws InstallatorException, NodeExecutionException {
@@ -114,9 +114,11 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }
     }
 
-    
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.telefonica.euro_iaas.sdc.installator.Installator#callService(com.telefonica.euro_iaas.sdc.model.ProductInstance
+     * , java.lang.String, java.lang.String)
      */
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
@@ -142,8 +144,11 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.installator.Installator#upgrade(com.telefonica.euro_iaas.sdc.model.ProductInstance, com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.telefonica.euro_iaas.sdc.installator.Installator#upgrade(com.telefonica.euro_iaas.sdc.model.ProductInstance,
+     * com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String)
      */
     @Override
     public void upgrade(ProductInstance productInstance, VM vm, String token) throws InstallatorException {
@@ -205,7 +210,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                     throw new NodeExecutionException(errorMesg);
                 }
 
-                Thread.sleep(checkTime);
+                sleep(checkTime);
 
                 ChefNode node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
 
@@ -213,14 +218,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 log.info("last_recipeexecution_timestamp:" + last_recipeexecution_timestamp + "fechaAhora:"
                         + fechaAhora.getTime());
                 if (last_recipeexecution_timestamp > fechaAhora.getTime()) {
-                    // if (isRecipeExecutedOK(process, node))
                     isExecuted = true;
-                    /*
-                     * else{ String message =" Recipe Execution failed";
-                     * unassignRecipes(vm, recipe); throw new
-                     * NodeExecutionException( new
-                     * ChefRecipeExecutionException(message)); }
-                     */
                 }
                 time = time + checkTime;
             } catch (EntityNotFoundException e) {
@@ -229,11 +227,18 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                 throw new NodeExecutionException(e);
             } catch (InterruptedException ie) {
                 throw new NodeExecutionException(ie);
-            } /*
-               * catch (InstallatorException ie2){ throw new
-               * NodeExecutionException(ie2); }
-               */
+            }
         }
+    }
+
+    /**
+     * Sleep temporarily for the specified milliseconds.
+     * 
+     * @param millis
+     * @throws InterruptedException
+     */
+    public void sleep(long millis) throws InterruptedException {
+        Thread.sleep(millis);
     }
 
     // Getting Last Sucessfully Recipe Execution Timestamp (ohai_time)
@@ -260,8 +265,11 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         return last_recipeexecution_timestamp;
     }
 
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.installator.Installator#validateInstalatorData(com.telefonica.euro_iaas.sdc.model.dto.VM, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.telefonica.euro_iaas.sdc.installator.Installator#validateInstalatorData(com.telefonica.euro_iaas.sdc.model
+     * .dto.VM, java.lang.String)
      */
     @Override
     public void validateInstalatorData(VM vm, String token) throws InvalidInstallProductRequestException,
