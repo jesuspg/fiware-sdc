@@ -59,7 +59,7 @@ public class NodeResourceImpl implements NodeResource {
     private NodeManager nodeManager;
 
     /**
-     * It obtains all the nodes for the user
+     * It obtains all the nodes for the user.
      * @return
      */
     public ChefClient findAll() {
@@ -83,6 +83,15 @@ public class NodeResourceImpl implements NodeResource {
         }
     }
 
+    /**
+     * It delete the node in the chef-server and puppet master.
+     * @param vdc
+     *            the tenant id
+     * @param nodeName
+     *            the name of the node (without domain) to be deleted from Chef/Puppet
+     * @param callback
+     * @return
+     */
     public Task delete(String vdc, String nodeName, String callback) {
         try {
             nodeManager.chefClientload(nodeName, getCredentials().getToken());
@@ -99,9 +108,14 @@ public class NodeResourceImpl implements NodeResource {
         } catch (Exception e) {
             throw new APIException(e);
         }
-
     }
 
+    /**
+     * It creates the task.
+     * @param description
+     * @param vdc
+     * @return
+     */
     private Task createTask(String description, String vdc) {
         Task task = new Task(TaskStates.RUNNING);
         task.setDescription(description);

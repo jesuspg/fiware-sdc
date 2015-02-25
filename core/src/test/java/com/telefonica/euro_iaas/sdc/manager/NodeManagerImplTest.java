@@ -211,6 +211,11 @@ public class NodeManagerImplTest {
 
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     public void deleteNodeTestNodeException_puppet_1() throws NodeExecutionException, Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
@@ -227,6 +232,11 @@ public class NodeManagerImplTest {
 
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     public void deleteNodeTestNodeException_puppet_2() throws NodeExecutionException, Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
@@ -238,6 +248,11 @@ public class NodeManagerImplTest {
 
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     public void deleteNodeTestNodeException_puppet_3() throws NodeExecutionException, Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
