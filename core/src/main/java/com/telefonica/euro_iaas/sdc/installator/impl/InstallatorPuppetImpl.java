@@ -207,7 +207,8 @@ public class InstallatorPuppetImpl implements Installator {
         HttpResponse response;
 
         log.info("Calling puppetWrapper " + action);
-        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() + "/" + action);
+        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname()
+                         + "/" + action);
         log.info("payload: " + payload);
         try {
             int statusCode = httpsClient.doHttps(HttpMethod.POST, puppetUrl + "v2/node/" + vm.getHostname() + "/"
