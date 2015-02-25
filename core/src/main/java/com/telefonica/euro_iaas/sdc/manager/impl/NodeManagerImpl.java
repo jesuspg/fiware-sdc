@@ -89,20 +89,21 @@ public class NodeManagerImpl implements NodeManager {
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
         log.info("deleting node");
+        boolean error = false;
         try {
             puppetDelete(vdc, nodeName, token);
-            chefClientDelete(vdc, nodeName, token);
         } catch (Exception e) {
-            try {
-                chefClientDelete(vdc, nodeName, token);
-            } catch (Exception e2) {
-                throw new NodeExecutionException(e2);
-            }
+            error = true;
+        }
+
+        try {
+            chefClientDelete(vdc, nodeName, token);
+        } catch (Exception e2) {
+            error = true;
         }
 
         List<ProductInstance> productInstances = null;
 
-        // eliminacion de los productos instalados en la maquina virtual
         String hostname = nodeName.split("\\.")[0];
         try {
             productInstances = productInstanceDao.findByHostname(nodeName);
@@ -113,6 +114,10 @@ public class NodeManagerImpl implements NodeManager {
         } catch (EntityNotFoundException enfe) {
             String errorMsg = "The hostname " + hostname + " does not have products installed " + enfe.getMessage();
             log.warn(errorMsg);
+        }
+
+        if (error) {
+            throw new NodeExecutionException ("Error to delete the node");
         }
 
     }
