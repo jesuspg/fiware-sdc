@@ -351,7 +351,8 @@ public class InstallatorPuppetTest {
     }
     
     @Test(expected=InvalidInstallProductRequestException.class)
-    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, 
+            IOException{
         
         VM host=mock(VM.class);
         
