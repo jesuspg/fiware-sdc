@@ -25,16 +25,23 @@ __author__ = 'jfernandez'
 
 from lettuce import step, world
 from commons.rest_utils import RestUtils
-from commons.utils import response_body_to_dict
+from commons.utils import response_body_to_dict, body_model_to_body_request
 from commons.constants import ACCEPT_HEADER, AUTH_TOKEN_HEADER, DEFAULT_METADATA, METADATA, KEY, VALUE, DESCRIPTION, \
-    METADATA_TENANT_ID, TENANT_ID_HEADER
-from nose.tools import assert_equals, assert_true, assert_not_in, assert_false
+    METADATA_TENANT_ID, TENANT_ID_HEADER, CONTENT_TYPE
+from nose.tools import assert_equals, assert_true
 from commons.product_steps import ProductSteps
 from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 
 api_utils = RestUtils()
 product_steps = ProductSteps()
 dataset_utils = DatasetUtils()
+
+
+def __check_metadata_response__(metadata_to_check):
+    response_model = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER], xml_root_element_name=METADATA)
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
+
+    assert_equals(metadata_to_check, response_model)
 
 
 @step(u'a created product with name "([^"]*)"$')
@@ -108,47 +115,57 @@ def i_use_a_invalid_http_group1_method(step, metadata_key, product_name, http_me
                                                          metadata_key=metadata_key, method=http_method)
 
 @step(u'I delete the metadata "([^"]*)" of the product "([^"]*)"')
-def i_request_the_metadata_of_the_product(step, metadata_key, product_name):
+def i_delete_the_metadata_of_the_product(step, metadata_key, product_name):
     world.metadata_key_request = metadata_key
     world.response = api_utils.delete_product_metadata(headers=world.headers, product_id=product_name,
                                                        metadata_key=metadata_key)
 
 
+@step(u'I update the metadata "([^"]*)" of the product "([^"]*)"')
+def i_update_the_metadata_of_the_product(step, metadata_key, product_name):
+    world.metadata_key_request = metadata_key
+    world.metadata_to_be_updated = dict()
+    assert_true(len(step.hashes) == 1, "Only one metadata is accepted in the dataset for this test case")
+    dataset = dataset_utils.prepare_data(step.hashes[0])
+
+    world.metadata_to_be_updated = {METADATA: dict(dataset)}
+    body_request = body_model_to_body_request(body_model=world.metadata_to_be_updated,
+                                              content_type=world.headers[CONTENT_TYPE],
+                                              body_model_root_element=METADATA)
+
+    world.response = api_utils.update_product_metadata(body=body_request, headers=world.headers,
+                                                       product_id=product_name,
+                                                       metadata_key=metadata_key)
+
+
 @step(u'the metadata is retrieved')
 def the_metadata_is_retrieved(step):
-
-    # Response is OK
-    assert_true(world.response.ok, "HTTP Status Code is not 200 OK")
-    # Pase body
-    response_body = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER],
-                                          xml_root_element_name=METADATA)
-    # Assert Key
-    assert_equals(response_body[KEY], world.metadata_key_request)
-
-    # Get expected value
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
     expected_metadata_list = DEFAULT_METADATA[METADATA] if world.metadatas is None else world.metadatas
-    metadata_expected_value = None
-    metadata_expected_description = None
     for metadata in expected_metadata_list:
         if metadata[KEY] == world.metadata_key_request:
-            metadata_expected_value = metadata[VALUE]
-            metadata_expected_description = metadata[DESCRIPTION] if DESCRIPTION in metadata else None
-
-    # Assert VALUE
-    assert_equals(response_body[VALUE], metadata_expected_value)
-
-    # Assert DESCRIPTION
-    if metadata_expected_description is not None:
-        assert_equals(response_body[DESCRIPTION], metadata_expected_description)
-    else:
-        assert_not_in(DESCRIPTION, response_body)
+            __check_metadata_response__(metadata)
+            break
 
 
 @step(u'the metadata is deleted')
 def the_metadata_is_deleted(step):
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
     i_request_the_metadata_of_the_product(step, world.metadata_key_request, world.product_name)
     assert_equals(str(world.response.status_code), "404")
 
+
+@step(u'the metadata is updated')
+def the_metadata_is_updated(step):
+    assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
+    i_request_the_metadata_of_the_product(step, world.metadata_key_request, world.product_name)
+    expected_metadata_list = DEFAULT_METADATA[METADATA] if world.metadatas is None else world.metadatas
+    for metadata in expected_metadata_list:
+        if metadata[KEY] == world.metadata_key_request:
+            metadata_to_check = metadata
+            metadata_to_check.update(world.metadata_to_be_updated[METADATA])
+            __check_metadata_response__(metadata_to_check)
+            break
 
 @step(u'the other metadatas are still present in the product')
 def the_other_metadatas_are_still_present_in_the_product(step):
@@ -161,10 +178,9 @@ def the_other_metadatas_are_still_present_in_the_product(step):
     for metadata in all_metadatas:
         if metadata[KEY] != deleted_metadata_key:
             i_request_the_metadata_of_the_product(step, metadata[KEY], world.product_name)
-            assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
+            __check_metadata_response__(metadata)
 
 
 @step(u'I obtain an http error code "([^"]*)"')
 def i_obtain_an_http_error_code_group1(step, error_code):
     assert_equals(str(world.response.status_code), error_code)
-
