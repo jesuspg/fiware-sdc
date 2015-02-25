@@ -56,6 +56,7 @@ import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
@@ -331,7 +332,8 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, 
+           IOException{
         
         VM host=mock(VM.class);
         
@@ -350,7 +352,8 @@ public class InstallatorPuppetTest {
     }
     
     @Test(expected=InvalidInstallProductRequestException.class)
-    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+    public void testValidatorDataException() throws InvalidInstallProductRequestException, ClientProtocolException, 
+            IOException{
         
         VM host=mock(VM.class);
         
@@ -359,9 +362,9 @@ public class InstallatorPuppetTest {
         puppetInstallator.validateInstalatorData(host, "token");
     }
     
-    @Test(expected=InvalidInstallProductRequestException.class)
-    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
-        
+    @Test(expected=SdcRuntimeException.class)
+    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, 
+           IOException{
         VM host=mock(VM.class);
         
         when(host.canWorkWithInstallatorServer()).thenReturn(true);
