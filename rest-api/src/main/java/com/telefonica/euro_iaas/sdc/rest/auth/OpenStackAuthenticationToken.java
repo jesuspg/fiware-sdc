@@ -44,6 +44,14 @@ import com.telefonica.euro_iaas.sdc.rest.exception.AuthenticationConnectionExcep
  * Class to obtain a valid token from the OpenStack.
  */
 public class OpenStackAuthenticationToken {
+    /**
+     * http code 200.
+     */
+    private static final int CODE_200 = 200;
+    /**
+     * http code 201.
+     */
+    private static final int CODE_203 = 203;
 
     /**
      * The log.
@@ -57,10 +65,6 @@ public class OpenStackAuthenticationToken {
      * The tenant ID.
      */
     private String tenantId;
-    /**
-     * The expiration date of the token.
-     */
-    private static String date;
     /**
      * The url of the keystone service.
      */
@@ -137,7 +141,7 @@ public class OpenStackAuthenticationToken {
 
             response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON));
 
-            if (response.getStatus() == 200) {
+            if ((response.getStatus() == CODE_200) || (response.getStatus() == CODE_203)) {
 
                 JSONObject jsonObject = JSONObject.fromObject(response.readEntity(String.class));
                 jsonObject = (JSONObject) jsonObject.get("access");

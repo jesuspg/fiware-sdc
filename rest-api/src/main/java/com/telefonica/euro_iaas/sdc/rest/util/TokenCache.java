@@ -127,4 +127,20 @@ public class TokenCache {
             return null;
         }
     }
+
+    /**
+     * remove all cache.
+     */
+    public void resetCache() {
+        if (cache != null) {
+            cache.removeAll();
+        }
+    }
+
+    /**
+     * remove all cache.
+     */
+    public static void removeCache() {
+        new TokenCache().resetCache();
+    }
 }

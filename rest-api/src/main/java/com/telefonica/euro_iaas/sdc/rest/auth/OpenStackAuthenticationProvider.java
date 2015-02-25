@@ -74,6 +74,10 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      */
     public static final int CODE_200 = 200;
     /**
+     * The Constant CODE_203. HTTP 203 ok
+     */
+    public static final int CODE_203 = 203;
+    /**
      * The Constant CODE_401.
      */
     public static final int CODE_401 = 401;
@@ -174,8 +178,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
                 Invocation.Builder builder = tokens.request();
                 Response response = builder.accept(MediaType.APPLICATION_XML)
                         .header("X-Auth-Token", adminCredentials[0]).get();
+                int status = response.getStatus();
 
-                if (response.getStatus() == CODE_200) {
+                if ((status == CODE_200) || (status == CODE_203)) {
                     // Validate user's token
                     authenticateResponse = response.readEntity(AuthenticateResponse.class);
                     PaasManagerUser userValidated = createPaasManagerUser(token, tenantId, authenticateResponse);
@@ -184,9 +189,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
                     return userValidated;
                 } else {
-                    log.warn("response status:" + response.getStatus());
+                    log.warn("response status:" + status);
 
-                    if (response.getStatus() == CODE_401) {
+                    if (status == CODE_401) {
                         throw new BadCredentialsException("Invalid token");
                     }
 
