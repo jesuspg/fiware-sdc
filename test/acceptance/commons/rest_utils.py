@@ -125,6 +125,11 @@ class RestUtils(object):
         return self._call_api(pattern=PRODUCT_METADATA_PATTERN, method='delete', headers=headers, product_id=product_id,
                               metadata_key=metadata_key)
 
+    def update_product_metadata(self, body, product_id, metadata_key, headers=None):
+
+        return self._call_api(pattern=PRODUCT_METADATA_PATTERN, method='put', headers=headers, product_id=product_id,
+                              metadata_key=metadata_key, body=body)
+
     def delete_product(self, headers=None, product_id=None):
 
         return self._call_api(pattern=PRODUCT_PATTERN, method='delete', headers=headers, product_id=product_id)

@@ -26,6 +26,16 @@ from commons.terrain_steps import setup_feature, setup_scenario, setup_outline, 
 from lettuce import before, after, world
 
 
+def __clean_test_vars__():
+    world.product_name = None
+    world.product_release = None
+    world.metadatas = None
+    world.attributes = None
+    world.metadata_key_request = None
+    world.metadata_key_value = None
+    world.metadata_to_be_updated = None
+
+
 @before.each_feature
 def before_each_feature(feature):
     """ Hook: Will be executed before each feature. Configures global vars and gets token from keystone. """
@@ -36,20 +46,14 @@ def before_each_feature(feature):
 def before_each_scenario(scenario):
     """ Hook: Will be executed before each Scenario. Setup Scenario and initialize World vars """
     setup_scenario(scenario)
-    world.product_name = None
-    world.product_release = None
-    world.metadatas = None
-    world.attributes = None
+    __clean_test_vars__()
 
 
 @before.outline
 def before_outline(param1, param2, param3, param4):
     """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
     setup_outline(param1, param2, param3, param4)
-    world.product_name = None
-    world.product_release = None
-    world.metadatas = None
-    world.attributes = None
+    __clean_test_vars__()
 
 
 @after.all
