@@ -332,7 +332,8 @@ public class InstallatorPuppetTest {
     }
     
     @Test
-    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
+    public void testValidatorData() throws InvalidInstallProductRequestException, ClientProtocolException, 
+           IOException{
         
         VM host=mock(VM.class);
         
@@ -362,8 +363,9 @@ public class InstallatorPuppetTest {
     }
     
     @Test(expected=SdcRuntimeException.class)
-    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, IOException{
-         VM host=mock(VM.class);
+    public void testValidatorException2() throws InvalidInstallProductRequestException, ClientProtocolException, 
+           IOException{
+        VM host=mock(VM.class);
         
         when(host.canWorkWithInstallatorServer()).thenReturn(true);
         when(host.getHostname()).thenReturn("aaa");
