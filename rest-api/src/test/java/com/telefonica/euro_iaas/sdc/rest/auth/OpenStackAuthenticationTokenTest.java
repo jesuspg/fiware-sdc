@@ -21,101 +21,116 @@
  * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
  * </p>
  */
+
 package com.telefonica.euro_iaas.sdc.rest.auth;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.junit.Before;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.sdc.rest.exception.AuthenticationConnectionException;
 
 public class OpenStackAuthenticationTokenTest {
 
-    OpenStackAuthenticationToken openStackAuthenticationToken;
-    ArrayList<Object> params = new ArrayList<Object>();
-    HttpClient httpClient;
-    HttpResponse response;
-    StatusLine statusLine;
-    HttpEntity httpEntity;
-    InputStream is;
+    @Test
+    public void getCredentialsTest() throws AuthenticationConnectionException, IOException {
 
-    private String payload = "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\"><token "
-            + "expires=\"2015-07-09T15:16:07Z\" id=\"35b208abaf09707c5fed8e54af9a48b8\"><tenant "
-            + "enabled=\"true\" id=\"00000000000000000000000000000001\" name=\"00000000000000000000000000000001\"/>"
-            + "</token><serviceCatalog><endpoints><adminURL>http://130.206.80.58:8774/v2/undefined</adminURL>"
-            + "<region>Trento</region><internalURL>http://130.206.80.58:8774/v2/undefined</internalURL>";
+        OpenStackAuthenticationToken openStackAuthenticationToken;
 
-    @Before
-    public void setup() throws IOException {
+        // Given
+        ArrayList<Object> params = new ArrayList<Object>();
+        String url = "http://keystone";
 
-        httpClient = mock(HttpClient.class);
-        response = mock(HttpResponse.class);
-        statusLine = mock(StatusLine.class);
-        httpEntity = mock(HttpEntity.class);
-        is = IOUtils.toInputStream(payload, "UTF-8");
+        String payload = "{ \"access\":{\"token\":{\"expires\":\"2015-07-09T15:16:07Z\","
+                + "\"id\":\"0bd52c4b2fa09951aa057b4590c4aa6d\",\"tenant\":{\"description\":\"Tenant from IDM\","
+                + "\"enabled\":\"true\",\"id\":\"00000000000000000000000000001348\",\"name\":\"tenantName\"}"
+                + "      }}}";
 
-        params.add("url");
+        Client client = mock(Client.class);
+        WebTarget webTarget = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+
+        params.add(url);
         params.add("tenant");
         params.add("user");
         params.add("passw");
-        params.add(httpClient);
-        params.add(new Long(3));
+        params.add(client);
 
         openStackAuthenticationToken = new OpenStackAuthenticationToken(params);
+        when(client.target(url)).thenReturn(webTarget);
+        when(webTarget.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        Response response = mock(Response.class);
+        when(builder.post(any(Entity.class))).thenReturn(response);
+        when(response.getStatus()).thenReturn(200);
+        when(response.readEntity(String.class)).thenReturn(payload);
+
+        // when
+        String credentials[] = openStackAuthenticationToken.getCredentials();
+
+        // then
+        verify(client).target(url);
+        verify(webTarget).request(MediaType.APPLICATION_JSON);
+        verify(builder).accept(MediaType.APPLICATION_JSON);
+        verify(response).getStatus();
+        verify(response).readEntity(String.class);
+        assertNotNull(credentials);
+        assertEquals("0bd52c4b2fa09951aa057b4590c4aa6d", credentials[0]);
+        assertEquals("00000000000000000000000000001348", credentials[1]);
+
     }
 
-    @Test
-    public void getCredentialsTest() throws AuthenticationConnectionException, ClientProtocolException, IOException {
-        Header header = new Header() {
+    @Test(expected = AuthenticationConnectionException.class)
+    public void shouldGetCredentialsWithErrorAfterRequestToken() throws IOException {
+        OpenStackAuthenticationToken openStackAuthenticationToken;
 
-            @Override
-            public String getValue() {
-                return "Fri, 21 Nov 2014 12:30:54 GMT";
-            }
+        // Given
+        ArrayList<Object> params = new ArrayList<Object>();
+        String url = "http://keystone";
 
-            @Override
-            public String getName() {
-                return "Date";
-            }
+        String payload = "{ \"access\":{\"token\":{\"expires\":\"2015-07-09T15:16:07Z\","
+                + "\"id\":\"0bd52c4b2fa09951aa057b4590c4aa6d\",\"tenant\":{\"description\":\"Tenant from IDM\","
+                + "\"enabled\":\"true\",\"id\":\"00000000000000000000000000001348\",\"name\":\"tenantName\"}"
+                + "      }}}";
 
-            @Override
-            public HeaderElement[] getElements() throws ParseException {
-                // TODO Auto-generated method stub
-                return null;
-            }
-        };
-        Header[] headers = new Header[] { header };
+        Client client = mock(Client.class);
+        WebTarget webTarget = mock(WebTarget.class);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
 
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(response.getStatusLine()).thenReturn(statusLine);
-        when(response.getEntity()).thenReturn(httpEntity);
-        when(httpEntity.getContent()).thenReturn(is);
-        when(httpClient.execute(any(HttpPost.class))).thenReturn(response);
-        when(response.getHeaders(anyString())).thenReturn(headers);
+        params.add(url);
+        params.add("tenant");
+        params.add("user");
+        params.add("passw");
+        params.add(client);
 
+        openStackAuthenticationToken = new OpenStackAuthenticationToken(params);
+        when(client.target(url)).thenReturn(webTarget);
+        when(webTarget.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        Response response = mock(Response.class);
+        when(builder.post(any(Entity.class))).thenReturn(response);
+        when(response.getStatus()).thenReturn(400);
+        when(response.readEntity(String.class)).thenReturn(payload);
+
+        // when
         openStackAuthenticationToken.getCredentials();
 
-        verify(httpClient, times(1)).execute(any(HttpPost.class));
+        // then
 
     }
 }
