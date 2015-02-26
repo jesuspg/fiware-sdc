@@ -30,10 +30,12 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -241,13 +243,86 @@ public class ProductResourceImplTest {
     @Test
     public void testUpdateMetadata() throws Exception {
         Metadata metadata = new Metadata();
+        metadata.setKey("key");
 
         when(productManager.loadMetadata(anyString(), anyString())).thenReturn(metadata);
         doNothing().when(productManager).updateMetadata(metadata);
 
-        productResource.updateMetadata("productname", "metadata", new Metadata("metadata", "value"));
+        productResource.updateMetadata("productname", "key", new Metadata("key", "value"));
         verify(productManager).updateMetadata(metadata);
 
+    }
+
+    /**
+     * Update metadata, with key and description
+     */
+    @Test
+    public void shouldUpdateDescriptionForMetadata() throws EntityNotFoundException {
+        // given
+        Metadata metadata = new Metadata();
+        metadata.setKey("key1");
+        metadata.setValue(null);
+        metadata.setDescription("new description");
+        Metadata metadataSaved = new Metadata();
+        metadataSaved.setKey("key1");
+        metadataSaved.setValue("value");
+        metadataSaved.setDescription("description");
+
+        when(productManager.loadMetadata(anyString(), anyString())).thenReturn(metadataSaved);
+        doNothing().when(productManager).updateMetadata(metadata);
+        Metadata updatedMetadata = new Metadata();
+        updatedMetadata.setKey("key1");
+        updatedMetadata.setValue("value");
+        updatedMetadata.setDescription("new description");
+
+        // when
+        productResource.updateMetadata("productName", "key1", updatedMetadata);
+
+        // then
+        verify(productManager).updateMetadata(updatedMetadata);
+        assertNotNull(updatedMetadata.getValue());
+
+    }
+
+    /**
+     * Return error when error returned by database
+     * 
+     * @throws EntityNotFoundException
+     */
+    @Test(expected = APIException.class)
+    public void shouldReturnErrorWhenProblemInDatabaseWithUpdateMetadata() throws EntityNotFoundException {
+        // given
+        Metadata updatedMetadata = new Metadata();
+        updatedMetadata.setKey("key1");
+        updatedMetadata.setValue("value");
+        updatedMetadata.setDescription("new description");
+        when(productManager.loadMetadata(anyString(), anyString())).thenReturn(updatedMetadata);
+        doThrow(new org.hibernate.exception.ConstraintViolationException("", new SQLException(), "")).when(
+                productManager).updateMetadata(any(Metadata.class));
+
+        // when
+        productResource.updateMetadata("productName", "key1", updatedMetadata);
+
+        // then
+    }
+
+    @Test(expected = APIException.class)
+    public void shouldReturnErrorTryingToChangeTheMetadataKeyInUpdateMetadata() throws EntityNotFoundException {
+        // given
+        Metadata updatedMetadata = new Metadata();
+        updatedMetadata.setKey("key_new");
+        updatedMetadata.setValue("value");
+        updatedMetadata.setDescription("new description");
+        Metadata metadataInDataBase = new Metadata();
+        metadataInDataBase.setKey("key1");
+        metadataInDataBase.setValue("original_value");
+        metadataInDataBase.setDescription("description");
+        when(productManager.loadMetadata(anyString(), anyString())).thenReturn(metadataInDataBase);
+
+        // when
+        productResource.updateMetadata("productName", "key1", updatedMetadata);
+
+        // then
     }
 
     /**
