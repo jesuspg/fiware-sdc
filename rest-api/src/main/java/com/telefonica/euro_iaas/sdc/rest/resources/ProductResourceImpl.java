@@ -353,7 +353,7 @@ public class ProductResourceImpl implements ProductResource {
     /**
      * It updates the metadata of a product.
      * 
-     * @param name
+     * @param productName
      *            the product name
      * @param metadataName
      *            the product metadata name
@@ -370,11 +370,22 @@ public class ProductResourceImpl implements ProductResource {
                     + e.getMessage());
             throw new APIException(e);
         }
+        if ((metadata.getKey() != null) && (updatedMetadata.getKey() != null)) {
+            boolean differentKeys = !metadata.getKey().equals(updatedMetadata.getKey());
+            if (differentKeys) {
+                String message = "Metadata: " + metadataName + " in database has different key to: "
+                        + metadata.getKey();
+                log.warning(message);
+                throw new APIException(new EntityNotFoundException(Metadata.class, "key", metadata.getKey()), 400);
+            }
+        }
 
         if (metadata.getDescription() != null) {
             updatedMetadata.setDescription(metadata.getDescription());
         }
-        updatedMetadata.setValue(metadata.getValue());
+        if (metadata.getValue() != null) {
+            updatedMetadata.setValue(metadata.getValue());
+        }
         try {
             productManager.updateMetadata(updatedMetadata);
         } catch (Exception e) {
