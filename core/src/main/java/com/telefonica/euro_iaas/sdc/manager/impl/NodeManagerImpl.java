@@ -79,6 +79,9 @@ public class NodeManagerImpl implements NodeManager {
     private static Logger puppetLog = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
     private static Logger chefLog = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
+    private static int HTTP_OK = 200;
+    private static int HTTP_NOT_FOUND = 404;
+
     /*
      * (non-Javadoc)
      * 
@@ -144,7 +147,7 @@ public class NodeManagerImpl implements NodeManager {
                 int statusCode;
                 statusCode = httpsClient.doHttps(HttpMethod.DELETE, deleteUrl, "", headers);
 
-                if (statusCode == 200 || statusCode == 404) { // 404 means node
+                if (statusCode == HTTP_OK || statusCode == HTTP_NOT_FOUND) { // 404 means node
                                                               // didn't exist in
                                                               // puppet
                     log.info("Node deleted");
