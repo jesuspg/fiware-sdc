@@ -376,7 +376,7 @@ public class ProductResourceImpl implements ProductResource {
                 String message = "Metadata: " + metadataName + " in database has different key to: "
                         + metadata.getKey();
                 log.warning(message);
-                throw new APIException(new EntityNotFoundException(Metadata.class, "key", metadata.getKey()));
+                throw new APIException(new EntityNotFoundException(Metadata.class, "key", metadata.getKey()), 400);
             }
         }
 
