@@ -119,6 +119,29 @@ public class NodeManagerImplTest {
         // verify(client, times(1)).execute((HttpUriRequest) anyObject());
     }
 
+    /**
+     * It tests loading the client
+     * @throws Exception
+     */
+    @Test
+    public void testChefClientLoad() throws Exception{
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
+
+        when(
+            httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
+                (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.chefClientload("dd", "token");
+
+    }
+
     @Test
     public void deleteNodeTestOK_nodeNotFountInPuppet() throws NodeExecutionException, CanNotCallChefException,
             EntityNotFoundException, ClientProtocolException, IOException, KeyManagementException,
@@ -206,9 +229,6 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(client, times(1)).execute((HttpUriRequest) anyObject());
-
     }
 
     /**
@@ -216,7 +236,7 @@ public class NodeManagerImplTest {
      * @throws NodeExecutionException
      * @throws Exception
      */
-    public void deleteNodeTestNodeException_puppet_1() throws NodeExecutionException, Exception {
+    public void deleteNodeTestNodeException_puppet_1() throws Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
         StatusLine statusLine = mock(StatusLine.class);
