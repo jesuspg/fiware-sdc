@@ -93,12 +93,14 @@ public class NodeManagerImpl implements NodeManager {
         try {
             puppetDelete(vdc, nodeName, token);
         } catch (Exception e) {
+            log.warn("The node cannot be deleted in Puppet master");
             error = true;
         }
 
         try {
             chefClientDelete(vdc, nodeName, token);
         } catch (Exception e2) {
+            log.warn("The node cannot be deleted in Chef-server");
             error = true;
         }
 
