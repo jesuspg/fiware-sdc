@@ -114,6 +114,7 @@ def i_use_a_invalid_http_group1_method(step, metadata_key, product_name, http_me
     world.response = api_utils.retrieve_product_metadata(headers=world.headers, product_id=product_name,
                                                          metadata_key=metadata_key, method=http_method)
 
+
 @step(u'I delete the metadata "([^"]*)" of the product "([^"]*)"')
 def i_delete_the_metadata_of_the_product(step, metadata_key, product_name):
     world.metadata_key_request = metadata_key

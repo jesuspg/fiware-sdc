@@ -157,3 +157,18 @@ Feature: Update a specific metadata of a product
           | mobile      | new value | new description     |
     Then  the metadata is updated
     And   the other metadatas are still present in the product
+
+
+  Scenario: Update metadata value and description with different representations.
+    Given accept header value "<accept_header>"
+    And   a created product with name "<product_name>" and those metadatas
+    When  I update the metadata "image" of the product "<product_name>"
+          | key         | value               | description         |
+          | image       | 1asfsdf-sdfsdf-sdfs | new description     |
+    Then  the metadata is updated
+    And   the other metadatas are still present in the product
+
+    Examples:
+          | product_name          | accept_header    |
+          | testing_metadatas_11  | application/json |
+          | testing_metadatas_12  | application/xml  |

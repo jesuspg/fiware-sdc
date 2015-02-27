@@ -125,3 +125,18 @@ Feature: Get a specific metadata of a product
           | testing_metadatas_29 | my:key   | vm_1   |
           | testing_metadatas_30 | my@key   | vm_1   |
           | testing_metadatas_31 | my(key)  | vm_1   |
+
+  @test
+  Scenario: Get metadata with different representations.
+    Given the following metadatas
+          | key         | value     | description         |
+          | mobile      | iOS       | installation type   |
+    And   accept header value "<accept_header>"
+    And   a created product with name "testing_metadatas_01" and those metadatas
+    When  I request the metadata "mobile" of the product "testing_metadatas_01"
+    Then  the metadata is retrieved
+
+    Examples:
+          | product_name          | accept_header    |
+          | testing_metadatas_32  | application/json |
+          | testing_metadatas_33  | application/xml  |
