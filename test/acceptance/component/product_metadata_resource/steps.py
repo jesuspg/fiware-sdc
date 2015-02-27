@@ -38,8 +38,8 @@ dataset_utils = DatasetUtils()
 
 
 def __check_metadata_response__(metadata_to_check):
-    response_model = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER], xml_root_element_name=METADATA)
     assert_true(world.response.ok, 'RESPONSE: {}'.format(world.response.content))
+    response_model = response_body_to_dict(world.response, world.headers[ACCEPT_HEADER], xml_root_element_name=METADATA)
 
     assert_equals(metadata_to_check, response_model)
 
@@ -62,9 +62,9 @@ def a_created_product_with_name_group1_and_release_group2(step, product_name, pr
 
 @step(u'the following metadatas')
 def and_the_following_metadatas(step):
-    world.metadatas = []
+    world.metadatas = list()
     for row in step.hashes:
-        metadata = {}
+        metadata = dict()
         metadata[KEY] = row[KEY]
         metadata[VALUE] = row[VALUE]
         if row[DESCRIPTION] != 'None':
@@ -78,7 +78,7 @@ def and_the_following_metadatas(step):
 
 @step(u'the following attributes')
 def and_the_following_attributes(step):
-    world.attributes = []
+    world.attributes = list()
     for row in step.hashes:
         data = dict(dataset_utils.prepare_data(row))
         world.attributes.append(data)
@@ -113,6 +113,7 @@ def i_request_the_metadata_of_the_product(step, metadata_key, product_name):
 def i_use_a_invalid_http_group1_method(step, metadata_key, product_name, http_method):
     world.response = api_utils.retrieve_product_metadata(headers=world.headers, product_id=product_name,
                                                          metadata_key=metadata_key, method=http_method)
+
 
 @step(u'I delete the metadata "([^"]*)" of the product "([^"]*)"')
 def i_delete_the_metadata_of_the_product(step, metadata_key, product_name):
@@ -162,15 +163,16 @@ def the_metadata_is_updated(step):
     expected_metadata_list = DEFAULT_METADATA[METADATA] if world.metadatas is None else world.metadatas
     for metadata in expected_metadata_list:
         if metadata[KEY] == world.metadata_key_request:
-            metadata_to_check = metadata
+            metadata_to_check = dict(metadata)
             metadata_to_check.update(world.metadata_to_be_updated[METADATA])
             __check_metadata_response__(metadata_to_check)
             break
 
+
 @step(u'the other metadatas are still present in the product')
 def the_other_metadatas_are_still_present_in_the_product(step):
     deleted_metadata_key = world.metadata_key_request
-    all_metadatas = []
+    all_metadatas = list()
     if world.metadatas is not None:
         all_metadatas += world.metadatas
     all_metadatas += DEFAULT_METADATA[METADATA]

@@ -17,7 +17,7 @@ Feature: Update a specific metadata of a product
     Then  the metadata is updated
     And   the other metadatas are still present in the product
 
-  @skip @CLAUDIA-4709
+
   Scenario Outline: Update metadata. Product with a custom metadata.
     Given the following metadatas
           | key         | value     | description         |
@@ -44,7 +44,7 @@ Feature: Update a specific metadata of a product
           | testing_metadatas_01k | mobile          | [MISSING_PARAM] | installation type   |
           | testing_metadatas_01l | mobile          | iOS             | installation type   |
 
-  @skip @CLAUDIA-4710
+
   Scenario Outline: Update metadata key with different key value
     Given the following metadatas
           | key         | value     | description         |
@@ -143,7 +143,7 @@ Feature: Update a specific metadata of a product
           | mobile      | new value | new description     |
     Then  I obtain an http error code "404"
 
-  @test
+
   Scenario: Update metadata of a product with attributes
     Given the following metadatas
           | key         | value     | description         |
@@ -157,3 +157,18 @@ Feature: Update a specific metadata of a product
           | mobile      | new value | new description     |
     Then  the metadata is updated
     And   the other metadatas are still present in the product
+
+
+  Scenario: Update metadata value and description with different representations.
+    Given accept header value "<accept_header>"
+    And   a created product with name "<product_name>" and those metadatas
+    When  I update the metadata "image" of the product "<product_name>"
+          | key         | value               | description         |
+          | image       | 1asfsdf-sdfsdf-sdfs | new description     |
+    Then  the metadata is updated
+    And   the other metadatas are still present in the product
+
+    Examples:
+          | product_name          | accept_header    |
+          | testing_metadatas_11  | application/json |
+          | testing_metadatas_12  | application/xml  |
