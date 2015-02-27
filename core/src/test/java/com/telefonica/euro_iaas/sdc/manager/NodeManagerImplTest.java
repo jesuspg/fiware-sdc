@@ -236,6 +236,7 @@ public class NodeManagerImplTest {
      * @throws NodeExecutionException
      * @throws Exception
      */
+    @Test
     public void deleteNodeTestNodeException_puppet_1() throws Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
@@ -257,6 +258,7 @@ public class NodeManagerImplTest {
      * @throws NodeExecutionException
      * @throws Exception
      */
+    @Test
     public void deleteNodeTestNodeException_puppet_2() throws NodeExecutionException, Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
@@ -273,6 +275,7 @@ public class NodeManagerImplTest {
      * @throws NodeExecutionException
      * @throws Exception
      */
+    @Test
     public void deleteNodeTestNodeException_puppet_3() throws NodeExecutionException, Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
