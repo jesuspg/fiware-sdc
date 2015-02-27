@@ -66,11 +66,14 @@ public class APIException extends WebApplicationException {
 
     public void parseCause() {
 
-        ErrorCode errorCode = ErrorCode.find(cause.toString());
-        this.code = errorCode.getCode();
-        this.publicMessage = errorCode.getPublicMessage();
-        this.message = errorCode.toString() + "#" + cause.getMessage();
-        this.httpCode = errorCode.getHttpCode();
+        if (cause != null) {
+
+            ErrorCode errorCode = ErrorCode.find(cause.toString());
+            this.code = errorCode.getCode();
+            this.publicMessage = errorCode.getPublicMessage();
+            this.message = errorCode.toString() + "#" + cause.getMessage();
+            this.httpCode = errorCode.getHttpCode();
+        }
 
     }
 

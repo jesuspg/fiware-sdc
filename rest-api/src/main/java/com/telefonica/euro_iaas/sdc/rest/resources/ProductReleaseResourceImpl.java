@@ -165,11 +165,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
             return productReleaseManager.load(product, version);
         } catch (EntityNotFoundException e) {
             log.warning("EntityNotFoundException: " + e.getMessage());
-            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));// TODO
-                                                                                                                // Auto-generated
-                                                                                                                // catch
-                                                                                                                // block
-
+            throw new APIException(new EntityNotFoundException(ProductRelease.class, pName + "-" + version, e));
         }
     }
 
@@ -208,10 +204,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.sdc.rest.resources.ProductReleaseResource# findTransitable(java.lang.String,
-     * java.lang.String)
+    /**
+     * It obtains the transsitable version.
+     * @param pName
+     * @param version
+     *            the product version
+     * @return
+     * @throws APIException
      */
     @Override
     public List<ProductRelease> findTransitable(String pName, String version) throws APIException {
