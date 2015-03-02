@@ -84,7 +84,8 @@ def response_body_to_dict(http_response, accept_content_type, with_attributes=Fa
             assert xml_root_element_name is not None,\
                 "xml_root_element_name is a mandatory param when body is in XML and attributes are not considered"
             response_body = xml_to_dict(http_response.content)[xml_root_element_name]
-            __set_none_as_empty_value__(response_body)
+            if response_body is not None:
+                __set_none_as_empty_value__(response_body)
 
             if is_list and response_body is not None:
                 response_body = response_body.popitem()[1]
