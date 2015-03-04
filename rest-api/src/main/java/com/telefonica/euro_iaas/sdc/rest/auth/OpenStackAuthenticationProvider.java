@@ -36,6 +36,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
+import net.sf.ehcache.Cache;
+
 import org.openstack.docs.identity.api.v2.AuthenticateResponse;
 import org.openstack.docs.identity.api.v2.Role;
 import org.slf4j.Logger;
@@ -322,4 +324,12 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         this.oSAuthToken = oSAuthToken;
     }
 
+    /**
+     * get ehcache.
+     * 
+     * @return
+     */
+    public Cache getTokenCache() {
+        return tokenCache.getCache();
+    }
 }

@@ -6,7 +6,7 @@
 	<artifactId>sdc-server</artifactId>
 	<packaging>pom</packaging>
 	<name>Sagitta - SDC Server</name>
-	<version>2.5.0</version>
+	<version>2.5.1</version>
 
 	<properties>
 
