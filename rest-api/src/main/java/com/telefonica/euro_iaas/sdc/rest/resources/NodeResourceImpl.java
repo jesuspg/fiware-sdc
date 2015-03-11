@@ -75,7 +75,7 @@ public class NodeResourceImpl implements NodeResource {
      */
     public ChefClient load(String chefClientName) {
         try {
-            return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
+            return nodeManager.chefClientload(chefClientName, getToken());
         } catch (EntityNotFoundException e) {
             throw new APIException(e);
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class NodeResourceImpl implements NodeResource {
      */
     public Task delete(String vdc, String nodeName, String callback) {
         try {
-            nodeManager.chefClientload(nodeName, getCredentials().getToken());
+            nodeManager.chefClientload(nodeName, getToken());
         } catch (EntityNotFoundException e) {
             throw new APIException(e);
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class NodeResourceImpl implements NodeResource {
 
         try {
             Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
-            nodeAsyncManager.nodeDelete(vdc, nodeName, getCredentials().getToken(), task, callback);
+            nodeAsyncManager.nodeDelete(vdc, nodeName, getToken(), task, callback);
             return task;
         } catch (Exception e) {
             throw new APIException(e);
@@ -135,8 +135,30 @@ public class NodeResourceImpl implements NodeResource {
         this.nodeManager = nodeManager;
     }
 
+    /**
+     * It gets the credentials.
+     * @return
+     */
     public PaasManagerUser getCredentials() {
-        return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * It obtains the token from the credentials.
+     * @return
+     */
+    public String getToken() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getToken();
+        }
+
     }
 
 }
