@@ -142,6 +142,29 @@ public class NodeManagerImplTest {
 
     }
 
+    /**
+     * It test an error in loading node.
+     * @throws Exception
+     */
+    @Test
+    public void testChefClientLoadError() throws Exception{
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
+
+        when(
+            httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
+                (Map<String, String>) Mockito.anyObject())).thenReturn(404);
+
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.chefClientload("dd", "token");
+
+    }
+
     @Test
     public void deleteNodeTestOK_nodeNotFountInPuppet() throws NodeExecutionException, CanNotCallChefException,
             EntityNotFoundException, ClientProtocolException, IOException, KeyManagementException,
@@ -170,9 +193,9 @@ public class NodeManagerImplTest {
     public void deleteNodeTestEntityNotFound_chef() throws EntityNotFoundException, ClientProtocolException,
             IOException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
 
-        when(
-                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(),
+            Mockito.anyString(), (Map<String, String>) Mockito.anyObject())).
+            thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
@@ -189,9 +212,9 @@ public class NodeManagerImplTest {
     }
 
     @Test
-    public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException, CanNotCallChefException,
-            EntityNotFoundException, ClientProtocolException, IOException, KeyManagementException,
-            NoSuchAlgorithmException {
+    public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException,
+        CanNotCallChefException, EntityNotFoundException,
+        IOException, KeyManagementException, NoSuchAlgorithmException {
 
         when(chefNodeDao.loadNode("testError", "token")).thenThrow(CanNotCallChefException.class);
         when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
@@ -201,9 +224,9 @@ public class NodeManagerImplTest {
 
         when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
 
-        when(
-                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(),
+            Mockito.anyString(), (Map<String, String>) Mockito.anyObject())).
+            thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
@@ -248,8 +271,6 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError", "token");
-
-        verify(httpResponse, times(1)).getStatusLine();
 
     }
 

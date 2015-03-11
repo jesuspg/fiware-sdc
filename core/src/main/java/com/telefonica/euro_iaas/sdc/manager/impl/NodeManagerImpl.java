@@ -148,8 +148,8 @@ public class NodeManagerImpl implements NodeManager {
                 statusCode = httpsClient.doHttps(HttpMethod.DELETE, deleteUrl, "", headers);
 
                 if (statusCode == HTTP_OK || statusCode == HTTP_NOT_FOUND) { // 404 means node
-                                                              // didn't exist in
-                                                              // puppet
+                    // didn't exist in
+                    // puppet
                     log.info("Node deleted");
                 } else {
                     String msg = format("[puppet delete node] response code was: {0}", statusCode);
