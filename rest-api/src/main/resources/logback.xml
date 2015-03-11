@@ -53,7 +53,7 @@
             </pattern>
         </encoder>
     </appender>
-    
+
     <appender name="aspectAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${jetty.base}/logs/sdc.log</file>
@@ -82,7 +82,7 @@
     </logger>
 
     <logger name="aspectLogger" additivity="false">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="aspectAppender"/>
     </logger>
 

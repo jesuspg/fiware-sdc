@@ -24,11 +24,9 @@
 
 package com.telefonica.euro_iaas.sdc.rest.auth;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,6 +38,7 @@ import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
@@ -49,23 +48,32 @@ import org.openstack.docs.identity.api.v2.AuthenticateResponse;
 import org.openstack.docs.identity.api.v2.TenantForAuthenticateResponse;
 import org.openstack.docs.identity.api.v2.Token;
 import org.openstack.docs.identity.api.v2.UserForAuthenticateResponse;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.sdc.rest.exception.AuthenticationConnectionException;
+import com.telefonica.euro_iaas.sdc.rest.util.TokenCache;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
+/**
+ * Test class to check the OpenStackAuthenticationProvider.
+ */
 public class OpenStackAuthenticationProviderTest {
 
-    SystemPropertiesProvider systemPropertiesProvider;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
-    OpenStackAuthenticationToken openStackAuthenticationToken;
-
+    /**
+     * Initialize some parameters before starting the tests.
+     */
     @Before
     public void setup() {
 
+        TokenCache.removeCache();
+
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
 
         when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL)).thenReturn(
                 "http://keystone.test");
@@ -77,174 +85,256 @@ public class OpenStackAuthenticationProviderTest {
     }
 
     @Test
-    public void shouldCreatesNewTokenAndValidateWhenAdminTokenIsNotAuthorized() {
-        // given
+    public void shouldCreatesNewTokenForAdminAndUser() {
 
-        String adminToken = "fa63ea912a2a579c2542dbb90951d500";
-
+        // Given
         OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
         openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
-        openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
-        openStackAuthenticationProvider.oSAuthToken = openStackAuthenticationToken;
+        OpenStackAuthenticationToken openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { "tokenAdmin2", "tenantIdAdmin" });
         Client client = mock(Client.class);
         openStackAuthenticationProvider.setClient(client);
         WebTarget webResource = mock(WebTarget.class);
-        Invocation.Builder builder = mock(Invocation.Builder.class);
         WebTarget webResource2 = mock(WebTarget.class);
-        Invocation.Builder builder2 = mock(Invocation.Builder.class);
-        Response clientResponse = mock(Response.class);
-        Response response401 = mock(Response.class);
-        AuthenticateResponse authenticateResponse = mock(AuthenticateResponse.class);
+        when(client.target("http://keystone.test")).thenReturn(webResource);
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webResource.path("tokens")).thenReturn(webTarget);
+        when(webTarget.path(anyString())).thenReturn(webResource2);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        when(webResource2.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.header("X-Auth-Token", "tokenAdmin2")).thenReturn(builder);
+        Response response = mock(Response.class, "tokenuser");
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(200);
 
-        // when
-        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
-        when(client.target("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
-        when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource.request()).thenReturn(builder);
-        when(builder.header(anyString(), anyString())).thenReturn(builder);
-        when(builder.header(eq("X-Auth-Token"), anyString())).thenReturn(builder);
-        when(builder.get()).thenReturn(response401);
-        when(response401.getStatus()).thenReturn(401);
+        // mock response
+        AuthenticateResponse userForAuthenticateResponse = mock(AuthenticateResponse.class);
+        when(response.readEntity(AuthenticateResponse.class)).thenReturn(userForAuthenticateResponse);
+        Token token = mock(Token.class);
+        when(userForAuthenticateResponse.getToken()).thenReturn(token);
+        TenantForAuthenticateResponse tenant = mock(TenantForAuthenticateResponse.class);
+        when(token.getTenant()).thenReturn(tenant);
+        when(tenant.getId()).thenReturn("user tenantId");
+        UserForAuthenticateResponse user = mock(UserForAuthenticateResponse.class);
+        when(userForAuthenticateResponse.getUser()).thenReturn(user);
+        Map<QName, String> map = new HashMap();
+        map.put(new QName("username"), "username");
+        when(user.getOtherAttributes()).thenReturn(map);
+        openStackAuthenticationProvider.getTokenCache().removeAll();
 
-        when(webResource2.path(any(String.class))).thenReturn(webResource2);
-        when(webResource2.request()).thenReturn(builder2);
-        when(builder2.header(anyString(), anyString())).thenReturn(builder2);
-        when(builder2.header(eq("X-Auth-Token"), anyString())).thenReturn(builder2);
-        when(builder2.get(AuthenticateResponse.class)).thenReturn(authenticateResponse);
-
-        Token validToken = mock(Token.class);
-        TenantForAuthenticateResponse tenantForAuthenticateResponse = mock(TenantForAuthenticateResponse.class);
-        UserForAuthenticateResponse userForAuthenticateResponse = mock(UserForAuthenticateResponse.class);
-        when(authenticateResponse.getToken()).thenReturn(validToken);
-        when(validToken.getTenant()).thenReturn(tenantForAuthenticateResponse);
-        when(tenantForAuthenticateResponse.getId()).thenReturn("user tenantId");
-        when(authenticateResponse.getUser()).thenReturn(userForAuthenticateResponse);
-        when(userForAuthenticateResponse.getRoles()).thenReturn(null);
-        Map<QName, String> collection = new HashMap<QName, String>();
-        collection.put(QName.valueOf("username"), "value");
-        when(userForAuthenticateResponse.getOtherAttributes()).thenReturn(collection);
-
-        PaasManagerUser paasManagerUser = openStackAuthenticationProvider.authenticationFiware("user token",
+        // When
+        PaasManagerUser paasManagerUser = openStackAuthenticationProvider.authenticationFiware("user token2",
                 "user tenantId");
 
-        // then
+        // Then
+        verify(response).getStatus();
+        verify(response).readEntity(AuthenticateResponse.class);
+        verify(user).getOtherAttributes();
         assertNotNull(paasManagerUser);
-        verify(openStackAuthenticationToken, times(2)).getCredentials();
-    }
-    
-    @Test
-    public void retrieveUserTest_systemFiware() throws AuthenticationConnectionException {
-        
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
-        
-        String adminToken = "fa63ea912a2a579c2542dbb90951d500";
-
-        OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
-        openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
-        openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
-        openStackAuthenticationProvider.oSAuthToken = openStackAuthenticationToken;
-        Client client = mock(Client.class);
-        openStackAuthenticationProvider.setClient(client);
-        WebTarget webResource = mock(WebTarget.class);
-        Invocation.Builder builder = mock(Invocation.Builder.class);
-        WebTarget webResource2 = mock(WebTarget.class);
-        Invocation.Builder builder2 = mock(Invocation.Builder.class);
-        Response clientResponse = mock(Response.class);
-        Response response401 = mock(Response.class);
-        AuthenticateResponse authenticateResponse = mock(AuthenticateResponse.class);
-
-        // when
-        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
-        when(client.target("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
-        when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource.request()).thenReturn(builder);
-        when(builder.header(anyString(), anyString())).thenReturn(builder);
-        when(builder.header(eq("X-Auth-Token"), anyString())).thenReturn(builder);
-        when(builder.get()).thenReturn(response401);
-        when(response401.getStatus()).thenReturn(401);
-
-        when(webResource2.path(any(String.class))).thenReturn(webResource2);
-        when(webResource2.request()).thenReturn(builder2);
-        when(builder2.header(anyString(), anyString())).thenReturn(builder2);
-        when(builder2.header(eq("X-Auth-Token"), anyString())).thenReturn(builder2);
-        when(builder2.get(AuthenticateResponse.class)).thenReturn(authenticateResponse);
-
-        Token validToken = mock(Token.class);
-        TenantForAuthenticateResponse tenantForAuthenticateResponse = mock(TenantForAuthenticateResponse.class);
-        UserForAuthenticateResponse userForAuthenticateResponse = mock(UserForAuthenticateResponse.class);
-        when(authenticateResponse.getToken()).thenReturn(validToken);
-        when(validToken.getTenant()).thenReturn(tenantForAuthenticateResponse);
-        when(tenantForAuthenticateResponse.getId()).thenReturn("user tenantId");
-        when(authenticateResponse.getUser()).thenReturn(userForAuthenticateResponse);
-        when(userForAuthenticateResponse.getRoles()).thenReturn(null);
-        Map<QName, String> collection = new HashMap<QName, String>();
-        collection.put(QName.valueOf("username"), "value");
-        when(userForAuthenticateResponse.getOtherAttributes()).thenReturn(collection);
-
-        UsernamePasswordAuthenticationToken authentication = mock(UsernamePasswordAuthenticationToken.class);
-        when(authentication.getCredentials()).thenReturn("user tenantId");
-
-        UserDetails user = openStackAuthenticationProvider.retrieveUser("pepe", authentication);
-
-        assertNotNull(user);
-        verify(openStackAuthenticationToken, times(2)).getCredentials();
-        verify(authentication, times(2)).getCredentials();
+        assertEquals("user tenantId", paasManagerUser.getTenantId());
+        assertEquals("user token2", paasManagerUser.getToken());
 
     }
 
     @Test
-    public void retrieveUserTest_systemFasttrack() throws AuthenticationConnectionException {
-        String adminToken = "fa63ea912a2a579c2542dbb90951d500";
+    public void shouldReturnErrorWhenOpenStackReturnHTTP400() {
 
+        // Given
         OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
         openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
-        openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
-        openStackAuthenticationProvider.oSAuthToken = openStackAuthenticationToken;
+        OpenStackAuthenticationToken openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { "token1", "tenantId1" });
         Client client = mock(Client.class);
         openStackAuthenticationProvider.setClient(client);
         WebTarget webResource = mock(WebTarget.class);
-        Invocation.Builder builder = mock(Invocation.Builder.class);
         WebTarget webResource2 = mock(WebTarget.class);
-        Invocation.Builder builder2 = mock(Invocation.Builder.class);
-        Response clientResponse = mock(Response.class);
-        Response response401 = mock(Response.class);
-        AuthenticateResponse authenticateResponse = mock(AuthenticateResponse.class);
+        when(client.target("http://keystone.test")).thenReturn(webResource);
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webResource.path("tokens")).thenReturn(webTarget);
+        when(webTarget.path(anyString())).thenReturn(webResource2);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        when(webResource2.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.header("X-Auth-Token", "token1")).thenReturn(builder);
+        Response response = mock(Response.class);
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(400);
 
-        // when
-        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
-        when(client.target("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
-        when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource.request()).thenReturn(builder);
-        when(builder.header(anyString(), anyString())).thenReturn(builder);
-        when(builder.header(eq("X-Auth-Token"), anyString())).thenReturn(builder);
-        when(builder.get()).thenReturn(response401);
-        when(response401.getStatus()).thenReturn(401);
+        openStackAuthenticationProvider.getTokenCache().removeAll();
 
-        when(webResource2.path(any(String.class))).thenReturn(webResource2);
-        when(webResource2.request()).thenReturn(builder2);
-        when(builder2.header(anyString(), anyString())).thenReturn(builder2);
-        when(builder2.header(eq("X-Auth-Token"), anyString())).thenReturn(builder2);
-        when(builder2.get(AuthenticateResponse.class)).thenReturn(authenticateResponse);
+        // When
+        try {
+            openStackAuthenticationProvider.authenticationFiware("user token", "user tenantId");
+        } catch (AuthenticationServiceException ase) {
+            System.out.println(ase.getMessage());
+            verify(response).getStatus();
+        }
 
-        Token validToken = mock(Token.class);
-        TenantForAuthenticateResponse tenantForAuthenticateResponse = mock(TenantForAuthenticateResponse.class);
-        UserForAuthenticateResponse userForAuthenticateResponse = mock(UserForAuthenticateResponse.class);
-        when(authenticateResponse.getToken()).thenReturn(validToken);
-        when(validToken.getTenant()).thenReturn(tenantForAuthenticateResponse);
-        when(tenantForAuthenticateResponse.getId()).thenReturn("user tenantId");
-        when(authenticateResponse.getUser()).thenReturn(userForAuthenticateResponse);
-        when(userForAuthenticateResponse.getRoles()).thenReturn(null);
-        Map<QName, String> collection = new HashMap<QName, String>();
-        collection.put(QName.valueOf("username"), "value");
-        when(userForAuthenticateResponse.getOtherAttributes()).thenReturn(collection);
-
-        UsernamePasswordAuthenticationToken authentication = mock(UsernamePasswordAuthenticationToken.class);
-        when(authentication.getCredentials()).thenReturn("user tenantId");
-
-        UserDetails user = openStackAuthenticationProvider.retrieveUser("pepe", authentication);
-
-        assertTrue(user == null);
-        verify(authentication, times(2)).getCredentials();
     }
- 
+
+    @Test
+    public void shouldReturnBadCredentialsWhenOpenStackReturnHTTP401() {
+
+        // Given
+        OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
+        openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
+        OpenStackAuthenticationToken openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { "token1", "tenantId1" });
+        Client client = mock(Client.class);
+        openStackAuthenticationProvider.setClient(client);
+        WebTarget webResource = mock(WebTarget.class);
+        WebTarget webResource2 = mock(WebTarget.class);
+        when(client.target("http://keystone.test")).thenReturn(webResource);
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webResource.path("tokens")).thenReturn(webTarget);
+        when(webTarget.path(anyString())).thenReturn(webResource2);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        when(webResource2.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.header("X-Auth-Token", "token1")).thenReturn(builder);
+        Response response = mock(Response.class, "usertoken");
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(401);
+
+        openStackAuthenticationProvider.getTokenCache().removeAll();
+
+        // When
+        try {
+            openStackAuthenticationProvider.authenticationFiware("user token", "user tenantId");
+
+        } catch (AuthenticationServiceException ase) {
+            System.out.println(ase.getMessage());
+            verify(response).getStatus();
+        }
+        // Then
+
+    }
+
+    @Test
+    public void shouldRetrieveUser() {
+        // Given
+        OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
+        openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
+        OpenStackAuthenticationToken openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { "token1", "tenantId1" });
+        Client client = mock(Client.class);
+        openStackAuthenticationProvider.setClient(client);
+        WebTarget webResource = mock(WebTarget.class);
+        WebTarget webResource2 = mock(WebTarget.class);
+        when(client.target("http://keystone.test")).thenReturn(webResource);
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webResource.path("tokens")).thenReturn(webTarget);
+        when(webTarget.path(anyString())).thenReturn(webResource2);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        when(webResource2.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.header("X-Auth-Token", "token1")).thenReturn(builder);
+        Response response = mock(Response.class);
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(200);
+
+        // mock response
+        AuthenticateResponse userForAuthenticateResponse = mock(AuthenticateResponse.class);
+        when(response.readEntity(AuthenticateResponse.class)).thenReturn(userForAuthenticateResponse);
+        Token token = mock(Token.class);
+        when(userForAuthenticateResponse.getToken()).thenReturn(token);
+        TenantForAuthenticateResponse tenant = mock(TenantForAuthenticateResponse.class);
+        when(token.getTenant()).thenReturn(tenant);
+        when(tenant.getId()).thenReturn("user tenantId");
+        UserForAuthenticateResponse user = mock(UserForAuthenticateResponse.class);
+        when(userForAuthenticateResponse.getUser()).thenReturn(user);
+        Map<QName, String> map = new HashMap();
+        map.put(new QName("username"), "username");
+        when(user.getOtherAttributes()).thenReturn(map);
+
+        openStackAuthenticationProvider.getTokenCache().removeAll();
+
+        // When
+        UsernamePasswordAuthenticationToken authentication = mock(UsernamePasswordAuthenticationToken.class);
+        Object objectCredentials = mock(Object.class);
+        when(authentication.getCredentials()).thenReturn(objectCredentials);
+        when(objectCredentials.toString()).thenReturn("user tenantId");
+
+        UserDetails userDetails = openStackAuthenticationProvider.retrieveUser("user token", authentication);
+
+        // Then
+
+        assertNotNull(userDetails);
+        assertEquals("username", userDetails.getUsername());
+        assertEquals("user token", userDetails.getPassword());
+        verify(response).getStatus();
+    }
+
+    @Test
+    public void shouldCreateNewTokenAfterResetCache() throws InterruptedException {
+
+        // Given
+        OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
+        openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
+        OpenStackAuthenticationToken openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { "tokenAdmin2", "tenantIdAdmin" });
+        Client client = mock(Client.class);
+        openStackAuthenticationProvider.setClient(client);
+        WebTarget webResource = mock(WebTarget.class);
+        WebTarget webResource2 = mock(WebTarget.class);
+        when(client.target("http://keystone.test")).thenReturn(webResource);
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webResource.path("tokens")).thenReturn(webTarget);
+        when(webTarget.path(anyString())).thenReturn(webResource2);
+        Invocation.Builder builder = mock(Invocation.Builder.class);
+        when(webResource2.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
+        when(builder.header("X-Auth-Token", "tokenAdmin2")).thenReturn(builder);
+        Response response = mock(Response.class, "tokenuser");
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(200);
+
+        openStackAuthenticationProvider.getTokenCache().removeAll();
+
+        // mock response
+        AuthenticateResponse userForAuthenticateResponse = mock(AuthenticateResponse.class);
+        when(response.readEntity(AuthenticateResponse.class)).thenReturn(userForAuthenticateResponse);
+        Token token = mock(Token.class);
+        when(userForAuthenticateResponse.getToken()).thenReturn(token);
+        TenantForAuthenticateResponse tenant = mock(TenantForAuthenticateResponse.class);
+        when(token.getTenant()).thenReturn(tenant);
+        when(tenant.getId()).thenReturn("user tenantId");
+        UserForAuthenticateResponse user = mock(UserForAuthenticateResponse.class);
+        when(userForAuthenticateResponse.getUser()).thenReturn(user);
+        Map<QName, String> map = new HashMap();
+        map.put(new QName("username"), "username");
+        when(user.getOtherAttributes()).thenReturn(map);
+
+        // When
+        PaasManagerUser firstTimePaasManagerUser = openStackAuthenticationProvider.authenticationFiware("user token2",
+                "user tenantId");
+
+        // force expire elements now
+        openStackAuthenticationProvider.getTokenCache().get("admin").setTimeToIdle(1);
+        openStackAuthenticationProvider.getTokenCache().get("admin").setTimeToLive(1);
+        openStackAuthenticationProvider.getTokenCache().get("user token2-user tenantId").setTimeToIdle(1);
+        openStackAuthenticationProvider.getTokenCache().get("user token2-user tenantId").setTimeToLive(1);
+        Thread.sleep(1000);
+
+        PaasManagerUser secondTimePaasManagerUser = openStackAuthenticationProvider.authenticationFiware("user token2",
+                "user tenantId");
+
+        // Then
+        verify(response, times(2)).getStatus();
+        verify(response, times(2)).readEntity(AuthenticateResponse.class);
+        verify(user, times(2)).getOtherAttributes();
+        assertNotNull(firstTimePaasManagerUser);
+        assertNotNull(secondTimePaasManagerUser);
+        assertEquals("user tenantId", firstTimePaasManagerUser.getTenantId());
+        assertEquals("user token2", firstTimePaasManagerUser.getToken());
+        assertEquals("user tenantId", secondTimePaasManagerUser.getTenantId());
+        assertEquals("user token2", secondTimePaasManagerUser.getToken());
+
+    }
 }

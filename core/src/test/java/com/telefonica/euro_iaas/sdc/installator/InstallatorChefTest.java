@@ -26,15 +26,12 @@ package com.telefonica.euro_iaas.sdc.installator;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -91,7 +88,8 @@ public class InstallatorChefTest {
     private String undeployacrecipe = "Product::undeployac";
 
     @Before
-    public void setup() throws CanNotCallChefException, EntityNotFoundException, IOException, NodeExecutionException {
+    public void setup() throws CanNotCallChefException, EntityNotFoundException, IOException, NodeExecutionException,
+            InterruptedException {
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
 
@@ -150,11 +148,12 @@ public class InstallatorChefTest {
 
         propertiesProvider = mock(SystemPropertiesProvider.class);
 
-        installator = new InstallatorChefImpl();
+        installator = spy(new InstallatorChefImpl());
         installator.setRecipeNamingGenerator(recipeNamingGenerator);
         installator.setChefNodeDao(chefNodeDao);
         installator.setPropertiesProvider(propertiesProvider);
         installator.setSdcClientUtils(sdcClientUtils);
+        doNothing().when(installator).sleep(10000);
 
     }
 
@@ -201,19 +200,4 @@ public class InstallatorChefTest {
         installator.callService(productInstance, "uninstall", "token");
     }
 
-    // private String getFile(String file) throws IOException {
-    // File f = new File(file);
-    // System.out.println(f.isFile() + " " + f.getAbsolutePath());
-    //
-    // InputStream dd = new FileInputStream(f);
-    //
-    // BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
-    // StringBuffer ruleFile = new StringBuffer();
-    // String actualString;
-    //
-    // while ((actualString = reader.readLine()) != null) {
-    // ruleFile.append(actualString).append("\n");
-    // }
-    // return ruleFile.toString();
-    // }
 }

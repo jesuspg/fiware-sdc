@@ -27,9 +27,6 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,6 @@ import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
-import com.telefonica.euro_iaas.sdc.model.OS;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -63,55 +59,6 @@ public class ProductReleaseDaoJpaImlTest {
     private OSDao osDao;
     @Autowired
     private ProductReleaseDao productReleaseDao;
-
-    protected void createProductRelease() throws Exception {
-
-        ProductRelease productRelease = new ProductRelease();
-        productRelease.setVersion("0.1.1");
-        productRelease.setReleaseNotes("prueba ReelaseNotes");
-
-        OS so = new OS("Prueba I", "1", "Prueba I Description", "Prueba I Version");
-        try {
-            so = osDao.load(so.getName());
-            System.out.println("The OS " + so.getName() + " already exists");
-        } catch (EntityNotFoundException e) {
-            System.out.println("The Product " + so.getName() + " does not exist");
-            so = osDao.create(so);
-        }
-
-        List<OS> supportedOOSS = Arrays.asList(so);
-        productRelease.setSupportedOOSS(supportedOOSS);
-
-        Attribute privateAttribute = new Attribute("ssl_port", "8443", "The ssl listen port");
-        Attribute privateAttributeII = new Attribute("port", "8080", "The listen port");
-
-        List<Attribute> privateAttributes = Arrays.asList(privateAttribute, privateAttributeII);
-
-        List<Metadata> metadatas = Arrays.asList(new Metadata("key1", "value1", "desc1"), new Metadata("key2",
-                "value2", "desc2"));
-
-        Product product = new Product();
-        product.setName("yum");
-        product.setDescription("yum description");
-        product.setAttributes(privateAttributes);
-        product.setMetadatas(metadatas);
-
-        try {
-            product = productDao.load(product.getName());
-            System.out.println("The Product " + product.getName() + " already exists");
-        } catch (EntityNotFoundException e) {
-            System.out.println("The Product " + product.getName() + " does not exist");
-            product = productDao.create(product);
-        }
-        productRelease.setProduct(product);
-
-        // productRelease.setPrivateAttributes(privateAttributes);
-
-        ProductRelease createdRelease = productReleaseDao.create(productRelease);
-
-        assertEquals(createdRelease, productRelease);
-
-    }
 
     /**
      * Testing method create and load ProductRelease.

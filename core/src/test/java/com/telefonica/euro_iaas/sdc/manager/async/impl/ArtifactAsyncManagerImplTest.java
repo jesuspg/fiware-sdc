@@ -59,11 +59,13 @@ public class ArtifactAsyncManagerImplTest {
         artifactManager = mock(ArtifactManager.class);
         taskNotificator = mock(TaskNotificator.class);
         taskManager = mock(TaskManager.class);
+        SystemPropertiesProvider systemPropertiesProvider = mock (SystemPropertiesProvider.class);
 
         artifactAsyncManagerImpl = new ArtifactAsyncManagerImpl();
         artifactAsyncManagerImpl.setArtifactManager(artifactManager);
         artifactAsyncManagerImpl.setTaskNotificator(taskNotificator);
         artifactAsyncManagerImpl.setTaskManager(taskManager);
+        artifactAsyncManagerImpl.setSystemPropertiesProvider(systemPropertiesProvider);
 
 
     }

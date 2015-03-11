@@ -53,8 +53,10 @@ public class NodeAsyncManagerImplTest {
     public void setup() {
         nodeAsyncManager = new NodeAsyncManagerImpl();
         nodeAsyncManager.setNodeManager(nodeManager);
-        nodeAsyncManager.setTaskNotificator(taskNotificator);;
+        nodeAsyncManager.setTaskNotificator(taskNotificator);
         nodeAsyncManager.setTaskManager(taskManager);
+        SystemPropertiesProvider systemPropertiesProvider = mock (SystemPropertiesProvider.class);
+        nodeAsyncManager.setSystemPropertiesProvider(systemPropertiesProvider);
     }
 
     @Test

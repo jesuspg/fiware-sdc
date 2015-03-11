@@ -6,7 +6,7 @@
 	<artifactId>sdc-server</artifactId>
 	<packaging>pom</packaging>
 	<name>Sagitta - SDC Server</name>
-	<version>2.5.0-SNAPSHOT</version>
+	<version>2.6.0-SNAPSHOT</version>
 
 
 	<properties>
@@ -15,7 +15,7 @@
 		<!-- This properties will be added to sonar as manual measures -->
 		<product.area.name>Industrial IoT</product.area.name>
 		<product.name>FIWARE</product.name>
-		<product.release>4.2.1</product.release>
+		<product.release>4.2.2</product.release>
 
 		<assembly-directory>target/distribution</assembly-directory>
 
