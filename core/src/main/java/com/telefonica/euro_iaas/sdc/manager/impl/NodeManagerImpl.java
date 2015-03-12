@@ -79,6 +79,9 @@ public class NodeManagerImpl implements NodeManager {
     private static Logger puppetLog = LoggerFactory.getLogger(InstallatorPuppetImpl.class);
     private static Logger chefLog = LoggerFactory.getLogger(InstallatorChefImpl.class);
 
+    private static int HTTP_OK = 200;
+    private static int HTTP_NOT_FOUND = 404;
+
     /*
      * (non-Javadoc)
      * 
@@ -89,18 +92,23 @@ public class NodeManagerImpl implements NodeManager {
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
         log.info("deleting node");
+        boolean error = false;
         try {
-
             puppetDelete(vdc, nodeName, token);
-            chefClientDelete(vdc, nodeName, token);
+        } catch (Exception e) {
+            log.warn("The node cannot be deleted in Puppet master");
+            error = true;
+        }
 
-        } catch (ChefClientExecutionException e) {
-            throw new NodeExecutionException(e);
+        try {
+            chefClientDelete(vdc, nodeName, token);
+        } catch (Exception e2) {
+            log.warn("The node cannot be deleted in Chef-server");
+            error = true;
         }
 
         List<ProductInstance> productInstances = null;
 
-        // eliminacion de los productos instalados en la maquina virtual
         String hostname = nodeName.split("\\.")[0];
         try {
             productInstances = productInstanceDao.findByHostname(nodeName);
@@ -111,6 +119,10 @@ public class NodeManagerImpl implements NodeManager {
         } catch (EntityNotFoundException enfe) {
             String errorMsg = "The hostname " + hostname + " does not have products installed " + enfe.getMessage();
             log.warn(errorMsg);
+        }
+
+        if (error) {
+            throw new NodeExecutionException ("Error to delete the node");
         }
 
     }
@@ -135,9 +147,9 @@ public class NodeManagerImpl implements NodeManager {
                 int statusCode;
                 statusCode = httpsClient.doHttps(HttpMethod.DELETE, deleteUrl, "", headers);
 
-                if (statusCode == 200 || statusCode == 404) { // 404 means node
-                                                              // didn't exist in
-                                                              // puppet
+                if (statusCode == HTTP_OK || statusCode == HTTP_NOT_FOUND) { // 404 means node
+                    // didn't exist in
+                    // puppet
                     log.info("Node deleted");
                 } else {
                     String msg = format("[puppet delete node] response code was: {0}", statusCode);

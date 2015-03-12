@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.telefonica.euro_iaas.sdc.exception.*;
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -51,15 +53,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
-import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.manager.impl.NodeManagerImpl;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+
 
 public class NodeManagerImplTest {
 
@@ -119,6 +119,78 @@ public class NodeManagerImplTest {
         // verify(client, times(1)).execute((HttpUriRequest) anyObject());
     }
 
+    /**
+     * It tests loading the client
+     * @throws Exception
+     */
+    @Test
+    public void testChefClientLoad() throws Exception{
+        when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
+
+        when(
+            httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
+                (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.chefClientload("dd", "token");
+
+    }
+
+    /**
+     * It test an error in loading node.
+     * @throws Exception
+     */
+    public void testChefClientLoadError() throws Exception{
+        when(chefNodeDao.loadNode("testerrpr", "token")).
+            thenThrow(new SdcRuntimeException());
+        nodeManager.chefClientload("dd", "token");
+
+    }
+
+    /**
+     * It test loading hostname node.
+     * @throws Exception
+     */
+    @Test
+    public void testChefHostnameClientLoad() throws Exception{
+        when(chefNodeDao.loadNodeFromHostname("testOk", "token")).thenReturn(new ChefNode());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.chefClientfindByHostname("dd", "token");
+
+    }
+
+    /**
+     * It test loading hostname node.
+     * @throws Exception
+     */
+    @Test
+    public void testChefHostnameClientLoadError() throws Exception{
+        when(chefNodeDao.loadNodeFromHostname("testOk", "token")).
+            thenThrow(new SdcRuntimeException());
+
+        List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
+        productInstances.add(new ProductInstance());
+
+        when(productInstanceDao.findByHostname(anyString())).
+            thenReturn(productInstances);
+
+        when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
+
+        nodeManager.chefClientfindByHostname("dd", "token");
+
+    }
+
     @Test
     public void deleteNodeTestOK_nodeNotFountInPuppet() throws NodeExecutionException, CanNotCallChefException,
             EntityNotFoundException, ClientProtocolException, IOException, KeyManagementException,
@@ -147,9 +219,9 @@ public class NodeManagerImplTest {
     public void deleteNodeTestEntityNotFound_chef() throws EntityNotFoundException, ClientProtocolException,
             IOException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
 
-        when(
-                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(),
+            Mockito.anyString(), (Map<String, String>) Mockito.anyObject())).
+            thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
@@ -160,15 +232,15 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpsClient, times(1)).doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
-                (Map<String, String>) Mockito.anyObject());
+        verify(httpsClient, times(1)).doHttps(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+            (Map<String, String>) Mockito.anyObject());
 
     }
 
     @Test
-    public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException, CanNotCallChefException,
-            EntityNotFoundException, ClientProtocolException, IOException, KeyManagementException,
-            NoSuchAlgorithmException {
+    public void deleteNodeTestNodeException_chef_1() throws NodeExecutionException,
+        CanNotCallChefException, EntityNotFoundException,
+        IOException, KeyManagementException, NoSuchAlgorithmException {
 
         when(chefNodeDao.loadNode("testError", "token")).thenThrow(CanNotCallChefException.class);
         when(chefNodeDao.loadNode("testOk", "token")).thenReturn(new ChefNode());
@@ -178,9 +250,9 @@ public class NodeManagerImplTest {
 
         when(productInstanceDao.findByHostname(anyString())).thenReturn(productInstances);
 
-        when(
-                httpsClient.doHttps(Mockito.anyString(),Mockito.anyString(), Mockito.anyString(),
-                        (Map<String, String>) Mockito.anyObject())).thenReturn(200);
+        when(httpsClient.doHttps(Mockito.anyString(), Mockito.anyString(),
+            Mockito.anyString(), (Map<String, String>) Mockito.anyObject())).
+            thenReturn(200);
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
@@ -206,13 +278,15 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(client, times(1)).execute((HttpUriRequest) anyObject());
-
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     @Test(expected = NodeExecutionException.class)
-    public void deleteNodeTestNodeException_puppet_1() throws NodeExecutionException, Exception {
+    public void deleteNodeTestNodeException_puppet_1() throws Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
         StatusLine statusLine = mock(StatusLine.class);
@@ -224,11 +298,13 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(client, times(1)).execute((HttpUriRequest) anyObject());
-
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     @Test(expected = NodeExecutionException.class)
     public void deleteNodeTestNodeException_puppet_2() throws NodeExecutionException, Exception {
 
@@ -239,11 +315,13 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(client, times(1)).execute((HttpUriRequest) anyObject());
-
     }
 
+    /**
+     * It test the deletion of a node in puppet when there is an error.
+     * @throws NodeExecutionException
+     * @throws Exception
+     */
     @Test(expected = NodeExecutionException.class)
     public void deleteNodeTestNodeException_puppet_3() throws NodeExecutionException, Exception {
 
@@ -253,9 +331,6 @@ public class NodeManagerImplTest {
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError", "token");
-
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(client, times(1)).execute((HttpUriRequest) anyObject());
 
     }
 
