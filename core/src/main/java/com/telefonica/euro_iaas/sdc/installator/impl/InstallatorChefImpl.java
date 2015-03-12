@@ -123,7 +123,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
-        VM vm = productInstance.getVm();
+
+    	String process = productInstance.getProductRelease().getProduct().getName();
+
+    	VM vm = productInstance.getVm();
         String recipe = "";
         if ("uninstall".equals(action)) {
             recipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
@@ -136,7 +139,16 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         assignRecipes(vm, recipe, token);
         try {
-            executeRecipes(vm);
+        	 if (isSdcClientInstalled()) {
+                 executeRecipes(vm);
+                 // unassignRecipes(vm, recipe);
+             } else {
+                 isRecipeExecuted(vm, process, recipe, token);
+                 // unassignRecipes(vm, recipe);
+                 // eliminate the attribute
+
+             }
+            //executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
