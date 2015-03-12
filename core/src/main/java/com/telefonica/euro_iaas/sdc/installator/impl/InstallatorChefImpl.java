@@ -148,7 +148,6 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
                  // eliminate the attribute
 
              }
-            //executeRecipes(vm);
             // unassignRecipes(vm, recipe);
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
