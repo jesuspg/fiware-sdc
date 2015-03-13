@@ -92,7 +92,7 @@ public class InstallatorPuppetImpl implements Installator {
         }
 
         try {
-            isRecipeExecuted(vm, product.getProduct().getName(), token);
+        	checkRecipeExecution(vm, product.getProduct().getName(), token);
         } catch (NodeExecutionException e) {
             // even if execution fails want to unassign the recipe
             log.debug(e.getMessage());
@@ -100,7 +100,7 @@ public class InstallatorPuppetImpl implements Installator {
         }
 
         try {
-            isRecipeExecuted(vm, product.getProduct().getName(), token);
+        	checkRecipeExecution(vm, product.getProduct().getName(), token);
         } catch (NodeExecutionException e) {
             log.warn("It is not possible execute the module " + product.getProduct().getName() + " in node "
                     + vm.getHostname());
@@ -130,7 +130,7 @@ public class InstallatorPuppetImpl implements Installator {
             throw new InstallatorException(e1.getMessage());
         }
         try {
-            isRecipeExecuted(vm, productInstance.getProductRelease().getProduct().getName(), token);
+        	checkRecipeExecution(vm, productInstance.getProductRelease().getProduct().getName(), token);
         } catch (NodeExecutionException e) {
             String str = "It is not possible execute the module "
                     + productInstance.getProductRelease().getProduct().getName() + " in node " + vm.getHostname();
@@ -266,7 +266,7 @@ public class InstallatorPuppetImpl implements Installator {
         return newAtts;
     }
 
-    public void isRecipeExecuted(VM vm, String module, String token) throws NodeExecutionException,
+    public void checkRecipeExecution(VM vm, String module, String token) throws NodeExecutionException,
             InstallatorException {
 
         boolean isExecuted = false;
