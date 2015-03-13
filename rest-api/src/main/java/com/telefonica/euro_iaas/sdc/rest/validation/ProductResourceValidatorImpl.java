@@ -196,7 +196,6 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                 for (String port : ports) {
                     checkPortMetadata(port);
                 }
-
             } else if (metadata.getKey().equals("open_ports_udp")) {
                 List<String> ports = getFields((String) metadata.getValue());
                 for (String port : ports) {
