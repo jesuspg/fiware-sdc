@@ -199,5 +199,11 @@ public class InstallatorChefTest {
 
         installator.callService(productInstance, "uninstall", "token");
     }
+    
+    @Test
+    public void checkRecipeExecution_OK() throws InstallatorException, NodeExecutionException {
+
+        installator.checkRecipeExecution(host, "Product", installRecipe, "token");
+    }
 
 }
