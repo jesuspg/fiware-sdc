@@ -86,7 +86,7 @@ Feature: Remove nodes from chef/puppet servers with E2E validations
 
       Given a configuration management with "puppet"
       And a node name "${CONFIG_FILE}"
-      And a node registered in Chef-Server
+      And a node registered in Puppet-Master
       And a virtual machine with these parameters:
 	  | fqn            | hostname        | ip              |
 	  | ${CONFIG_FILE} | ${CONFIG_FILE}  | ${CONFIG_FILE}  |
@@ -121,10 +121,9 @@ Feature: Remove nodes from chef/puppet servers with E2E validations
       | puppet  |
 
 
-    @skip @CLAUDIA-4210
     Scenario: Remove non-existent node
 
       Given a configuration management with "<cm_tool>"
       And a node name "nonexistent_node"
       When I remove the node
-      Then I obtain a "400" HTTP error
+      Then I obtain a "404" HTTP error

@@ -152,7 +152,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_233 | product with testing purposes | application/json  | open_ports    |                                              |
     | testing_attributes_250 | product with testing purposes | application/json  | open_ports    | 80-90                                        |
     | testing_attributes_251 | product with testing purposes | application/json  | open_ports    | 20 80-90                                     |
-    | testing_attributes_252 | product with testing purposes | application/json  | open_ports    | 20 80-90 35                                  |
+    | testing_attributes_252 | product with testing purposes | application/json  | open_ports    | 20 80-90 65535                               |
     | testing_attributes_234 | product with testing purposes | application/json  | public        | yes                                          |
     | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
     | testing_attributes_236 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
@@ -211,6 +211,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_343 | product with testing purposes | application/json  | open_ports    | 22 -90-          | 400         |
     | testing_attributes_344 | product with testing purposes | application/json  | open_ports    | 22 -90           | 400         |
     | testing_attributes_345 | product with testing purposes | application/json  | open_ports    | 22 -90- 55       | 400         |
+    | testing_attributes_347 | product with testing purposes | application/json  | open_ports    | 65536            | 400         |
     | testing_attributes_330 | product with testing purposes | application/xml   | open_ports    | test             | 400         |
     | testing_attributes_331 | product with testing purposes | application/json  | public        |                  | 400         |
     | testing_attributes_332 | product with testing purposes | application/xml   | public        | test             | 400         |
@@ -334,7 +335,29 @@ Feature: Add a new product in the catalogue
     | testing_product01 | product token | application/json  | 401         | 891855f21b2f1567afb966d3ceee1295 |
     | testing_product01 | product token | application/json  | 401         |                                  |
 
-  @test
+
+  Scenario Outline: Add a new product with invalid open_ports_udp metadata
+    Given a product with name "<product_name>" with description "QA Product - Testing UDP metadata"
+    And the following metadatas
+          | key             | value                   | description     |
+          | open_ports_udp  | <open_ports_udp_value>  | Open Ports UDP  |
+    When I add the new product with metadatas, with accept parameter "<accept_parameter>" response
+    Then I obtain an "400"
+
+    Examples:
+        | product_name         | accept_parameter  | open_ports_udp_value     |
+        | testing_metadatas_01 | application/json  | text                     |
+        | testing_metadataa_02 | application/xml   | 8080 LE                  |
+        | testing_metadatas_03 | application/xml   | 8080-LE                  |
+        | testing_metadatas_04 | application/json  | LE 8080-8090             |
+        | testing_metadatas_05 | application/xml   | 80 8080-                 |
+        | testing_metadatas_06 | application/json  | -8080                    |
+        | testing_metadatas_07 | application/json  | -8080-                   |
+        | testing_metadatas_08 | application/json  | 8080-20-12               |
+        | testing_metadatas_09 | application/json  | 8080 -22                 |
+        | testing_metadatas_11 | application/json  | 65536                    |
+
+
   Scenario Outline: Add a new product with open_ports_udp metadata
     Given a product with name "<product_name>" with description "QA Product - Testing UDP metadata"
     And the following metadatas
@@ -349,5 +372,5 @@ Feature: Add a new product in the catalogue
         | testing_metadatsa_02 | application/xml   | 8080 20                  |
         | testing_metadatsa_03 | application/xml   | 8080-8090                |
         | testing_metadatsa_04 | application/json  | 80 8080-8090             |
-        | testing_metadatsa_05 | application/xml   | 80 8080-8090 5555        |
+        | testing_metadatsa_05 | application/xml   | 80 8080-8090 65535       |
         | testing_metadatsa_06 | application/json  | 8080 25 26 27 8080-8090  |
