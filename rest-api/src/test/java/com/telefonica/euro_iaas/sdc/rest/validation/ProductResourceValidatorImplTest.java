@@ -203,6 +203,43 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
         productResourceValidator.validateInsert(product);
     }
 
+    @Test(expected = InvalidEntityException.class)
+    public void testValidateMetadataRangeUdpError3() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports_udp", "-23-1000");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    /**
+     * It test the validation of udp ports where there data
+     * is correct.
+     * @throws Exception
+     */
+    @Test
+    public void testValidateMetadataRangeUdpLimit() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports_udp", "0");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    /**
+     * It test the validation of udp ports where there data
+     * is correct.
+     * @throws Exception
+     */
+    @Test
+    public void testValidateMetadataRangeUdpLimit2() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports_udp", "65535");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
     @Test
     public void testValidateMetadataOPenPortOK() throws Exception {
         String name = "t";
