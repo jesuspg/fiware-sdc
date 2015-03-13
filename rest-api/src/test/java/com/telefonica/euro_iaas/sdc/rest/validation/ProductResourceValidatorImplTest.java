@@ -168,6 +168,24 @@ public class ProductResourceValidatorImplTest extends ValidatorUtils {
     }
 
     @Test
+    public void testValidateMetadataRange() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports", "8000-8999");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
+    public void testValidateMetadataRangeUdp() throws Exception {
+        String name = "t";
+        product.setName(name);
+        Metadata meta = new Metadata("open_ports_udp", "8000-8999");
+        product.addMetadata(meta);
+        productResourceValidator.validateInsert(product);
+    }
+
+    @Test
     public void testValidateMetadataOPenPortOK() throws Exception {
         String name = "t";
         product.setName(name);
