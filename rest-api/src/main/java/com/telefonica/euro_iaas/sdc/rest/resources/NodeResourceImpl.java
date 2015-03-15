@@ -59,7 +59,7 @@ public class NodeResourceImpl implements NodeResource {
     private NodeManager nodeManager;
 
     /**
-     * It obtains all the nodes for the user
+     * It obtains all the nodes for the user.
      * @return
      */
     public ChefClient findAll() {
@@ -75,7 +75,7 @@ public class NodeResourceImpl implements NodeResource {
      */
     public ChefClient load(String chefClientName) {
         try {
-            return nodeManager.chefClientload(chefClientName, getCredentials().getToken());
+            return nodeManager.chefClientload(chefClientName, getToken());
         } catch (EntityNotFoundException e) {
             throw new APIException(e);
         } catch (Exception e) {
@@ -83,20 +83,39 @@ public class NodeResourceImpl implements NodeResource {
         }
     }
 
+    /**
+     * It delete the node in the chef-server and puppet master.
+     * @param vdc
+     *            the tenant id
+     * @param nodeName
+     *            the name of the node (without domain) to be deleted from Chef/Puppet
+     * @param callback
+     * @return
+     */
     public Task delete(String vdc, String nodeName, String callback) {
-
         try {
-
-            Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
-
-            nodeAsyncManager.nodeDelete(vdc, nodeName, getCredentials().getToken(), task, callback);
-            return task;
+            nodeManager.chefClientload(nodeName, getToken());
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
         } catch (Exception e) {
             throw new APIException(e);
         }
 
+        try {
+            Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
+            nodeAsyncManager.nodeDelete(vdc, nodeName, getToken(), task, callback);
+            return task;
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
     }
 
+    /**
+     * It creates the task.
+     * @param description
+     * @param vdc
+     * @return
+     */
     private Task createTask(String description, String vdc) {
         Task task = new Task(TaskStates.RUNNING);
         task.setDescription(description);
@@ -116,8 +135,30 @@ public class NodeResourceImpl implements NodeResource {
         this.nodeManager = nodeManager;
     }
 
+    /**
+     * It gets the credentials.
+     * @return
+     */
     public PaasManagerUser getCredentials() {
-        return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * It obtains the token from the credentials.
+     * @return
+     */
+    public String getToken() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getToken();
+        }
+
     }
 
 }

@@ -67,9 +67,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 
 /**
- * 
  * Class to dela with installs through puppetwrapper
- *
  */
 public class InstallatorPuppetImpl implements Installator {
 
@@ -209,8 +207,8 @@ public class InstallatorPuppetImpl implements Installator {
         HttpResponse response;
 
         log.info("Calling puppetWrapper " + action);
-        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname() +
-                "/" + action);
+        log.info("connecting to puppetURL: " + "puppetURL: " + puppetUrl + "v2/node/" + vm.getHostname()
+                         + "/" + action);
         log.info("payload: " + payload);
         try {
             int statusCode = httpsClient.doHttps(HttpMethod.POST, puppetUrl + "v2/node/" + vm.getHostname() + "/"
@@ -284,7 +282,7 @@ public class InstallatorPuppetImpl implements Installator {
                     throw new NodeExecutionException(errorMesg);
                 }
 
-                Thread.sleep(incremental_time);
+                sleep(incremental_time);
 
                 PuppetNode node = loadNode(vm.getHostname(), token);
                 log.debug("Get time catalog " + node.getCatalogTimestamp());
@@ -364,7 +362,7 @@ public class InstallatorPuppetImpl implements Installator {
                     log.info(errorMesg);
                     throw new CanNotCallPuppetException(errorMesg);
                 }
-                Thread.sleep(check_time);
+                sleep(check_time);
                 response = getNodes(token);
                 time = time + check_time;
             } catch (Exception e) {
@@ -390,7 +388,7 @@ public class InstallatorPuppetImpl implements Installator {
             String errorMesg = "Node  " + vm.getHostname() + " is not registered in the puppet master "
                     + e.getMessage();
             log.info(errorMesg);
-            throw new InvalidInstallProductRequestException(errorMesg);
+            throw new SdcRuntimeException(errorMesg);
         }
     }
 
@@ -402,4 +400,13 @@ public class InstallatorPuppetImpl implements Installator {
         this.httpsClient = httpsClient;
     }
 
+    /**
+     * Sleep temporarily for the specified milliseconds.
+     * 
+     * @param millis
+     * @throws InterruptedException
+     */
+    public void sleep(long millis) throws InterruptedException {
+        Thread.sleep(millis);
+    }
 }

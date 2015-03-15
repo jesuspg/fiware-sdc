@@ -27,17 +27,16 @@ package com.telefonica.euro_iaas.sdc.model;
 import junit.framework.TestCase;
 
 public class TasksTest extends TestCase {
-    public static long ID = 1234;
-    public static String MESSAGE = "Error message";
-    public static String HREF = "href";
+    private static long ID = 1234;
+    private static String MESSAGE = "Error message";
+    private static String HREF = "href";
 
     /**
      * Test Task class
-     * 
-     * @return
      */
 
     public void testTask() {
+
         Task task = new Task();
         task.setDescription("description");
         task.setHref(HREF);

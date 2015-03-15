@@ -28,16 +28,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.InheritanceType;
+import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.Column;
 import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -121,6 +121,11 @@ public class Product {
         attributes.add(attribute);
     }
 
+    /**
+     * Add a new metadata.
+     * @param meta
+     *           the metadata
+     */
     public void addMetadata(Metadata meta) {
         if (metadatas == null) {
             metadatas = new ArrayList<Metadata>();
@@ -129,6 +134,91 @@ public class Product {
     }
 
     /**
+     * It gets the metadata selected.
+     * @param metadataName: The metadata name
+     * @return the metadata
+     */
+    public Metadata getMetadata(String metadataName) throws EntityNotFoundException {
+        Metadata aux = null;
+        for (Metadata meta: this.metadatas) {
+            if (meta.getKey().equals(metadataName)) {
+                aux = meta;
+            }
+        }
+        if (aux == null) {
+            throw new EntityNotFoundException("Not metadata found: " + metadataName);
+        }
+        return aux;
+    }
+
+    /**
+     * It get the attribute selected.
+     * @param attributeName: the attribute name
+     * @return the attribute
+     */
+    public Attribute getAttribute(String attributeName) throws EntityNotFoundException {
+        Attribute aux = null;
+        for (Attribute att: this.attributes) {
+            if (att.getKey().equals(attributeName)) {
+                aux = att;
+            }
+        }
+        if (aux == null) {
+            throw new EntityNotFoundException("Not attribute found: " + attributeName);
+        }
+        return aux;
+    }
+
+    /**
+     * It deletes the metadataName in the product.
+     * @param metadataName: the metadata to be deleted
+     */
+    public void deleteMetadata(String metadataName) throws EntityNotFoundException {
+        metadatas.remove(getMetadata(metadataName));
+    }
+
+    /**
+     * It deletes the attributeName in the product.
+     * @param attributeName: the attribute to be deleted
+     */
+    public void deleteAttribute(String attributeName) throws EntityNotFoundException  {
+        attributes.remove(getAttribute(attributeName));
+    }
+
+    /**
+     * It update a metadata value in a metadata.
+     * @param metadata: the metadata.
+     * @return
+     */
+    public void updateMetadata(Metadata metadata) throws EntityNotFoundException {
+
+        if (metadata.getDescription() != null) {
+            this.getMetadata(metadata.getKey()).setDescription(metadata.getDescription());
+        }
+        this.getMetadata(metadata.getKey()).setValue(metadata.getValue());
+
+    }
+
+    /**
+     * It update a attribute value in a metadata.
+     * @param attribute: the attribute to be uploaded.
+     */
+    public void updateAttribute(Attribute attribute) {
+        if (this.getAttribute(attribute.getKey()) == null) {
+            return;
+        }
+        if (attribute.getDescription() != null) {
+            this.getAttribute(attribute.getKey()).setDescription(attribute.getDescription());
+        }
+        if (attribute.getType() != null) {
+            this.getAttribute(attribute.getKey()).setValue(attribute.getValue());
+        }
+        this.getAttribute(attribute.getKey()).setValue(attribute.getValue());
+    }
+
+
+    /**
+     * It obtains the attributes map.
      * @return the attributes as a Map
      */
     public Map<String, String> getMapAttributes() {
@@ -140,6 +230,7 @@ public class Product {
     }
 
     /**
+     * It obtains the metadata map.
      * @return the metadatas as a Map
      */
     public Map<String, String> getMapMetadata() {
@@ -161,8 +252,8 @@ public class Product {
     /**
      * Constructor.
      * 
-     * @param name
-     * @param description
+     * @param name: the product name
+     * @param description: the description.
      */
     public Product(String name, String description) {
         this.name = name;
@@ -208,9 +299,9 @@ public class Product {
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -220,24 +311,30 @@ public class Product {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     *
+     * @param obj
+     * @return
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Product other = (Product) obj;
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         return true;
     }
 
