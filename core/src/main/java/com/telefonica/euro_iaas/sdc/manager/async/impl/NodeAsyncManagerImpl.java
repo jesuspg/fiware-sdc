@@ -115,7 +115,7 @@ public class NodeAsyncManagerImpl implements NodeAsyncManager {
 
     private String getTaskUrl(String vdc, String chefClientName) {
         return MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)
-            + CHEF_NODE_BASE_PATH, vdc, chefClientName)
+            + CHEF_NODE_BASE_PATH, chefClientName, vdc);
     }
     /*
      * Update the task with necessary information when the task is wrong.
