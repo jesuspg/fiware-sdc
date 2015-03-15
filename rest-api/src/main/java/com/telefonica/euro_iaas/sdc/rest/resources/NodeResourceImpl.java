@@ -74,13 +74,23 @@ public class NodeResourceImpl implements NodeResource {
      * @return
      */
     public ChefClient load(String chefClientName) {
+        boolean errorChef = false;
+        boolean errorPuppet = false;
         try {
             return nodeManager.chefClientload(chefClientName, getToken());
-        } catch (EntityNotFoundException e) {
-            throw new APIException(e);
         } catch (Exception e) {
-            throw new APIException(e);
+            errorChef = true;
         }
+        try {
+            return nodeManager.puppetClientload(chefClientName, getToken(), getVdc());
+        } catch (Exception e) {
+            errorPuppet = true;
+        }
+        if (errorChef && errorPuppet) {
+            throw new APIException(new EntityNotFoundException(ChefClient.class,
+                "Node " + chefClientName + " not found", chefClientName));
+        }
+        return null;
     }
 
     /**
@@ -93,13 +103,7 @@ public class NodeResourceImpl implements NodeResource {
      * @return
      */
     public Task delete(String vdc, String nodeName, String callback) {
-        try {
-            nodeManager.chefClientload(nodeName, getToken());
-        } catch (EntityNotFoundException e) {
-            throw new APIException(e);
-        } catch (Exception e) {
-            throw new APIException(e);
-        }
+        load(nodeName);
 
         try {
             Task task = createTask(MessageFormat.format("Delete Node {0} from Chef/Puppet", nodeName), vdc);
@@ -157,6 +161,20 @@ public class NodeResourceImpl implements NodeResource {
             return "";
         } else {
             return user.getToken();
+        }
+
+    }
+
+    /**
+     * It gets the vdc from crendentials.
+     * @return
+     */
+    public String getVdc() {
+        PaasManagerUser user = getCredentials();
+        if (user == null) {
+            return "";
+        } else {
+            return user.getTenantId();
         }
 
     }

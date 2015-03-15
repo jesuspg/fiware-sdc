@@ -64,9 +64,39 @@ public class NodeResourceImplTest {
      * @throws Exception
      */
     @Test
-    public void testLoad() throws Exception {
+    public void testLoadChefPuppet() throws Exception {
         ChefClient client = new ChefClient();
         when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(client);
+        when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).thenReturn(client);
+        ChefClient clientReturned = nodeResource.load("node");
+        assertNotNull(clientReturned);
+    }
+
+    /**
+     * It tests loading a node when it is not in puppet master
+     * @throws Exception
+     */
+    @Test
+    public void testLoadChef() throws Exception {
+        ChefClient client = new ChefClient();
+        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(client);
+        when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
+            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
+        ChefClient clientReturned = nodeResource.load("node");
+        assertNotNull(clientReturned);
+    }
+
+    /**
+     * It tests loading a node when it is not in chefserver
+     * @throws Exception
+     */
+    @Test
+    public void testLoadPuppet() throws Exception {
+        ChefClient client = new ChefClient();
+        when(nodeManager.chefClientload(anyString(), anyString())).
+            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
+        when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
+            thenReturn(client);
         ChefClient clientReturned = nodeResource.load("node");
         assertNotNull(clientReturned);
     }
@@ -79,6 +109,8 @@ public class NodeResourceImplTest {
     public void testLoadError() throws Exception {
         when(nodeManager.chefClientload(anyString(), anyString())).
             thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
+        when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
+            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
         nodeResource.load("node");
     }
 
@@ -106,7 +138,9 @@ public class NodeResourceImplTest {
     public void testDeleteError() throws Exception {
         when(nodeManager.chefClientload(anyString(), anyString())).
             thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
-        nodeResource.load("node");
+        when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
+            thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
+        nodeResource.delete("node", "vdc", "");
     }
 
     /**

@@ -286,16 +286,16 @@ public class NodeManagerImplTest {
      * @throws Exception
      */
     @Test(expected = NodeExecutionException.class)
-    public void deleteNodeTestNodeException_puppet_1() throws Exception {
+    public void deleteNodeTestNode_errorpuppet1() throws Exception {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
         StatusLine statusLine = mock(StatusLine.class);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(httpResponse.getStatusLine().getStatusCode()).thenReturn(500);
         when(client.execute((HttpUriRequest) anyObject())).thenReturn(httpResponse);
-
+        when(chefNodeDao.loadNode(anyString(), anyString())).
+            thenThrow(CanNotCallChefException.class);
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
-
         nodeManager.nodeDelete("test", "testError", "token");
 
     }
@@ -307,10 +307,9 @@ public class NodeManagerImplTest {
      */
     @Test(expected = NodeExecutionException.class)
     public void deleteNodeTestNodeException_puppet_2() throws NodeExecutionException, Exception {
-
-        HttpResponse httpResponse = mock(HttpResponse.class);
         when(client.execute((HttpUriRequest) anyObject())).thenThrow(IOException.class);
-
+        when(chefNodeDao.loadNode(anyString(), anyString())).
+            thenThrow(CanNotCallChefException.class);
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError", "token");
@@ -327,7 +326,8 @@ public class NodeManagerImplTest {
 
         HttpResponse httpResponse = mock(HttpResponse.class);
         when(client.execute((HttpUriRequest) anyObject())).thenThrow(IllegalStateException.class);
-
+        when(chefNodeDao.loadNode(anyString(), anyString())).
+            thenThrow(CanNotCallChefException.class);
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
         nodeManager.nodeDelete("test", "testError", "token");

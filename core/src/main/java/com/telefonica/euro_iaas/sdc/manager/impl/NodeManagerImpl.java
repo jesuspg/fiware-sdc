@@ -92,19 +92,20 @@ public class NodeManagerImpl implements NodeManager {
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
         log.info("deleting node");
-        boolean error = false;
+        boolean errorChef = false;
+        boolean errorPuppet = false;
         try {
             puppetDelete(vdc, nodeName, token);
         } catch (Exception e) {
             log.warn("The node cannot be deleted in Puppet master");
-            error = true;
+            errorPuppet = true;
         }
 
         try {
             chefClientDelete(vdc, nodeName, token);
         } catch (Exception e2) {
             log.warn("The node cannot be deleted in Chef-server");
-            error = true;
+            errorChef = true;
         }
 
         List<ProductInstance> productInstances = null;
@@ -121,8 +122,8 @@ public class NodeManagerImpl implements NodeManager {
             log.warn(errorMsg);
         }
 
-        if (error) {
-            throw new NodeExecutionException ("Error to delete the node");
+        if (errorPuppet && errorChef) {
+            throw new NodeExecutionException ("Error to delete the node " + nodeName);
         }
 
     }
@@ -187,6 +188,7 @@ public class NodeManagerImpl implements NodeManager {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
             chefLog.warn(errorMsg);
+            throw new ChefClientExecutionException(errorMsg, e);
         } catch (Exception e2) {
             String errorMsg = "The ChefClient " + chefClientName + " was not found in the system " + e2.getMessage();
             chefLog.info(errorMsg);
@@ -218,12 +220,13 @@ public class NodeManagerImpl implements NodeManager {
         return chefClient;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientload
-     * (java.lang.String, java.lang.String)
+    /**
+     * It obtains the chefClient from Chef-server.
+     * @param chefClientName
+     * @param token
+     * @return
+     * @throws ChefClientExecutionException
+     * @throws EntityNotFoundException
      */
     public ChefClient chefClientload(String chefClientName, String token) throws ChefClientExecutionException,
             EntityNotFoundException {
@@ -241,6 +244,54 @@ public class NodeManagerImpl implements NodeManager {
             throw new ChefClientExecutionException(message, e);
         }
         return chefClient;
+    }
+
+    /**
+     * It obtains the node from puppet master
+     * @param nodeName
+     * @param token
+     * @param vdc
+     * @return
+     * @throws ChefClientExecutionException
+     * @throws EntityNotFoundException
+     */
+    public ChefClient puppetClientload(String nodeName, String token, String vdc) throws
+        EntityNotFoundException {
+
+        puppetLog.info("Getting node " + nodeName + " from puppet master");
+
+        String url = null;
+        try {
+            url = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
+        } catch (OpenStackException e2) {
+            puppetLog.warn(e2.getMessage());
+        }
+
+        if (url != null) {
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put(HttpsClient.HEADER_AUTH, token);
+            headers.put(HttpsClient.HEADER_TENNANT, vdc);
+
+            try {
+                int statusCode;
+                statusCode = httpsClient.doHttps(HttpMethod.GET, url, "", headers);
+
+                if (statusCode == HTTP_OK || statusCode == HTTP_NOT_FOUND) {
+                    log.info("Node obtained");
+                    return new ChefClient();
+
+                } else {
+                    String msg = format("[puppet get node] response code was: {0}", statusCode);
+                    puppetLog.info(msg);
+                    throw new EntityNotFoundException(ChefClient.class, msg, nodeName);
+                }
+            } catch (Exception e) {
+                String msg = format("[puppet get node] response code was: {0}", e.getMessage());
+                puppetLog.info(e.getMessage());
+                throw new EntityNotFoundException(ChefClient.class, msg, nodeName);
+            }
+        }
+        return null;
     }
 
     /**
