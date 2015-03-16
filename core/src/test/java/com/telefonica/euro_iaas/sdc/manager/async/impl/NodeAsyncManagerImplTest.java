@@ -85,7 +85,7 @@ public class NodeAsyncManagerImplTest {
         nodeAsyncManager.nodeDelete("vdc", "node", "token" , task, "");
 
         // then
-        assertEquals(task.getResult().getHref(), "http://sdc/vdc/vdc/node/node");
+        assertEquals(task.getResult().getHref(), "http://sdc/rest/vdc/vdc/node/node");
     }
 
     @Test
