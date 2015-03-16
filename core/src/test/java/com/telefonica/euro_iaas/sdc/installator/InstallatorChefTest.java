@@ -75,6 +75,7 @@ public class InstallatorChefTest {
     private ChefNodeDao chefNodeDao;
     private SystemPropertiesProvider propertiesProvider;
     private SDCClientUtils sdcClientUtils;
+    private ChefNode chefNode;
 
     private String jsonFilePath = "src/test/resources/chefNodeOhaiTimeDate.js";
     private String jsonFromFile = "{\"name\":\"test\"}";
@@ -108,7 +109,7 @@ public class InstallatorChefTest {
         sdcClientUtils.execute(host);
 
         // jsonFromFile = getFile(jsonFilePath);
-        ChefNode chefNode = new ChefNode();
+        chefNode = new ChefNode();
         chefNode.setName("a");
         // chefNode.fromJson(JSONObject.fromObject(jsonFromFile));
 
@@ -201,9 +202,26 @@ public class InstallatorChefTest {
     }
     
     @Test
-    public void checkRecipeExecution_OK() throws InstallatorException, NodeExecutionException {
-
-        installator.checkRecipeExecution(host, "Product", installRecipe, "token");
+    public void checkRecipeExecution_OK() throws InstallatorException, NodeExecutionException { 
+    	installator.checkRecipeExecution(host, "Product", installRecipe, "token");
     }
 
+    @Test(expected = NodeExecutionException.class)
+    public void checkRecipeExecution_fail() throws InstallatorException, NodeExecutionException {
+        	
+    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.US);
+        Date past = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(past);
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.YEAR, 2000);
+        past = calendar.getTime();
+        
+        chefNode.addAutomaticAttritube("ohai_time", df.format(past));
+        
+        installator.checkRecipeExecution(host, "Product", installRecipe, "token");
+    }
 }
