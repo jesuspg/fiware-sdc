@@ -59,9 +59,7 @@ public class TaskManagerImpl implements TaskManager {
             task = taskDao.create(task);
             String taskId = Long.valueOf(task.getId()).toString().replace(".", "");
             task.setHref(MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL) +
-                Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
-                    .toString(), task.getVdc()));
-
+                Configuration.TASK_BASE_PATH, Long.valueOf(task.getId()).toString(), task.getVdc()));
             return task;
         } catch (AlreadyExistsEntityException e) {
             throw new SdcRuntimeException(e);
@@ -74,8 +72,8 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     public Task updateTask(Task task) {
         task = taskDao.update(task);
-        task.setHref(MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)+ Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
-                .toString(), task.getVdc()));
+        task.setHref(MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)+
+            Configuration.TASK_BASE_PATH, Long.valueOf(task.getId()).toString(), task.getVdc()));
         return task;
     }
 
@@ -85,9 +83,8 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     public Task load(Long id) throws EntityNotFoundException {
         Task task = taskDao.load(id);
-        task.setHref(MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)+
-            Configuration.TASK_BASE_PATH, Long.valueOf(task.getId())
-                .toString(), task.getVdc()));
+        task.setHref(MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL) +
+            Configuration.TASK_BASE_PATH, Long.valueOf(task.getId()).toString(), task.getVdc()));
         return task;
     }
 
