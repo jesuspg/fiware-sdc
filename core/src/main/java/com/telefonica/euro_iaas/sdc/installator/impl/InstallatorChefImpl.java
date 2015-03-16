@@ -101,12 +101,8 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             log.info("Updating node with recipe " + recipe + " in " + vm.getIp());
             if (isSdcClientInstalled()) {
                 executeRecipes(vm);
-                // unassignRecipes(vm, recipe);
             } else {
-                isRecipeExecuted(vm, process, recipe, token);
-                // unassignRecipes(vm, recipe);
-                // eliminate the attribute
-
+            	checkRecipeExecution(vm, process, recipe, token);
             }
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
@@ -123,7 +119,10 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     @Override
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
-        VM vm = productInstance.getVm();
+
+    	String process = productInstance.getProductRelease().getProduct().getName();
+
+    	VM vm = productInstance.getVm();
         String recipe = "";
         if ("uninstall".equals(action)) {
             recipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
@@ -136,8 +135,11 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         assignRecipes(vm, recipe, token);
         try {
-            executeRecipes(vm);
-            // unassignRecipes(vm, recipe);
+            if (isSdcClientInstalled()) {
+                 executeRecipes(vm);
+            } else {
+                checkRecipeExecution(vm, process, recipe, token);
+            }
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
@@ -195,7 +197,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
      * @throws
      * @throws ShellCommandException
      */
-    public void isRecipeExecuted(VM vm, String process, String recipe, String token) throws NodeExecutionException {
+    public void checkRecipeExecution(VM vm, String process, String recipe, String token) throws NodeExecutionException {
         boolean isExecuted = false;
         int time = 5000;
         int checkTime = 10000;
