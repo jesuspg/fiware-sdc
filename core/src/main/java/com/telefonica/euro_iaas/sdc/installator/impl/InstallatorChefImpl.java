@@ -135,11 +135,11 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
 
         assignRecipes(vm, recipe, token);
         try {
-        	 if (isSdcClientInstalled()) {
+            if (isSdcClientInstalled()) {
                  executeRecipes(vm);
-             } else {
-                 checkRecipeExecution(vm, process, recipe, token);
-             }
+            } else {
+                checkRecipeExecution(vm, process, recipe, token);
+            }
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
             throw new NodeExecutionException(e.getMessage());
