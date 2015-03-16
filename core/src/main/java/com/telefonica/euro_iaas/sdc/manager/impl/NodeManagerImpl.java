@@ -61,6 +61,7 @@ import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 
 /**
@@ -255,12 +256,13 @@ public class NodeManagerImpl implements NodeManager {
      * @throws ChefClientExecutionException
      * @throws EntityNotFoundException
      */
-    public ChefClient puppetClientload(String nodeName, String token, String vdc) throws
+    public NodeDto puppetClientload(String nodeName, String token, String vdc) throws
         EntityNotFoundException {
 
         puppetLog.info("Getting node " + nodeName + " from puppet master");
 
         String url = null;
+        NodeDto node = null;
         try {
             url = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
@@ -278,7 +280,8 @@ public class NodeManagerImpl implements NodeManager {
 
                 if (statusCode == HTTP_OK) {
                     log.info("Node obtained " + nodeName);
-                    return new ChefClient();
+                    node = new NodeDto ();
+                    node.setSoftwareName(nodeName);
 
                 } else {
                     String msg = format("[puppet get node] response code was: {0}", statusCode);
@@ -291,7 +294,7 @@ public class NodeManagerImpl implements NodeManager {
                 throw new EntityNotFoundException(ChefClient.class, msg, nodeName);
             }
         }
-        return null;
+        return node;
     }
 
     /**

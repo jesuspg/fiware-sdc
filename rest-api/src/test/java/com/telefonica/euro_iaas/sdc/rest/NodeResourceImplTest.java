@@ -28,6 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,11 +66,12 @@ public class NodeResourceImplTest {
      */
     @Test
     public void testLoadChefPuppet() throws Exception {
-        ChefClient client = new ChefClient();
-        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(client);
+        NodeDto client = new NodeDto();
+        ChefClient clientChef = new ChefClient ();
+        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(clientChef);
         when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).thenReturn(client);
-        ChefClient clientReturned = nodeResource.load("node");
-        assertNotNull(clientReturned);
+        NodeDto node = nodeResource.load("node");
+        assertNotNull(node);
     }
 
     /**
@@ -78,11 +80,12 @@ public class NodeResourceImplTest {
      */
     @Test
     public void testLoadChef() throws Exception {
-        ChefClient client = new ChefClient();
-        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(client);
+        NodeDto client = new NodeDto();
+        ChefClient clientChef = new ChefClient ();
+        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(clientChef);
         when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
-            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
-        ChefClient clientReturned = nodeResource.load("node");
+            thenThrow(new EntityNotFoundException(NodeDto.class, "error", "node"));
+        NodeDto clientReturned = nodeResource.load("node");
         assertNotNull(clientReturned);
     }
 
@@ -92,12 +95,12 @@ public class NodeResourceImplTest {
      */
     @Test
     public void testLoadPuppet() throws Exception {
-        ChefClient client = new ChefClient();
+        NodeDto client = new NodeDto();
         when(nodeManager.chefClientload(anyString(), anyString())).
-            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
+            thenThrow(new EntityNotFoundException(NodeDto.class, "error", "node"));
         when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
             thenReturn(client);
-        ChefClient clientReturned = nodeResource.load("node");
+        NodeDto clientReturned = nodeResource.load("node");
         assertNotNull(clientReturned);
     }
 
@@ -108,9 +111,9 @@ public class NodeResourceImplTest {
     @Test(expected=APIException.class)
     public void testLoadError() throws Exception {
         when(nodeManager.chefClientload(anyString(), anyString())).
-            thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
+            thenThrow(new EntityNotFoundException (NodeDto.class,"men", "node"));
         when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
-            thenThrow(new EntityNotFoundException(ChefClient.class, "error", "node"));
+            thenThrow(new EntityNotFoundException(NodeDto.class, "error", "node"));
         nodeResource.load("node");
     }
 
@@ -120,8 +123,7 @@ public class NodeResourceImplTest {
      */
     @Test
     public void testDelete() throws Exception {
-        ChefClient client = new ChefClient();
-        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(client);
+        when(nodeManager.chefClientload(anyString(), anyString())).thenReturn(new ChefClient());
         Mockito.doNothing().when(nodeAsyncManager).nodeDelete(anyString(), anyString(), anyString(),
             any(Task.class), anyString());
         Task task = new Task();
@@ -137,9 +139,9 @@ public class NodeResourceImplTest {
     @Test(expected=APIException.class)
     public void testDeleteError() throws Exception {
         when(nodeManager.chefClientload(anyString(), anyString())).
-            thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
+            thenThrow(new EntityNotFoundException (NodeDto.class,"men", "node"));
         when(nodeManager.puppetClientload(anyString(), anyString(), anyString())).
-            thenThrow(new EntityNotFoundException (ChefClient.class,"men", "node"));
+            thenThrow(new EntityNotFoundException (NodeDto.class,"men", "node"));
         nodeResource.delete("node", "vdc", "");
     }
 

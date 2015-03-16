@@ -38,6 +38,7 @@ import com.telefonica.euro_iaas.sdc.manager.async.NodeAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
@@ -62,35 +63,37 @@ public class NodeResourceImpl implements NodeResource {
      * It obtains all the nodes for the user.
      * @return
      */
-    public ChefClient findAll() {
+    public NodeDto findAll() {
         throw new APIException(new Exception("Operation not implemented"));
 
     }
 
     /**
      * It obtains the information about the chef client.
-     * @param chefClientName
+     * @param nodeName
      *            the ChefClientName
      * @return
      */
-    public ChefClient load(String chefClientName) {
+    public NodeDto load(String nodeName) {
         boolean errorChef = false;
         boolean errorPuppet = false;
+        NodeDto node = null;
         try {
-            return nodeManager.chefClientload(chefClientName, getToken());
+            ChefClient chefClient = nodeManager.chefClientload(nodeName, getToken());
+            node = chefClient.toNodeDto();
         } catch (Exception e) {
             errorChef = true;
         }
         try {
-            return nodeManager.puppetClientload(chefClientName, getToken(), getVdc());
+            node = nodeManager.puppetClientload(nodeName, getToken(), getVdc());
         } catch (Exception e) {
             errorPuppet = true;
         }
         if (errorChef && errorPuppet) {
-            throw new APIException(new EntityNotFoundException(ChefClient.class,
-                "Node " + chefClientName + " not found", chefClientName));
+            throw new APIException(new EntityNotFoundException(NodeDto.class,
+                "Node " + nodeName + " not found", nodeName));
         }
-        return null;
+        return node;
     }
 
     /**

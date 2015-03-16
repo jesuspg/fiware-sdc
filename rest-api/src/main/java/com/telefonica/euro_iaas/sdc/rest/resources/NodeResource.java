@@ -40,7 +40,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Task;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 
 /**
  * @author alberts
@@ -55,7 +55,7 @@ public interface NodeResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ChefClient findAll() throws EntityNotFoundException,
+    NodeDto findAll() throws EntityNotFoundException,
             ChefClientExecutionException;
 
     /**
@@ -70,7 +70,7 @@ public interface NodeResource {
     @GET
     @Path("/{chefClientName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ChefClient load(@PathParam("chefClientName") String chefClientName) throws EntityNotFoundException,
+    NodeDto load(@PathParam("chefClientName") String chefClientName) throws EntityNotFoundException,
             ChefClientExecutionException;
     
     /**

@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 
 /**
  * @author jesus.movilla
@@ -65,7 +66,7 @@ public interface NodeManager {
      * @return
      * @throws EntityNotFoundException
      */
-    ChefClient puppetClientload(String nodeName, String token, String vdc) throws
+    NodeDto puppetClientload(String nodeName, String token, String vdc) throws
         EntityNotFoundException;
 
     /**
