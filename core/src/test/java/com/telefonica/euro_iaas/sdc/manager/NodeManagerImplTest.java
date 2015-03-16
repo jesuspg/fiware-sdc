@@ -330,7 +330,7 @@ public class NodeManagerImplTest {
 
         when(propertiesProvider.getProperty(anyString())).thenReturn("URL");
 
-        nodeManager.nodeDelete("test", "testError", "token");
+        nodeManager.nodeDelete("vdc", "node", "token");
 
     }
 
