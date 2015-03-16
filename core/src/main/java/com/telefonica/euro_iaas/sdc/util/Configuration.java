@@ -77,7 +77,7 @@ public interface Configuration {
     public final static String PRODUCT_INSTANCE_BASE_PATH = "/rest/vdc/{4}/productInstance/{0}";
     public final static String APPLICATION_INSTANCE_BASE_PATH = "/rest/vdc/{4}/application/{0}";
     public final static String TASK_BASE_PATH = "/rest/vdc/{1}/task/{0}";
-    public final static String CHEF_NODE_BASE_PATH = "/vdc/{1}/node/{0}";
+    public final static String CHEF_NODE_BASE_PATH = "/rest/vdc/{1}/node/{0}";
 
     public final static String UNTAR_COMMAND = "tar xvf  {0} -C {1}";
     
