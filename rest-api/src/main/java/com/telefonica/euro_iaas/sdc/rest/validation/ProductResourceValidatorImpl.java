@@ -191,12 +191,12 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
         for (int i = 0; i < metadatas.size(); i++) {
             Metadata metadata = metadatas.get(i);
 
-            if (metadata.getKey().equals("open_ports")) {
+            if (metadata.getKey().equals("open_ports") ||
+                metadata.getKey().equals("open_ports_udp")) {
                 List<String> ports = getFields((String) metadata.getValue());
                 for (String port : ports) {
                     checkPortMetadata(port);
                 }
-
             } else if (metadata.getKey().equals("installator")) {
                 if (!(metadata.getValue().equals("chef")) && !(metadata.getValue().equals("puppet"))) {
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"chef\" or \"puppet\"";
@@ -204,22 +204,29 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
                 }
             } else if (metadata.getKey().equals("dependencies")) {
                 checkDependence(metadata.getValue());
-            } else if (metadata.getKey().equals("public")) {
+            } else if (metadata.getKey().equals("public") ||
+                metadata.getKey().equals("cloud")) {
                 if (!(metadata.getValue().equals("no")) && !(metadata.getValue().equals("yes"))) {
                     String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
                     throw new InvalidProductException(msg);
                 }
-            } else if (metadata.getKey().equals("cloud")) {
-                if (!(metadata.getValue().equals("no")) && !(metadata.getValue().equals("yes"))) {
-                    String msg = "Metadata " + metadata.getValue() + " MUST BE \"yes\" or \"not\"";
-                    throw new InvalidProductException(msg);
-                }
-            }
+            } 
         }
 
     }
 
     private void checkPortMetadata(String port) throws InvalidProductException {
+
+        if (port.contains("-")) {
+            checkPort(port.substring(0, port.indexOf("-")));
+            checkPort(port.substring( port.indexOf("-")+1, port.length()));
+        }
+        else {
+            checkPort(port);
+        }
+    }
+
+    private void checkPort(String port) throws InvalidProductException{
         int openPortValue;
         try {
             openPortValue = Integer.parseInt(port);
@@ -228,7 +235,7 @@ public class ProductResourceValidatorImpl extends MultipartValidator implements 
             throw new InvalidProductException(msg);
         }
 
-        if ((openPortValue < 0) && (openPortValue > 65535)) {
+        if ((openPortValue < 0) || (openPortValue > 65535)) {
             String msg = "The open_ports value is not in the interval [0-65535]";
             throw new InvalidProductException(msg);
         }
