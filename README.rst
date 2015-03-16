@@ -22,7 +22,7 @@ Documentation
 
 .. |Build Status| image:: https://travis-ci.org/telefonicaid/fiware-sdc.svg
    :target: https://travis-ci.org/telefonicaid/fiware-sdc
-.. |Coverage Status| image:: https://coveralls.io/repos/jesuspg/fiware-sdc/badge.png
-   :target: https://coveralls.io/r/jesuspg/fiware-sdc
+.. |Coverage Status| image:: https://coveralls.io/repos/telefonicaid/fiware-sdc/badge.png?branch=develop
+   :target: https://coveralls.io/r/telefonicaid/fiware-sdc
 .. |help stackoverflow| image:: http://b.repl.ca/v1/help-stackoverflow-orange.png
    :target: http://www.stackoverflow.com
