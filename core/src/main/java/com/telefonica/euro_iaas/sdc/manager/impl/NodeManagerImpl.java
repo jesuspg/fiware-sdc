@@ -276,8 +276,8 @@ public class NodeManagerImpl implements NodeManager {
                 int statusCode;
                 statusCode = httpsClient.doHttps(HttpMethod.GET, url, "", headers);
 
-                if (statusCode == HTTP_OK || statusCode == HTTP_NOT_FOUND) {
-                    log.info("Node obtained");
+                if (statusCode == HTTP_OK) {
+                    log.info("Node obtained " + nodeName);
                     return new ChefClient();
 
                 } else {
