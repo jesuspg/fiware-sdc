@@ -152,7 +152,7 @@ Feature: Add a new product in the catalogue
     | testing_attributes_233 | product with testing purposes | application/json  | open_ports    |                                              |
     | testing_attributes_250 | product with testing purposes | application/json  | open_ports    | 80-90                                        |
     | testing_attributes_251 | product with testing purposes | application/json  | open_ports    | 20 80-90                                     |
-    | testing_attributes_252 | product with testing purposes | application/json  | open_ports    | 20 80-90 65535                               |
+    | testing_attributes_252 | product with testing purposes | application/json  | open_ports    | 0 80-90 65535                                |
     | testing_attributes_234 | product with testing purposes | application/json  | public        | yes                                          |
     | testing_attributes_235 | product with testing purposes | application/xml   | public        | no                                           |
     | testing_attributes_236 | product with testing purposes | application/json  | dependencies  | testing_attributes_223                       |
@@ -372,5 +372,5 @@ Feature: Add a new product in the catalogue
         | testing_metadatsa_02 | application/xml   | 8080 20                  |
         | testing_metadatsa_03 | application/xml   | 8080-8090                |
         | testing_metadatsa_04 | application/json  | 80 8080-8090             |
-        | testing_metadatsa_05 | application/xml   | 80 8080-8090 65535       |
+        | testing_metadatsa_05 | application/xml   | 0 8080-8090 65535        |
         | testing_metadatsa_06 | application/json  | 8080 25 26 27 8080-8090  |
