@@ -38,17 +38,18 @@ import javax.ws.rs.client.ClientBuilder;
 
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 
+/**
+ * SDC client configuration.
+ */
 public class SdcClientConfigImp implements SdcClientConfig {
-    HostnameVerifier hostnameVerifier;
-    SSLContext stx;
 
+    private HostnameVerifier hostnameVerifier;
+    private SSLContext stx;
+
+    /**
+     * constructor.
+     */
     public SdcClientConfigImp() {
-        super();
-        setup();
-
-    }
-
-    private void setup() {
 
         hostnameVerifier = new HostnameVerifier() {
 
@@ -72,15 +73,33 @@ public class SdcClientConfigImp implements SdcClientConfig {
         try {
             stx = SSLContext.getInstance("TLS");
             stx.init(null, trustAllCerts, new SecureRandom());
+
+
             HttpsURLConnection.setDefaultSSLSocketFactory(stx.getSocketFactory());
         } catch (Exception e) {
-            ;
+            System.out.println("SdcClientConfigImp:" + e);
         }
 
     }
 
+    /**
+     * Build a valid client with ssl configured.
+     * 
+     * @return Rest Client
+     */
     public Client getClient() {
-        return ClientBuilder.newBuilder().sslContext(stx).hostnameVerifier(hostnameVerifier).build();
+
+
+
+        return ClientBuilder.newBuilder().sslContext(getStx()).hostnameVerifier(getHostnameVerifier()).build();
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public SSLContext getStx() {
+        return stx;
     }
 
 }
