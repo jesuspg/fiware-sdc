@@ -36,6 +36,9 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 
 /**
@@ -45,6 +48,8 @@ public class SdcClientConfigImp implements SdcClientConfig {
 
     private HostnameVerifier hostnameVerifier;
     private SSLContext stx;
+
+    private static Logger log = LoggerFactory.getLogger(SdcClientConfigImp.class);
 
     /**
      * constructor.
@@ -74,10 +79,9 @@ public class SdcClientConfigImp implements SdcClientConfig {
             stx = SSLContext.getInstance("TLS");
             stx.init(null, trustAllCerts, new SecureRandom());
 
-
             HttpsURLConnection.setDefaultSSLSocketFactory(stx.getSocketFactory());
         } catch (Exception e) {
-            System.out.println("SdcClientConfigImp:" + e);
+            log.error("Error configuring SSL:" + e);
         }
 
     }
@@ -88,8 +92,6 @@ public class SdcClientConfigImp implements SdcClientConfig {
      * @return Rest Client
      */
     public Client getClient() {
-
-
 
         return ClientBuilder.newBuilder().sslContext(getStx()).hostnameVerifier(getHostnameVerifier()).build();
     }
