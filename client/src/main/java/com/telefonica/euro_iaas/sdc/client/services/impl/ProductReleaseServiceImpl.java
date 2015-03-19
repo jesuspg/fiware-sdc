@@ -39,6 +39,8 @@ import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartMediaTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
@@ -52,6 +54,8 @@ import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
  * @author jesus.movilla
  */
 public class ProductReleaseServiceImpl extends AbstractBaseService implements ProductReleaseService {
+
+    private static Logger log = LoggerFactory.getLogger(ProductReleaseServiceImpl.class);
 
     public ProductReleaseServiceImpl(SdcClientConfig clientConfig, String baseUrl, String mediaType) {
         setBaseHost(baseUrl);
@@ -136,6 +140,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
         try {
             return wr.accept(getType()).get(ProductRelease.class);
         } catch (Exception e) {
+            log.error("Error loading product: " + product + " version: " + version + " from: " + url, e);
             throw new ResourceNotFoundException(ProductRelease.class, url);
         }
     }

@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.client.services;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 
 /**
@@ -38,5 +40,9 @@ public interface SdcClientConfig {
      * @return
      */
     Client getClient();
+
+    HostnameVerifier getHostnameVerifier();
+
+    SSLContext getStx();
 
 }
