@@ -70,7 +70,7 @@ public interface NodeResource {
     @GET
     @Path("/{nodeName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    NodeDto load(@PathParam("chefClientName") String nodeName) throws EntityNotFoundException,
+    NodeDto load(@PathParam("nodeName") String nodeName) throws EntityNotFoundException,
         ChefClientExecutionException;
     
     /**
