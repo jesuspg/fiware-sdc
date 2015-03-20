@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 
 /**
  * @author jesus.movilla
@@ -40,7 +41,7 @@ public interface NodeManager {
     /**
      * Delete a ChefClient in ChefServer
      * 
-     * @param chefClientname
+     * @param nodeName
      *            the name of the chefclient to be deleted from chef server
      * @throws ChefClientExecutionException
      */
@@ -54,7 +55,19 @@ public interface NodeManager {
      * @throws ChefClientExecutionException
      * @throws EntityNotFoundException
      */
-    ChefClient chefClientload(String chefClientname, String token) throws ChefClientExecutionException, EntityNotFoundException;
+    ChefClient chefClientload(String chefClientname, String token)
+        throws ChefClientExecutionException, EntityNotFoundException;
+
+    /**
+     * It gets the node from puppet master.
+     * @param nodeName
+     * @param token
+     * @param vdc
+     * @return
+     * @throws EntityNotFoundException
+     */
+    NodeDto puppetClientload(String nodeName, String token, String vdc) throws
+        EntityNotFoundException;
 
     /**
      * Loads the chefclient whose hostname is hostname
@@ -62,6 +75,7 @@ public interface NodeManager {
      * @param hostname
      * @return ChefClient
      */
-    ChefClient chefClientfindByHostname(String hostname, String token) throws ChefClientExecutionException, EntityNotFoundException;
+    ChefClient chefClientfindByHostname(String hostname, String token)
+        throws ChefClientExecutionException, EntityNotFoundException;
 
 }

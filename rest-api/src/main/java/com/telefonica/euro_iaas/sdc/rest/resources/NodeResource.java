@@ -40,7 +40,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.model.Task;
-import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 
 /**
  * @author alberts
@@ -49,29 +49,29 @@ public interface NodeResource {
 
     
     /**
-     * Retrieve all ChefClients available in ChefServer.
+     * Retrieve all nodes available.
      *
-     * @return the chefclients.
+     * @return the nodes.
      */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ChefClient findAll() throws EntityNotFoundException,
-            ChefClientExecutionException;
+    NodeDto findAll() throws EntityNotFoundException,
+        ChefClientExecutionException;
 
     /**
      * Retrieve the selected ChecfClientName.
      * 
-     * @param chefClientName
-     *            the ChefClientName
-     * @return the product.
+     * @param nodeName
+     *            the nodeName
+     * @return the node.
      * @throws EntityNotFoundException
      *             if the product does not exists
      */
     @GET
-    @Path("/{chefClientName}")
+    @Path("/{nodeName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ChefClient load(@PathParam("chefClientName") String chefClientName) throws EntityNotFoundException,
-            ChefClientExecutionException;
+    NodeDto load(@PathParam("nodeName") String nodeName) throws EntityNotFoundException,
+        ChefClientExecutionException;
     
     /**
      * Delete a Node from Chef/Puppet only if the client has some productInstances installed
@@ -84,5 +84,5 @@ public interface NodeResource {
     @Path("/{nodeName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task delete(@PathParam("vdc") String vdc, @PathParam("nodeName") String nodeName,
-            @HeaderParam("callback") String callback) throws ChefClientExecutionException;
+                @HeaderParam("callback") String callback) throws ChefClientExecutionException;
 }

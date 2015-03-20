@@ -230,4 +230,10 @@ public class ChefClient {
         return sb.toString();
     }
 
+    public NodeDto toNodeDto() {
+        NodeDto node = new NodeDto ();
+        node.setSoftwareName(this.getName());
+        return node;
+    }
+
 }
