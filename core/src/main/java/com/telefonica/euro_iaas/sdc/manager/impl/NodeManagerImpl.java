@@ -82,6 +82,7 @@ public class NodeManagerImpl implements NodeManager {
 
     private static int HTTP_OK = 200;
     private static int HTTP_NOT_FOUND = 404;
+    private static int HTTP_NO_IMPLEMENTED = 405;
 
     /*
      * (non-Javadoc)
@@ -278,7 +279,8 @@ public class NodeManagerImpl implements NodeManager {
                 int statusCode;
                 statusCode = httpsClient.doHttps(HttpMethod.GET, url, "", headers);
 
-                if (statusCode == HTTP_OK) {
+                //We considered no implemented
+                if (statusCode == HTTP_OK || statusCode == HTTP_NO_IMPLEMENTED) {
                     log.info("Node obtained " + nodeName);
                     node = new NodeDto ();
                     node.setSoftwareName(nodeName);
