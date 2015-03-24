@@ -33,6 +33,7 @@ import java.util.List;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.MaxTimeWaitingExceedException;
@@ -92,8 +93,16 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      * {@inheritDoc}
      */
     public Task load(String url, String tenant, String token) {
-        Invocation.Builder wr = createWebResource(url, token, tenant);
-        return wr.accept(getType()).get(Task.class);
+        Response response = null;
+        try {
+            Invocation.Builder wr = createWebResource(url, token, tenant);
+            response = wr.accept(getType()).get();
+            return response.readEntity(Task.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     /**
@@ -102,26 +111,34 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
     public List<Task> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             List<TaskStates> states, String resource, String owner, Date fromDate, Date toDate, String vdc, String token) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_TASK_PATH, vdc);
-        WebTarget wr = getClient().target(url);
-        Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
-        builder.header("X-Auth-Token", token);
-        builder.header("Tenant-Id", vdc);
 
-        wr.queryParam("page", page);
-        wr.queryParam("pageSize", pageSize);
-        wr.queryParam("orderBy", orderBy);
-        wr.queryParam("orderType", orderType);
-        wr.queryParam("fromDate", fromDate);
-        wr.queryParam("toDate", toDate);
-        wr.queryParam("owner", owner);
-        wr.queryParam("result", resource);
-        if (states != null) {
-            for (TaskStates state : states) {
-                wr.queryParam("states", state);
+        Response response = null;
+        try {
+            WebTarget wr = getClient().target(url);
+            Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
+            builder.header("X-Auth-Token", token);
+            builder.header("Tenant-Id", vdc);
+
+            wr.queryParam("page", page);
+            wr.queryParam("pageSize", pageSize);
+            wr.queryParam("orderBy", orderBy);
+            wr.queryParam("orderType", orderType);
+            wr.queryParam("fromDate", fromDate);
+            wr.queryParam("toDate", toDate);
+            wr.queryParam("owner", owner);
+            wr.queryParam("result", resource);
+            if (states != null) {
+                for (TaskStates state : states) {
+                    wr.queryParam("states", state);
+                }
+            }
+            response = wr.request().accept(getType()).get();
+            return response.readEntity(Tasks.class);
+        } finally {
+            if (response != null) {
+                response.close();
             }
         }
-
-        return wr.request().accept(getType()).get(Tasks.class);
     }
 
     /**

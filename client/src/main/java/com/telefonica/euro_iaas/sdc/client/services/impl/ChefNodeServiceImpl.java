@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.sdc.client.services.impl;
 import java.text.MessageFormat;
 
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Response;
 
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.services.ChefNodeService;
@@ -49,8 +50,16 @@ public class ChefNodeServiceImpl extends AbstractBaseService implements ChefNode
     public Task delete(String vdc, String chefNodeName, String token) {
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFNODE_PATH, vdc, chefNodeName);
-        Invocation.Builder builder = createWebResource(url, token, vdc);
-        return builder.delete(Task.class);
+        Response response = null;
+        try {
+            Invocation.Builder builder = createWebResource(url, token, vdc);
+            response = builder.delete();
+            return response.readEntity(Task.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
 
     }
 

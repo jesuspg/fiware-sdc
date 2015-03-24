@@ -77,12 +77,18 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         log.info("Install " + vdc + " procut " + product);
         String url = getBaseHost() + MessageFormat.format(ClientConstants.INSTALL_PRODUCT_INSTANCE_PATH, vdc);
         log.info(url);
+        Response response = null;
+        try {
+            Invocation.Builder builder = createWebResource(url, token, vdc);
+            builder = addCallback(builder, callback);
+            response = builder.post(Entity.entity(product, getType()));
+            return response.readEntity(Task.class);
 
-        Invocation.Builder builder = createWebResource(url, token, vdc);
-        builder = addCallback(builder, callback);
-        Response response = builder.post(Entity.entity(product, getType()));
-        return response.readEntity(Task.class);
-
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     /**
@@ -94,20 +100,36 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
         String url = getBaseHost() + MessageFormat.format(
 
         ClientConstants.INSTALL_ARTEFACT_INSTANCE_PATH, vdc, product);
-        Invocation.Builder builder = createWebResource(url, token, vdc);
-        builder = addCallback(builder, callback);
-        return builder.post(Entity.entity(artifact, getType())).readEntity(Task.class);
+        Response response = null;
+        try {
+            Invocation.Builder builder = createWebResource(url, token, vdc);
+            builder = addCallback(builder, callback);
+            response = builder.post(Entity.entity(artifact, getType()));
+            return response.readEntity(Task.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
 
     }
 
     public Task uninstallArtifact(String vdc, String productInstanceId, Artifact artefact, String callback, String token) {
-        String url = getBaseHost() + MessageFormat.format(
+        String url = getBaseHost()
+                + MessageFormat.format(ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId,
+                        artefact.getName());
+        Response response = null;
+        try {
+            Invocation.Builder builder = createWebResource(url, token, vdc);
+            builder = addCallback(builder, callback);
+            response = builder.delete();
+            return response.readEntity(Task.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
 
-        ClientConstants.UNINSTALL_ARTEFACT_INSTANCE_PATH, vdc, productInstanceId, artefact.getName());
-        Invocation.Builder builder = createWebResource(url, token, vdc);
-        builder = addCallback(builder, callback);
-        return builder.delete(Task.class);
-
+        }
     }
 
     /**
@@ -118,21 +140,29 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
             Integer pageSize, String orderBy, String orderType, Status status, String vdc, String productName,
             String token) {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_PRODUCT_INSTANCE_PATH, vdc);
-        WebTarget webResource = getClient().target(url);
+        Response response = null;
+        try {
+            WebTarget webResource = getClient().target(url);
 
-        webResource.queryParam("hostname", hostname);
-        webResource.queryParam("domain", domain);
-        webResource.queryParam("ip", ip);
-        webResource.queryParam("fqn", fqn);
-        webResource.queryParam("page", page);
-        webResource.queryParam("pageSize", pageSize);
-        webResource.queryParam("orderBy", orderBy);
-        webResource.queryParam("orderType", orderType);
-        webResource.queryParam("status", status);
-        webResource.queryParam("product", productName);
+            webResource.queryParam("hostname", hostname);
+            webResource.queryParam("domain", domain);
+            webResource.queryParam("ip", ip);
+            webResource.queryParam("fqn", fqn);
+            webResource.queryParam("page", page);
+            webResource.queryParam("pageSize", pageSize);
+            webResource.queryParam("orderBy", orderBy);
+            webResource.queryParam("orderType", orderType);
+            webResource.queryParam("status", status);
+            webResource.queryParam("product", productName);
 
-        return webResource.request(getType()).accept(getType()).get(ProductInstances.class);
+            response = webResource.request(getType()).accept(getType()).get();
+            return response.readEntity(ProductInstances.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
 
+        }
     }
 
     /**
@@ -149,11 +179,18 @@ public class ProductInstanceServiceImpl extends AbstractInstallableService imple
      */
 
     public ProductInstance loadUrl(String url, String token, String tenant) throws ResourceNotFoundException {
+        Response response = null;
         try {
             Invocation.Builder builder = createWebResource(url, token, tenant);
-            return builder.get(ProductInstance.class);
+            response = builder.get();
+            return response.readEntity(ProductInstance.class);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ProductInstance.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+
         }
     }
 

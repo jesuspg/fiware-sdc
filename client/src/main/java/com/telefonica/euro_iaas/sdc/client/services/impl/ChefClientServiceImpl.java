@@ -31,6 +31,7 @@ import java.text.MessageFormat;
 
 import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Response;
 
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.InvalidExecutionException;
@@ -59,43 +60,63 @@ public class ChefClientServiceImpl extends AbstractBaseService implements ChefCl
     public Task delete(String vdc, String chefClientName, String token) throws InvalidExecutionException {
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
-        Invocation.Builder builder = createWebResource(url, token, vdc);
-        // builder = addCallback(builder, callback);
-        return builder.delete(Task.class);
+        Response response = null;
+        try {
+            Invocation.Builder builder = createWebResource(url, token, vdc);
+            // builder = addCallback(builder, callback);
+            response = builder.delete();
+            return response.readEntity(Task.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
 
     }
 
     public ChefClient load(String vdc, String chefClientName, String token) throws ResourceNotFoundException {
 
         String url = null;
+        Response response = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENT_PATH, vdc, chefClientName);
 
             Invocation.Builder wr = createWebResource(url, token, vdc);
 
-            return wr.get(ChefClient.class);
+            response = wr.get();
+            return response.readEntity(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ChefClient.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
     public ChefClient loadByHostname(String vdc, String hostname, String token) throws ResourceNotFoundException {
 
         String url = null;
+        Response response = null;
         try {
             url = getBaseHost() + MessageFormat.format(ClientConstants.CHEFCLIENTHOSTNAME_PATH, vdc, hostname);
 
             Invocation.Builder wr = createWebResource(url, token, vdc);
 
-            return wr.accept(getType()).get(ChefClient.class);
+            response = wr.accept(getType()).get();
+            return response.readEntity(ChefClient.class);
 
         } catch (EntityNotFoundException enfe) {
             throw new ResourceNotFoundException(ChefClient.class, url);
         } catch (Exception e) {
             throw new ResourceNotFoundException(ChefClient.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 

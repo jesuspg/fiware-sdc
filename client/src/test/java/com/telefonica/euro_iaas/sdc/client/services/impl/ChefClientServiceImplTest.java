@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -72,12 +73,14 @@ public class ChefClientServiceImplTest {
         String url = baseHost + "/vdc/" + vdc + "/chefClient/" + chefClientName;
         WebTarget webResource = mock(WebTarget.class);
         Invocation.Builder builder = mock(Invocation.Builder.class);
+        Response response = mock(Response.class);
 
-        // when
         when(client.getClient().target(url)).thenReturn(webResource);
         when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
-        when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
+        when(builder.get()).thenReturn(response);
+        when(response.readEntity(ChefClient.class)).thenReturn(expectedChefClient);
+        // when
 
         ChefClient resultChefClient = chefClientService.load(vdc, chefClientName, token);
 
@@ -86,7 +89,9 @@ public class ChefClientServiceImplTest {
         verify(client.getClient()).target(url);
         verify(webResource).request(type);
         verify(builder).accept(type);
-        verify(builder).get(ChefClient.class);
+        verify(builder).get();
+        verify(response).readEntity(ChefClient.class);
+        verify(response).close();
     }
 
     @Test
@@ -100,6 +105,7 @@ public class ChefClientServiceImplTest {
         ChefClient resultChefClient;
         WebTarget webResource = mock(WebTarget.class);
         Invocation.Builder builder = mock(Invocation.Builder.class);
+        Response response = mock(Response.class);
 
         String url = baseHost + "/vdc/" + vdc + "/chefClient?hostname=" + chefClientName;
         // when
@@ -108,7 +114,8 @@ public class ChefClientServiceImplTest {
         when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
-        when(builder.get(ChefClient.class)).thenReturn(expectedChefClient);
+        when(builder.get()).thenReturn(response);
+        when(response.readEntity(ChefClient.class)).thenReturn(expectedChefClient);
 
         resultChefClient = chefClientService.loadByHostname(vdc, chefClientName, token);
 
@@ -116,7 +123,9 @@ public class ChefClientServiceImplTest {
         assertNotNull(resultChefClient);
         verify(client.getClient()).target(url);
         verify(webResource).request(type);
-        verify(builder).get(ChefClient.class);
+        verify(builder).get();
+        verify(response).readEntity(ChefClient.class);
+        verify(response).close();
     }
 
     @Test
@@ -127,13 +136,15 @@ public class ChefClientServiceImplTest {
         String url = baseHost + "/vdc/" + vdc + "/chefClient/" + chefClientName;
         WebTarget webResource = mock(WebTarget.class);
         Invocation.Builder builder = mock(Invocation.Builder.class);
+        Response response = mock(Response.class);
         Task expectedTask = new Task();
 
         // when
         when(client.getClient().target(url)).thenReturn(webResource);
         when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
-        when(builder.delete(Task.class)).thenReturn(expectedTask);
+        when(builder.delete()).thenReturn(response);
+        when(response.readEntity(Task.class)).thenReturn(expectedTask);
 
         Task task = null;
         try {
@@ -146,7 +157,9 @@ public class ChefClientServiceImplTest {
         assertNotNull(task);
         verify(client.getClient()).target(url);
         verify(webResource).request(type);
-        verify(builder).delete(Task.class);
+        verify(builder).delete();
+        verify(response).readEntity(Task.class);
+        verify(response).close();
     }
 
 }

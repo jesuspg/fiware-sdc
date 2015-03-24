@@ -61,14 +61,19 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
      */
     public Product add(Product product, String token, String tenant) throws InsertResourceException {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
+        Response response = null;
         try {
             Invocation.Builder wr = createWebResource(url, token, tenant);
 
-            Response response = wr.accept(getType()).accept(getType()).post(Entity.entity(product, getType()));
+            response = wr.accept(getType()).accept(getType()).post(Entity.entity(product, getType()));
 
             return response.readEntity(Product.class);
         } catch (Exception e) {
             throw new InsertResourceException(Product.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
@@ -79,10 +84,16 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public void delete(String pname, String token, String tenant) {
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pname);
+        Response response = null;
+        try {
+            Invocation.Builder wr = createWebResource(url, token, tenant);
 
-        Invocation.Builder wr = createWebResource(url, token, tenant);
-
-        wr.accept(getType()).accept(getType()).delete();
+            response = wr.accept(getType()).accept(getType()).delete();
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     /**
@@ -92,10 +103,17 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public Product load(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH, pName);
         Invocation.Builder wr = createWebResource(url, token, tenant);
+        Response response = null;
         try {
-            return wr.accept(getType()).get(Product.class);
+            response = wr.accept(getType()).get();
+            return response.readEntity(Product.class);
         } catch (Exception e) {
             throw new ResourceNotFoundException(Product.class, url);
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
@@ -105,18 +123,25 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public List<Product> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String token,
             String tenant) {
         String url = getBaseHost() + ClientConstants.BASE_PRODUCT_PATH;
+        Response response = null;
+        try {
 
-        WebTarget wr = getClient().target(url);
-        Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
-        builder.header("X-Auth-Token", token);
-        builder.header("Tenant-Id", tenant);
+            WebTarget wr = getClient().target(url);
+            Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
+            builder.header("X-Auth-Token", token);
+            builder.header("Tenant-Id", tenant);
 
-        wr.queryParam("page", page);
-        wr.queryParam("pageSize", pageSize);
-        wr.queryParam("orderBy", orderBy);
-        wr.queryParam("orderType", orderType);
-
-        return builder.get().readEntity(Products.class);
+            wr.queryParam("page", page);
+            wr.queryParam("pageSize", pageSize);
+            wr.queryParam("orderBy", orderBy);
+            wr.queryParam("orderType", orderType);
+            response = builder.get();
+            return response.readEntity(Products.class);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     /**
@@ -125,10 +150,16 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public List<Attribute> loadAttributes(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_ATTRIBUTES, pName);
         Invocation.Builder wr = createWebResource(url, token, tenant);
+        Response response = null;
         try {
-            return wr.accept(getType()).get(Product.class).getAttributes();
+            response = wr.accept(getType()).get();
+            return response.readEntity(Product.class).getAttributes();
         } catch (Exception e) {
             throw new ResourceNotFoundException(Product.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
@@ -139,11 +170,16 @@ public class ProductServiceImpl extends AbstractBaseService implements ProductSe
     public List<Metadata> loadMetadatas(String pName, String token, String tenant) throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_PATH_METADATAS, pName);
         Invocation.Builder wr = createWebResource(url, token, tenant);
-
+        Response response = null;
         try {
-            return wr.accept(getType()).get(Product.class).getMetadatas();
+            response = wr.accept(getType()).get();
+            return response.readEntity(Product.class).getMetadatas();
         } catch (Exception e) {
             throw new ResourceNotFoundException(Product.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
