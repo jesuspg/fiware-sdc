@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
@@ -56,6 +57,7 @@ public class ChefNodeServiceImplTest {
         Invocation.Builder builder = mock(Invocation.Builder.class);
         SdcClientConfig client = mock(SdcClientConfig.class);
         ChefNodeServiceImpl chefNodeService = new ChefNodeServiceImpl(client, baseHost, type);
+        Response response = mock(Response.class);
 
         // when
         Client c = mock(Client.class);
@@ -63,7 +65,8 @@ public class ChefNodeServiceImplTest {
         when(client.getClient().target(url)).thenReturn(webResource);
         when(webResource.request(type)).thenReturn(builder);
         when(builder.accept(type)).thenReturn(builder);
-        when(builder.delete(Task.class)).thenReturn(expectedTask);
+        when(builder.delete()).thenReturn(response);
+        when(response.readEntity(Task.class)).thenReturn(expectedTask);
 
         Task task = null;
 
@@ -73,6 +76,8 @@ public class ChefNodeServiceImplTest {
         assertNotNull(task);
         verify(client.getClient()).target(url);
         verify(webResource).request(type);
-        verify(builder).delete(Task.class);
+        verify(builder).delete();
+        verify(response).readEntity(Task.class);
+        verify(response).close();
     }
 }

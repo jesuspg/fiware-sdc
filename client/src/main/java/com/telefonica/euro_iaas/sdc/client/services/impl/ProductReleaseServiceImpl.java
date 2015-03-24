@@ -34,6 +34,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.BodyPart;
@@ -44,7 +45,6 @@ import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.sdc.client.ClientConstants;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
-import com.telefonica.euro_iaas.sdc.client.model.ProductReleases;
 import com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService;
 import com.telefonica.euro_iaas.sdc.client.services.SdcClientConfig;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
@@ -68,6 +68,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
      */
     public ProductRelease add(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token,
             String tenant) {
+        Response response = null;
         try {
 
             MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
@@ -77,20 +78,36 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
             String url = getBaseHost()
                     + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, releaseDto.getProductName());
             Invocation.Builder wr = createWebResource(url, token, tenant);
-            return wr.accept(getType()).accept(MultiPartMediaTypes.MULTIPART_MIXED_TYPE).post(Entity.text(payload))
-                    .readEntity(ProductRelease.class);
+            response = wr.accept(getType()).accept(MultiPartMediaTypes.MULTIPART_MIXED_TYPE).post(Entity.text(payload));
+
+            ProductRelease productRelease = response.readEntity(ProductRelease.class);
+            return productRelease;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
     public ProductRelease add(ProductReleaseDto productReleaseDto, String token, String tenant) {
         String url = getBaseHost()
                 + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, productReleaseDto.getProductName());
-        Invocation.Builder wr = createWebResource(url, token, tenant);
-        return wr.post(Entity.entity(productReleaseDto, getType())).readEntity(ProductRelease.class);
+        Response response = null;
+        try {
+            Invocation.Builder wr = createWebResource(url, token, tenant);
+            response = wr.post(Entity.entity(productReleaseDto, getType()));
+            ProductRelease productRelease = response.readEntity(ProductRelease.class);
+            return productRelease;
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
 
     }
 
@@ -99,6 +116,7 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
      */
     public ProductRelease update(ProductReleaseDto releaseDto, InputStream cookbook, InputStream files, String token,
             String tenant) {
+        Response response = null;
         try {
 
             MultiPart payload = new MultiPart().bodyPart(new BodyPart(releaseDto, MediaType.valueOf(getType())))
@@ -109,12 +127,17 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
                     + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, releaseDto.getProductName(),
                             releaseDto.getVersion());
             Invocation.Builder wr = createWebResource(url, token, tenant);
-            return wr.accept(getType()).accept("multipart/mixed").put(Entity.entity(payload, getType()))
-                    .readEntity(ProductRelease.class);
+            response = wr.accept(getType()).accept("multipart/mixed").put(Entity.entity(payload, getType()));
+            ProductRelease productRelease = response.readEntity(ProductRelease.class);
+            return productRelease;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
@@ -125,9 +148,17 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
     public void delete(String pname, String version, String token, String tenant) {
 
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, pname, version);
-        Invocation.Builder wr = createWebResource(url, token, tenant);
+        Response response = null;
+        try {
+            Invocation.Builder wr = createWebResource(url, token, tenant);
 
-        wr.accept(getType()).delete();
+            response = wr.accept(getType()).delete();
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 
     /**
@@ -137,11 +168,20 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
             throws ResourceNotFoundException {
         String url = getBaseHost() + MessageFormat.format(ClientConstants.PRODUCT_RELEASE_PATH, product, version);
         Invocation.Builder wr = createWebResource(url, token, tenant);
+        Response response = null;
         try {
-            return wr.accept(getType()).get(ProductRelease.class);
+            response = wr.accept(getType()).get();
+
+            ProductRelease productRelease = response.readEntity(ProductRelease.class);
+
+            return productRelease;
         } catch (Exception e) {
             log.error("Error loading product: " + product + " version: " + version + " from: " + url, e);
             throw new ResourceNotFoundException(ProductRelease.class, url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
     }
 
@@ -152,18 +192,28 @@ public class ProductReleaseServiceImpl extends AbstractBaseService implements Pr
             String productName, String osType, String token, String tenant) {
         String url;
         url = getBaseHost() + MessageFormat.format(ClientConstants.BASE_PRODUCT_RELEASE_PATH, productName);
-        WebTarget wr = getClient().target(url);
-        Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
-        builder.header("X-Auth-Token", token);
-        builder.header("Tenant-Id", tenant);
+        Response response = null;
+        try {
+            WebTarget wr = getClient().target(url);
+            Invocation.Builder builder = wr.request().accept(MediaType.APPLICATION_JSON);
+            builder.header("X-Auth-Token", token);
+            builder.header("Tenant-Id", tenant);
 
-        wr.queryParam("page", page);
-        wr.queryParam("pageSize", pageSize);
-        wr.queryParam("orderBy", orderBy);
-        wr.queryParam("orderType", orderType);
-        wr.queryParam("osType", osType);
+            wr.queryParam("page", page);
+            wr.queryParam("pageSize", pageSize);
+            wr.queryParam("orderBy", orderBy);
+            wr.queryParam("orderType", orderType);
+            wr.queryParam("osType", osType);
 
-        return wr.request().accept(getType()).get(ProductReleases.class);
+            response = wr.request().accept(getType()).get();
+            List<ProductRelease> productReleases = (List<ProductRelease>) response.readEntity(ProductRelease.class);
+
+            return productReleases;
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
-
 }
