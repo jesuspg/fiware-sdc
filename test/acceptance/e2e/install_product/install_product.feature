@@ -68,7 +68,7 @@ Feature: Install product with E2E validations
       | testing_prov_no_cookbook_chef   | 1.0.0 	| chef  	|
       | testing_prov_no_cookbook_puppet | 1.0.1 	| puppet  	|
 
-
+    @slow
     Scenario Outline: Install a existing product when VM hostname is not registered
 
 	  Given a configuration management with "<cm_tool>"

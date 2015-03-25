@@ -68,5 +68,5 @@ CONFIG_VM_PASSWORD = '******** SET ********'
 PROVISION_ROOT_PATH = u'/tmp/{}'
 
 # Defines the wait time for operation (install / uninstall)
-WAIT_FOR_OPERATION = 150
+WAIT_FOR_OPERATION = 300
 WAIT_FOR_INSTALLATION = 30

@@ -66,6 +66,7 @@ Feature: Remove nodes from chef/puppet servers with E2E validations
     | application/xml   |
     | application/json  |
 
+
     Scenario: Remove node only registered in Chef-Server with product instances
 
       Given a configuration management with "chef"
@@ -81,7 +82,7 @@ Feature: Remove nodes from chef/puppet servers with E2E validations
       And the product is not instantiated
       And the node is not registered in Chef-Server
 
-    @skip @CLAUDIA-4210
+
     Scenario: Remove node only registered in Puppet-Master with product instances
 
       Given a configuration management with "puppet"
@@ -95,6 +96,7 @@ Feature: Remove nodes from chef/puppet servers with E2E validations
       Then the task is created
       And the task is performed
       And the product is not instantiated
+      And the node is not registered in Puppet-Master
 
 
     Scenario Outline: Remove node from Chef Server and Puppet Master with more than one product instance
