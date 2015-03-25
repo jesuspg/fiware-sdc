@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.sdc.manager;
 
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -314,6 +315,20 @@ public class NodeManagerImplTest {
 
         nodeManager.nodeDelete("test", "testError", "token");
 
+    }
+
+
+    /**
+     * It tests delete the node.
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteProductInstances() throws Exception {
+        List<ProductInstance> lProdutInstance = new ArrayList();
+        lProdutInstance.add(new ProductInstance());
+        when(productInstanceDao.findByHostname(anyString())).thenReturn(lProdutInstance);
+        nodeManager.deleteProductsInNode("node");
+        verify(productInstanceDao).remove(any(ProductInstance.class));
     }
 
     /**

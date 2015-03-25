@@ -110,22 +110,25 @@ public class NodeManagerImpl implements NodeManager {
             errorChef = true;
         }
 
+        if (errorPuppet && errorChef) {
+            throw new NodeExecutionException ("Error to delete the node " + nodeName);
+        }
+
+    }
+
+    /**
+     * It deletes the productInstances which correspond to the node.
+     * @param nodeName
+     * @throws EntityNotFoundException
+     */
+    public void deleteProductsInNode(String nodeName) throws EntityNotFoundException {
         List<ProductInstance> productInstances = null;
 
         String hostname = nodeName.split("\\.")[0];
-        try {
-            productInstances = productInstanceDao.findByHostname(nodeName);
+        productInstances = productInstanceDao.findByHostname(hostname);
 
-            for (int i = 0; i < productInstances.size(); i++) {
-                productInstanceDao.remove(productInstances.get(i));
-            }
-        } catch (EntityNotFoundException enfe) {
-            String errorMsg = "The hostname " + hostname + " does not have products installed " + enfe.getMessage();
-            log.warn(errorMsg);
-        }
-
-        if (errorPuppet && errorChef) {
-            throw new NodeExecutionException ("Error to delete the node " + nodeName);
+        for (int i = 0; i < productInstances.size(); i++) {
+            productInstanceDao.remove(productInstances.get(i));
         }
 
     }

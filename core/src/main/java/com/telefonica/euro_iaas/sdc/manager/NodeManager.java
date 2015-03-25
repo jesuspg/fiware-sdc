@@ -46,6 +46,14 @@ public interface NodeManager {
      * @throws ChefClientExecutionException
      */
     void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException;
+
+    /**
+     * It deletes the productInstances which correspond to the node.
+     * @param nodeName
+     * @throws EntityNotFoundException
+     */
+
+    void deleteProductsInNode(String nodeName) throws EntityNotFoundException;
     
     /**
      * Load a ChefClient from ChefServer

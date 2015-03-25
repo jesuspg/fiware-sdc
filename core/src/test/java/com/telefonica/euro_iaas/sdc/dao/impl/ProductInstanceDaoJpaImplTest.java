@@ -116,6 +116,35 @@ public class ProductInstanceDaoJpaImplTest {
     /**
      * Test the create and load method
      */
+    public void testFindByHostnameAndDelete() throws Exception {
+
+        Product product = new Product("p1", "desc");
+        product.addAttribute(new Attribute("clave", "valor"));
+        product.addMetadata(new Metadata("metKey", "metValue"));
+        productDao.create(product);
+
+        ProductRelease release = new ProductRelease("v1", "releaseNotes1", product, osDao.findAll(), null);
+        ProductRelease createdRelease = productReleaseDao.create(release);
+        VM host = new VM(null, "hostname", "domain");
+        ProductInstance pi1 = new ProductInstance(createdRelease, Status.INSTALLED, host, "vdc");
+        pi1 = productInstanceDao.create(pi1);
+
+        List<ProductInstance> returned = productInstanceDao.findByHostname("hostname");
+        assertEquals(returned.size(), 1);
+
+        for (ProductInstance inst: returned) {
+            productInstanceDao.remove(inst);
+        }
+
+        returned = productInstanceDao.findByHostname("hostname");
+        assertEquals(returned.size(), 1);
+
+    }
+
+
+    /**
+     * Test the create and load method
+     */
     public void testLoadWithArtifacts() throws Exception {
 
         ProductRelease release = productReleaseDao.findAll().get(0);

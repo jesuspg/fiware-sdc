@@ -25,6 +25,8 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.text.MessageFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Path;
 
@@ -58,6 +60,7 @@ public class NodeResourceImpl implements NodeResource {
     private NodeAsyncManager nodeAsyncManager;
     private TaskManager taskManager;
     private NodeManager nodeManager;
+    private static Logger log = LoggerFactory.getLogger(NodeResourceImpl.class);
 
     /**
      * It obtains all the nodes for the user.
@@ -106,6 +109,13 @@ public class NodeResourceImpl implements NodeResource {
      * @return
      */
     public Task delete(String vdc, String nodeName, String callback) {
+        try {
+            nodeManager.deleteProductsInNode(nodeName);
+        } catch (EntityNotFoundException e) {
+            String errorMsg = "The hostname " + nodeName + " does not have products installed " + e.getMessage();
+            log.warn(errorMsg);
+        }
+
         load(nodeName);
 
         try {
