@@ -16,7 +16,7 @@ Documentation
 =============
 
 -   `User and Programmers Guide <doc/user_guide.rst>`_
--   `Installation and Administration Guide <doc/admin_guide.rst>`_
+-   `Installation and Administration Guide <doc/installation-guide.rst>`_
 
 .. IMAGES
 
