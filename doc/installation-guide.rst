@@ -36,9 +36,9 @@ It is a a maven application:
 
        $ mvn assembly:assembly -DskipTests
        
-	   $ cp target/distribution/puppwrapper-dist {folder}
-       $ ./generateselfsigned.sh start on {folder}/puppetwrapper-dist/bin
-       $ ./jetty.sh start on {folder}/puppetwrapper-dist/bin
+       $ cp target/distribution/sdc-server-dist {folder}
+       $ {folder}/sdc-server-dist/bin/generateselfsigned.sh start 
+       $ cd {folder}/sdc-server-dist/bin ; ./jetty.sh start 
 
 -  You can generate a rpm o debian packages (using profiles in pom)
 
@@ -56,6 +56,7 @@ It is a a maven application:
    		$ mvn package -P rpm -DskipTests
    		(created target/rpm/sdc/RPMS/noarch/fiware-sdc-XXXX.noarch.rpm)
 
+Please, be aware  that the supported installation method is the RPM package. If you use other method, some extra steps may be required. For example you would need to generate manually the certificate (See the section about "Configuring the HTTPS certificate" for more information):
 
 Installation instructions
 -------------------------
