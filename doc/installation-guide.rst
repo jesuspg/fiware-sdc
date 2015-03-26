@@ -474,7 +474,7 @@ Configuring the HTTPS certificate
 The service is configured to use HTTPS to secure the communication between clients and the server. One central point in HTTPS security is the certificate which guarantee the server identity.
 
 Quickest solution: using a self-signed certificate
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The service works "out of the box" against passive attacks (e.g. a sniffer) because a self-signed certificated is generated automatically when the RPM is installed. Any certificate includes a special field call "CN" (Common name) with the identity of the host: the generated certificate uses as identity the IP of the host.
 
@@ -489,7 +489,7 @@ If you need to regenerate a self-signed certificate with a different IP address 
 By the way, the self-signed certificate is at /etc/keystorejetty. This file wont be overwritten although you reinstall the package. The same way, it wont be removed automatically if you uninstall de package.
 
 Advanced solution: using certificates signed by a CA
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Although a self-signed certificate works against passive attack, it is not enough by itself to prevent active attacks, specifically a "man in the middle attack" where an attacker try to impersonate the server. Indeed, any browser warns user against self-signed certificates. To avoid these problems, a certificate conveniently signed by a CA may be used.
 
@@ -506,7 +506,7 @@ It's possible that you already have a wild certificate securing your portal, but
 .. code::
 
     # usually, on an Apache installation, the certificate files are at /etc/ssl/private
--    /opt/fiware-sdc/bin/importcert.sh key.pem cert.crt chain.crt
+    /opt/fiware-sdc/bin/importcert.sh key.pem cert.crt chain.crt
 
 If you have a different configuration, for example your organization has got its own PKI, please refer to: http://docs.codehaus.org/display/JETTY/How%2bto%2bconfigure%2bSSL
 
