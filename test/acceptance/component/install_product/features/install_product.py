@@ -172,8 +172,8 @@ def task_is_not_created(step):
 
 @step(u'the product is instantiated')
 def the_product_is_instantiated(step):
-    # Wait for product instance (2s).
-    time.sleep(2)
+    # Wait for product instance (5s).
+    time.sleep(5)
     
     provisioning_steps.the_product_is_instantiated(step)
 

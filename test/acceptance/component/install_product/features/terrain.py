@@ -23,7 +23,10 @@
 __author__ = 'jfernandez'
 
 from commons.terrain_steps import setup_feature, setup_scenario, setup_outline, tear_down
-from lettuce import before, after
+from lettuce import before, after, world
+from commons.rest_utils import RestUtils
+
+rest_utils = RestUtils()
 
 
 @before.each_feature
@@ -38,10 +41,23 @@ def before_each_scenario(scenario):
     setup_scenario(scenario)
 
 
+@after.outline
+def after_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed after each Scenario Outline. Same behaviour as 'after_each_scenario'"""
+    after_each_scenario(None)
+
+
 @before.outline
 def before_outline(param1, param2, param3, param4):
     """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
     setup_outline(param1, param2, param3, param4)
+
+
+@after.each_scenario
+def after_each_scenario(scenario):
+    """ Hook: Will be executed after each Scenario. Clean test data """
+    if world.vm_hostname is not None:
+        rest_utils.delete_node(world.headers, world.tenant_id, world.vm_hostname)
 
 
 @after.all
