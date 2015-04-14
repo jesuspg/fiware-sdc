@@ -34,12 +34,10 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import net.sf.ehcache.Cache;
+import net.sf.json.JSONObject;
 
-import org.openstack.docs.identity.api.v2.AuthenticateResponse;
-import org.openstack.docs.identity.api.v2.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -47,7 +45,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
@@ -76,9 +73,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      */
     public static final int CODE_200 = 200;
     /**
-     * The Constant CODE_203. HTTP 203 ok
+     * The Constant CODE_201. HTTP 201 ok
      */
-    public static final int CODE_203 = 203;
+    public static final int CODE_201 = 201;
     /**
      * The Constant CODE_401.
      */
@@ -170,24 +167,26 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         log.debug("Keystone URL : " + keystoneURL);
         log.debug("adminToken : " + adminCredentials[0]);
 
-        AuthenticateResponse authenticateResponse = tokenCache.getAuthenticateResponse(token, tenantId);
+        JSONObject jsonObject = tokenCache.getAuthenticateResponse(token, tenantId);
 
         try {
-            if (authenticateResponse == null) {
+            if (jsonObject == null) {
 
                 WebTarget webResource = client.target(keystoneURL);
                 WebTarget tokens = webResource.path("tokens").path(token);
                 Invocation.Builder builder = tokens.request();
-                Response response = builder.accept(MediaType.APPLICATION_XML)
+                Response response = builder.accept(MediaType.APPLICATION_JSON)
                         .header("X-Auth-Token", adminCredentials[0]).get();
                 int status = response.getStatus();
 
-                if ((status == CODE_200) || (status == CODE_203)) {
+                if ((status == CODE_200) || (status == CODE_201)) {
                     // Validate user's token
-                    authenticateResponse = response.readEntity(AuthenticateResponse.class);
-                    PaasManagerUser userValidated = createPaasManagerUser(token, tenantId, authenticateResponse);
+                    jsonObject = JSONObject.fromObject(response.readEntity(String.class));
+                    jsonObject = (JSONObject) jsonObject.get("access");
+
+                    PaasManagerUser userValidated = createPaasManagerUser(token, tenantId, jsonObject);
                     log.info("generated new token for tenantId:" + tenantId + ": " + token);
-                    tokenCache.put(token + "-" + tenantId, authenticateResponse);
+                    tokenCache.put(token + "-" + tenantId, jsonObject);
 
                     return userValidated;
                 } else {
@@ -200,7 +199,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
                     throw new AuthenticationServiceException("Invalid token");
                 }
             } else {
-                return createPaasManagerUser(token, tenantId, authenticateResponse);
+                return createPaasManagerUser(token, tenantId, jsonObject);
             }
         } catch (Exception e) {
             log.warn("Exception in authentication: " + e);
@@ -213,32 +212,36 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * 
      * @param token
      * @param tenantId
-     * @param authenticateResponse
+     * @param responseJSON
      * @return
      */
-    private PaasManagerUser createPaasManagerUser(String token, String tenantId,
-            AuthenticateResponse authenticateResponse) {
+    private PaasManagerUser createPaasManagerUser(String token, String tenantId, JSONObject responseJSON) {
+        if (responseJSON.containsKey("token")) {
 
-        if (!tenantId.equals(authenticateResponse.getToken().getTenant().getId())) {
-            throw new AuthenticationServiceException("Token " + authenticateResponse.getToken().getTenant().getId()
-                    + " not valid for the tenantId provided:" + tenantId);
-        }
+            JSONObject tokenObject = (JSONObject) responseJSON.get("token");
+            String responseTenantId = (String) ((JSONObject) tokenObject.get("tenant")).get("id");
+            String responseTenantName = (String) ((JSONObject) tokenObject.get("tenant")).get("name");
+            JSONObject userObject = (JSONObject) responseJSON.get("user");
+            String responseUserName = (String) (userObject.get("name"));
 
-        Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
-
-        if (authenticateResponse.getUser().getRoles() != null) {
-            for (Role role : authenticateResponse.getUser().getRoles().getRole()) {
-                authsSet.add(new GrantedAuthorityImpl(role.getName()));
+            if (!tenantId.equals(responseTenantId)) {
+                throw new AuthenticationServiceException("Token " + token + " not valid for the tenantId provided:"
+                        + tenantId);
             }
+
+            Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
+
+            PaasManagerUser user = new PaasManagerUser(responseUserName, token, authsSet);
+
+            user.setTenantId(tenantId);
+            user.setTenantName(responseTenantName);
+            user.setToken(token);
+            return user;
+
+        } else {
+            throw new AuthenticationServiceException("Invalid request with token:" + token + " and tenantId:"
+                    + tenantId);
         }
-
-        PaasManagerUser user = new PaasManagerUser(authenticateResponse.getUser().getOtherAttributes()
-                .get(new QName("username")), token, authsSet);
-
-        user.setTenantId(tenantId);
-        user.setTenantName(authenticateResponse.getToken().getTenant().getName());
-        user.setToken(token);
-        return user;
     }
 
     private void configureOpenStackAuthenticationToken(String keystoneURL, String adminUser, String adminPass,

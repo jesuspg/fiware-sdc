@@ -30,8 +30,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-
-import org.openstack.docs.identity.api.v2.AuthenticateResponse;
+import net.sf.json.JSONObject;
 
 /**
  * Create and manage the cache to the response of OpenStack for request the admin token. Based on ehcache open source.
@@ -81,10 +80,10 @@ public class TokenCache {
      * Put new a new AuthenticateResponse value using token like key, in cache.
      * 
      * @param key
-     * @param authenticateResponse
+     * @param responseJSON
      */
-    public void put(String key, AuthenticateResponse authenticateResponse) {
-        cache.put(new Element(key, authenticateResponse));
+    public void put(String key, JSONObject responseJSON) {
+        cache.put(new Element(key, responseJSON));
     }
 
     /**
@@ -117,12 +116,12 @@ public class TokenCache {
      * @param tenantId
      * @return
      */
-    public AuthenticateResponse getAuthenticateResponse(String token, String tenantId) {
+    public JSONObject getAuthenticateResponse(String token, String tenantId) {
         String key = token + "-" + tenantId;
 
         if (cache.isKeyInCache(key) && (cache.get(key) != null)) {
 
-            return (AuthenticateResponse) cache.get(key).getObjectValue();
+            return (JSONObject) cache.get(key).getObjectValue();
         } else {
             return null;
         }
