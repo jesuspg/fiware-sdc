@@ -51,7 +51,7 @@ public class OpenStackAuthenticationToken {
     /**
      * http code 201.
      */
-    private static final int CODE_203 = 203;
+    private static final int CODE_201 = 201;
 
     /**
      * The log.
@@ -141,7 +141,7 @@ public class OpenStackAuthenticationToken {
 
             response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON));
 
-            if ((response.getStatus() == CODE_200) || (response.getStatus() == CODE_203)) {
+            if ((response.getStatus() == CODE_200) || (response.getStatus() == CODE_201)) {
 
                 JSONObject jsonObject = JSONObject.fromObject(response.readEntity(String.class));
                 jsonObject = (JSONObject) jsonObject.get("access");
