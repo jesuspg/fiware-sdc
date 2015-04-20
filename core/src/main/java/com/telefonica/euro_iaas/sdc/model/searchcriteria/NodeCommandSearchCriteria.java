@@ -24,8 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.fiware.commons.dao.AbstractSearchCriteria;
 
 /**
  * Provides some criteria to search NodeCommand entities.

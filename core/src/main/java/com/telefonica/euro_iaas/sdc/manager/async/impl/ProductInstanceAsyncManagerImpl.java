@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -55,9 +54,9 @@ import com.telefonica.euro_iaas.sdc.model.TaskError;
 import com.telefonica.euro_iaas.sdc.model.TaskReference;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.util.TaskNotificator;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Default implementation for ProductInstanceAsyncManager.
@@ -69,7 +68,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     private SystemPropertiesProvider systemPropertiesProvider;
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
-  
+
     private TaskNotificator taskNotificator;
 
     /**
@@ -77,13 +76,13 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token, Task task,
-            String callback) {
+    public void install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token,
+            Task task, String callback) {
         try {
 
             ProductInstance productInstance = null;
             productInstance = productInstanceManager.install(vm, vdc, productRelease, attributes, token);
-            
+
             updateSuccessTask(task, productInstance);
 
             log.info("Product " + productRelease.getProduct().getName() + '-' + productRelease.getVersion()
@@ -131,7 +130,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void configure(ProductInstance productInstance, List<Attribute> configuration, String token, Task task, String callback) {
+    public void configure(ProductInstance productInstance, List<Attribute> configuration, String token, Task task,
+            String callback) {
         try {
             productInstanceManager.configure(productInstance, configuration, token);
             updateSuccessTask(task, productInstance);
@@ -158,7 +158,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     @Async
     @Override
-    public void upgrade(ProductInstance productInstance, ProductRelease productRelease,  String token, Task task, String callback) {
+    public void upgrade(ProductInstance productInstance, ProductRelease productRelease, String token, Task task,
+            String callback) {
         try {
             productInstanceManager.upgrade(productInstance, productRelease, token);
             updateSuccessTask(task, productInstance);
@@ -242,29 +243,28 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
         // the
-                                                                                                       // product
-        task.setResult(new TaskReference(getUrlResourceTaks (productInstance)));
+        // product
+        task.setResult(new TaskReference(getUrlResourceTaks(productInstance)));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
         taskManager.updateTask(task);
 
     }
-    
-    private String getUrlResourceTaks (ProductInstance productInstance) {
-    	 String piResource = MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)+PRODUCT_INSTANCE_BASE_PATH,
-                 productInstance.getName(), // the name
-                 productInstance.getVm().getHostname(), // the hostname
-                 productInstance.getVm().getDomain(), // the domain
-                 productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc());
-    	 return piResource;
+
+    private String getUrlResourceTaks(ProductInstance productInstance) {
+        String piResource = MessageFormat.format(systemPropertiesProvider.getProperty(SDC_MANAGER_URL)
+                + PRODUCT_INSTANCE_BASE_PATH, productInstance.getName(), // the name
+                productInstance.getVm().getHostname(), // the hostname
+                productInstance.getVm().getDomain(), // the domain
+                productInstance.getProductRelease().getProduct().getName(), productInstance.getVdc());
+        return piResource;
     }
 
     /*
-     * Update the task with necessary information when the task is wrong and the
-     * product instance exists in the system.
+     * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        task.setResult(new TaskReference(getUrlResourceTaks (productInstance)));
+        task.setResult(new TaskReference(getUrlResourceTaks(productInstance)));
         updateErrorTask(task, message, t);
     }
 
@@ -279,19 +279,19 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        log.error("An error occured while executing a product action. ERROR:\""+error.getMessage()+"\". See task " + task.getHref()
-                + " for more information");
+        log.error("An error occured while executing a product action. ERROR:\"" + error.getMessage() + "\". See task "
+                + task.getHref() + " for more information");
     }
 
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm, String vdc) {
         try {
-			return productInstanceManager.load(vm, productRelease, vdc);
-		} catch (EntityNotFoundException e1) {
-			log.warn("The instance is not found");
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return null;
-		}
+            return productInstanceManager.load(vm, productRelease, vdc);
+        } catch (EntityNotFoundException e1) {
+            log.warn("The instance is not found");
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            return null;
+        }
     }
 
     private void notifyTask(String url, Task task) {
@@ -325,10 +325,9 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
     }
-    
-    public void setSystemPropertiesProvider (SystemPropertiesProvider systemPropertiesProvider) {
-    	this.systemPropertiesProvider = systemPropertiesProvider;
+
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
-    
 
 }

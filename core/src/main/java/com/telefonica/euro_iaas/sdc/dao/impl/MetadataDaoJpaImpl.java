@@ -28,10 +28,10 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.MetadataDao;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
+import com.telefonica.fiware.commons.dao.AbstractBaseDao;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * JPA implementation for MetadataDao.

@@ -26,9 +26,6 @@ package com.telefonica.euro_iaas.sdc.manager.impl;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyInstalledException;
@@ -49,6 +46,9 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.sdc.validation.ProductInstanceValidator;
+import com.telefonica.fiware.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.InvalidEntityException;
 import com.xmlsolutions.annotation.UseCase;
 
 public class ProductInstanceManagerImpl implements ProductInstanceManager {
@@ -71,11 +71,11 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     protected String UNDEPLOY_ARTIFACT = "undeployArtifact";
 
     @Override
-    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes, String token)
-            throws NodeExecutionException, AlreadyInstalledException, InvalidInstallProductRequestException,
-            EntityNotFoundException {
+    public ProductInstance install(VM vm, String vdc, ProductRelease productRelease, List<Attribute> attributes,
+            String token) throws NodeExecutionException, AlreadyInstalledException,
+            InvalidInstallProductRequestException, EntityNotFoundException {
 
-       // Check that there is not another product installed
+        // Check that there is not another product installed
         ProductInstance instance = null;
         try {
 
@@ -88,7 +88,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
                 throw new AlreadyInstalledException(instance);
             } else if (!(instance.getStatus().equals(Status.UNINSTALLED))
                     && !(instance.getStatus().equals(Status.ERROR)))
-                //restoreInstance(Status.UNINSTALLED, instance);
+                // restoreInstance(Status.UNINSTALLED, instance);
                 throw new InvalidInstallProductRequestException("Product " + productRelease.getProduct().getName()
                         + " " + productRelease.getVersion() + " cannot be installed in the VM " + vm.getFqn()
                         + " strage status:  " + instance.getStatus());
@@ -121,19 +121,19 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
             if (INSTALATOR_CHEF.equals(product.getMapMetadata().get("installator"))) {
                 chefInstallator.validateInstalatorData(vm, token);
-                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_init");
+                // chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_init");
                 chefInstallator.callService(instance, vm, attributes, INSTALL, token);
-                //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
+                // chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
             } else {
                 if (INSTALATOR_PUPPET.equals(product.getMapMetadata().get("installator"))) {
                     puppetInstallator.validateInstalatorData(vm, token);
-//                    puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
+                    // puppetInstallator.callService(vm, vdc, productRelease, INSTALL, token);
                     puppetInstallator.callService(instance, vm, attributes, INSTALL, token);
                 } else {
                     chefInstallator.validateInstalatorData(vm, token);
-                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
+                    // chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_int");
                     chefInstallator.callService(instance, vm, attributes, INSTALL, token);
-                    //chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
+                    // chefInstallator.installProbe(instance, vm, attributes, "probe::0.1_install");
                 }
             }
 
@@ -144,7 +144,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(sce);
         } catch (NodeExecutionException nee) {
-           restoreInstance(previousStatus, instance);
+            restoreInstance(previousStatus, instance);
             throw new NodeExecutionException(nee);
         } catch (InvalidInstallProductRequestException iipre) {
             restoreInstance(previousStatus, instance);
@@ -154,16 +154,16 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             restoreInstance(previousStatus, instance);
             throw new SdcRuntimeException(e);
         } catch (Exception e) {
-                // by default restore the previous state when a runtime is thrown
+            // by default restore the previous state when a runtime is thrown
             restoreInstance(previousStatus, instance);
-                throw new SdcRuntimeException(e);
+            throw new SdcRuntimeException(e);
         }
 
     }
 
     @Override
-    public void uninstall(ProductInstance productInstance, String token) throws NodeExecutionException, FSMViolationException,
-            EntityNotFoundException {
+    public void uninstall(ProductInstance productInstance, String token) throws NodeExecutionException,
+            FSMViolationException, EntityNotFoundException {
         Status previousStatus = productInstance.getStatus();
         try {
             validator.validateUninstall(productInstance);
@@ -342,17 +342,15 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         }
         return instance;
     }
-    
 
-    public ProductInstance load(VM vm, ProductRelease productRelease, String vdc ) throws EntityNotFoundException {
-        ProductInstance instance = productInstanceDao.load(vm.getFqn() + "_" + productRelease.getProduct().getName() + "_"
-                + productRelease.getVersion());
+    public ProductInstance load(VM vm, ProductRelease productRelease, String vdc) throws EntityNotFoundException {
+        ProductInstance instance = productInstanceDao.load(vm.getFqn() + "_" + productRelease.getProduct().getName()
+                + "_" + productRelease.getVersion());
         if (!instance.getVdc().equals(vdc)) {
             throw new EntityNotFoundException(ProductInstance.class, "vdc", vdc);
         }
         return instance;
     }
-
 
     /**
      * {@inheritDoc}

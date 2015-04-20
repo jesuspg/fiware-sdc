@@ -47,7 +47,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
@@ -57,6 +56,7 @@ import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * @author jesus.movilla
@@ -71,6 +71,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It gets the chefclient by the hostname
+     * 
      * @param hostname
      * @param token
      * @return
@@ -115,6 +116,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It deletes the chefclient by the name
+     * 
      * @param chefClientName
      *            the chefClientName to be deleted
      * @param token
@@ -149,6 +151,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It get the chef-client
+     * 
      * @param chefClientName
      * @param token
      * @return

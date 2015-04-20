@@ -24,8 +24,8 @@
 
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.sdc.model.Product;
+import com.telefonica.fiware.commons.dao.AbstractSearchCriteria;
 
 /**
  * Provides some criteria to search ProductInstance entities.
@@ -44,7 +44,6 @@ public class ProductReleaseSearchCriteria extends AbstractSearchCriteria {
      */
     private String osType;
 
-   
     /**
      * Default constructor
      */

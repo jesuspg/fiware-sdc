@@ -26,10 +26,10 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.BaseDAO;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Artifact;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
+import com.telefonica.fiware.commons.dao.BaseDAO;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Defines the methods needed to persist Application objects.

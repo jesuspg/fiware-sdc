@@ -24,11 +24,9 @@
 
 package com.telefonica.euro_iaas.sdc.dao;
 
-import java.util.List;
-
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Provides the methods to work with Chef Nodes.
@@ -39,12 +37,13 @@ public interface ChefNodeDao {
 
     /**
      * Retrieve all the nodes (name and url) registered in ChefServer.
+     * 
      * @return
      * @throws CanNotCallChefException
      */
-    ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException, 
-        CanNotCallChefException;
- 
+    ChefNode loadNodeFromHostname(String hostname, String token) throws EntityNotFoundException,
+            CanNotCallChefException;
+
     /**
      * Retrieve the node information form Chef server given a VM (containing hostname and domain).
      * 
@@ -76,8 +75,7 @@ public interface ChefNodeDao {
      *             if Chef Server returns an unexpected error code
      */
     void deleteNode(ChefNode node, String token) throws CanNotCallChefException;
-    
-    
+
     /**
      * Checks if ChefNode is already registered in ChefServer.
      * 
@@ -85,5 +83,5 @@ public interface ChefNodeDao {
      * @return void
      * @throws CanNotCallChefException
      */
-    void isNodeRegistered (String hostname, String token) throws CanNotCallChefException;
+    void isNodeRegistered(String hostname, String token) throws CanNotCallChefException;
 }

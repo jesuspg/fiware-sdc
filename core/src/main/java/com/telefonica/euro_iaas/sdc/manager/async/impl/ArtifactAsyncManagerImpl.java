@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.FSMViolationException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.sdc.manager.ArtifactManager;

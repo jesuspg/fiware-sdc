@@ -44,7 +44,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductDao;
 import com.telefonica.euro_iaas.sdc.manager.impl.ProductManagerImpl;
 import com.telefonica.euro_iaas.sdc.model.Metadata;

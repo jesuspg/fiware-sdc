@@ -24,7 +24,7 @@
 
 package com.telefonica.euro_iaas.sdc.model.searchcriteria;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
+import com.telefonica.fiware.commons.dao.AbstractSearchCriteria;
 
 /**
  * Search criteria for products entities.

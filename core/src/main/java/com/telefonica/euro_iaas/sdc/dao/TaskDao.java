@@ -26,9 +26,9 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
+import com.telefonica.fiware.commons.dao.BaseDAO;
 
 /**
  * Default the persistence operations for Task elements.

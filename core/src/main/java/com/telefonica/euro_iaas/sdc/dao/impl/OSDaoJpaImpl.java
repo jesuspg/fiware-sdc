@@ -26,10 +26,10 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.fiware.commons.dao.AbstractBaseDao;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * JPA implementation for SO.

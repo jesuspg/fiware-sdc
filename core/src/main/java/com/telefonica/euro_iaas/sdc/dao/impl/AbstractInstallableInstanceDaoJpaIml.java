@@ -31,10 +31,10 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
+import com.telefonica.fiware.commons.dao.AbstractBaseDao;
 
 public abstract class AbstractInstallableInstanceDaoJpaIml<T, Id extends Serializable> extends AbstractBaseDao<T, Id> {
 

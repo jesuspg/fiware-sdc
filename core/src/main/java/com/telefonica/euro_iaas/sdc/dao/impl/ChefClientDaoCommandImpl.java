@@ -29,12 +29,12 @@ package com.telefonica.euro_iaas.sdc.dao.impl;
 
 import java.text.MessageFormat;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.ShellCommandException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.util.CommandExecutor;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * @author jesus.movilla
@@ -64,7 +64,8 @@ public class ChefClientDaoCommandImpl implements ChefClientDao {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.sdc.dao.ChefClientDao#getChefClient(java.lang.String)
      */
-    public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException, EntityNotFoundException {
+    public ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException,
+            EntityNotFoundException {
         String command = MessageFormat.format(CHEF_CLIENT_GET_COMMAND, chefClientName);
         String[] output = new String[2];
         String chefClientString;
