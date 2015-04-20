@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.fiware.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;

@@ -26,7 +26,7 @@ package com.telefonica.euro_iaas.sdc.keystoneutils;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * Utilities for manage OpenStack regions.
@@ -39,39 +39,31 @@ public interface OpenStackRegion {
      * @param name
      *            e.g. nova, quantum, glance, etc...
      * @param regionName
-     * @param token
      * @return the http url with de endpoint.
      * @throws OpenStackException
      */
-    String getEndPointByNameAndRegionName(String name, String regionName, String token) throws OpenStackException;
+    String getEndPointByNameAndRegionName(String name, String regionName) throws OpenStackException;
 
-    
     /**
      * Get a list with the name of all regions.
      * 
-     * @param token
      * @return
      */
-    List<String> getRegionNames(String token) throws OpenStackException;
-    
+    List<String> getRegionNames() throws OpenStackException;
+
     /**
-     * 
-     * @param token
      * @return
      * @throws OpenStackException
      */
-    String getDefaultRegion(String token) throws OpenStackException;
+    String getDefaultRegion() throws OpenStackException;
 
-    
+    String getChefServerEndPoint() throws OpenStackException;
 
-	String getChefServerEndPoint(String token) throws OpenStackException;
-	
-	String getPuppetWrapperEndPoint(String token) throws OpenStackException;
-	
-	String getWebdavPoint(String token) throws OpenStackException;
-	
-	String getNovaEndPoint(String regionName, String token) throws OpenStackException ;
+    String getPuppetWrapperEndPoint() throws OpenStackException;
 
+    String getWebdavPoint() throws OpenStackException;
 
-	String getPuppetDBEndPoint(String token) throws OpenStackException;
+    String getNovaEndPoint(String regionName) throws OpenStackException;
+
+    String getPuppetDBEndPoint() throws OpenStackException;
 }

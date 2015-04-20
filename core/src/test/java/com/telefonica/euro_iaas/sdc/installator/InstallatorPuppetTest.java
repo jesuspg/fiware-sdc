@@ -58,7 +58,6 @@ import com.telefonica.euro_iaas.sdc.exception.CanNotCallPuppetException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
@@ -74,6 +73,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.PuppetNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * Test Installator class
@@ -153,7 +153,7 @@ public class InstallatorPuppetTest {
         puppetInstallator.setHttpsClient(httpsClient);
         doNothing().when(puppetInstallator).sleep(10000);
 
-        when(openStackRegion.getPuppetWrapperEndPoint("token")).thenReturn("http://");
+        when(openStackRegion.getPuppetWrapperEndPoint()).thenReturn("http://");
 
     }
 
@@ -200,7 +200,7 @@ public class InstallatorPuppetTest {
     public void testIsNodeDeployed() throws OpenStackException, CanNotCallPuppetException, IOException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+        when(openStackRegion.getPuppetDBEndPoint()).thenReturn("http");
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
@@ -212,7 +212,7 @@ public class InstallatorPuppetTest {
     public void testLoadNode() throws OpenStackException, CanNotCallPuppetException, IOException, InstallatorException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+        when(openStackRegion.getPuppetDBEndPoint()).thenReturn("http");
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
@@ -227,7 +227,7 @@ public class InstallatorPuppetTest {
             InstallatorException, NodeExecutionException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+        when(openStackRegion.getPuppetDBEndPoint()).thenReturn("http");
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
@@ -242,7 +242,7 @@ public class InstallatorPuppetTest {
             InstallatorException, NodeExecutionException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+        when(openStackRegion.getPuppetDBEndPoint()).thenReturn("http");
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
@@ -257,7 +257,7 @@ public class InstallatorPuppetTest {
             InstallatorException, NodeExecutionException, KeyManagementException, NoSuchAlgorithmException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenReturn("http");
+        when(openStackRegion.getPuppetDBEndPoint()).thenReturn("http");
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);
@@ -325,7 +325,7 @@ public class InstallatorPuppetTest {
             InstallatorException {
 
         when(statusLine.getStatusCode()).thenReturn(200).thenReturn(500);
-        when(openStackRegion.getPuppetDBEndPoint(any(String.class))).thenThrow(OpenStackException.class);
+        when(openStackRegion.getPuppetDBEndPoint()).thenThrow(OpenStackException.class);
 
         InputStream in = IOUtils.toInputStream(GET_NODES, "UTF-8");
         when(entity.getContent()).thenReturn(in);

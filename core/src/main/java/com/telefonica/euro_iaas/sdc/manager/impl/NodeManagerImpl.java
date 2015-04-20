@@ -48,7 +48,6 @@ import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
@@ -59,6 +58,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
 import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * @author alberts
@@ -133,7 +133,7 @@ public class NodeManagerImpl implements NodeManager {
 
         String deleteUrl = null;
         try {
-            deleteUrl = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
+            deleteUrl = openStackRegion.getPuppetWrapperEndPoint() + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
             puppetLog.warn(e2.getMessage());
         }
@@ -260,7 +260,7 @@ public class NodeManagerImpl implements NodeManager {
         String url = null;
         NodeDto node = null;
         try {
-            url = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
+            url = openStackRegion.getPuppetWrapperEndPoint() + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
             puppetLog.warn(e2.getMessage());
         }
