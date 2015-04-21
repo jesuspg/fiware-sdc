@@ -32,7 +32,6 @@ import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
@@ -40,6 +39,7 @@ import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductAndReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 @Path("/catalog/productandrelease")
@@ -93,21 +93,12 @@ public class ProductAndReleaseResourceImpl implements ProductAndReleaseResource 
     }
 
     private boolean checkProduct(Product product) {
-        PaasManagerUser credentials = this.getCredentials();
+        PaasManagerUser credentials = OpenStackAuthenticationProvider.getCredentials();
         if (product.getMapMetadata().get(TENANT_METADATA) != null
                 && product.getMapMetadata().get(TENANT_METADATA).equals(credentials.getTenantId())) {
             return true;
         }
         return false;
-    }
-
-    public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } else {
-            return null;
-        }
-
     }
 
     public void setProductManager(ProductManager productManager) {

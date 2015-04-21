@@ -40,14 +40,13 @@ import javax.ws.rs.core.Response;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
@@ -149,21 +148,13 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     }
 
     public String getToken() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {
             return user.getToken();
         }
 
-    }
-
-    public PaasManagerUser getCredentials() {
-        try {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**

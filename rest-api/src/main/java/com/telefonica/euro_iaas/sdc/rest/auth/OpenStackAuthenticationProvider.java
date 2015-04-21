@@ -42,6 +42,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -284,6 +285,28 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      */
     public Cache getTokenCache() {
         return tokenCache.getCache();
+    }
+
+    /**
+     * Get PaasManagerUser.
+     * 
+     * @return paasManagerUser
+     */
+    public static PaasManagerUser getCredentials() {
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (usernamePasswordAuthenticationToken != null) {
+                PaasManagerUser paasManagerUser = new PaasManagerUser("unknown", "unknown");
+                paasManagerUser.setToken(usernamePasswordAuthenticationToken.getPrincipal().toString());
+                paasManagerUser.setTenantId(usernamePasswordAuthenticationToken.getCredentials().toString());
+                return paasManagerUser;
+
+            }
+        }
+        return null;
+
     }
 
 }
