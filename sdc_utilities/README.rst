@@ -12,16 +12,17 @@ Installation
 =============
 
 It is just needed to export some environment variables for configuring
-againts the keystone and then run the script.
+against the keystone and then run the script.
 
 .. code::
-  #environment variables
-  export OS_KEYSTONE=XXX
-  export OS_PASSWORD=XXX
-  export OS_USERNAME=XXX
-  export OS_TENANT_NAME=XXX000000000000000000000000000081
 
-  # Execute script
-  pip install -r requirements.txt
-  python update_image_filter.py
+    #environment variables
+    $ export OS_KEYSTONE=XXX
+    $ export OS_PASSWORD=XXX
+    $ export OS_USERNAME=XXX
+    $ export OS_TENANT_NAME=XXX000000000000000000000000000081
+
+    # Execute script
+    $ pip install -r requirements.txt
+    $ python update_image_filter.py
 
