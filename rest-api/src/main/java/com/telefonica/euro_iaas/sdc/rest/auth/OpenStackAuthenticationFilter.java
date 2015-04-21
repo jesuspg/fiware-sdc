@@ -201,8 +201,11 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 UserDetails user = (UserDetails) authResult.getPrincipal();
                 logger.debug("User: " + user.getUsername());
                 logger.debug("Token: " + user.getPassword());
+                if (authResult.isAuthenticated()) {
+                    SecurityContextHolder.getContext().setAuthentication(authRequest);
 
-                SecurityContextHolder.getContext().setAuthentication(authResult);
+                }
+
                 // SecurityContextHolder.setStrategyName("MODE_INHERITABLETHREADLOCAL");
 
                 rememberMeServices.loginSuccess(request, response, authResult);
