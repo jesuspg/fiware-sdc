@@ -51,7 +51,6 @@ def get_images_filter():
                                                token, TENANT_ID)
 
     for product in products:
-        print product
         image_list = product[1].split(' ')
         image_ids = ''
         for image in image_list:
@@ -64,7 +63,7 @@ def get_images_filter():
                         endpoints['image']['Spain'], image, token)
                     if image_name is None:
                         continue
-                    print image
+
                     image_ids = image_ids + ' ' + image
                     for endpoint_glace in endpoints['image']:
                         if endpoint_glace == 'Spain':
@@ -75,12 +74,11 @@ def get_images_filter():
                         if image_id is None:
                             continue
                         image_ids = image_ids + ' ' + image_id
-                    print 'product ' + product[0] + image_ids
                     #update_metadata_image (endpoints['sdc']['Spain'],
                     #  token, TENANT_ID, product, image_ids)
             except Exception, e:
                 print 'Error with image ' + image
-        print image_ids
+        print 'product ' + product[0] + image_ids
 
 
 def get_token(url_base, tenant_id, user, password):
@@ -197,7 +195,7 @@ def get_product_with_image_filtered(sdc_url, token, vdc):
     response = http.get(url, headers)
 
     if response.status != 200:
-        print 'error to add the product sdc ' + str(response.status)
+        print 'error to get the product with image filtered ' + str(response.status)
         sys.exit(1)
     else:
         data = json.loads(response.read())
@@ -252,7 +250,7 @@ def get_image_id_another_region(glance_url, image_name, token):
     :param token: the valid token
     :param image_name: image name
     """
-    url = glance_url + '/images'
+    url = glance_url + '/images?property-sdc_aware=true'
     headers = {'Accept': 'application/json', 'X-Auth-Token': token}
 
     try:
