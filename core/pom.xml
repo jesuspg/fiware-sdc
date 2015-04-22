@@ -39,7 +39,7 @@
         </dependency>
         <!-- Persistence -->
         <dependency>
-            <groupId>com.telefonica.fiware</groupId>
+            <groupId>com.telefonica.iot</groupId>
             <artifactId>commons</artifactId>
         </dependency>
         <dependency>
