@@ -27,9 +27,9 @@
  */
 package com.telefonica.euro_iaas.sdc.rest.validation;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 

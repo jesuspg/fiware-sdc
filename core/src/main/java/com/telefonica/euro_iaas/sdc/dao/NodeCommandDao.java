@@ -26,9 +26,9 @@ package com.telefonica.euro_iaas.sdc.dao;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.sdc.model.NodeCommand;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.NodeCommandSearchCriteria;
+import com.telefonica.fiware.commons.dao.BaseDAO;
 
 /**
  * Defines the methods needed to persist NodeCommand Object

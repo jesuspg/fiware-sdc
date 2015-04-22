@@ -34,13 +34,9 @@ import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
@@ -57,9 +53,13 @@ import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductInstanceResourceValidator;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.InvalidEntityException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * Default ProductInstanceResource implementation.
@@ -274,7 +274,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     }
 
     /**
-     * @param productManager
+     * @param productReleaseManager
      *            the productManager to set
      */
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
@@ -282,7 +282,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     }
 
     /**
-     * @param productReleaseManager
+     * @param productInstanceAsyncManager
      *            the productReleaseManager to set
      */
     public void setProductInstanceAsyncManager(ProductInstanceAsyncManager productInstanceAsyncManager) {
@@ -298,21 +298,13 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     }
 
     public String getToken() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {
             return user.getToken();
         }
 
-    }
-
-    public PaasManagerUser getCredentials() {
-        try {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

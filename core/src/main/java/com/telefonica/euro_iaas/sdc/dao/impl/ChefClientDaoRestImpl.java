@@ -47,16 +47,16 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * @author jesus.movilla
@@ -71,6 +71,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It gets the chefclient by the hostname
+     * 
      * @param hostname
      * @param token
      * @return
@@ -84,7 +85,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             String path = "/clients";
             String chefServer = null;
             try {
-                chefServer = openStackRegion.getChefServerEndPoint(token);
+                chefServer = openStackRegion.getChefServerEndPoint();
             } catch (OpenStackException e) {
                 throw new SdcRuntimeException(e);
             }
@@ -115,6 +116,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It deletes the chefclient by the name
+     * 
      * @param chefClientName
      *            the chefClientName to be deleted
      * @param token
@@ -123,7 +125,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
     public void deleteChefClient(String chefClientName, String token) throws CanNotCallChefException {
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
@@ -149,6 +151,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
 
     /**
      * It get the chef-client
+     * 
      * @param chefClientName
      * @param token
      * @return
@@ -159,7 +162,7 @@ public class ChefClientDaoRestImpl implements ChefClientDao {
             EntityNotFoundException {
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }

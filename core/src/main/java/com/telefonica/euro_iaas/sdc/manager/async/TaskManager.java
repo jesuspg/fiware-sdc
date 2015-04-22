@@ -26,9 +26,9 @@ package com.telefonica.euro_iaas.sdc.manager.async;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Provides the methods to work with tasks.

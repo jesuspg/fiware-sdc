@@ -34,7 +34,6 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;
@@ -47,6 +46,7 @@ import com.telefonica.euro_iaas.sdc.model.ProductRelease;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.IpToVM;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef implements Installator {
 
@@ -102,7 +102,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
             if (isSdcClientInstalled()) {
                 executeRecipes(vm);
             } else {
-            	checkRecipeExecution(vm, process, recipe, token);
+                checkRecipeExecution(vm, process, recipe, token);
             }
         } catch (NodeExecutionException e) {
             log.warn("Error in the execution of the node " + e.getMessage());
@@ -120,9 +120,9 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
     public void callService(ProductInstance productInstance, String action, String token) throws InstallatorException,
             NodeExecutionException {
 
-    	String process = productInstance.getProductRelease().getProduct().getName();
+        String process = productInstance.getProductRelease().getProduct().getName();
 
-    	VM vm = productInstance.getVm();
+        VM vm = productInstance.getVm();
         String recipe = "";
         if ("uninstall".equals(action)) {
             recipe = recipeNamingGenerator.getUninstallRecipe(productInstance);
@@ -136,7 +136,7 @@ public class InstallatorChefImpl extends BaseInstallableInstanceManagerChef impl
         assignRecipes(vm, recipe, token);
         try {
             if (isSdcClientInstalled()) {
-                 executeRecipes(vm);
+                executeRecipes(vm);
             } else {
                 checkRecipeExecution(vm, process, recipe, token);
             }

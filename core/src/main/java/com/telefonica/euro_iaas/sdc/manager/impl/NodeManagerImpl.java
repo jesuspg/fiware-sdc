@@ -38,22 +38,16 @@ import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientDao;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.ChefClientExecutionException;
 import com.telefonica.euro_iaas.sdc.exception.NodeExecutionException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorChefImpl;
 import com.telefonica.euro_iaas.sdc.installator.impl.InstallatorPuppetImpl;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
@@ -63,6 +57,8 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.util.HttpsClient;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * @author alberts
@@ -86,10 +82,7 @@ public class NodeManagerImpl implements NodeManager {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete
-     * (java.lang.String, java.lang.String)
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefNodeDelete (java.lang.String, java.lang.String)
      */
     public void nodeDelete(String vdc, String nodeName, String token) throws NodeExecutionException {
 
@@ -111,13 +104,14 @@ public class NodeManagerImpl implements NodeManager {
         }
 
         if (errorPuppet && errorChef) {
-            throw new NodeExecutionException ("Error to delete the node " + nodeName);
+            throw new NodeExecutionException("Error to delete the node " + nodeName);
         }
 
     }
 
     /**
      * It deletes the productInstances which correspond to the node.
+     * 
      * @param nodeName
      * @throws EntityNotFoundException
      */
@@ -139,7 +133,7 @@ public class NodeManagerImpl implements NodeManager {
 
         String deleteUrl = null;
         try {
-            deleteUrl = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
+            deleteUrl = openStackRegion.getPuppetWrapperEndPoint() + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
             puppetLog.warn(e2.getMessage());
         }
@@ -189,7 +183,7 @@ public class NodeManagerImpl implements NodeManager {
             chefNodeDao.deleteNode(node, token);
             chefLog.info("Node " + chefClientName + " deleted from Chef Server");
             chefClientDao.deleteChefClient(chefClientName, token);
-        }  catch (CanNotCallChefException e) {
+        } catch (CanNotCallChefException e) {
             String errorMsg = "Error deleting the Node" + chefClientName + " in Chef server. Description: "
                     + e.getMessage();
             chefLog.warn(errorMsg);
@@ -203,10 +197,7 @@ public class NodeManagerImpl implements NodeManager {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll
-     * ()
+     * @see com.telefonica.euro_iaas.sdc.manager.ChefClientManager#chefClientfindAll ()
      */
     public ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
             ChefClientExecutionException {
@@ -227,6 +218,7 @@ public class NodeManagerImpl implements NodeManager {
 
     /**
      * It obtains the chefClient from Chef-server.
+     * 
      * @param chefClientName
      * @param token
      * @return
@@ -241,7 +233,7 @@ public class NodeManagerImpl implements NodeManager {
             chefClient = chefClientDao.getChefClient(chefClientName, token);
         } catch (EntityNotFoundException e) {
             String men = "The node is not in the chef-server: " + chefClientName + " : " + e.getMessage();
-            log.warn (men);
+            log.warn(men);
             throw new EntityNotFoundException(ChefClient.class, men, chefClientName);
         } catch (Exception e) {
             String message = " An error ocurred invoing the Chef server to load ChefClient named " + chefClientName;
@@ -253,6 +245,7 @@ public class NodeManagerImpl implements NodeManager {
 
     /**
      * It obtains the node from puppet master
+     * 
      * @param nodeName
      * @param token
      * @param vdc
@@ -260,15 +253,14 @@ public class NodeManagerImpl implements NodeManager {
      * @throws ChefClientExecutionException
      * @throws EntityNotFoundException
      */
-    public NodeDto puppetClientload(String nodeName, String token, String vdc) throws
-        EntityNotFoundException {
+    public NodeDto puppetClientload(String nodeName, String token, String vdc) throws EntityNotFoundException {
 
         puppetLog.info("Getting node " + nodeName + " from puppet master");
 
         String url = null;
         NodeDto node = null;
         try {
-            url = openStackRegion.getPuppetWrapperEndPoint(token) + "v2/node/" + nodeName;
+            url = openStackRegion.getPuppetWrapperEndPoint() + "v2/node/" + nodeName;
         } catch (OpenStackException e2) {
             puppetLog.warn(e2.getMessage());
         }
@@ -282,10 +274,10 @@ public class NodeManagerImpl implements NodeManager {
                 int statusCode;
                 statusCode = httpsClient.doHttps(HttpMethod.GET, url, "", headers);
 
-                //We considered no implemented
+                // We considered no implemented
                 if (statusCode == HTTP_OK || statusCode == HTTP_NO_IMPLEMENTED) {
                     log.info("Node obtained " + nodeName);
-                    node = new NodeDto ();
+                    node = new NodeDto();
                     node.setSoftwareName(nodeName);
 
                 } else {

@@ -46,7 +46,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.NodeCommandDao;
 import com.telefonica.euro_iaas.sdc.dao.OSDao;
 import com.telefonica.euro_iaas.sdc.exception.InvalidInstallProductRequestException;

@@ -33,12 +33,12 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.TaskDao;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.TaskSearchCriteria;
+import com.telefonica.fiware.commons.dao.AbstractBaseDao;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * TaskDao JPA based implementation.

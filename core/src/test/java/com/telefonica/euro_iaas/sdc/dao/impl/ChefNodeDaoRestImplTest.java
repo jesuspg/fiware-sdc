@@ -43,14 +43,14 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * Unitary tests for ChefNodeDaoRestImpl.
@@ -606,7 +606,7 @@ public class ChefNodeDaoRestImplTest {
         when(client.target(anyString())).thenReturn(webResource);
         when(webResource.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
-        when(openStackRegion.getChefServerEndPoint("token")).thenReturn("http://url");
+        when(openStackRegion.getChefServerEndPoint()).thenReturn("http://url");
         when(builder.get()).thenReturn(response);
         when(response.readEntity(String.class)).thenReturn(responseString);
 
@@ -702,7 +702,7 @@ public class ChefNodeDaoRestImplTest {
         when(builder.put(any(Entity.class))).thenReturn(response);
         when(response.readEntity(String.class)).thenReturn(responseJSON);
         chefNodeDaoRestImpl.setOpenStackRegion(openStackRegion);
-        when(openStackRegion.getChefServerEndPoint(anyString())).thenReturn("http://chefserver");
+        when(openStackRegion.getChefServerEndPoint()).thenReturn("http://chefserver");
 
         // then
         chefNodeDaoRestImpl.updateNode(chefNode, "token");

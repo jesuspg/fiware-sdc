@@ -32,7 +32,11 @@
         Ensure that the above transactional advice runs for any execution of
         an operation defined by the *Manager interface.
     -->
-
+    <aop:config>
+        <aop:pointcut id="daoBaseOperation"
+                      expression="execution(* com.telefonica.fiware.commons..*Dao.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="daoBaseOperation"/>
+    </aop:config>
 
     <aop:config>
         <aop:pointcut id="daoOperation"

@@ -33,7 +33,7 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
 import com.telefonica.euro_iaas.sdc.manager.async.NodeAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;

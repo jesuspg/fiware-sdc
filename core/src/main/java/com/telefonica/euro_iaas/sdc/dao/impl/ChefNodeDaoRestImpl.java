@@ -46,17 +46,17 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefClientConfig;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.exception.SdcRuntimeException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefNode;
 import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.MixlibAuthenticationDigester;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * Default implementation of ChefNodeManager.
@@ -79,7 +79,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         log.info("Loading nodes " + hostname);
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
@@ -124,7 +124,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         log.info("loadNode " + chefNodename);
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
             log.info("chefServerUrl " + chefServerUrl);
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
@@ -171,7 +171,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
         log.info("Update node " + node.getName());
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
@@ -211,7 +211,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public void deleteNode(ChefNode node, String token) throws CanNotCallChefException {
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }
@@ -240,7 +240,7 @@ public class ChefNodeDaoRestImpl implements ChefNodeDao {
     public void isNodeRegistered(String hostname, String token) throws CanNotCallChefException {
         String chefServerUrl = null;
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(token);
+            chefServerUrl = openStackRegion.getChefServerEndPoint();
         } catch (OpenStackException e) {
             throw new SdcRuntimeException(e);
         }

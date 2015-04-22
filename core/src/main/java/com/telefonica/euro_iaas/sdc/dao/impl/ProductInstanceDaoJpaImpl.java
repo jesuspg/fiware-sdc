@@ -34,12 +34,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.sdc.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.sdc.model.InstallableInstance;
 import com.telefonica.euro_iaas.sdc.model.ProductInstance;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductInstanceSearchCriteria;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * JPA implementation for AppState.

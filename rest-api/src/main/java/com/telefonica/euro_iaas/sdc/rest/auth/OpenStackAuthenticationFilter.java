@@ -44,13 +44,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
 
 /**
@@ -198,14 +198,14 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                     throw new AccessDeniedException(str);
                 }
 
-                PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
-
+                UserDetails user = (UserDetails) authResult.getPrincipal();
                 logger.debug("User: " + user.getUsername());
-                logger.debug("Token: " + user.getToken());
-                logger.debug("Tenant: " + user.getTenantId());
-                logger.debug("TenantName - Org: " + user.getTenantName());
+                logger.debug("Token: " + user.getPassword());
+                if (authResult.isAuthenticated()) {
+                    SecurityContextHolder.getContext().setAuthentication(authRequest);
 
-                SecurityContextHolder.getContext().setAuthentication(authResult);
+                }
+
                 // SecurityContextHolder.setStrategyName("MODE_INHERITABLETHREADLOCAL");
 
                 rememberMeServices.loginSuccess(request, response, authResult);

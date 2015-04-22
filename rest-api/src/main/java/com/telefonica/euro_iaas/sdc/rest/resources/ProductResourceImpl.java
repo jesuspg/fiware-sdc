@@ -32,12 +32,8 @@ import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseStillInstalledException;
@@ -47,9 +43,13 @@ import com.telefonica.euro_iaas.sdc.model.Metadata;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.InvalidEntityException;
 
 /**
  * default ProductResource implementation.
@@ -157,7 +157,7 @@ public class ProductResourceImpl implements ProductResource {
     }
 
     private boolean checkProduct(Product product) {
-        PaasManagerUser credentials = this.getCredentials();
+        PaasManagerUser credentials = OpenStackAuthenticationProvider.getCredentials();
         if (credentials == null) {
             return false;
         }
@@ -168,20 +168,12 @@ public class ProductResourceImpl implements ProductResource {
         return false;
     }
 
-    public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } else {
-            return null;
-        }
-
-    }
-
     private String getTenantId() {
-        if (getCredentials() == null) {
+        PaasManagerUser paasManagerUser = OpenStackAuthenticationProvider.getCredentials();
+        if (paasManagerUser == null) {
             return "";
         } else {
-            return getCredentials().getTenantId();
+            return paasManagerUser.getTenantId();
         }
     }
 

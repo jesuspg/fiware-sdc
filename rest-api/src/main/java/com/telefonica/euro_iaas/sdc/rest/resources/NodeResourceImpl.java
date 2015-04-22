@@ -25,14 +25,12 @@
 package com.telefonica.euro_iaas.sdc.rest.resources;
 
 import java.text.MessageFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Path;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.sdc.manager.NodeManager;
@@ -40,10 +38,12 @@ import com.telefonica.euro_iaas.sdc.manager.async.NodeAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
-import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.NodeDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * 
@@ -64,6 +64,7 @@ public class NodeResourceImpl implements NodeResource {
 
     /**
      * It obtains all the nodes for the user.
+     * 
      * @return
      */
     public NodeDto findAll() {
@@ -73,6 +74,7 @@ public class NodeResourceImpl implements NodeResource {
 
     /**
      * It obtains the information about the chef client.
+     * 
      * @param nodeName
      *            the ChefClientName
      * @return
@@ -93,14 +95,15 @@ public class NodeResourceImpl implements NodeResource {
             errorPuppet = true;
         }
         if (errorChef && errorPuppet) {
-            throw new APIException(new EntityNotFoundException(NodeDto.class,
-                "Node " + nodeName + " not found", nodeName));
+            throw new APIException(new EntityNotFoundException(NodeDto.class, "Node " + nodeName + " not found",
+                    nodeName));
         }
         return node;
     }
 
     /**
      * It delete the node in the chef-server and puppet master.
+     * 
      * @param vdc
      *            the tenant id
      * @param nodeName
@@ -129,6 +132,7 @@ public class NodeResourceImpl implements NodeResource {
 
     /**
      * It creates the task.
+     * 
      * @param description
      * @param vdc
      * @return
@@ -153,23 +157,12 @@ public class NodeResourceImpl implements NodeResource {
     }
 
     /**
-     * It gets the credentials.
-     * @return
-     */
-    public PaasManagerUser getCredentials() {
-        try {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
      * It obtains the token from the credentials.
+     * 
      * @return
      */
     public String getToken() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {
@@ -180,10 +173,11 @@ public class NodeResourceImpl implements NodeResource {
 
     /**
      * It gets the vdc from crendentials.
+     * 
      * @return
      */
     public String getVdc() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {

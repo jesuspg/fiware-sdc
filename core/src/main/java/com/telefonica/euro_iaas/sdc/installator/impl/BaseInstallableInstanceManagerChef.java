@@ -24,14 +24,11 @@
 
 package com.telefonica.euro_iaas.sdc.installator.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.ChefNodeDao;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.exception.InstallatorException;
@@ -44,20 +41,20 @@ import com.telefonica.euro_iaas.sdc.model.dto.VM;
 import com.telefonica.euro_iaas.sdc.util.RecipeNamingGenerator;
 import com.telefonica.euro_iaas.sdc.util.SDCClientUtils;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
- * Provides some methods to work with deployable units (products and
- * applications).
+ * Provides some methods to work with deployable units (products and applications).
  * 
  * @author Sergio Arroyo
  */
 public class BaseInstallableInstanceManagerChef {
-    
+
     protected String INSTALL = "install";
     protected String UNINSTALL = "uninstall";
     protected String CONFIGURE = "configure";
-    protected String DEPLOY_ARTIFACT="deployArtifact";
-    protected String UNDEPLOY_ARTIFACT="undeployArtifact";
+    protected String DEPLOY_ARTIFACT = "deployArtifact";
+    protected String UNDEPLOY_ARTIFACT = "undeployArtifact";
 
     protected SystemPropertiesProvider propertiesProvider;
     protected RecipeNamingGenerator recipeNamingGenerator;
@@ -68,7 +65,8 @@ public class BaseInstallableInstanceManagerChef {
 
     protected static Logger log = LoggerFactory.getLogger(BaseInstallableInstanceManagerChef.class);
 
-    protected void callChefUpgrade(String recipe, VM vm, String token) throws InstallatorException, NodeExecutionException {
+    protected void callChefUpgrade(String recipe, VM vm, String token) throws InstallatorException,
+            NodeExecutionException {
         assignRecipes(vm, recipe, token);
         try {
             executeRecipes(vm);
@@ -79,7 +77,7 @@ public class BaseInstallableInstanceManagerChef {
             throw new NodeExecutionException(e.getMessage());
         }
     }
-    
+
     /**
      * Tell Chef the previously assigned recipes are ready to be installed.
      * 
@@ -155,7 +153,7 @@ public class BaseInstallableInstanceManagerChef {
         try {
             node = chefNodeDao.loadNodeFromHostname(vm.getHostname(), token);
             node.addRecipe(recipe);
-            
+
             if (attributes != null) {
                 for (Attribute attr : attributes) {
                     node.addAttribute(process, attr.getKey(), attr.getValue());
@@ -171,31 +169,30 @@ public class BaseInstallableInstanceManagerChef {
         try {
             chefNodeDao.updateNode(node, token);
         } catch (CanNotCallChefException e) {
-        	log.error(e.getMessage());
+            log.error(e.getMessage());
             throw new InstallatorException(e);
         }
     }
 
- 
     /**
      * Checks if the Node is already registered in ChefServer.
+     * 
      * @param hostname
      */
-    public void isNodeRegistered(String hostname, String token) throws SdcRuntimeException{
+    public void isNodeRegistered(String hostname, String token) throws SdcRuntimeException {
         try {
             chefNodeDao.isNodeRegistered(hostname, token);
         } catch (CanNotCallChefException e) {
-        	log.error(e.getMessage());
+            log.error(e.getMessage());
             throw new SdcRuntimeException(e);
         }
     }
 
-    
-    protected boolean isSdcClientInstalled () {
+    protected boolean isSdcClientInstalled() {
         String sdcClient = propertiesProvider.getProperty(SystemPropertiesProvider.SDCCLIENT_INSTALLED_IN_NODES);
         return Boolean.parseBoolean(sdcClient);
     }
-    
+
     // //////////// I.O.C. //////////////
     /**
      * @param propertiesProvider

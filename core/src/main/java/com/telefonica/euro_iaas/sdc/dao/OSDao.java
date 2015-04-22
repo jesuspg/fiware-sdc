@@ -24,9 +24,9 @@
 
 package com.telefonica.euro_iaas.sdc.dao;
 
-import com.telefonica.euro_iaas.commons.dao.BaseDAO;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.model.OS;
+import com.telefonica.fiware.commons.dao.BaseDAO;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Defines the methods needed to persist SO objects.

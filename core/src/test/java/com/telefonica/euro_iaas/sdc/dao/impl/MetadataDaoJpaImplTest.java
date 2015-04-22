@@ -32,8 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.dao.MetadataDao;
 import com.telefonica.euro_iaas.sdc.model.Metadata;
 

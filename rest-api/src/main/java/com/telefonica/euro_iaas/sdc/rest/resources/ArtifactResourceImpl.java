@@ -35,10 +35,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.manager.async.ArtifactAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.sdc.manager.async.TaskManager;
@@ -50,10 +48,12 @@ import com.telefonica.euro_iaas.sdc.model.Task.TaskStates;
 import com.telefonica.euro_iaas.sdc.model.dto.ArtifactDto;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ArtifactSearchCriteria;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * Default ProductInstanceResource implementation.
- *
+ * 
  * @author Henar Mu�oz
  */
 @Path("/vdc/{vdc}/productInstance/{productInstance}/ac")
@@ -115,7 +115,7 @@ public class ArtifactResourceImpl implements ArtifactResource {
      */
 
     public List<ArtifactDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
-                                     List<Status> status, String vdc, String productInstance) {
+            List<Status> status, String vdc, String productInstance) {
 
         ArtifactSearchCriteria criteria = new ArtifactSearchCriteria();
 
@@ -185,21 +185,13 @@ public class ArtifactResourceImpl implements ArtifactResource {
     }
 
     public String getToken() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {
             return user.getToken();
         }
 
-    }
-
-    public PaasManagerUser getCredentials() {
-        try {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

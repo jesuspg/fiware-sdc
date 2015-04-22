@@ -34,12 +34,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.sdc.exception.AlreadyExistsProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductReleaseException;
 import com.telefonica.euro_iaas.sdc.exception.ProductReleaseNotFoundException;
@@ -48,12 +44,14 @@ import com.telefonica.euro_iaas.sdc.manager.ProductManager;
 import com.telefonica.euro_iaas.sdc.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.sdc.model.Product;
 import com.telefonica.euro_iaas.sdc.model.ProductRelease;
-import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.sdc.model.searchcriteria.ProductReleaseSearchCriteria;
 import com.telefonica.euro_iaas.sdc.rest.exception.APIException;
 import com.telefonica.euro_iaas.sdc.rest.validation.GeneralResourceValidator;
 import com.telefonica.euro_iaas.sdc.rest.validation.ProductResourceValidator;
+import com.telefonica.fiware.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.dao.InvalidEntityException;
 
 /**
  * @author jesus.movilla
@@ -206,6 +204,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     /**
      * It obtains the transsitable version.
+     * 
      * @param pName
      * @param version
      *            the product version
@@ -249,7 +248,4 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         this.productManager = productManager;
     }
 
-    public PaasManagerUser getCredentials() {
-        return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 }

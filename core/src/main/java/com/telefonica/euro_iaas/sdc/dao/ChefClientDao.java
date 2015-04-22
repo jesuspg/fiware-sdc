@@ -27,9 +27,9 @@
  */
 package com.telefonica.euro_iaas.sdc.dao;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.CanNotCallChefException;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
 
 /**
  * @author jesus.movilla
@@ -53,7 +53,8 @@ public interface ChefClientDao {
      * @return
      * @throws CanNotCallChefException
      */
-    ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException, EntityNotFoundException;
+    ChefClient getChefClient(String chefClientName, String token) throws CanNotCallChefException,
+            EntityNotFoundException;
 
     /**
      * FindAll ChefClients
@@ -61,5 +62,6 @@ public interface ChefClientDao {
      * @return
      * @throws CanNotCallChefException
      */
-    ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException, CanNotCallChefException;
+    ChefClient chefClientfindByHostname(String hostname, String token) throws EntityNotFoundException,
+            CanNotCallChefException;
 }

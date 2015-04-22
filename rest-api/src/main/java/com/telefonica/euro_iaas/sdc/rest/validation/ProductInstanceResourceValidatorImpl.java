@@ -40,19 +40,18 @@ import javax.ws.rs.core.Response;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidNameException;
 import com.telefonica.euro_iaas.sdc.exception.InvalidProductException;
-import com.telefonica.euro_iaas.sdc.exception.OpenStackException;
 import com.telefonica.euro_iaas.sdc.keystoneutils.OpenStackRegion;
 import com.telefonica.euro_iaas.sdc.model.Attribute;
 import com.telefonica.euro_iaas.sdc.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.sdc.rest.auth.OpenStackAuthenticationProvider;
 import com.telefonica.euro_iaas.sdc.rest.exception.UnauthorizedOperationException;
 import com.telefonica.euro_iaas.sdc.util.Configuration;
 import com.telefonica.euro_iaas.sdc.util.SystemPropertiesProvider;
+import com.telefonica.fiware.commons.dao.EntityNotFoundException;
+import com.telefonica.fiware.commons.openstack.auth.exception.OpenStackException;
 
 /**
  * @author jesus.movilla
@@ -118,12 +117,12 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
         } catch (InvalidNameException e) {
             throw new InvalidProductException("The fqn is null " + e.getMessage());
         }
-        
+
         if (product.getAttributes() != null) {
             validateAttributesType(product.getAttributes());
         }
     }
-    
+
     private void validateAttributesType(List<Attribute> attributes) throws InvalidProductException {
         String msg = "Attribute type is incorrect.";
         for (Attribute att : attributes) {
@@ -149,21 +148,13 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     }
 
     public String getToken() {
-        PaasManagerUser user = getCredentials();
+        PaasManagerUser user = OpenStackAuthenticationProvider.getCredentials();
         if (user == null) {
             return "";
         } else {
             return user.getToken();
         }
 
-    }
-
-    public PaasManagerUser getCredentials() {
-        try {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
@@ -176,9 +167,8 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
     private List<String> findAllServers(PaasManagerUser user) throws OpenStackException {
         // http://130.206.80.63:8774/v2/ebe6d9ec7b024361b7a3882c65a57dda/servers
 
-        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),
-                user.getToken())
-                + user.getTenantId() + "/servers";
+        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion()) + user.getTenantId()
+                + "/servers";
         String output = getResourceOpenStack(url, user.getToken());
 
         return getServerIds(output);
@@ -194,8 +184,7 @@ public class ProductInstanceResourceValidatorImpl implements ProductInstanceReso
      * @throws OpenStackException
      */
     private String findServerIP(PaasManagerUser user, String serverId) throws OpenStackException {
-        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion(user.getToken()),
-                user.getToken())
+        String url = this.openStackRegion.getNovaEndPoint(openStackRegion.getDefaultRegion())
                 + Configuration.VERSION_PROPERTY + user.getTenantId() + "/servers/" + serverId;
         String output = getResourceOpenStack(url, user.getToken());
 
