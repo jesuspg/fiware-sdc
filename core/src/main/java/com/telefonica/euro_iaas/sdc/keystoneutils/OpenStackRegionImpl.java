@@ -143,16 +143,19 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     @Override
     public String getPuppetDBEndPoint() throws OpenStackException {
-        String defaulRegion = this.getDefaultRegion();
-        log.info("Get url for puppetdb for default region " + defaulRegion);
+        String defaultRegion = this.getDefaultRegion();
+        log.info("Get url for puppetdb for default region " + defaultRegion);
         String url;
         try {
-            url = getEndPointByNameAndRegionName("puppetmaster", defaulRegion);
+            url = getEndPointByNameAndRegionName("puppetmaster", defaultRegion);
         } catch (OpenStackException e) {
-            String msn = "It is not possible to obtain the Puppet DB endpoint";
+            String msn = "It is not possible to obtain the Puppet DB endpoint " + e;
             log.info(msn);
             throw new OpenStackException(msn);
 
+        }
+        if (url.startsWith("http://")) {
+            return url;
         }
         return "http://" + url + ":8080";
     }

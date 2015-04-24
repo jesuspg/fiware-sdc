@@ -344,7 +344,8 @@ public class InstallatorPuppetImpl implements Installator {
             return response;
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new SdcRuntimeException("It is not possible to connect with puppet server Url" + e.getMessage());
+            throw new SdcRuntimeException("It is not possible to connect with puppet server in "+url+". Error: " + e
+                    .getMessage());
         }
     }
 
